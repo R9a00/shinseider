@@ -1,0 +1,59 @@
+
+- id: test_subsidy_a
+  name: テスト補助金A
+  description: テスト用の補助金Aです。
+  max_amount: 100万円
+  eligible_expenses: 経費A, 経費B
+  application_period: 期間A
+  official_url: http://example.com/a
+  criteria:
+    - type: field_match
+      display_question: どのような新分野展開、業態転換、事業・業種転換を計画していますか？具体的に記述してください。
+      field: purpose
+      value: 新規事業
+    - type: field_comparison
+      display_question: 従業員数は10人未満ですか？
+      field: employees
+      operator: less_than
+      value: 10
+  scoring_factors:
+    - key: innovation
+      type: core
+      weight: 0.5
+      description: 革新性
+      related_user_data: ["business_details"]
+      guidance_prompt: "事業の革新性を具体的に記述しましょう。"
+    - key: regional_contribution
+      type: add_on_point
+      weight: 0.2
+      description: 地域貢献
+      related_user_data: ["regional_contribution"]
+      guidance_prompt: "地域への貢献について具体的に記述しましょう。"
+  advice_points:
+    - "アドバイスA"
+  common_mistakes:
+    - "よくある間違いA"
+
+- id: test_subsidy_b
+  name: テスト補助金B
+  description: テスト用の補助金Bです。
+  max_amount: 500万円
+  eligible_expenses: 経費C, 経費D
+  application_period: 期間B
+  official_url: http://example.com/b
+  criteria:
+    - type: field_match
+      display_question: 事業目的は販路開拓ですか？
+      field: purpose
+      value: 販路開拓
+  scoring_factors:
+    - key: market_growth
+      type: core
+      weight: 0.7
+      description: 市場成長性
+      related_user_data: ["target_market"]
+      guidance_prompt: "ターゲット市場の成長性についてデータで示しましょう。"
+  advice_points:
+    - "アドバイスB"
+  common_mistakes:
+    - "よくある間違いB"
