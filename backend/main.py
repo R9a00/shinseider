@@ -6,7 +6,7 @@ import json
 import yaml
 from fastapi.middleware.cors import CORSMiddleware
 from middleware.security import SecurityMiddleware, ErrorHandlingMiddleware, RateLimitMiddleware
-from models import DesireRequest, ApplicationAdviceRequest, TextbookRequest, BusinessPlanRequest
+from models import DesireRequest, GenerateOutputRequest, TextbookRequest, BusinessPlanRequest
 from secure_file_utils import get_secure_file_manager
 import logging
 
