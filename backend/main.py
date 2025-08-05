@@ -1,11 +1,9 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import FileResponse
-# from .middleware.verify_hash import VerifyHashMiddleware
 from word_generator import generate_word
 import os
 import json
 import yaml
-
 from fastapi.middleware.cors import CORSMiddleware
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -17,42 +15,93 @@ def load_subsidy_data():
 
 app = FastAPI()
 
-origins = ["*"]
+origins = [
+    "http://localhost:3333",
+    "http://localhost:3000",
+    "http://127.0.0.1:3333",
+    "http://127.0.0.1:3000"
+]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
-
-# 環境変数から秘密鍵を読み込む
-SECRET_KEY = os.environ.get("SECRET_KEY", "default_secret_key")
-
-# app.add_middleware(VerifyHashMiddleware, secret_key=SECRET_KEY)
 
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
 
-@app.post("/webhook")
-async def webhook(request: dict):
-    return {"message": "Webhook received successfully"}
+@app.get("/subsidies")
+async def get_subsidies():
+    """利用可能な補助金の一覧を取得します。"""
+    subsidies_data = load_subsidy_data()
+    subsidies_list = [
+        {"id": subsidy.get("id"), "name": subsidy.get("name")}
+        for subsidy in subsidies_data
+    ]
+    return {"subsidies": subsidies_list}
 
-@app.get("/get_subsidy_questions")
-async def get_subsidy_questions(purpose: str = None):
-    subsidies = load_subsidy_data()
-    questions = []
-    for subsidy in subsidies:
-        # purposeが指定されている場合のみフィルタリング
-        if purpose is not None and subsidy.get("purpose") != purpose:
-            continue
-        for criterion in subsidy.get("criteria", []):
-            if "display_question" in criterion:
-                question_item = {"id": subsidy["id"] + "_" + criterion["field"], "question": criterion["display_question"]}
-                questions.append(question_item)
-    return {"questions": questions}
+@app.get("/subsidies/{subsidy_id}/metadata")
+async def get_subsidy_metadata(subsidy_id: str):
+    """指定された補助金のメタデータを取得します。"""
+    subsidies_data = load_subsidy_data()
+    subsidy = next((s for s in subsidies_data if s.get("id") == subsidy_id), None)
+    if not subsidy or "metadata" not in subsidy:
+        raise HTTPException(status_code=404, detail="Subsidy not found or metadata missing")
+    return {"metadata": subsidy["metadata"]}
+
+@app.get("/get_application_questions/{subsidy_id}")
+async def get_application_questions(subsidy_id: str):
+    """指定された補助金の申請書作成に必要な質問項目を取得します。"""
+    subsidies_data = load_subsidy_data()
+    subsidy = next((s for s in subsidies_data if s.get("id") == subsidy_id), None)
+    if not subsidy:
+        raise HTTPException(status_code=404, detail="Subsidy not found")
+
+    questions = {"criteria": [], "scoring_factors": {}}
+    
+    # 必須要件の質問
+    for criterion in subsidy.get("criteria", []):
+        if "display_question" in criterion:
+            questions["criteria"].append({
+                "id": criterion["field"],
+                "question": criterion["display_question"],
+                "type": "boolean" 
+            })
+
+    # 審査項目の質問 (シンプル・ガイド付き)
+    for factor in subsidy.get("scoring_factors", []):
+        factor_key = factor["key"]
+        questions["scoring_factors"][factor_key] = {
+            "description": factor["description"],
+            "simple": factor.get("input_modes", {}).get("simple"),
+            "guided": factor.get("input_modes", {}).get("guided", [])
+        }
+        
+    return questions
+
+@app.post("/generate_application_advice")
+async def generate_application_advice(request: Request):
+    """ユーザーの回答に基づき、申請書作成のためのAIアドバイスを生成します。"""
+    # TODO: LLM呼び出しロジックを実装
+    data = await request.json()
+    subsidy_id = data.get("subsidy_id")
+    answers = data.get("answers")
+    input_mode = data.get("input_mode")
+
+    # ダミーレスポンス
+    advice = {
+        "overall_feedback": "素晴らしい計画の第一歩です！以下の点を改善すると、さらに説得力が増します。",
+        "detailed_advice": [
+            {"item": "新規性・革新性", "feedback": "「新しい」という点を、具体的な市場データや競合比較でさらに裏付けましょう。"},
+            {"item": "事業の有望度", "feedback": "ターゲット顧客の解像度をさらに上げ、その顧客がなぜあなたのサービスを選ぶのかを明確にしましょう。"},
+            {"item": "事業の実現可能性", "feedback": "資金計画について、融資以外の選択肢も検討すると、計画の柔軟性が高まります。"}
+        ]
+    }
+    return {"advice": advice}
 
 @app.post("/save_desire")
 async def save_desire(request: Request):
@@ -66,8 +115,7 @@ async def save_desire(request: Request):
     for item in answers_data:
         formatted_desire += f"Q: {item['question']}\nA: {item['answer']}\n\n"
 
-    # やりたいことをファイルに保存
-    with open("desire.txt", "w") as f:
+    with open("desire.txt", "w", encoding="utf-8") as f:
         f.write(formatted_desire)
 
     return {"message": "Desire saved successfully"}
@@ -75,86 +123,26 @@ async def save_desire(request: Request):
 @app.post("/generate_textbook")
 async def generate_textbook(request: Request):
     data = await request.json()
-    title = data.get("title", "経営者の教科書")
     content = data.get("content", "ここにアドバイスが表示されます。")
-    file_path = "textbook.docx" # PDFからDOCXに変更
+    file_path = "textbook.docx"
 
-    generate_word(file_path, content) # generate_pdfからgenerate_wordに変更
+    generate_word(file_path, content)
 
-    return FileResponse(file_path, media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document', filename="経営者の教科書.docx") # media_typeとfilenameを変更
-
-@app.post("/subsidy_recommendation")
-async def subsidy_recommendation(request: Request):
-    data = await request.json()
-
-    recommendations = []
-    subsidies_data = load_subsidy_data()
-
-    for subsidy in subsidies_data:
-        # 要件チェック
-        is_eligible = True
-        for req in subsidy.get("criteria", []):
-            field_name = req["field"]
-            user_value = data.get(field_name)
-
-            if req["type"] == "field_match":
-                if user_value != req["value"]:
-                    is_eligible = False
-                    break
-            elif req["type"] == "field_comparison":
-                if user_value is None:
-                    is_eligible = False
-                    break
-                if req["operator"] == "less_than":
-                    if not (user_value < req["value"]):
-                        is_eligible = False
-                        break
-                elif req["operator"] == "greater_than_or_equal":
-                    if not (user_value >= req["value"]):
-                        is_eligible = False
-                        break
-                elif req["operator"] == "is_met":
-                    if not bool(user_value) == bool(req["value"]):
-                        is_eligible = False
-                        break
-
-        if is_eligible:
-            # スコアリング
-            score = 0
-            for sf in subsidy.get("scoring_factors", []):
-                # ここにユーザーの回答とsf["related_user_data"]を比較し、スコアを計算するロジックを実装
-                score += sf.get("weight", 0) * 100 # weightを考慮したスコア計算
-
-            # アドバイス生成
-            advice = []
-            advice.extend(subsidy.get("advice_points", []))
-            for sf in subsidy.get("scoring_factors", []):
-                if sf.get("guidance_prompt"): # LLM連携用のプロンプトをアドバイスとして追加
-                    advice.append(sf["guidance_prompt"])
-            advice.extend(subsidy.get("common_mistakes", []))
-
-            recommendations.append({
-                "name": subsidy["name"],
-                "description": subsidy["description"],
-                "max_amount": subsidy["max_amount"],
-                "eligible_expenses": subsidy["eligible_expenses"],
-                "application_period": subsidy["application_period"],
-                "official_url": subsidy.get("official_url", ""),
-                "score": score,
-                "advice": advice
-            })
-
-    # スコアでソート
-    recommendations.sort(key=lambda x: x["score"], reverse=True)
-
-    return {"subsidies": recommendations}
+    return FileResponse(
+        file_path, 
+        media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+        filename="経営者の教科書.docx"
+    )
 
 @app.post("/generate_business_plan")
 async def generate_business_plan(request: Request):
     data = await request.json()
     file_path = "business_plan.docx"
 
-    # word_generator.pyに構造化されたデータを渡す
     generate_word(file_path, json.dumps(data, ensure_ascii=False, indent=2))
 
-    return FileResponse(file_path, media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document', filename="事業計画書.docx")
+    return FileResponse(
+        file_path, 
+        media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+        filename="事業計画書.docx"
+    )

@@ -1,48 +1,79 @@
-# attg
+# 事業承継・補助金申請サポートシステム
 
-This is the project for the "アトツギ甲子園用システム".
+本プロジェクトは、事業承継者の新規事業を促進し、補助金申請を支援するためのアプリケーションです。
 
-## Directory Structure
+## コンセプト
 
-- `backend/`: Contains the FastAPI backend application.
-- `frontend/`: Contains the React frontend application.
+このシステムのコアコンセプトは、複雑で専門知識を要する補助金の申請プロセスを、誰でも・安心して・質の高いレベルで完遂できるようサポートすることです。
 
-## How to Run
+### 3つの柱
 
-### Backend
+1.  **信頼性の担保 (Data Provenance):**
+    *   各補助金のサポート情報は、**「いつ時点の、どの公式サイトの、どの文書（公募要領、マニュアル等）を参照して作成したか」**というメタデータを明記します。
+    *   ユーザーがその情報をいつでも確認できる専用のページを用意し、情報の鮮度と正確性を担保します。
 
-1. Navigate to the `backend` directory:
+2.  **入力支援の強化 (Tiered Input):**
+    *   ユーザーの知識レベルや準備状況に合わせて、入力方法を選択可能です。
+        *   **シンプルコース:** 審査項目に対し、要点を直接入力します（上級者向け）。
+        *   **ガイド付きコース:** 1つの審査項目を複数の簡単な質問に分解し、それに答えるだけで、必要な要素が網羅された質の高い文章が完成します（初心者向け）。
+    *   これにより、LLMに頼る前の**入力データの質そのものを劇的に向上**させます。
+
+3.  **情報収集・管理プロセスの標準化:**
+    *   補助金情報の調査・更新プロセスをルール化し、参照元（URL、文書名）を明確に管理します。これにより、メンテナンス性と拡張性を高めます。
+
+## 段階的開発計画
+
+*   **フェーズ1（現在）:**
+    *   UIの起点を「補助金申請サポートを受ける」に変更。
+    *   利用可能な補助金（現在は「中小企業新事業進出補助金」のみ）をリストで表示し、ユーザーが選択するUIを構築。
+    *   選択した補助金に対し、「シンプルコース」「ガイド付きコース」の入力支援機能を提供。
+    *   回答内容に基づき、AIが具体的な申請書改善アドバイスを生成・表示する機能を実装。
+    *   サポート情報の参照元（メタデータ）を表示する機能を追加。
+
+*   **フェーズ2（将来）:**
+    *   本システムのフォーマットに沿って、対応する補助金の種類を増やしていく。
+
+*   **フェーズ3（さらに将来）:**
+    *   補助金の数が増えた段階で、ユーザーが自分に合った補助金を見つけやすくするための「レコメンド（フィルタリング）機能」の導入を検討。
+
+## ディレクトリ構成
+
+- `backend/`: FastAPIバックエンドアプリケーション
+- `frontend/`: Reactフロントエンドアプリケーション
+
+## 実行方法
+
+### バックエンド
+
+1. `backend`ディレクトリに移動:
    ```sh
-   cd attg/backend
+   cd backend
    ```
-2. Create a virtual environment:
+2. 仮想環境の作成と有効化:
    ```sh
    python -m venv venv
-   ```
-3. Activate the virtual environment:
-   ```sh
    source venv/bin/activate
    ```
-4. Install the dependencies:
+3. 依存関係のインストール:
    ```sh
    pip install -r requirements.txt
    ```
-5. Run the application:
+4. アプリケーションの実行:
    ```sh
    uvicorn main:app --reload --port 8888
    ```
 
-### Frontend
+### フロントエンド
 
-1. Navigate to the `frontend/client` directory:
+1. `frontend/client`ディレクトリに移動:
    ```sh
-   cd attg/frontend/client
+   cd frontend/client
    ```
-2. Install the dependencies:
+2. 依存関係のインストール:
    ```sh
    npm install
    ```
-3. Run the application:
+3. アプリケーションの実行:
    ```sh
    npm start
    ```
