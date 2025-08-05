@@ -25,8 +25,28 @@ yarn-error.log
 
 # Logs
 *.log
+backend/backend_output.log
+backend/desire.txt
+backend/textbook.docx
+backend/business_plan.docx
+
+# Temporary files
+backend/temp_files/
+backend/*.tmp
+backend/*.docx
 
 # OS generated files
 .DS_Store
 .Trashes
 Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.local
+.env.production
