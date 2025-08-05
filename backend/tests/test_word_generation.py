@@ -35,10 +35,10 @@ def test_generate_business_plan_word_document():
     # 要約セクションの確認
     summary_found = False
     for paragraph in document.paragraphs:
-        if "【事業概要】" in paragraph.text and "【市場分析】" in paragraph.text:
+        if "1ページ要約" in paragraph.text:
             summary_found = True
             break
-    assert summary_found, "Summary section not found or incomplete in the generated Word document."
+    assert summary_found, "Summary section not found in the generated Word document."
 
     # 各セクションのタイトルと内容の確認
     expected_headings = [

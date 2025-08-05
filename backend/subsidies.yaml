@@ -1,11 +1,10 @@
-
 - id: shinjigyo_shinshutsu
   name: 中小企業新事業進出補助金
-  description: テスト用の補助金です。
-  max_amount: 100万円
-  eligible_expenses: 経費A, 経費B
-  application_period: 期間A
-  official_url: http://example.com/a
+  description: 既存とは異なる新市場・高付加価値事業への進出を図る中小企業等を支援する補助金です。
+  max_amount: 750万円〜7,000万円（従業員規模、賃上げ特例による）
+  eligible_expenses: 機械装置・システム構築費、建物費、技術導入費、外注費、専門家経費、クラウドサービス利用費、運搬費、広告宣伝・販売促進費など
+  application_period: 公募期間による（年間約4回）
+  official_url: https://shinjigyou-shinshutsu.smrj.go.jp/
   purpose: 新規事業
   criteria:
     - type: field_match
