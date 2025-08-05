@@ -1,4 +1,16 @@
+from fastapi.testclient import TestClient
+from fastapi.responses import FileResponse
+from docx import Document
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+from main import app, load_subsidy_data
+import os
+import yaml
+
+# テスト用のsubsidies.yamlを作成
+test_subsidies_yaml_content = """
 - id: shinjigyo_shinshutsu
   name: 中小企業新事業進出補助金
   description: テスト用の補助金です。
@@ -108,3 +120,78 @@
     5. 地域貢献・政策整合: 地域経済への波及やSDGs/DXへの寄与があればさらに言及。
     加えて、ユーザーが該当していない加点項目があれば取得・活用を提案してください(例: パートナーシップ宣言の登録等)。
     出力フォーマット: 箇条書きや短い段落で、具体的な改善アドバイスを箇条書きで示すこと。ユーザーを勇気づける前向きな口調で、問題点と改善策をセットで示してください.
+"""
+
+# テスト用のsubsidies.yamlを書き込む
+with open("backend/subsidies.yaml", "w", encoding="utf-8") as f:
+    f.write(test_subsidies_yaml_content)
+
+client = TestClient(app)
+
+def test_get_subsidy_questions():
+    response = client.get("/get_subsidy_questions")
+    assert response.status_code == 200
+    data = response.json()
+    assert "questions" in data
+    assert len(data["questions"]) > 0
+    # 特定の質問が含まれているか確認
+    question_ids = [q["id"] for q in data["questions"]]
+    assert "shinjigyo_shinshutsu_is_new_product_and_customer" in question_ids
+    assert "shinjigyo_shinshutsu_value_added_growth_rate" in question_ids
+    assert "shinjigyo_shinshutsu_wage_increase_plan" in question_ids
+    assert "shinjigyo_shinshutsu_internal_min_wage_gap_yen" in question_ids
+    assert "shinjigyo_shinshutsu_includes_equipment_or_building" in question_ids
+    assert "shinjigyo_shinshutsu_financial_plan_confirmed" in question_ids
+    assert "shinjigyo_shinshutsu_no_duplicate_subsidy" in question_ids
+
+def test_subsidy_recommendation_shinjigyo_shinshutsu_eligible():
+    response = client.post("/subsidy_recommendation", json={
+        "purpose": "新規事業",
+        "is_new_product_and_customer": True,
+        "value_added_growth_rate": 0.05,
+        "wage_increase_plan": True,
+        "internal_min_wage_gap_yen": 35,
+        "includes_equipment_or_building": True,
+        "financial_plan_confirmed": True,
+        "no_duplicate_subsidy": True,
+        "user_project_description": "新しい市場で革新的な製品を開発します。",
+        "new_product_status": "Yes",
+        "new_market_status": "Yes",
+        "new_sales_share_status": "Yes",
+        "value_added_growth_status": "Yes",
+        "wage_increase_plan_status": "Yes",
+        "internal_min_wage_gap_status": "Yes",
+        "wlb_plan_status": "Yes",
+        "equipment_included_status": "Yes"
+    })
+    assert response.status_code == 200
+    data = response.json()
+    assert "subsidies" in data
+    assert len(data["subsidies"]) > 0
+    subsidy_names = [s["name"] for s in data["subsidies"]]
+    assert "中小企業新事業進出補助金" in subsidy_names
+
+def test_subsidy_recommendation_shinjigyo_shinshutsu_not_eligible():
+    response = client.post("/subsidy_recommendation", json={
+        "purpose": "新規事業",
+        "is_new_product_and_customer": False, # 要件を満たさない
+        "value_added_growth_rate": 0.01,
+        "wage_increase_plan": False,
+        "internal_min_wage_gap_yen": 10,
+        "includes_equipment_or_building": False,
+        "financial_plan_confirmed": False,
+        "no_duplicate_subsidy": False,
+        "user_project_description": "既存製品の改良です。",
+        "new_product_status": "No",
+        "new_market_status": "No",
+        "new_sales_share_status": "No",
+        "value_added_growth_status": "No",
+        "wage_increase_plan_status": "No",
+        "internal_min_wage_gap_status": "No",
+        "wlb_plan_status": "No",
+        "equipment_included_status": "No"
+    })
+    assert response.status_code == 200
+    data = response.json()
+    assert "subsidies" in data
+    assert len(data["subsidies"]) == 0

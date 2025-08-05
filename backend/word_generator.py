@@ -55,6 +55,29 @@ def generate_word(file_path: str, content: str):
     elif "business_plan" in file_path: # 事業計画書
         document.add_heading('事業計画書', 0)
 
+        # 1ページ要約の自動生成
+        summary_text = ""
+        if "business_summary" in parsed_content: 
+            summary_text += f"【事業概要】\n{parsed_content.get('business_summary')}\n\n"
+        if "market_analysis" in parsed_content: 
+            summary_text += f"【市場分析】\n{parsed_content.get('market_analysis')}\n\n"
+        if "competitive_advantage" in parsed_content: 
+            summary_text += f"【競合優位性】\n{parsed_content.get('competitive_advantage')}\n\n"
+        if "products_services" in parsed_content: 
+            summary_text += f"【製品・サービス】\n{parsed_content.get('products_services')}\n\n"
+        if "marketing_strategy" in parsed_content: 
+            summary_text += f"【マーケティング戦略】\n{parsed_content.get('marketing_strategy')}\n\n"
+        if "revenue_plan" in parsed_content: 
+            summary_text += f"【収益計画】\n{parsed_content.get('revenue_plan')}\n\n"
+        if "funding_plan" in parsed_content: 
+            summary_text += f"【資金計画】\n{parsed_content.get('funding_plan')}\n\n"
+        if "implementation_structure" in parsed_content: 
+            summary_text += f"【実施体制】\n{parsed_content.get('implementation_structure')}\n\n"
+
+        document.add_heading('1ページ要約', level=1)
+        document.add_paragraph(summary_text)
+        document.add_paragraph() # セクション間の区切り
+
         sections_map = {
             "business_summary": "事業概要",
             "market_analysis": "市場分析",
@@ -77,5 +100,3 @@ def generate_word(file_path: str, content: str):
             document.add_paragraph() # セクション間の区切り
 
     document.save(file_path)
-
-

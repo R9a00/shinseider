@@ -3,7 +3,6 @@ from fastapi.responses import FileResponse
 # from .middleware.verify_hash import VerifyHashMiddleware
 from word_generator import generate_word
 import os
-import os
 import json
 import yaml
 
@@ -44,21 +43,15 @@ async def webhook(request: dict):
 @app.get("/get_subsidy_questions")
 async def get_subsidy_questions(purpose: str = None):
     subsidies = load_subsidy_data()
-    print(f"DEBUG: Loaded subsidies: {subsidies}") # デバッグログ追加
     questions = []
     for subsidy in subsidies:
-        subsidy_id = subsidy.get("id") # 変数に格納
-        print(f"DEBUG: Processing subsidy: {subsidy_id}") # デバッグログ修正
         # purposeが指定されている場合のみフィルタリング
         if purpose is not None and subsidy.get("purpose") != purpose:
-            print(f"DEBUG: Skipping subsidy {subsidy_id} due to purpose mismatch.") # デバッグログ修正
             continue
         for criterion in subsidy.get("criteria", []):
             if "display_question" in criterion:
-                question_item = {"id": subsidy["id"] + "_" + criterion["type"], "question": criterion["display_question"]}
+                question_item = {"id": subsidy["id"] + "_" + criterion["field"], "question": criterion["display_question"]}
                 questions.append(question_item)
-                print(f"DEBUG: Added question: {question_item}") # デバッグログ追加
-    print(f"DEBUG: Final questions list: {questions}") # デバッグログ追加
     return {"questions": questions}
 
 @app.post("/save_desire")
@@ -98,15 +91,17 @@ async def subsidy_recommendation(request: Request):
     subsidies_data = load_subsidy_data()
 
     for subsidy in subsidies_data:
-        # 要件チェック (簡易的な例)
+        # 要件チェック
         is_eligible = True
         for req in subsidy.get("criteria", []):
+            field_name = req["field"]
+            user_value = data.get(field_name)
+
             if req["type"] == "field_match":
-                if data.get(req["field"]) != req["value"]:
+                if user_value != req["value"]:
                     is_eligible = False
                     break
             elif req["type"] == "field_comparison":
-                user_value = data.get(req["field"])
                 if user_value is None:
                     is_eligible = False
                     break
@@ -114,17 +109,23 @@ async def subsidy_recommendation(request: Request):
                     if not (user_value < req["value"]):
                         is_eligible = False
                         break
-                # 他の比較演算子もここに追加可能
+                elif req["operator"] == "greater_than_or_equal":
+                    if not (user_value >= req["value"]):
+                        is_eligible = False
+                        break
+                elif req["operator"] == "is_met":
+                    if not bool(user_value) == bool(req["value"]):
+                        is_eligible = False
+                        break
 
         if is_eligible:
-            # スコアリング (簡易的な例)
+            # スコアリング
             score = 0
             for sf in subsidy.get("scoring_factors", []):
                 # ここにユーザーの回答とsf["related_user_data"]を比較し、スコアを計算するロジックを実装
-                # 現時点では常に10点加算とする
                 score += sf.get("weight", 0) * 100 # weightを考慮したスコア計算
 
-            # アドバイス生成 (簡易的な例)
+            # アドバイス生成
             advice = []
             advice.extend(subsidy.get("advice_points", []))
             for sf in subsidy.get("scoring_factors", []):
