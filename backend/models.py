@@ -31,7 +31,8 @@ class ApplicationAdviceRequest(BaseModel):
     """申請書アドバイス生成リクエストモデル"""
     subsidy_id: str = Field(..., max_length=50, description="補助金ID")
     answers: Dict[str, Any] = Field(..., description="回答データ")
-    input_mode: str = Field(..., regex="^(simple|guided)$", description="入力モード")
+    input_mode: str = Field(..., pattern="^(simple|guided)$", description="入力モード")
+    target: str = Field(..., pattern="^(ai|human|self)$", description="生成するアウトプットのターゲット")
     
     @validator('subsidy_id')
     def validate_subsidy_id(cls, v):
@@ -84,7 +85,7 @@ class SubsidyQuestion(BaseModel):
     """補助金質問項目モデル"""
     id: str = Field(..., max_length=50, description="質問ID")
     question: str = Field(..., max_length=1000, description="質問内容")
-    type: str = Field(..., regex="^(boolean|text|number)$", description="質問タイプ")
+    type: str = Field(..., pattern="^(boolean|text|number)$", description="質問タイプ")
     required: bool = Field(default=True, description="必須項目かどうか")
 
 class SubsidyScoringFactor(BaseModel):
@@ -110,4 +111,4 @@ class ApplicationAdvice(BaseModel):
         for item in v:
             if 'item' not in item or 'feedback' not in item:
                 raise ValueError("Invalid advice item format")
-        return v 
+        return v

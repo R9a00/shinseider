@@ -6,15 +6,15 @@ import json
 import yaml
 from fastapi.middleware.cors import CORSMiddleware
 from middleware.security import SecurityMiddleware, ErrorHandlingMiddleware, RateLimitMiddleware
-from models import DesireRequest, GenerateOutputRequest, TextbookRequest, BusinessPlanRequest
+from models import DesireRequest, ApplicationAdviceRequest, TextbookRequest, BusinessPlanRequest
 from secure_file_utils import get_secure_file_manager
 import logging
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # セキュリティログの設定
 logging.basicConfig(level=logging.INFO)
 security_logger = logging.getLogger("security")
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def load_subsidy_data():
     file_path = os.path.join(BASE_DIR, "subsidies.yaml")
@@ -68,43 +68,24 @@ async def get_subsidy_metadata(subsidy_id: str):
     """指定された補助金のメタデータを取得します。"""
     subsidies_data = load_subsidy_data()
     subsidy = next((s for s in subsidies_data if s.get("id") == subsidy_id), None)
-    if not subsidy or "metadata" not in subsidy:
-        raise HTTPException(status_code=404, detail="Subsidy not found or metadata missing")
-    return {"metadata": subsidy["metadata"]}
+    if not subsidy:
+        raise HTTPException(status_code=404, detail="Subsidy not found")
+    return {"id": subsidy.get("id"), "name": subsidy.get("name")}
 
 @app.get("/get_application_questions/{subsidy_id}")
 async def get_application_questions(subsidy_id: str):
-    """指定された補助金の申請書作成に必要な質問項目を取得します。"""
+    """指定された補助金の申請書作成に必要な質問項目（セクション）を取得します。"""
     subsidies_data = load_subsidy_data()
     subsidy = next((s for s in subsidies_data if s.get("id") == subsidy_id), None)
     if not subsidy:
         raise HTTPException(status_code=404, detail="Subsidy not found")
 
-    questions = {"criteria": [], "scoring_factors": {}}
-    
-    # 必須要件の質問
-    for criterion in subsidy.get("criteria", []):
-        if "display_question" in criterion:
-            questions["criteria"].append({
-                "id": criterion["field"],
-                "question": criterion["display_question"],
-                "type": "boolean" 
-            })
-
-    # 審査項目の質問 (シンプル・ガイド付き)
-    for factor in subsidy.get("scoring_factors", []):
-        factor_key = factor["key"]
-        questions["scoring_factors"][factor_key] = {
-            "description": factor["description"],
-            "simple": factor.get("input_modes", {}).get("simple"),
-            "guided": factor.get("input_modes", {}).get("guided", [])
-        }
-        
-    return questions
+    sections = subsidy.get("sections", [])
+    return {"sections": sections}
 
 @app.post("/generate_application_advice")
 async def generate_application_advice(advice_request: ApplicationAdviceRequest):
-    """ユーザーの回答に基づき、LLM向けの高品質なプロンプトを生成します（REQ-SEC-002, REQ-SEC-006）"""
+    """ユーザーの回答と目的に応じて、多様なアウトプットを生成します。"""
     try:
         subsidies_data = load_subsidy_data()
         subsidy = next((s for s in subsidies_data if s.get("id") == advice_request.subsidy_id), None)
@@ -115,61 +96,51 @@ async def generate_application_advice(advice_request: ApplicationAdviceRequest):
         if not prompt_template:
             raise HTTPException(status_code=500, detail="Prompt template for this subsidy is not configured.")
 
-    # ユーザーの回答を整形
-    formatted_answers = ""
-    scoring_factors = subsidy.get("scoring_factors", [])
-    
-    # scoring_factorsの回答を処理
-    for factor in scoring_factors:
-        factor_key = factor.get("key")
-        if factor_key in advice_request.answers:
-            description = factor.get("description", "不明な項目")
-            formatted_answers += f"▼ {description}\n"
-            
-            if advice_request.input_mode == 'simple':
-                answer_text = advice_request.answers.get(factor_key, '（回答なし）')
-                formatted_answers += f"A: {answer_text}\n\n"
-            elif advice_request.input_mode == 'guided':
-                guided_answers = advice_request.answers.get(factor_key, {})
-                guided_questions = factor.get("input_modes", {}).get("guided", [])
-                for q_index_str, q_answer in sorted(guided_answers.items()):
-                    q_index = int(q_index_str)
-                    question_text = guided_questions[q_index] if q_index < len(guided_questions) else f"質問 {q_index + 1}"
-                    formatted_answers += f"{question_text}\n"
-                    formatted_answers += f"A: {q_answer or '（回答なし）'}\n\n"
+        # ユーザーの回答を整形
+        def format_answers(answers, sections):
+            formatted = ""
+            for section in sections:
+                section_id = section.get("id")
+                if section_id in answers:
+                    title = section.get("title", "不明な項目")
+                    answer_text = answers.get(section_id, '（回答なし）')
+                    formatted += f"▼ {title}\n"
+                    formatted += f"A: {answer_text}\n\n"
+            return formatted
 
-    # 必須要件の充足状況を判断
-    criteria_status_map = {
-        "is_new_product_and_customer": "new_product_status",
-        "value_added_growth_rate": "value_added_growth_status",
-        "wage_increase_plan": "wage_increase_plan_status",
-        "internal_min_wage_gap_yen": "internal_min_wage_gap_status",
-    }
-    
-    prompt_placeholders = {
-        "new_product_status": "不明",
-        "value_added_growth_status": "不明",
-        "wage_increase_plan_status": "不明",
-        "internal_min_wage_gap_status": "不明",
-    }
-
-    for criterion in subsidy.get("criteria", []):
-        field = criterion.get("field")
-        placeholder_key = criteria_status_map.get(field)
-        if placeholder_key:
-            user_answer = advice_request.answers.get(field, False)
-            is_met_text = "満たしている" if user_answer else "満たしていない、または回答なし"
-            prompt_placeholders[placeholder_key] = is_met_text
+        formatted_answers = format_answers(advice_request.answers, subsidy.get("sections", []))
 
         # プロンプトテンプレートに情報を埋め込む
         final_prompt = prompt_template.format(
             user_answers=formatted_answers,
-            input_mode=advice_request.input_mode,
-            **prompt_placeholders
+            input_mode=advice_request.input_mode
         )
 
-        security_logger.info(f"LLM prompt generated for subsidy: {advice_request.subsidy_id}")
-        return {"prompt": final_prompt}
+        # targetに応じた処理は、シンセイダーの設計思想に基づき、
+        # フロントエンド側でプロンプトをどう扱うかを決める形に移行することも考えられるが、
+        # 一旦、既存の枠組みを維持する。
+        if advice_request.target == "ai":
+            security_logger.info(f"LLM prompt generated for subsidy: {advice_request.subsidy_id}")
+            return {"output": final_prompt, "type": "prompt"}
+        elif advice_request.target == "human":
+            # human_consultation_pointは新しい構造では定義されていないため、
+            # 固定の文言を返すか、あるいはプロンプトをそのまま返す仕様に変更する。
+            summary = f"専門家への相談:
+
+{final_prompt}"
+            security_logger.info(f"Human consultation summary generated for subsidy: {advice_request.subsidy_id}")
+            return {"output": summary, "type": "summary"}
+        elif advice_request.target == "self":
+            # self_reflection_questionsも新しい構造では定義されていないため、
+            # 固定の文言を返すか、あるいはプロンプトをそのまま返す仕様に変更する。
+            reflection = f"自己評価用の問いかけ:
+
+{final_prompt}"
+            security_logger.info(f"Self-reflection questions generated for subsidy: {advice_request.subsidy_id}")
+            return {"output": reflection, "type": "reflection"}
+        else:
+            raise HTTPException(status_code=400, detail="Invalid target specified.")
+
     except Exception as e:
         security_logger.error(f"Failed to generate application advice: {e}")
         raise HTTPException(status_code=500, detail="Failed to generate application advice")
