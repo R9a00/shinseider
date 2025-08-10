@@ -29,17 +29,41 @@ function OperatorInfo() {
             <p><strong>担当：</strong> 羽生田 大陸（株式会社羽生田鉄工所専務取締役 中小企業庁長官任命 アトツギ甲子園 中部ブロック地域アンバサダー／第３回大会ファイナリスト）</p>
           </div>
           
-          <div>
-            <p><strong>プロフィール：</strong> 「キノコから宇宙まで」圧力容器・装置・ラインを手がける鉄工敀5か6代目/第3回アトツギ甲子園ファイナリスト/CFRPのハードルを下げるコンポジットセンター運営/AI×鉄工所/ Vibe cording/東京⇄長野/アトツギ甲子園地域アンバサダー。お気軽にご相談ください。</p>
-            <p className="mt-3 text-sm text-blue-600">
-              <a href="https://x.com/rikuhnd" target="_blank" rel="noopener noreferrer" className="hover:text-blue-800 underline">
-                X（Twitter）プロフィールを見る
-              </a>
+          {/* プロフィール＆ソーシャルリンクセクション */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-100">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">プロフィール</h3>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              「キノコから宇宙まで」圧力容器・装置・ラインを手がける鉄工所5か6代目/第3回アトツギ甲子園ファイナリスト/CFRPのハードルを下げるコンポジットセンター運営/AI×鉄工所/ Vibe cording/東京⇄長野/アトツギ甲子園地域アンバサダー。お気軽にご相談ください。
             </p>
+            
+            {/* ソーシャルリンクボタン */}
+            <div className="flex flex-wrap gap-3">
+              <a 
+                href="https://x.com/rikuhnd" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="inline-flex items-center px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-200"
+              >
+                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                X（Twitter）
+              </a>
+              
+              <Link 
+                to="/#atotsugi"
+                className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                相談する
+              </Link>
+            </div>
           </div>
           
           <div>
-            <p><strong>連絡先：</strong> アトツギ甲子園申請サポートに関するご相談は、トップページの「アトツギの方へ」セクションからお気軽にアクセスください。</p>
+            <p><strong>連絡先：</strong> アトツギ甲子園申請サポートに関するご相談は、トップページの「アトツギの方へ」セクションやSNSのDMからお気軽にアクセスください。</p>
           </div>
         </div>
 
