@@ -251,7 +251,7 @@ function Home() {
                         アトツギ甲子園サポート
                       </h3>
                       <p className="text-sm text-gray-600 mb-4">
-                        コンペティションでの成功を目指し、申請書の作成から提出まで、経験豊富なアンバサダーが徹底的にサポートします。
+                        まずは地方大会進出への出場を目指し、申請フォーマットに沿って必須要素を漏れなく整えることから始めましょう。ドラフト作成から提出前のチェックまでサポートします。
                       </p>
                     </div>
                   </div>
@@ -262,13 +262,13 @@ function Home() {
                         <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
-                        <span className="text-gray-700">専門アンバサダーによる個別メンタリング</span>
+                        <span className="text-gray-700">要件を満たすことの確認（必須項目・添付の抜けを可視化）</span>
                       </div>
                       <div className="flex items-center space-x-2 text-sm">
                         <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
-                        <span className="text-gray-700">ドラフト作成から最終提出まで完全伴走</span>
+                        <span className="text-gray-700">記載の内容の整理（構成・見出し・数値の整合）</span>
                       </div>
                       <div className="flex items-center space-x-2 text-sm">
                         <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
