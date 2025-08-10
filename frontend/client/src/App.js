@@ -194,9 +194,9 @@ function Home() {
               </p>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-12 xl:gap-8">
               {/* 左側：加点措置バナー */}
-              <div className="lg:col-span-1">
+              <div className="md:col-span-1 lg:col-span-4">
                 <div className="bg-black rounded-lg p-6 text-white h-full">
                   <div className="flex items-center space-x-2 mb-4">
                     <svg className="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
@@ -237,7 +237,7 @@ function Home() {
               </div>
 
               {/* 右側上：アトツギ甲子園サポート + 右側下：アンバサダー連絡先 */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="md:col-span-1 lg:col-span-8 space-y-6">
                 {/* アトツギ甲子園サポート */}
                 <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
                   <div className="flex items-start space-x-3 mb-4">
@@ -256,7 +256,7 @@ function Home() {
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <div className="flex items-center space-x-2 text-sm">
                         <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -308,7 +308,7 @@ function Home() {
                     </h3>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>
                       <p className="text-gray-300 text-sm mb-3">
                         ご相談は随時承ります。経験豊富なアンバサダーが、あなたのアトツギ挑戦をサポートします。
