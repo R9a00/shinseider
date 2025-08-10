@@ -50,17 +50,8 @@ function Home() {
     <Link to="/" className="flex items-center gap-2" aria-label="Shinseider ホーム">
       <img
         src="/shinseider_logo.png"
-        srcSet="/shinseider_logo@2x.png 2x, /shinseider_logo@3x.png 3x"
         alt="Shinseider"
-        fetchPriority="high"
-        decoding="async"
-        loading="eager"
-        className={[
-          "w-auto transition-[height,filter,transform] duration-300",
-          scrolled
-            ? "h-[clamp(36px,5vw,56px)] md:h-[clamp(42px,4.5vw,64px)]"
-            : "h-[clamp(40px,6vw,64px)] md:h-[clamp(48px,5vw,72px)]",
-        ].join(" ")}
+        className={`h-32 w-auto ${scrolled ? 'h-24' : 'h-32'}`}
       />
     </Link>
 
