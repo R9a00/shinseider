@@ -34,15 +34,15 @@ function useScrolled(threshold = 24) {
 function Home() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  return (
+    const scrolled = useScrolled(24);
+
+return (
     <div className="min-h-screen bg-white text-gray-900">
       {/* スキップリンク */}
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-black focus:px-3 focus:py-2 focus:text-white">メインへスキップ</a>
 
       {/* ヘッダー */}
-      const scrolled = useScrolled(24);
-
-<header
+      <header
   className="sticky top-0 z-40 border-b border-gray-100 bg-white/80 backdrop-blur-sm supports-[backdrop-filter]:bg-white/70"
   aria-label="グローバルヘッダー"
 >

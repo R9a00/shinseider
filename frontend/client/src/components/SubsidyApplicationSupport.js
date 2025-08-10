@@ -221,7 +221,7 @@ function SubsidyApplicationSupport() {
                               }
                               handleAnswerChange(section.id, newArray, task.task_id);
                             }}
-                            placeholder={task.placeholder?.includes(例') ? field : `${field}を入力`}
+                            placeholder={task.placeholder ?? `${field}を入力`}
                             className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                           />
                         )) || [
