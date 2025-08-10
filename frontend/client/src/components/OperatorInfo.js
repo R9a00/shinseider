@@ -22,19 +22,24 @@ function OperatorInfo() {
       <section className="mx-auto max-w-4xl px-4 py-12">
         <div className="space-y-6 text-gray-700">
           <div>
-            <p><strong>運営者：</strong> シンセイダー（Shinseider） アトツギ挑戦支援デスク</p>
+            <p><strong>運営者：</strong> アトツギ甲子園長野地域アンバサダー・一号</p>
           </div>
           
           <div>
-            <p><strong>担当：</strong> ○○ ○○（中小企業庁長官任命 アトツギ甲子園 中部ブロック地域アンバサダー／過去ファイナリスト）</p>
+            <p><strong>担当：</strong> 羽生田 大陸（株式会社羽生田鉄工所専務取締役 中小企業庁長官任命 アトツギ甲子園 中部ブロック地域アンバサダー／第３回大会ファイナリスト）</p>
           </div>
           
           <div>
-            <p><strong>プロフィール：</strong> 長野県を拠点に、事業承継や経営改善の現場経験をもとに、アトツギ甲子園挑戦者の伴走支援を行っています。壁打ち相談からドラフトの磨き込み、提出前の最終チェックまで幅広くサポート。</p>
+            <p><strong>プロフィール：</strong> 「キノコから宇宙まで」圧力容器・装置・ラインを手がける鉄工敀5か6代目/第3回アトツギ甲子園ファイナリスト/CFRPのハードルを下げるコンポジットセンター運営/AI×鉄工所/ Vibe cording/東京⇄長野/アトツギ甲子園地域アンバサダー。お気軽にご相談ください。</p>
+            <p className="mt-3 text-sm text-blue-600">
+              <a href="https://x.com/hanyu_da_taiju" target="_blank" rel="noopener noreferrer" className="hover:text-blue-800 underline">
+                X（Twitter）プロフィールを見る
+              </a>
+            </p>
           </div>
           
           <div>
-            <p><strong>連絡先：</strong> info@example.com（または専用問い合わせフォーム）</p>
+            <p><strong>連絡先：</strong> アトツギ甲子園申請サポートに関するご相談は、トップページの「アトツギの方へ」セクションからお気軽にアクセスください。</p>
           </div>
         </div>
 
