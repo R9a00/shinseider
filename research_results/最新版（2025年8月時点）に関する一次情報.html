@@ -1,0 +1,1011 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.6">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
+    p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Courier; -webkit-text-stroke: #000000}
+    li.li1 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
+    span.s1 {font-kerning: none}
+    span.s2 {-webkit-text-stroke: 0px #000000}
+    span.s3 {font: 13.0px Courier; font-kerning: none}
+    ul.ul1 {list-style-type: disc}
+    ul.ul2 {list-style-type: circle}
+  </style>
+</head>
+<body>
+<p class="p1"><span class="s1">承知しました。以下の4制度の最新版（2025年8月時点）に関する一次情報を調査し、rules.json、tasks.yml、tests.json を作成するために必要な情報収集と設計を順に行います。</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s2"></span><span class="s1">ものづくり・商業・サービス生産性向上促進補助金</span></li>
+  <li class="li1"><span class="s2"></span><span class="s1">事業承継・M&amp;A補助金</span></li>
+  <li class="li1"><span class="s2"></span><span class="s1">Go-Tech事業（成長型中小企業等研究開発支援事業）</span></li>
+  <li class="li1"><span class="s2"></span><span class="s1">中小企業新事業進出補助金</span></li>
+</ul>
+<p class="p1"><span class="s1">完了次第ご報告いたします。</span></p>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>ものづくり・商業・サービス生産性向上促進補助金（令和7年度 第21次公募）</b></span></h1>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>1. 情報収集（一次情報の特定）</b></span></h2>
+<p class="p4"><span class="s1">[</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"source_title": "ものづくり補助事業公式ホームページ 公募要領等",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"source_url": "https://portal.monodukuri-hojo.jp/about.html",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"publisher": "全国中小企業団体中央会（事務局）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"document_type": "公式サイト（公募要領ページ）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"published_date": "2025-08-06",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"why_important": "第21次公募の公式公募要領PDFやFAQへのリンク、募集スケジュール等が掲載されており、最新の制度内容を確認できる一次情報です。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"source_title": "ものづくり補助金 公募要領（第21次公募）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"publisher": "ものづくり補助金事務局（全国中小企業団体中央会）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"document_type": "公募要領（PDF）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"published_date": "2025-08-06",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"why_important": "制度の目的・応募要件・補助対象・補助率や補助上限額・申請方法・審査基準など詳細な公式ルールが記載された一次情報です:contentReference[oaicite:0]{index=0}:contentReference[oaicite:1]{index=1}。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"source_title": "ものづくり補助金 よくあるご質問（FAQ）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/%E3%82%88%E3%81%8F%E3%81%82%E3%82%8B%E3%81%94%E8%B3%AA%E5%95%8F_20250806.pdf",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"publisher": "ものづくり補助金事務局",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"document_type": "FAQ（PDF）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"published_date": "2025-08-06",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"why_important": "応募者からの問い合わせを踏まえた公式FAQです。制度要件の解釈や注意点、申請手続の疑問点への回答が掲載されており、よくある誤解や落とし穴を把握できます。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"source_title": "中小企業庁 事業概要ページ（生産性革命推進事業）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"source_url": "https://www.chusho.meti.go.jp/hojyokin/2023shourei/monodukuri.html",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"publisher": "中小企業庁",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"document_type": "制度概要・パンフレット",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"published_date": "2023-",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"why_important": "所管官庁である中小企業庁の公式サイト内の当該補助金概要ページです。制度趣旨や前年までの実績、簡易な概要資料等があり、制度の背景や基本事項を把握する際に参考となります。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"source_title": "官報公募公告（令和7年度補正予算 ものづくり補助金）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"source_url": "https://kanpou.npb.go.jp/",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"publisher": "経済産業省（官報公告）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"document_type": "官報公示",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"published_date": "2025-07-25",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"why_important": "公募開始時に官報に掲載される公式な公募公告です。応募期間や予算規模、応募方法など法的に有効な公示内容であり、公募要領の根拠となる情報源です。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p4"><span class="s1">]</span></p>
+<p class="p1"><span class="s1"><i>各公的情報源から、公募要領やFAQ等の</i><b><i>最新版</i></b><i>を優先的に取得しています</i><i></i></span></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>2. スナップショット（文書メタデータと目次構成）</b></span></h2>
+<p class="p4"><span class="s1">{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"source_title": "ものづくり・商業・サービス生産性向上促進補助金 公募要領（第21次公募）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"publisher": "全国中小企業団体中央会（ものづくり補助金事務局）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"published_date": "2025-08-06",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"version_hint": "令和7年度第21次公募版 v2025-1",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"toc": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 1, "title": "1. 補助事業の目的" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 1, "title": "2. 補助事業の概要" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 2, "title": "2.1 補助事業スキーム" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 2, "title": "2.2 補助事業の流れ" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 2, "title": "2.3 補助対象事業" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 3, "title": "2.3.1 補助対象事業枠" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 3, "title": "2.3.2 特例措置" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 3, "title": "2.3.3 補助対象外となる事業" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 2, "title": "2.4 補助対象者" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 3, "title": "2.4.1 補助対象者" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 3, "title": "2.4.2 補助対象外となる事業者" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 2, "title": "2.5 補助事業要件" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 3, "title": "2.5.1 基本要件" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 3, "title": "2.5.2 グローバル要件（グローバル枠申請時の追加要件）" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 3, "title": "2.5.3 特例措置要件" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 2, "title": "2.6 補助対象要件未達の場合の補助金返還義務" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 2, "title": "2.7 補助対象経費" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 3, "title": "2.7.1 補助対象経費" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 3, "title": "2.7.2 補助対象外となる経費" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 1, "title": "3. 申請手続" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 2, "title": "3.1 スケジュール" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 2, "title": "3.2 申請方法" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 2, "title": "3.3 事業計画書への記載事項" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 2, "title": "3.4 提出書類" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 2, "title": "3.5 問い合わせ先" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 1, "title": "4. 審査" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 2, "title": "4.1 書面審査" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 3, "title": "4.1.1 審査方法" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 3, "title": "4.1.2 書面審査項目・加点項目・減点項目" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 2, "title": "4.2 口頭審査" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 3, "title": "4.2.1 審査方法" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 3, "title": "4.2.2 審査内容" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 2, "title": "4.2.3 実施方法 等（※口頭審査準備事項）" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{ "level": 1, "title": "5. 補助事業申請者及び補助事業者の義務（遵守事項）" }</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"accessed_date": "2025-08-10"</span></p>
+<p class="p4"><span class="s1">}</span></p>
+<p class="p1"><span class="s1"><i>上記PDFは全50ページで構成されており、公募対象や補助対象経費の詳細、申請手続や審査方法まで章立てで網羅されています。「2.3 補助対象事業」「2.4 補助対象者」などで</i><b><i>対象要件</i></b><i>を定義し、「2.7.2 補助対象外となる経費」等で</i><b><i>除外項目</i></b><i>を具体的に列挙しています。申請に必要な提出書類一覧は「3.4 提出書類」にまとまっており、審査基準や加点減点要素は「4.1.2 書面審査項目」節に記載されています。</i><i></i></span></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>3. 提出可否ロジック（rules.json）</b></span></h2>
+<p class="p4"><span class="s1">{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"meta": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"scheme_name": "ものづくり・商業・サービス生産性向上促進補助金",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"version": "v2025-1",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"quoted_at": "2025-08-10"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"eligibility": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "elig_legal",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "日本国内に本社及び主要事業所を有する中小企業等であること",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "boolean",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "is_domestic_sme",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "required": true },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "補助対象者は、日本国内に本社及び補助事業の実施場所※…を有する、以下のA）～E）のいずれかに該当する者に限ります:contentReference[oaicite:6]{index=6}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "elig_categories",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "補助対象者区分A)中小企業者、B)小規模事業者、C)特定事業者の一部、D)特定非営利活動法人、E)社会福祉法人のいずれかであること",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "enum_in",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "applicant_category",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"enums": ["SME", "MicroEnterprise", "MidTierSpecial", "NPO", "SocialWelfareCorp"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "以下のA）～E）のいずれかに該当する者※4※5に限ります:contentReference[oaicite:7]{index=7}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "elig_size",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "資本金及び従業員規模が該当業種の中小企業基準以内であること",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "boolean",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "meets_sme_size_def",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "required": true },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "⚫ 下表に該当する者であること（「中小企業等経営強化法」…に規定する「中小企業者」）:contentReference[oaicite:8]{index=8}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "elig_not_large",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "大企業、資本金超過法人、一定の組合等は応募不可",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "boolean",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "is_excluded_entity",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "expected": false },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "該当しない組合又は連合会や財団法人（公益・一般）…任意団体は補助対象外です:contentReference[oaicite:9]{index=9}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "elig_independent",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "本事業の遂行主体であり、形式的に応募要件を満たすための資本・従業員数調整を行っていないこと",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "boolean",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "is_independent_applicant",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "required": true },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "応募申請時点において、一時的に資本金…や従業員の数の増加を行うなど…のみを目的として…数を変更していると認められる事業者:contentReference[oaicite:10]{index=10}:contentReference[oaicite:11]{index=11}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "elig_not_redundant",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "同一代表者が複数企業で本補助金に同時応募していないこと",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "boolean",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "is_single_application",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "required": true },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "代表者が同じ法人についても同一法人とみなし、そのうち1社の申請しか認められません:contentReference[oaicite:12]{index=12}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "elig_no_false",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "申請内容に虚偽がないこと",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "boolean",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "no_false_statement",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "required": true },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "申請時に虚偽の内容を提出した事業者。…次回以降の公募への申請が一切できなくなります:contentReference[oaicite:13]{index=13}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "elig_no_sanction",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "経産省・中小企業庁による補助金等交付停止措置を受けていないこと",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "boolean",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "not_sanctioned",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "required": true },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "経済産業省及び中小企業庁から補助金交付等停止措置又は指名停止措置が講じられている事業者:contentReference[oaicite:14]{index=14}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"scope": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "scope_innovation",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "既存製品・サービスの単なる生産プロセス改善ではなく、新製品・新サービスの開発を伴う事業であること（高付加価値化枠）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "boolean",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "is_innovative_new_product",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "required": true },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "革新的な新製品・新サービス開発の取組が補助対象であり、既存の製品・サービスの生産等のプロセスについて改善・向上を図る事業は補助対象外です:contentReference[oaicite:15]{index=15}:contentReference[oaicite:16]{index=16}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "scope_no_overlap",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "他の国等補助金と同一経費を含まないこと（二重取り禁止）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "boolean",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "no_double_funding",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "required": true },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "国（独立行政法人等を含む）が目的を指定して支出する…他の補助金…と同一の補助対象経費を含む事業:contentReference[oaicite:17]{index=17}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "scope_no_insurance",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "公的保険給付や固定価格買取制度等と重複しない事業であること",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "boolean",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "no_insurance_overlap",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "required": true },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "公的医療保険・介護保険からの診療報酬・介護報酬、固定価格買い取り制度等との重複を含む事業:contentReference[oaicite:18]{index=18}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "scope_duration",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "交付決定から所定期間内に完了する事業計画であること",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "boolean",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "within_execution_period",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "required": true },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "交付決定日から10か月（ただし採択発表日から12か月後の日まで）が補助事業実施期間:contentReference[oaicite:19]{index=19}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "scope_requirements",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "基本要件（賃上げ等）、グローバル要件（該当時）、特例要件（該当時）を満たすこと",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "boolean",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "meets_specific_requirements",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "required": true },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "「2.5 補助事業要件」に記載の基本要件、グローバル枠申請時の追加要件等を満たしているか:contentReference[oaicite:20]{index=20}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"attachments": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "att_plan",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "事業計画書を提出（電子申請システム入力および必要に応じ補足資料PDF）すること",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "file_required",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "business_plan.pdf",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "required": true },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "参考様式を踏まえて作成し、電子申請システムに入力します。補足の図や画像について、PDF形式で提出:contentReference[oaicite:21]{index=21}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "att_finance",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "直近2期分の決算書類（貸借対照表・PL等）をPDF提出（創業1年未満は計画書等）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "file_required",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "financials_last2years.pdf",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "required": true },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "直近2期分の貸借対照表、損益計算書…をPDF形式で提出してください。*創業1年未満の場合は事業計画書及び収支予算書を提出:contentReference[oaicite:22]{index=22}:contentReference[oaicite:23]{index=23}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "att_confirm_employees",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "従業員数確認資料を提出（法人は事業概況説明書、個人は所得税青色申告決算書写し等）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "file_required",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "employee_count_proof.pdf",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "required": true },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "法人事業概況説明書の写しをPDF提出…個人事業主は収支内訳書又は青色申告決算書の写しを提出:contentReference[oaicite:24]{index=24}:contentReference[oaicite:25]{index=25}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "att_overtime_plan",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "従業員21名以上の場合：次世代法に基づく一般事業主行動計画を「両立支援のひろば」に公表済みであること（URL入力）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "form_required",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "action_plan_url",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "required_if": { "employee_count": "&gt;=21" } },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "従業員数21名以上の場合、…厚生労働省『両立支援のひろば』のURLを電子申請システム上で入力:contentReference[oaicite:26]{index=26}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "att_wage_pledge",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "賃金引上げ計画の誓約書（電子申請上で誓約）を完了すること",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "form_required",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"field": "wage_raise_pledge",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "required": true },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "賃金引上げ計画の誓約書 全事業者 ⚫ 電子申請システムにおいて誓約します:contentReference[oaicite:27]{index=27}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "att_special_case_docs",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"desc": "該当者のみ提出：再生事業者確認書、大幅賃上げ計画書、最低賃金特例確認資料、資金調達確認書、海外事業実施状況証書など",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"type": "compound_required",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"fields": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"doc_restructuring.pdf",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"plan_major_wage_up.pdf",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"proof_minwage_special.pdf",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"funding_confirmation.pdf",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"global_expansion_evidence.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"params": { "required_if": { "applying_special_cases": true } },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"severity": "block",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_id": 2,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "該当事業者のみ：再生事業者…証明書を提出:contentReference[oaicite:28]{index=28}; 大幅な賃上げ特例…計画書を提出:contentReference[oaicite:29]{index=29}; 最低賃金引上げ特例…確認書類と賃金台帳等提出:contentReference[oaicite:30]{index=30}:contentReference[oaicite:31]{index=31}; 資金調達確認書:contentReference[oaicite:32]{index=32}; 海外事業の準備状況を示す書類:contentReference[oaicite:33]{index=33}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"deadline": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"mode": "rolling_round",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"rounds": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>{ "name": "第20次締切", "due": "2025-07-25T17:00:00+09:00" },</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>{ "name": "第21次締切", "due": "2025-10-24T17:00:00+09:00" }</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"note": "年度内に複数回の公募締切が設定されるローリング公募。各締切ごとに公募要領が発表され内容が更新される場合があります:contentReference[oaicite:34]{index=34}:contentReference[oaicite:35]{index=35}。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"messages": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"JA": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"elig_legal": "本補助金の応募には、日本国内に本社と実施場所がある中小企業等である必要があります。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"elig_categories": "申請者は公募要領で定めるA～Eいずれかの対象者区分に該当しなければなりません。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"elig_size": "中小企業基本法等の定義に沿った資本金・従業員規模の中小企業である必要があります。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"elig_not_large": "組合・連合会（一部除く）や大企業など、公募要領で対象外とされる法人は申請できません。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"elig_independent": "申請要件を満たすための形式的な資本・従業員数の調整を行っていると判断される場合、申請は認められません。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"elig_not_redundant": "同一代表者による複数企業からの同時申請はできません（1代表者につき1申請）。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"elig_no_false": "申請内容に虚偽がある場合、採択取消や将来の応募資格喪失の可能性がありますのでご注意ください。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"elig_no_sanction": "行政から補助金等の交付停止措置を受けている場合、本事業に応募することはできません。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"scope_innovation": "新製品・新サービスの開発を伴わない事業（既存事業の単なる改善）は補助対象外です。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"scope_no_overlap": "他の補助金等と同一の経費を重複計上することはできません（重複受給不可）。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"scope_no_insurance": "医療・介護報酬やFIT等、他制度から給付を受ける事業と重複する内容は対象外となります。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"scope_duration": "事業計画は交付決定から定められた期間内（概ね10ヶ月以内）に完了する必要があります。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"scope_requirements": "賃上げ等の基本要件、および申請内容に応じた特定要件を満たす必要があります。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"att_plan": "公募要領記載の形式に沿った事業計画書を作成し、システムへの入力・提出が必要です。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"att_finance": "直近2期分の決算書類（貸借対照表、損益計算書等）をPDF化して提出してください（創業間もない場合は代替書類）。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"att_confirm_employees": "従業員数を確認できる書類（法人は事業概況説明書の写し、個人事業主は青色申告決算書等）を提出してください。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"att_overtime_plan": "従業員21名以上の場合、次世代法に基づく一般事業主行動計画を策定・サイト公表し、そのURLを申請フォームに入力してください。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"att_wage_pledge": "電子申請システム上で「賃金引上げ計画の誓約」を完了してください（全事業者必須）。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"att_special_case_docs": "再生事業者や賃上げ特例等を申請する場合は、公募要領指定の追加書類（確認書や計画書等）を忘れずに提出してください。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p4"><span class="s1">}</span></p>
+<p class="p1"><span class="s1"><i>上記は、公募要領および関連箇所に基づき</i><b><i>提出可否を判定するためのルール集</i></b><i>をJSON構造で表現したものです。「eligibility」で応募者要件（所在地や企業規模、応募区分など）、「scope」で事業内容要件（新規性や他制度との重複禁止等）、「attachments」で提出必須書類、締切や募集方式は「deadline」で定義しています。各ルールには該当条項の引用を付記し、違反時の深刻度（block=不受理, warn=警告）も指定しています。</i><i></i></span></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>4. 数値・レンジ特定（補助額・補助率・期間・経費項目）</b></span></h2>
+<p class="p4"><span class="s1">{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"caps": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"min": 1000000,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"max": 30000000</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"rate": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"base": "1/2",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"bonus": "2/3"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"period": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"from": "交付決定日",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"to": "10か月以内（採択発表日から12か月以内）"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"cost_items": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"name": "機械装置・システム構築費",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"eligible": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"note": "必須経費。生産性向上に必要な設備やシステム導入費:contentReference[oaicite:44]{index=44}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"name": "技術導入費",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"eligible": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"note": "教育訓練や専門家指導等、新技術導入に要する経費:contentReference[oaicite:45]{index=45}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"name": "専門家経費",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"eligible": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"note": "専門家謝金・旅費等、事業計画策定等の専門家活用費:contentReference[oaicite:46]{index=46}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"name": "運搬費",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"eligible": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"note": "機械設備搬入に伴う送料・運送費:contentReference[oaicite:47]{index=47}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"name": "クラウドサービス利用費",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"eligible": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"note": "クラウド利用料等（ソフトウェア利用料）。一部上限額あり:contentReference[oaicite:48]{index=48}:contentReference[oaicite:49]{index=49}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"name": "原材料費",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"eligible": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"note": "試作品開発等に用いる材料購入費（補助対象経費合計の2/3以上必要）:contentReference[oaicite:50]{index=50}:contentReference[oaicite:51]{index=51}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"name": "外注費",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"eligible": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"note": "製品の一部委託製造等、事業の外注に要する経費:contentReference[oaicite:52]{index=52}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"name": "知的財産権等関連経費",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"eligible": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"note": "特許出願費用等、事業に必要な知財関連費用:contentReference[oaicite:53]{index=53}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"name": "汎用性の高い機器・ソフト購入費",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"eligible": false,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"note": "事務用PCやスマホ等、目的外転用し得る汎用品の購入は対象外:contentReference[oaicite:54]{index=54}:contentReference[oaicite:55]{index=55}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"name": "中古品購入費（流通性低い中古設備等）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"eligible": false,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"note": "価格妥当性の確認困難な中古設備は対象外（相見積取得等条件付き）:contentReference[oaicite:56]{index=56}:contentReference[oaicite:57]{index=57}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"name": "自社人件費・自社社員の労務費",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"eligible": false,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"note": "補助事業に係る自社従業員の人件費は補助対象外:contentReference[oaicite:58]{index=58}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"name": "関連会社への支払い",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"eligible": false,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"note": "代表者や資本関係のある事業者への支出は対象外:contentReference[oaicite:59]{index=59}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"sources": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_title": "ものづくり補助金 公募要領(21次締切)",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"publisher": "全国中小企業団体中央会",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"published_date": "2025-08-06",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"accessed_date": "2025-08-10",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "補助上限額（補助下限額100万円）従業員数5人以下750万円 … 51人以上2,500万円:contentReference[oaicite:60]{index=60}:contentReference[oaicite:61]{index=61}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_title": "ものづくり補助金 公募要領(21次締切)",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"publisher": "全国中小企業団体中央会",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"published_date": "2025-08-06",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"accessed_date": "2025-08-10",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "補助率 中小企業1/2、小規模企業・小規模事業者及び再生事業者※3 2/3:contentReference[oaicite:62]{index=62}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_title": "ものづくり補助金 公募要領(21次締切)",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"publisher": "全国中小企業団体中央会",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"published_date": "2025-08-06",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"accessed_date": "2025-08-10",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "補助事業実施期間 交付決定日から10か月（ただし採択発表日から12か月後の日まで）:contentReference[oaicite:63]{index=63}:contentReference[oaicite:64]{index=64}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_title": "ものづくり補助金 公募要領(21次締切)",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"publisher": "全国中小企業団体中央会",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"published_date": "2025-08-06",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"accessed_date": "2025-08-10",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "補助対象経費: 機械装置・システム構築費(必須)、技術導入費、専門家経費、運搬費、クラウドサービス利用費、原材料費、外注費、知的財産権等関連経費:contentReference[oaicite:65]{index=65}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_title": "ものづくり補助金 公募要領(21次締切)",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"publisher": "全国中小企業団体中央会",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"published_date": "2025-08-06",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"accessed_date": "2025-08-10",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "※「汎用性があり、目的外使用になり得るもの」の購入費は除く（例：事務用PC・プリンタ…3Dプリンター等）:contentReference[oaicite:66]{index=66}:contentReference[oaicite:67]{index=67}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_title": "ものづくり補助金 公募要領(21次締切)",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"publisher": "全国中小企業団体中央会",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"published_date": "2025-08-06",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"accessed_date": "2025-08-10",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "中古市場において広く流通していない中古機械設備など…の購入費（3者以上の…相見積りを取得している場合等を除く）:contentReference[oaicite:68]{index=68}:contentReference[oaicite:69]{index=69}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/%E3%82%88%E3%81%8F%E3%81%82%E3%82%8B%E3%81%94%E8%B3%AA%E5%95%8F_20250806.pdf",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_title": "ものづくり補助金 よくあるご質問(2025/8/6版)",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"publisher": "ものづくり補助金事務局",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"published_date": "2025-08-06",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"accessed_date": "2025-08-10",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "⚫ 事業に係る自社の人件費（ソフトウェア開発等）⚫ 同一代表者・役員が含まれている事業者、資本関係がある事業者への支払い:contentReference[oaicite:70]{index=70}:contentReference[oaicite:71]{index=71}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>]</span></p>
+<p class="p4"><span class="s1">}</span></p>
+<ul class="ul1">
+  <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>補助金額</b>: 補助上限額は <i>従業員規模に応じて</i>設定され、最小100万円から最大2,500万円（通常枠）または3,000万円（グローバル展開枠）です。例えば従業員5人以下の企業では上限750万円、51人以上では2,500万円（通常枠）となります。<i>大幅な賃上げ</i>に取り組む場合は規定上限額に+100万～1,000万円の上乗せ特例があります。補助下限額は一律100万円です。</span></li>
+  <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>補助率</b>: <i>中小企業</i>は経費の1/2以内、<i>小規模企業者等</i>は2/3以内が補助されます。例えば小規模事業者であれば経費の66.6%まで、その他の中小企業は50%まで補助対象です（残りは自己負担）。なお、一定の要件（最低賃金枠）を満たす場合、補助率が2/3に引き上げられる特例があります。</span></li>
+  <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>事業期間</b>: 補助事業実施期間は<i>交付決定日から10か月以内</i>、かつ採択発表日から起算して最長12か月後の日までに事業を完了させる必要があります。例えば令和7年7月に交付決定された案件は、令和8年6～7月までに事業完了しなければなりません。期間延長は原則認められず、完了までに支払いを含めた実績報告を行う必要があります。</span></li>
+  <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>対象経費</b>: 補助対象となる経費科目は公募要領に明記されており、主要なものは以下の通りです。</span></li>
+  <ul class="ul2">
+    <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>機械装置費・システム構築費</b>（<i>必須</i>）：生産設備や専用システムの購入・製造・据付費用。本補助金の中心経費であり、この経費が計上されない事業は採択されません。</span></li>
+    <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>技術導入費</b>：新技術習得のための研修費や外部専門家からの指導費用。</span></li>
+    <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>専門家経費</b>：事業計画策定等に関わる専門家への謝金・旅費。</span></li>
+    <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>運搬費</b>：機械設備の搬入・据付に要する輸送費。</span></li>
+    <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>クラウドサービス利用費</b>：クラウドソフト利用料等（例：サブスクリプション費用）。※汎用的な通信費は対象外だが、クラウド費用に付随する通信費は含めてよい。なおクラウド利用料等や原材料費など<b>一部経費は補助上限額とは別に</b>総額で500万円（グローバル枠では1,000万円）までという制限があります。</span></li>
+    <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>原材料費</b>：試作品製作等に使用する材料や部品の購入費。補助事業期間中に使用・消費されたものが対象で、在庫用の備蓄購入は不可。</span></li>
+    <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>外注費</b>：製品の一部製造や加工、設計等を外部に委託する費用。</span></li>
+    <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>知的財産権等関連経費</b>：特許出願費用や知財調査費用、商標登録費用等。</span></li>
+  </ul>
+  <li class="li1"><span class="s2"><i></i></span><span class="s1"><i>※補助対象経費の合計額は、補助事業全体経費（税抜）の2/3以上である必要があります（つまり事業全体のうち補助対象外経費は最大1/3まで）。消費税等は補助対象外経費として扱い除外して積算します。</i><i></i></span></li>
+  <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>対象外経費</b>: 公募要領「2.7.2 補助対象外となる経費」にて具体例が列挙されています。主なものは以下の通りです。</span></li>
+  <ul class="ul2">
+    <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>汎用性の高い備品等</b>：事務用PC、プリンタ、タブレット端末、スマートフォン、家具など、<b>目的外利用になり得る</b>汎用品の購入費は認められません（補助事業に専属で用いるものを除く）。</span></li>
+    <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>広く流通していない中古設備</b>：市場価格の妥当性を確認しづらい中古機械設備の購入費は対象外です（※型式・年式入りの見積書を複数社から取得し適正と認められれば例外的に認められる場合あり）。</span></li>
+    <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>自社人件費・従業員給与</b>：補助事業実施に係る自社従業員の人件費や役員報酬等は一切補助対象になりません。</span></li>
+    <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>関連事業者への支払</b>：代表者や役員が重複する他社や、資本関係のある関連会社への発注・支払いは補助対象外です。</span></li>
+    <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>日常経費</b>：事務所の家賃・光熱水費、通信費（通常の電話・インターネット料金）、事務用品や新聞購読料、接待交際費等の通常営業に伴う経費は対象外です。</span></li>
+    <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>車両・不動産取得費</b>：自動車等の車両購入費や修繕費、土地・建物の取得費用は補助対象外。</span></li>
+    <li class="li1"><span class="s2"><b></b></span><span class="s1"><b>税金・融資関連費</b>：消費税及び地方消費税（補助対象経費から除外）、各種保険料、借入金の利子・延滞損害金、訴訟費用なども対象外です。</span></li>
+  </ul>
+</ul>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>5. 対象外要件の整理（申請不可条件の分類）</b></span></h2>
+<p class="p4"><span class="s1">{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"exclusions": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"category": "申請者要件",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"rule": "日本国内に本社・事業所がない企業、または中小企業の定義から外れる企業は対象外",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "補助対象者は…日本国内に本社及び補助事業の実施場所を有する…A）～E）のいずれかに該当する者に限ります:contentReference[oaicite:108]{index=108}。該当しない法人格の団体等は補助対象外です:contentReference[oaicite:109]{index=109}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"category": "申請者要件",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"rule": "主要株主や従業員数を一時的に操作して応募資格を得ようとする行為は不可",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "応募申請時点において、一時的に資本金…従業員の数の増加を行うなど、…補助対象者となることのみを目的として…数を変更していると認められる事業者:contentReference[oaicite:110]{index=110}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"category": "申請者要件",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"rule": "事業の主体性がなく他者任せ（GビズID貸与や代理申請等）の場合は対象外",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "事業の遂行に主体的でないと判断される事業者。GビズIDを他者に貸し出す、…窓口担当者を外部支援機関等に任せる等の行為は主体的でないとみなします:contentReference[oaicite:111]{index=111}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"category": "申請者要件",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"rule": "過去に虚偽申請を行った者、補助金不正受給等で指名停止措置中の者は対象外",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "虚偽の内容で故意又は重過失により申請した場合、次回以降の公募への申請が一切できなくなります:contentReference[oaicite:112]{index=112}。経済産業省及び中小企業庁から補助金等交付停止措置…が講じられている事業者:contentReference[oaicite:113]{index=113}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"category": "対象経費",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"rule": "補助対象外経費（例：汎用的な事務機器、日常経費、土地・建物取得等）を計上した事業",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "以下に該当する経費は補助対象外です…事務所等にかかる家賃…水道光熱費等:contentReference[oaicite:114]{index=114}…不動産の購入費、自動車等車両の購入費…:contentReference[oaicite:115]{index=115}…汎用性があり、目的外使用になり得るものの購入費（例：事務用のパソコン…家具、3Dプリンター）:contentReference[oaicite:116]{index=116}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"category": "対象経費",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"rule": "補助事業と直接関係ない経費（例：自社従業員人件費、親族企業への支払等）は対象外",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "⚫ 事業に係る自社の人件費（ソフトウェア開発等）⚫ 同一代表者・役員が含まれている事業者、資本関係がある事業者への支払い。:contentReference[oaicite:117]{index=117}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/%E3%82%88%E3%81%8F%E3%81%82%E3%82%8B%E3%81%94%E8%B3%AA%E5%95%8F_20250806.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"category": "スケジュール",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"rule": "交付決定前に発注・契約・購入した経費を含む場合（事前着手）は不採択",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "⚫ 交付決定日よりも前に発注・契約・購入を行った経費は…補助対象外となります:contentReference[oaicite:118]{index=118}（※いかなる理由があっても認められません）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"category": "スケジュール",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"rule": "事業実施期間内に完了が見込めない計画（大幅な遅延が前提の計画）は対象外",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "事業計画の遂行予定が大幅に後ろ倒しになった場合、交付決定は受けられますか。（回答）事業期間内に完了しないと判断した場合は交付決定できない:contentReference[oaicite:119]{index=119}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/%E3%82%88%E3%81%8F%E3%81%82%E3%82%8B%E3%81%94%E8%B3%AA%E5%95%8F_20250806.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"category": "他制度との関係",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"rule": "国の他の補助金から同時に交付決定を受けた場合は一方しか採択できない（重複採択不可）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "複数の補助金に同時期に応募申請…可能ですが…複数採択された場合は、交付を受ける補助金を1つだけ選択…してください。…複数の補助金で交付決定を受け…発覚した場合は…遅い方の交付決定を取り消し:contentReference[oaicite:120]{index=120}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"category": "提出形式",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"rule": "指定の提出書類が不足・不備の場合、審査対象とならない（提出漏れは不採択）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "提出書類に不備や不足がある場合…審査対象とならず、不採択となりますので、申請前に内容や提出書類に不備や不足がないことを必ずご確認ください:contentReference[oaicite:121]{index=121}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"category": "提出形式",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"rule": "電子申請で指定のファイル名・形式（PDF）で全書類をアップロードしない場合は対象外",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"quote": "提出書類は「3.4 提出書類」を参照し、決められたファイル名にするとともに、全てPDF形式のファイルをアップロードしてください。…所定の場所にアップロードされていない場合…審査対象となりません:contentReference[oaicite:122]{index=122}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/%E3%82%88%E3%81%8F%E3%81%82%E3%82%8B%E3%81%94%E8%B3%AA%E5%95%8F_20250806.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"notes": "応募者自身が要件を満たしていないケース（例：大企業による申請）はもちろん、公募要領の細則に反する行為も対象外となります。とりわけ、締切前に機械を発注済みの場合や提出書類の不備は形式上すぐに排除されるので注意が必要です:contentReference[oaicite:123]{index=123}:contentReference[oaicite:124]{index=124}。なお「複数補助金の同時受給」については選択制となっており、万一重複して採択された場合はどれか一つしか交付申請できません:contentReference[oaicite:125]{index=125}。"</span></p>
+<p class="p4"><span class="s1">}</span></p>
+<p class="p1"><span class="s1">*上記リストは、本補助金で<b>申請が認められないケース</b>をカテゴリ別に整理したものです。例えば「申請者要件」では、日本国内に拠点がない、規模が中小企業該当外、大企業や一部の法人格等は対象外と明記されています。また、GビズID貸与や虚偽申請といった不正行為・形式的要件充足も申請不可（不採択）の理由になります。<b>対象経費</b>では、パソコンや事務用品など汎用的な物品購入費、土地取得費や自社人件費等は補助対象にならず、これらを含む計画は審査以前に除外されます。<b>スケジュール</b>面では、交付決定前に発注済みの経費がある場合はどんな理由でも認められず不交付。<b>他制度</b>との重複受給も禁止されており、仮に複数採択となった場合は一方の補助金は辞退しなければなりません（辞退しないと後から交付取消・返還を求められます）。<b>提出形式</b>では、電子申請システム上で定められた形式・ファイル名で全書類を提出しないと審査対象にならないため、書類不備やアップロード漏れが致命的となります。以上のような条件に該当すると、**形式審査の段階で不採択（門前払い）*<i>となるので注意が必要です。</i><i></i></span></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>6. 典型的な却下・差戻しパターンと対策</b></span></h2>
+<p class="p4"><span class="s1">[</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"anti_pattern": "申請書類の不備（提出漏れ・記載不十分）により審査対象外となる",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"why": "提出書類に欠落や不備がある場合、審査以前に失格となる:contentReference[oaicite:134]{index=134}。形式要件を満たさない応募は受付けてもらえません。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"fix_template": "🟢 提出前に、公募要領の提出書類一覧:contentReference[oaicite:135]{index=135}をチェックして漏れがないか確認しましょう。全ての必要項目が記入され、指定ファイル形式・ファイル名でアップロードされているか再点検してください。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"quote": "申請内容や提出書類に不備や不足がある場合…審査対象とならず、不採択となります:contentReference[oaicite:136]{index=136}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/%E3%82%88%E3%81%8F%E3%81%82%E3%82%8B%E3%81%94%E8%B3%AA%E5%95%8F_20250806.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"anti_pattern": "自社の『賃上げ要件』未達（基本要件を満たさず減点・不採択）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"why": "基本要件として賃金引上げ等の計画が課されており:contentReference[oaicite:137]{index=137}、これを満たさない計画は審査段階で大きく減点され不採択となりやすい。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"fix_template": "🟢 事業計画内で、従業員給与総額を計画期間中に年平均+1.5%以上増加させる目標を設定しましょう:contentReference[oaicite:138]{index=138}。また最低賃金+30円の水準も確保できるよう計画し、誓約書を提出してください。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"quote": "基本要件②：賃金の増加要件…給与支給総額を年平均1.5%以上（事業場内最低賃金+30円）増加させること:contentReference[oaicite:139]{index=139}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"anti_pattern": "旧来事業の延長線上の投資（新規性が乏しい）で加点が得られず不採択",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"why": "「革新的な新製品・新サービス」の開発でない案件は対象外または低評価:contentReference[oaicite:140]{index=140}。単なる設備更新等は審査で評価点が伸びず、落選につながります。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"fix_template": "🟢 提案内容に新規性・独自性を持たせましょう。既存工程の改善に留まる場合は、どの点が革新的かを強調してください。また市場にない新サービス開発であることを明確に記述しましょう。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"quote": "既存の製品・サービスの生産等のプロセスについて改善・向上を図る事業は補助対象外です:contentReference[oaicite:141]{index=141}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"anti_pattern": "他社流用と思われる計画書（コピペやテンプレート丸写し）は低評価",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"why": "審査項目で自社ならではの強みや熱意が見られない計画は評価が伸びません:contentReference[oaicite:142]{index=142}:contentReference[oaicite:143]{index=143}。他社例文の流用は熱量・ストーリーが伝わらず減点対象です。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"fix_template": "🟢 自社の状況に即した具体的な計画を書きましょう。他社の資料を引用する際も、自社向けにカスタマイズし、自社の強み・熱意・ストーリー:contentReference[oaicite:144]{index=144}が伝わるよう修正してください。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"quote": "後継者として当該事業を遂行する背景や情熱を持ち合わせているか。:contentReference[oaicite:145]{index=145}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"source_url": "https://atotsugi-koshien.go.jp/slp/wpist/wp-content/themes/atotsugi202507/assets/pdf/application_form_requirements.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"anti_pattern": "見積書の不足・価格根拠不備による交付決定後の減額リスク",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"why": "高額な設備等について複数社の見積取得がない場合、交付決定時に減額措置を受ける可能性があります:contentReference[oaicite:146]{index=146}。妥当性説明が不十分だと採択後に減額・一部不交付となり得ます。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"fix_template": "🟢 主要な設備・システムには必ず2社以上から見積を取り、価格妥当性を説明できるようにしましょう:contentReference[oaicite:147]{index=147}。見積取得が難しい場合は随意契約理由書を準備し、交付申請時に提出してください。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"quote": "単価50万円以上の物件等については、原則として2者以上から同一条件による見積りをとることが必要です:contentReference[oaicite:148]{index=148}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"anti_pattern": "複数の補助金に同一プロジェクトで応募・採択される（ルール違反）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"why": "国の補助金では重複受給が禁止されており:contentReference[oaicite:149]{index=149}、万一並行応募して両方採択された場合、後で必ず一方を辞退しなければならず手間・リスクが生じます。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"fix_template": "🟢 類似内容で他の補助金にも応募している場合は、本補助金との重複がないよう計画を分けるか、どちらかに絞りましょう。仮に複数採択となった際は速やかに事務局と相談し、一方の辞退手続きを行ってください:contentReference[oaicite:150]{index=150}。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"quote": "複数の補助金に採択された場合は、交付を受ける補助金を1つだけ選択…してください。:contentReference[oaicite:151]{index=151}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"source_url": "https://portal.monodukuri-hojo.jp/common/bunsho/ippan/21th/%E5%85%AC%E5%8B%9F%E8%A6%81%E9%A0%98_21%E6%AC%A1%E7%B7%A0%E5%88%87_20250807.pdf"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p4"><span class="s1">]</span></p>
+<p class="p1"><span class="s1"><i>審査落ち・申請差戻しとなりやすい</i><b><i>典型パターン</i></b><i>を挙げ、それぞれ防止策を示しました。例えば「提出書類の不備」は毎回多数発生する問題で、</i><b><i>一つでも書類不足があれば不採択</i></b><i>となります。対策としては事前の書類チェックリストで漏れを潰すことが有効です。また「賃上げ要件未達」のように</i><b><i>基本要件を満たさない計画</i></b><i>は採択されませんので、計画段階で自社の賃上げ計画を組み込む必要があります。さらに、形式上要件を満たしていても</i><b><i>内容面で低評価</i></b><i>となるパターン、例えば「新規性に乏しい単なる設備更新計画」は審査項目上減点が大きく不採択につながりやすいです。これには市場における独自性をアピールする工夫が必要でしょう。他にも</i><b><i>他社例文のコピペ</i></b><i>による熱意不足、</i><b><i>高額見積の根拠不足</i></b><i>による交付額減額、</i><b><i>複数補助金の重複応募</i></b><i>といったリスクも指摘しました。それぞれ、公募要領やFAQの該当箇所を引用しつつ、修正の方向性（フォローアップ方法）を提示しています。ユーザーへの伝え方は、命令調ではなく「🔵～しましょう」「ご確認ください」のように</i><b><i>修正を促す丁寧な提案</i></b><i>としています。</i><i></i></span></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>7. タスク一覧と提出前チェックリスト（申請までの工程）</b></span></h2>
+<p class="p4"><span class="s1">phases:</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>- id: p1</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>name: 要件確認と計画準備</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>hint: "公募要領を入手し、自社が応募資格・要件を満たすか確認します。事業概要と予算の骨子を固めましょう。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>tasks:</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>- id: t1</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>name: 最新版公募要領の精読</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>required: true</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>outputs: ["要件チェックメモ.md"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>hint: "令和7年度第21次公募要領を読み、応募対象者・補助対象経費・審査観点など重要ポイントを整理します。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>- id: t2</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>name: 自社の応募資格チェック</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>required: true</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>outputs: ["応募資格チェックリスト.xlsx"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>hint: "自社の資本金・従業員数・事業形態が公募要領A)～E)区分に該当するか確認し、チェックリスト化します。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>- id: t3</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>name: 事業概要の仮決め</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>required: false</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>outputs: ["事業計画骨子.docx"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>hint: "補助事業の名称、目的、導入設備の概要、期待効果など事業計画の骨子を作成します（社内共有用）。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>- id: p2</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>name: 事業計画作成と必要書類準備</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>hint: "採択率を高める事業計画書を作成し、併せて必要な見積書・証明書類を収集します。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>tasks:</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>- id: t4</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>name: 事業計画書の作成</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>required: true</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>outputs: ["事業計画書.pdf"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>hint: "公募要領の参考様式に沿い、新規性・市場性・収益性・賃上げ計画など盛り込んだ事業計画書を作成します（A4で10ページ以内）。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>- id: t5</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>name: 見積書の取得（複数社）</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>required: true</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>outputs: ["主要設備見積書_2社以上.pdf"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>hint: "機械装置等の購入について、2社以上から見積書を取得します。50万円超の物件は必須です。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>- id: t6</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>name: 各種証明書類の準備</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>required: true</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>outputs: ["決算書2期分.pdf", "労働者名簿.pdf", "賃金台帳.pdf"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>hint: "直近2期分の財務諸表や従業員数証明（事業概況説明書等）、賃上げ誓約関連資料など、提出必須書類を収集・PDF化します。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>- id: t7</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>name: GビズIDプライム取得・確認</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>required: true</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>outputs: []</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>hint: "電子申請に必要なGビズIDプライムアカウントを未取得の場合登録し、既に持っている場合は有効かログイン確認します。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>- id: p3</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>name: 申請書類の点検と電子申請</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>hint: "全ての書類を最終確認した上でJグランツ（電子申請システム）へ入力・提出します。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>tasks:</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>- id: t8</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>name: 提出書類チェック</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>required: true</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>outputs: ["提出書類チェックリスト.md"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>hint: "公募要領「3.4 提出書類」の一覧と照らし合わせ、書類の不備・漏れがないかチェックリストで確認します。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>- id: t9</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>name: 電子申請フォーム入力</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>required: true</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>outputs: []</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>hint: "Jグランツ上の申請フォームに沿って事業者情報・事業計画概要・経費明細等を入力します（下書き保存しつつ慎重に）。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>- id: t10</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>name: 添付ファイルアップロードと提出</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>required: true</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>outputs: ["提出完了スクリーンショット.png"],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>hint: "作成した事業計画書PDFや決算書類などを指定どおりアップロードし、電子申請を送信します。提出後、受付番号等を控えます。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>- id: p4</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>name: 審査対応と結果確認</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>hint: "申請後～採択発表までの対応と、その後の手続きを行います（必要に応じ事務局質問対応）。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>tasks:</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>- id: t11</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>name: 事務局からの照会対応</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>required: false</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>outputs: ["照会回答メール.msg"],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>hint: "申請内容について事務局から問い合わせや追加資料要請があれば、速やかに回答・提出します。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>- id: t12</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>name: 採択結果の確認</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>required: true</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>outputs: ["採択結果スクリーンショット.png"],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>hint: "事務局の公式サイト上で採択企業一覧が発表されるため、自社が採択されたか確認します。採択後は交付申請手続きへ進みます。"</span></p>
+<p class="p4"><span class="s1">checklist:</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>- "☑ **応募資格**：自社の資本金・従業員数が中小企業の範囲内か（公募要領A～E区分を確認）:contentReference[oaicite:155]{index=155}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>- "☑ **事業対象**：計画内容が単なる設備更新ではなく新製品・新サービス開発を伴うか:contentReference[oaicite:156]{index=156}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>- "☑ **補助対象経費**：機械装置費等、対象経費のみで構成されているか（汎用品や人件費は除外）:contentReference[oaicite:157]{index=157}:contentReference[oaicite:158]{index=158}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>- "☑ **見積取得**：50万円超の設備・システムは2社以上の見積を取得済みか:contentReference[oaicite:159]{index=159}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>- "☑ **賃上げ計画**：3～5年計画で給与総額年1.5%以上増加等の目標を設定したか:contentReference[oaicite:160]{index=160}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>- "☑ **行動計画公表**：従業員21名以上なら一般事業主行動計画を策定・公表済みか:contentReference[oaicite:161]{index=161}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>- "☑ **添付書類**：決算書、労働者名簿など必須書類が全て揃っているか:contentReference[oaicite:162]{index=162}:contentReference[oaicite:163]{index=163}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>- "☑ **書類形式**：提出書類は指定のファイル名・PDF形式で用意したか:contentReference[oaicite:164]{index=164}"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>- "☑ **申請フォーム**：Jグランツ入力項目（事業概要・経費明細等）に漏れや誤りがないか"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>- "☑ **期限遵守**：電子申請の送信ボタンを期限（**2025年10月24日 17:00**）までに押したか:contentReference[oaicite:165]{index=165}"</span></p>
+<p class="p1"><span class="s1"><i>上記は、補助金申請プロセスをフェーズ分けし、</i><b><i>具体的なタスクと成果物</i></b><i>をまとめたものです。例えば</i><b><i>フェーズ1</i></b><i>では公募要領の確認と自社適格性のチェックを行い（タスクt1, t2）、その上で事業計画の骨子を作成します。</i><b><i>フェーズ2</i></b><i>では事業計画書の本格作成（t4）や見積書の取得（t5）、決算書類等の準備（t6）を行います。</i><b><i>フェーズ3</i></b><i>では提出前の最終点検（t8）と電子申請（t9, t10）を実施し、</i><b><i>フェーズ4</i></b><i>では採択発表までの対応を含めています。各タスクには成果物（アウトプット）の例を挙げ、</i></span><span class="s3"><i>required: true</i></span><span class="s1"><i>で必須タスクを明示しました。例えば</i>*「提出書類チェック」<b>は必須(t8)で、その成果物はチェックリストとなっています。チェックリスト欄には、提出直前に確認すべきポイントを箇条書きで列挙しました。公募要領の該当箇所を引用しつつ、</b>「☑」を使った確認事項**としているため、申請者がセルフチェックしやすい形式です。このように準備段階から提出直前まで網羅することで、「何をすればよいか」「何を提出すればよいか」が一目でわかるタスクボード・チェックリストとなっています。*</span></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>8. ゴールデンテストケース（通過/不通過シナリオ例）</b></span></h2>
+<p class="p4"><span class="s1">{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"version": "v2025-1",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"scheme_id": "monodukuri2025_21",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"cases": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "case_pass1",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"label": "【適合】小規模企業（従業員5名）・革新的製品開発計画",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"data": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"is_domestic_sme": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"applicant_category": "MicroEnterprise",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"meets_sme_size_def": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"project_description": "自社初のIoT製品開発（業界初の機能搭載）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"has_innovative_element": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"employee_count": 5,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"planned_wage_increase": 2.0,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"action_plan_published": false,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"attached_files": ["事業計画書.pdf", "見積A.pdf", "見積B.pdf", "決算書2023.pdf", "決算書2022.pdf", "労働者名簿.pdf", "賃上げ誓約書.pdf"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"expect": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"blocks_contains": [],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"warns_contains": []</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "case_pass2",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"label": "【適合】中堅企業（従業員50名）・最低賃金枠活用で補助率2/3適用",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"data": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"is_domestic_sme": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"applicant_category": "SME",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"meets_sme_size_def": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"employee_count": 50,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"base_wage_level": "地域最低賃金+40円",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"planned_wage_increase": 1.5,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"min_wage_special_applied": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"action_plan_published": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"project_description": "既存工場のスマート化と新サービス実証",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"has_innovative_element": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"attached_files": ["事業計画書.pdf", "決算書2023.pdf", "決算書2022.pdf", "事業概況説明書.pdf", "見積1.pdf", "見積2.pdf", "最低賃金特例確認資料.pdf", "賃金台帳.pdf"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"expect": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"blocks_contains": [],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"warns_contains": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">          </span>"補助率 2/3 で申請",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">          </span>"賃金特例達成"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "case_pass3",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"label": "【適合】再生事業者として申請（A類型、確認書提出済み）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"data": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"is_domestic_sme": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"applicant_category": "SME",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"meets_sme_size_def": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"is_restructuring_enterprise": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"employee_count": 10,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"planned_wage_increase": 3.0,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"action_plan_published": false,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"project_description": "事業再生中の老舗メーカー、新市場向け製品の開発",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"has_innovative_element": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"attached_files": ["事業計画書.pdf", "決算書2023.pdf", "決算書2022.pdf", "労働者名簿.pdf", "再生事業者確認書.pdf", "見積甲.pdf", "見積乙.pdf"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"expect": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"blocks_contains": [],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"warns_contains": []</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "case_block1",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"label": "【不適格】大企業（従業員400名、資本金50億）が申請",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"data": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"is_domestic_sme": false,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"applicant_category": "LargeEnterprise",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"meets_sme_size_def": false,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"employee_count": 400,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"project_description": "自社最新製品の量産ライン構築",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"has_innovative_element": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"attached_files": ["事業計画書.pdf", "決算書2023.pdf", "労働者名簿.pdf"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"expect": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"blocks_contains": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">          </span>"対象外",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">          </span>"中小企業者に限り"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"warns_contains": []</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "case_block2",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"label": "【不適格】要件充足のため形だけ会社分割したケース",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"data": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"is_domestic_sme": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"applicant_category": "SME",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"meets_sme_size_def": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"employee_count": 20,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"project_description": "※主要株主を分散し形だけ中小企業化",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"has_innovative_element": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"manipulated_structure": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"attached_files": ["事業計画書.pdf", "決算書2023.pdf", "決算書2022.pdf"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"expect": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"blocks_contains": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">          </span>"主体的でない",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">          </span>"認められません"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"warns_contains": []</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "case_block3",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"label": "【不採択】単なる設備更新（革新性なし）、既存製品の効率化のみ",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"data": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"is_domestic_sme": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"applicant_category": "SME",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"meets_sme_size_def": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"employee_count": 8,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"project_description": "既存製品Aの生産ライン更新（同程度性能の新設備導入）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"has_innovative_element": false,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"attached_files": ["事業計画書.pdf", "決算書2023.pdf", "決算書2022.pdf", "見積1社のみ.pdf"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"expect": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"blocks_contains": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">          </span>"補助対象外",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">          </span>"新製品・新サービス"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"warns_contains": []</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "case_block4",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"label": "【不採択】事務所移転費や車両購入費を含む計画",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"data": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"is_domestic_sme": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"applicant_category": "SME",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"meets_sme_size_def": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"employee_count": 15,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"project_description": "新サービス開始に向け事務所改装と営業車購入",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"has_innovative_element": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"attached_files": ["事業計画書.pdf", "決算書2023.pdf", "決算書2022.pdf", "見積_A.pdf", "見積車両.pdf"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"expect": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"blocks_contains": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">          </span>"対象外",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">          </span>"補助対象外となります"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"warns_contains": []</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "case_block5",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"label": "【失格】提出書類不備（決算書1期のみ・誓約書未提出）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"data": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"is_domestic_sme": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"applicant_category": "SME",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"meets_sme_size_def": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"employee_count": 30,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"project_description": "AI導入による生産プロセス自動化",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"has_innovative_element": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"attached_files": ["事業計画書.pdf", "決算書2023.pdf"<span class="Apple-converted-space">  </span>]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"expect": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"blocks_contains": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">          </span>"不備",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">          </span>"審査対象とならず"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"warns_contains": []</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "case_warn1",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"label": "【警告】ギリギリ小規模（従業員20名）今後規模拡大の可能性あり",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"data": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"is_domestic_sme": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"applicant_category": "MicroEnterprise",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"meets_sme_size_def": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"employee_count": 20,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"project_description": "革新的素材による新商品開発",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"has_innovative_element": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"expected_new_hires": 5,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"attached_files": ["事業計画書.pdf", "決算書2023.pdf", "決算書2022.pdf", "労働者名簿.pdf", "見積2社.pdf"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"expect": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"blocks_contains": [],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"warns_contains": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">          </span>"小規模→中小企業",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">          </span>"補助率1/2に変更"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"id": "case_warn2",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"label": "【警告】中古機械を購入（流通少・見積もり要注意）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"data": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"is_domestic_sme": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"applicant_category": "SME",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"meets_sme_size_def": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"employee_count": 12,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"project_description": "海外工場撤退企業から中古ライン導入（国内初）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"has_innovative_element": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"cost_item_used": true,</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"attached_files": ["事業計画書.pdf", "決算書2023.pdf", "決算書2022.pdf", "中古設備見積_3社.pdf"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"expect": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"blocks_contains": [],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>"warns_contains": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">          </span>"中古品",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">          </span>"3者以上の相見積"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>]</span></p>
+<p class="p4"><span class="s1">}</span></p>
+<p class="p1"><span class="s1"><i>上記は、本制度に対する</i><b><i>典型的な申請データ10件</i></b><i>と、その期待される審査結果（通過/警告/ブロック）を示したゴールデンテストです。ケースは3件の適合例、5件の不適格例、2件の警告例のバランスで構成されています。例えば </i></span><span class="s3"><i>case_pass1</i></span><span class="s1"><i> は「従業員5名の小規模企業が革新的製品開発を計画したケース」で、必要書類も整っているため</i></span><span class="s3"><i>blocks_contains</i></span><span class="s1"><i>（ブロックエラー断片）は空で通過想定です。一方 </i></span><span class="s3"><i>case_block1</i></span><span class="s1"><i> は「大企業が申請したケース」で、期待されるエラーメッセージに「対象外」「中小企業者に限り」といったフレーズが含まれることを検証しています。</i></span><span class="s3"><i>case_block5</i></span><span class="s1"><i> は「提出書類不備」の例で、「不備」「審査対象とならず」といった文言のエラーを期待します。警告例として </i></span><span class="s3"><i>case_warn1</i></span><span class="s1"><i> は「従業員20名ギリギリ小規模」のケースで、今後規模拡大すると補助率変更となる旨の注意喚起が出る想定（warn）です。各ケースの</i></span><span class="s3"><i>expect</i></span><span class="s1"><i>フィールドには、実行結果メッセージ中に含まれるべきキーワードをリストで示しています（例えば</i></span><span class="s3"><i>case_warn2</i></span><span class="s1"><i>では「中古品」「3者以上の相見積」の両方が警告文に含まれることをテスト）。このようにゴールデンテストにより、想定どおりの通過/却下ロジックやメッセージが機能しているかを検証できます。</i><i></i></span></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>9. 新旧公募要領の差分（提出可否へ影響する変更点）</b></span></h2>
+<p class="p4"><span class="s1">{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"added": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"change": "一般事業主行動計画公表手続の注意事項追記",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"details": "両立支援のひろばへの計画公表申請は2週間以上余裕をもって行う旨など注意喚起が第21次公募要領で追記:contentReference[oaicite:171]{index=171}。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"change": "第21次公募のスケジュール（募集期間・締切日の更新）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"details": "新たに2025年7月25日～10月24日を公募期間とする第21次締切の募集日程が追加:contentReference[oaicite:172]{index=172}。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"removed": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"change": "第20次公募分の募集は終了",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"details": "前回（20次締切分）令和7年7月25日締切の募集は終了済みとなり、新規申請不可。公募要領の最新版からは20次分の日程案内等が削除。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"changed": [</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"before": "複数補助金への同時応募時の扱い明確化（旧版では注記のみ）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"after": "新版では“複数採択された場合は一方のみ交付申請し他方は辞退”と具体的手続きを追記:contentReference[oaicite:173]{index=173}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"impact": "medium",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"rule_ids": ["elig_not_redundant", "scope_no_overlap"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"before": "基本要件②賃金増加要件の適用タイミング（申請時点有効）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"after": "新版21次では「交付申請時に有効な計画」でも可とする注記追加（計画策定締切を緩和）:contentReference[oaicite:174]{index=174}",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"impact": "high",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">      </span>"rule_ids": ["att_overtime_plan"]</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>],</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"notes": "第21次公募では前回までの要件を踏襲しつつ、一部表現が調整されています。特に賃上げ計画策定の猶予期間に関する表記緩和（申請締切時→交付申請時）など応募者に有利な変更があります。ただし、公募要領本文の該当箇所が読み取りづらく、実務上どこまで猶予されるか解釈に注意が必要です。"</span></p>
+<p class="p4"><span class="s1">}</span></p>
+<p class="p1"><span class="s1"><b><i>令和7年度 第20次</i></b><i>から</i><b><i>第21次公募要領</i></b><i>への主な変更点を抽出しました。追加点として、</i><b><i>一般事業主行動計画の公表に関する注意事項</i></b><i>が新版で付記されました。これは従業員21人以上の場合の計画公表について「審査に時間がかかるので2週間以上前に申請するように」と呼びかけるものですが、提出可否ロジック自体には直接影響しません（留意事項）。また、公募スケジュールが</i><b><i>第21次締切</i></b><i>の日程（応募締切:2025年10月24日）に更新されています。削除点としては、第20次公募の案内が終了したため、旧版にあった20次締切の日時等が新版では掲載されていません。変更点では、</i><b><i>複数補助金応募時の取り扱い</i></b><i>が明文化されました。旧版では脚注的な記載だったものが、新版では「複数採択されたら一方のみ交付申請し他方は辞退する」旨が明記され、重複応募に対するルールが明確化されています。これは応募者の行動に影響する中程度の変更です。また</i><b><i>基本要件②：賃金増加要件</i></b><i>について、旧版20次では「申請締切日時点で有効な計画」が必要でしたが、第21次では「交付申請時に有効でも可」と読み取れる表現緩和がなされています（5月の修正を踏まえた変更）。これは応募者にとって猶予ができるため影響大です。以上の差分を踏まえ、ルール集（rules.json）では</i><b><i>複数補助金応募</i></b><i>に関する注意喚起や</i><b><i>賃上げ計画提出期限</i></b><i>の条件を適宜アップデートする必要があります。ただし、賃上げ計画の猶予については公募要領の文言がやや曖昧なため、解釈を誤らないよう注意が必要です。</i><i></i></span></p>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; -webkit-text-stroke: #000000"><span class="s1"><b>10. ユーザー向け不足メッセージ（UI表示文面）</b></span></h2>
+<p class="p4"><span class="s1">{</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>"map": {</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"elig_legal": "申請には日本国内に本社・事業所を有する中小企業等であることが必要です。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"elig_categories": "申し訳ありません。本補助金の対象者は中小企業者等（公募要領A～E区分）に限られます。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"elig_size": "貴社の資本金・従業員規模が中小企業の範囲内かご確認ください（要件を満たしていない可能性があります）。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"elig_not_large": "この法人形態では本補助金に応募できません（対象外の組織区分です）。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"elig_independent": "応募要件を満たすための形式的な資本構成・従業員数変更と見なされる場合、申請は認められません。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"elig_not_redundant": "同一代表者による複数の同時申請はできません。（1人1申請まで）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"elig_no_false": "申請内容に虚偽がないか今一度ご確認ください。虚偽申請は採択取消や将来応募不可となります。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"elig_no_sanction": "現在、補助金の交付停止措置を受けているため本補助金に応募できません。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"scope_innovation": "本事業計画は補助対象外となる恐れがあります。新製品・新サービスの開発を伴う計画をご準備ください。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"scope_no_overlap": "他の制度と重複した経費が含まれています。別の補助金で同一経費を申請することはできません。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"scope_no_insurance": "本事業は他制度からの給付と重複している可能性があります。対象外となる恐れがあります。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"scope_duration": "事業実施期間にご注意ください。交付決定から所定期間内に完了する計画とする必要があります。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"scope_requirements": "賃上げ等の公募要件を満たしていません。要件を満たす計画となっているかご確認ください。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"att_plan": "事業計画書が提出されていません。公募要領の形式に沿った計画書を作成・提出してください。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"att_finance": "直近2期分の決算書類の提出が必要です。（創業間もない場合は事業計画書等の代替書類）",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"att_confirm_employees": "従業員数を証明する書類が未提出です。法人は事業概況説明書の写し、個人は青色申告決算書等をご用意ください。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"att_overtime_plan": "従業員21名以上の場合、次世代法に基づく一般事業主行動計画を策定しサイトに公表、URLを入力する必要があります。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"att_wage_pledge": "賃上げ計画の誓約が完了していません。電子申請システム上で誓約手続きを行ってください。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"att_special_case_docs": "特例申請には追加書類が必要です。該当する確認書や計画書を提出してください。",</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span>"general_missing": "必須項目に未入力・未提出があります。募集要領に沿って全ての必要情報をご提供ください。"</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p4"><span class="s1">}</span></p>
+<p class="p1"><span class="s1">*最後に、ルール違反や書類不足があった際にユーザーへ表示するメッセージ集です。各メッセージは<b>80字以内</b>で簡潔かつ丁寧な表現にしており、ユーザーが安心して修正に取り組めるトーンにしています。例えば</span><span class="s3">elig_legal</span><span class="s1">に対応するメッセージは「申請には日本国内に本社・事業所を有する中小企業等であることが必要です。」とし、事実を述べつつ敬体で促す形です。また、</span><span class="s3">elig_no_false</span><span class="s1">では「今一度ご確認ください。虚偽申請は…」と注意喚起しつつも命令形を避けています。<b>不足書類</b>や<b>要件未達</b>の場合にも「～が必要です」「ご用意ください」「ご確認ください」といった表現で、ユーザーに改善を促しています。汎用の未入力エラー用に</span><span class="s3">general_missing</span><span class="s1">も用意し、「必要情報をご提供ください」と全体を包括するメッセージとしました。これらにより、ユーザーは何が不足・不適合なのかを理解しやすく、修正行動に移りやすくなります。 전체</span></p>
+</body>
+</html>

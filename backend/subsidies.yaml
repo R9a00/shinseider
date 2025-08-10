@@ -223,31 +223,162 @@
           - task_name: "T3: 課題→解決→価値"
             description: "一連の流れを2分で入力"
 
-    - id: business_model
-      title: 収益モデル・実現性
+    - id: revenue_model
+      title: 収益モデル
       min: 80
       max: 600
-      hint: "どのように収益を得て、実現していくか数値とともに記述してください"
+      hint: "収益の取り方を選んで、必要な数値を入力してください"
       input_modes:
         micro_tasks:
-          - task_id: "MINI_028_UNIT_PRICE"
-            label: "想定単価（円）"
-            type: "number"
-            placeholder: "50000"
-            note: "だいたいでOK"
+          # 収益パターン選択（複数可）
+          - task_id: "REV_PATTERNS"
+            label: "収益の取り方を選択（複数可）"
+            type: "multi_select"
+            options: ["単発販売（物販/受託）","サブスク（定額/従量）","従量課金（API/利用回数）","手数料（取次/MP）","ライセンス/ロイヤリティ","サービス（コンサル/保守）","ハイブリッド（ハード+サービス）"]
             required: true
-          - task_id: "MINI_029_MONTHLY_QTY"
-            label: "月あたり想定数量"
-            type: "number"
-            placeholder: "10"
-            note: "だいたいでOK"
+          
+          # 共通質問
+          - task_id: "REV_TARGET"
+            label: "誰に売る？"
+            type: "select"
+            options: ["既存B2B","新規B2B","B2C","自治体","海外"]
             required: true
-          - task_id: "MINI_030_GROSS_MARGIN"
-            label: "目標粗利率（%）"
-            type: "number"
-            placeholder: "30"
-            note: "だいたいでOK"
+          - task_id: "REV_CHANNEL"
+            label: "販売チャネル（複数可）"
+            type: "multi_select"
+            options: ["直販","代理店","EC/MP","OEM","紹介"]
             required: true
+            
+          # 動的展開用（選択に応じてフロントエンドで表示制御）
+          # 単発販売用
+          - task_id: "ONE_PRICE"
+            label: "単価（円/件）"
+            type: "number"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "単発販売（物販/受託）"
+          - task_id: "ONE_QTY_M"
+            label: "月あたり件数（件）"
+            type: "number"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "単発販売（物販/受託）"
+          - task_id: "ONE_COGS_UNIT"
+            label: "単位あたり原価（円/件）"
+            type: "number"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "単発販売（物販/受託）"
+            
+          # サブスク用
+          - task_id: "SUB_PLAN_NAME"
+            label: "プラン名"
+            type: "text"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "サブスク（定額/従量）"
+          - task_id: "SUB_ARPU"
+            label: "月額単価（円/契約）"
+            type: "number"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "サブスク（定額/従量）"
+          - task_id: "SUB_CONTRACTS"
+            label: "契約数（初月見込）"
+            type: "number"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "サブスク（定額/従量）"
+            
+          # 従量課金用
+          - task_id: "USG_METRIC"
+            label: "課金指標（例: APIコール数）"
+            type: "text"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "従量課金（API/利用回数）"
+          - task_id: "USG_RATE"
+            label: "単価（円/指標1）"
+            type: "number"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "従量課金（API/利用回数）"
+          - task_id: "USG_VOLUME_M"
+            label: "月あたり利用量（指標）"
+            type: "number"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "従量課金（API/利用回数）"
+            
+          # 手数料用
+          - task_id: "COM_RATE"
+            label: "手数料率（%）"
+            type: "number"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "手数料（取次/MP）"
+          - task_id: "COM_GMV_M"
+            label: "月間流通総額GMV（円）"
+            type: "number"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "手数料（取次/MP）"
+            
+          # ライセンス用
+          - task_id: "LIC_BASE"
+            label: "ベース料（円/月または年）"
+            type: "number"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "ライセンス/ロイヤリティ"
+          - task_id: "LIC_ROYALTY"
+            label: "ロイヤリティ率（%/売上）"
+            type: "number"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "ライセンス/ロイヤリティ"
+            
+          # サービス用
+          - task_id: "SVC_RATE"
+            label: "時間単価（円/時間）"
+            type: "number"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "サービス（コンサル/保守）"
+          - task_id: "SVC_HOURS_M"
+            label: "月間稼働時間（時間）"
+            type: "number"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "サービス（コンサル/保守）"
+            
+          # ハイブリッド用
+          - task_id: "HY_HW_PRICE"
+            label: "ハード単価（円/台）"
+            type: "number"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "ハイブリッド（ハード+サービス）"
+          - task_id: "HY_HW_COGS"
+            label: "ハード原価（円/台）"
+            type: "number"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "ハイブリッド（ハード+サービス）"
+          - task_id: "HY_SVC_FEE"
+            label: "サービス料（円/月）"
+            type: "number"
+            required: false
+            conditional_on: "REV_PATTERNS"
+            conditional_value: "ハイブリッド（ハード+サービス）"
+            
+          # 共通項目
+          - task_id: "UE_FIXED_COST_M"
+            label: "固定費（円/月）"
+            type: "number"
+            required: false
+            
+          # 検証状況は維持
           - task_id: "MINI_033_STAGE"
             label: "現在の検証状況"
             type: "select"
@@ -258,8 +389,8 @@
             max_items: 2
             max_length_per_item: 80
         integrated:
-          - task_name: "T4: 数字モデル"
-            description: "収益性を1分で入力"
+          - task_name: "T4: 収益モデル一括入力"
+            description: "例）サブスク: 月額3万円×30社、解約2%/月。サポート原価は月20万円。"
 
     - id: personal_story
       title: 個人的な想い・継ぐ理由
@@ -290,40 +421,75 @@
             placeholder: "地域の雇用を守り、業界全体を活性化したい"
             required: true
 
-    - id: execution_plan
-      title: 実行計画・体制
+    - id: feasibility_assessment
+      title: 実現性評価
       min: 80
       max: 600
-      hint: "どのような体制とスケジュールで実現していくか記述してください"
+      hint: "技術面・体制面・資金面での実現可能性を評価してください"
       input_modes:
         micro_tasks:
-          - task_id: "MINI_036_MEMBERS"
-            label: "実行メンバー（役割付き）"
+          # 技術成熟度
+          - task_id: "TRL"
+            label: "技術成熟度（TRL 1-9 / 該当なし可）"
+            type: "select"
+            options: ["N/A","1","2","3","4","5","6","7","8","9"]
+            required: true
+          
+          # 体制充足
+          - task_id: "TEAM"
+            label: "体制充足（役割カバー率）"
+            type: "multi_select"
+            options: ["営業","開発/製造","品質/法務","財務","CS/運用"]
+            required: true
+            
+          # 資金関連
+          - task_id: "CAPEX"
+            label: "初期投資（CAPEX, 円）"
+            type: "number"
+            required: false
+          - task_id: "OPEX"
+            label: "月次運営費（OPEX, 円/月）"
+            type: "number"
+            required: false
+            
+          # 許認可
+          - task_id: "PERMITS"
+            label: "許認可の要否"
+            type: "select"
+            options: ["不要","要（取得済）","要（申請中）","要（未着手）"]
+            required: false
+            
+          # サプライチェーン
+          - task_id: "SUPPLY"
+            label: "供給/外注の確実性"
+            type: "select"
+            options: ["社内完結","主要サプライヤ契約済","見積取得済","未定"]
+            required: false
+            
+          # リスクと対策
+          - task_id: "RISKS"
+            label: "主要リスク（最大3つ）"
+            type: "textarea"
+            required: false
+          - task_id: "MITIGATIONS"
+            label: "対策（上記リスクへの具体策）"
+            type: "textarea"
+            required: false
+            
+          # マイルストーン（構造化配列として維持）
+          - task_id: "MILESTONES"
+            label: "マイルストーン（年月+内容+責任者）"
             type: "structured_array"
-            fields: ["name","role"]
+            fields: ["ym","note","owner"]
             max_items: 5
             required: true
-          - task_id: "MINI_037_PARTNERS"
-            label: "外部パートナー（あれば）"
-            type: "text_array"
-            max_items: 3
-          - task_id: "MINI_038_MILESTONES"
-            label: "主要マイルストーン（3つまで）"
-            type: "structured_array"
-            fields: ["time","milestone"]
-            max_items: 3
-            placeholder: "例: 2025年3月 - プロトタイプ完成"
-            required: true
-          - task_id: "MINI_031_INITIAL_COST"
-            label: "初期必要資金（円）"
-            type: "number"
-            placeholder: "1000000"
-            note: "だいたいでOK"
+            placeholder: "例: 2025-11, 試作完了, 田中"
+            
         integrated:
-          - task_name: "T5: 実行計画"
-            description: "体制とスケジュールを1分で入力"
+          - task_name: "T5: 実現性まとめて入力"
+            description: "例）TRL6。営業/開発/品質は社内でカバー。CAPEXは300万円、OPEXは月50万円。許認可は不要。主要外注はA社と基本合意。マイルストーン：2025-11 試作完了、2026-01 β提供、2026-04 ローンチ。"
   validation:
-    required: ["basic_info", "solution_idea", "personal_story"]
+    required: ["basic_info", "solution_idea", "personal_story", "feasibility_assessment"]
     micro_tasks_required:
       - "MINI_001_AGE"
       - "MINI_005_NAME" 
@@ -331,6 +497,10 @@
       - "MINI_023_CATCH"
       - "STORY_WHY_ME"
       - "STORY_SUCCESSION_FEELING"
+      - "REV_PATTERNS"
+      - "TRL"
+      - "TEAM"
+      - "MILESTONES"
     age_limit:
       field: "MINI_001_AGE"
       max: 39

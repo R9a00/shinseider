@@ -61,6 +61,22 @@ function SubsidyApplicationSupport() {
   const renderMicroTask = (section, task, sectionIndex, taskIndex) => {
     const currentValue = answers[section.id]?.[task.task_id] || '';
     
+    // 条件付きレンダリングのチェック
+    if (task.conditional_on && task.conditional_value) {
+      const conditionValue = answers[section.id]?.[task.conditional_on];
+      if (Array.isArray(conditionValue)) {
+        // multi_selectの場合
+        if (!conditionValue.includes(task.conditional_value)) {
+          return null; // 非表示
+        }
+      } else {
+        // selectの場合
+        if (conditionValue !== task.conditional_value) {
+          return null; // 非表示
+        }
+      }
+    }
+    
     return (
       <div key={task.task_id} className="border-b border-gray-100 last:border-b-0 p-4">
         <div className="flex items-start space-x-3">
@@ -168,11 +184,77 @@ function SubsidyApplicationSupport() {
                 })}
               </div>
             )}
+            
+            {task.type === 'textarea' && (
+              <textarea
+                value={currentValue}
+                onChange={(e) => handleAnswerChange(section.id, e.target.value, task.task_id)}
+                placeholder={task.placeholder || ''}
+                rows="4"
+                maxLength={task.max_length}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
+              />
+            )}
+            
+            {task.type === 'structured_array' && (
+              <div className="space-y-3">
+                {Array.from({ length: task.max_items || 3 }, (_, idx) => {
+                  const arrayValues = Array.isArray(currentValue) ? currentValue : [];
+                  const itemValue = arrayValues[idx] || {};
+                  
+                  return (
+                    <div key={idx} className="border border-gray-200 rounded-lg p-3">
+                      <div className="text-xs text-gray-500 mb-2">項目 {idx + 1}</div>
+                      <div className="grid gap-2" style={{gridTemplateColumns: `repeat(${task.fields?.length || 2}, 1fr)`}}>
+                        {task.fields?.map((field, fieldIdx) => (
+                          <input
+                            key={fieldIdx}
+                            type="text"
+                            value={itemValue[field] || ''}
+                            onChange={(e) => {
+                              const newArray = [...arrayValues];
+                              newArray[idx] = { ...itemValue, [field]: e.target.value };
+                              // 空の末尾要素を削除
+                              while (newArray.length > 0 && 
+                                Object.values(newArray[newArray.length - 1] || {}).every(v => !v || v.trim() === '')) {
+                                newArray.pop();
+                              }
+                              handleAnswerChange(section.id, newArray, task.task_id);
+                            }}
+                            placeholder={task.placeholder?.includes(例') ? field : `${field}を入力`}
+                            className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                        )) || [
+                          <input key="0" type="text" placeholder="項目1" className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" />,
+                          <input key="1" type="text" placeholder="項目2" className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" />
+                        ]}
+                      </div>
+                    </div>
+                  );
+                })}
+                {task.placeholder && (
+                  <p className="text-xs text-gray-500 mt-1">{task.placeholder}</p>
+                )}
+              </div>
+            )}
 
             {/* 文字数制限表示 */}
             {(task.type === 'text' && task.max_length) && (
               <p className="text-xs text-gray-500 mt-1">
                 {currentValue.length}/{task.max_length}文字
+              </p>
+            )}
+            
+            {(task.type === 'textarea' && task.max_length) && (
+              <p className="text-xs text-gray-500 mt-1">
+                {currentValue.length}/{task.max_length}文字
+              </p>
+            )}
+            
+            {/* 注意書き表示 */}
+            {task.note && (
+              <p className="text-xs text-blue-600 mt-1">
+                ※ {task.note}
               </p>
             )}
           </div>
@@ -323,15 +405,33 @@ function SubsidyApplicationSupport() {
     sections.forEach(section => {
       if (section.input_modes?.micro_tasks) {
         section.input_modes.micro_tasks.forEach(task => {
-          totalTasks++;
-          const value = answers[section.id]?.[task.task_id];
-          if (value !== undefined && value !== '' && value !== null) {
-            if (Array.isArray(value)) {
-              if (value.length > 0 && value.some(v => v.trim() !== '')) {
+          // 条件付きタスクの表示状態をチェック
+          let shouldCount = true;
+          if (task.conditional_on && task.conditional_value) {
+            const conditionValue = answers[section.id]?.[task.conditional_on];
+            if (Array.isArray(conditionValue)) {
+              shouldCount = conditionValue.includes(task.conditional_value);
+            } else {
+              shouldCount = conditionValue === task.conditional_value;
+            }
+          }
+          
+          if (shouldCount) {
+            totalTasks++;
+            const value = answers[section.id]?.[task.task_id];
+            if (value !== undefined && value !== '' && value !== null) {
+              if (Array.isArray(value)) {
+                if (value.length > 0 && value.some(v => {
+                  if (typeof v === 'object' && v !== null) {
+                    return Object.values(v).some(subV => subV && subV.toString().trim() !== '');
+                  }
+                  return v && v.toString().trim() !== '';
+                })) {
+                  completedTasks++;
+                }
+              } else {
                 completedTasks++;
               }
-            } else {
-              completedTasks++;
             }
           }
         });
