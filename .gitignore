@@ -34,6 +34,12 @@ backend/business_plan.docx
 backend/temp_files/
 backend/*.tmp
 backend/*.docx
+backend/*.pdf
+backend/test_document.*
+
+# Generated data files
+backend/desire.txt
+backend/fundraising_application.json
 
 # OS generated files
 .DS_Store

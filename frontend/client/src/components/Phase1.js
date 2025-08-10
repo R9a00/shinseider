@@ -2,40 +2,55 @@ import React, { useState, useEffect } from 'react';
 
 const questions = [
   {
+    question: 'あなたの事業アイデアは、現在どの段階にありますか？',
+    type: 'choice',
+    options: ['アイデア着想段階', '事業計画策定段階', '既に事業を開始している'],
+    example_hint: '最も近いものを選択してください。'
+  },
+  {
     question: 'あなたの事業アイデアの核となる「やりたいこと」は何ですか？既存事業の強みをどのように活かしますか？',
+    type: 'text',
     example_hint: '例：既存の製造技術を活かした新製品開発、長年の顧客基盤を活用した新規サービス展開など'
   },
   {
     question: 'その事業アイデアは、社会のどのような課題を解決し、誰を、どのように幸せにしますか？具体的なインパクトを教えてください。',
+    type: 'text',
     example_hint: '例：高齢化、環境問題、地域経済の衰退などの課題を解決し、顧客の生活が便利になる、環境負荷が低減される、地域に新たな雇用が生まれるなど'
   },
   {
     question: 'なぜあなた（後継者）が、この事業を「やりたい」のですか？その背景にある個人的な想いや、これまでの経験から得た動機を具体的に教えてください。',
+    type: 'text',
     example_hint: '例：家業への危機感、幼い頃からの夢、社会への貢献意欲、修行時代の学び、失敗からの教訓、人との出会いなど'
   },
   {
     question: 'この事業アイデアを実現するために、現在の会社の経営資源（ヒト・モノ・カネ・情報・技術・顧客基盤など）をどのように活用しますか？具体的に記述してください。',
+    type: 'text',
     example_hint: '例：熟練の職人、遊休資産、長年の取引先、蓄積されたデータ、特許技術など'
   },
   {
     question: 'この事業アイデアのターゲット市場はどこですか？その市場の規模、成長性、顧客ニーズについて、データや根拠を交えて説明してください。',
+    type: 'text',
     example_hint: '例：〇〇兆円市場、年〇〇%成長、〇〇という不満を抱えている層。市場調査レポート、顧客アンケート結果など'
   },
   {
     question: '競合他社と比較した際の、あなたの事業の優位性や独自性は何ですか？どのように差別化を図りますか？',
+    type: 'text',
     example_hint: '例：独自の技術、低コスト構造、優れた顧客サービスなど。競合（A社、B社）との比較を通じて具体的に'
   },
   {
     question: 'この事業アイデアを実現する上で、最も大きな課題やリスクは何だと思いますか？また、その課題をどのように乗り越え、リスクを管理しますか？',
+    type: 'text',
     example_hint: '例：資金調達、人材確保、法規制、技術開発の遅延など。資金調達計画、採用戦略、専門家との連携、フェーズ分け開発など'
   },
   {
     question: 'この事業アイデアの実現に向けた、具体的な目標（短期・中期・長期）と、その達成のためのロードマップを教えてください。',
+    type: 'text',
     example_hint: '例：1年後に売上〇〇円達成、3年後に市場シェア〇〇%獲得、5年後にIPOなど。フェーズごとのマイルストーン、主要なタスク、担当者など'
   },
   {
-    question: 'アトツギ甲子園を通じて、何を達成したいですか？この経験をどのように事業承継に活かしたいですか？',
-    example_hint: '例：事業アイデアのブラッシュアップ、新たなネットワーク構築、資金調達の機会獲得など。社内改革の推進、従業員のモチベーション向上、親からの信頼獲得など'
+    question: 'この事業を通じて、あなたは経営者としてどのように成長したいですか？5年後の理想の姿を教えてください。',
+    type: 'text',
+    example_hint: '例：業界の変革者になる、従業員が誇れる会社にする、地域社会に貢献するリーダーになるなど、あなたのビジョンを自由に記述してください。'
   },
 ];
 
@@ -247,13 +262,31 @@ function Phase1() {
         <p>質問 {currentQuestion + 1} / {questions.length}</p>
         <h3>{questions[currentQuestion].question}</h3>
         <p className="example-hint">{questions[currentQuestion].example_hint}</p>
-        <textarea
-          value={answers[currentQuestion]}
-          onChange={handleAnswer}
-          rows="10"
-          cols="80"
-          placeholder="ここに回答を入力してください..."
-        />
+        {questions[currentQuestion].type === 'choice' ? (
+          <div>
+            {questions[currentQuestion].options.map((option, index) => (
+              <div key={index}>
+                <input
+                  type="radio"
+                  id={option}
+                  name="choice"
+                  value={option}
+                  checked={answers[currentQuestion] === option}
+                  onChange={handleAnswer}
+                />
+                <label htmlFor={option}>{option}</label>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <textarea
+            value={answers[currentQuestion]}
+            onChange={handleAnswer}
+            rows="10"
+            cols="80"
+            placeholder="ここに回答を入力してください..."
+          />
+        )}
         <div>
           {currentQuestion > 0 && <button onClick={prevQuestion}>前へ</button>}
           <button onClick={nextQuestion}>
