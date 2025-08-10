@@ -92,45 +92,271 @@
 - id: atotsugi
   name: アトツギ甲子園
   sections:
-    - id: overview
-      title: 事業概要
-      min: 120
+    - id: basic_info
+      title: 基本情報
+      min: 20
+      max: 200
+      hint: "氏名・会社名・年齢・承継予定など基本的な情報を入力してください"
+      input_modes:
+        micro_tasks:
+          - task_id: "MINI_001_AGE"
+            label: "年齢（39歳以下）"
+            type: "number"
+            placeholder: "34"
+            required: true
+          - task_id: "MINI_005_NAME"
+            label: "氏名"
+            type: "text"
+            required: true
+          - task_id: "MINI_006_COMPANY"
+            label: "会社名"
+            type: "text"
+            required: true
+          - task_id: "MINI_007_PREFECTURE"
+            label: "所在地（都道府県）"
+            type: "select"
+            options: ["東京都","大阪府","愛知県","神奈川県","埼玉県","千葉県","兵庫県","北海道","福岡県","その他"]
+            required: true
+          - task_id: "MINI_002_SUCCESSION_PLAN"
+            label: "承継予定の有無"
+            type: "select"
+            options: ["あり","なし","検討中"]
+            required: true
+        integrated:
+          - task_name: "T1: 基本情報一括入力"
+            description: "まとめて1分で入力"
+    
+    - id: current_business
+      title: 現在の事業・強み
+      min: 50
+      max: 400
+      hint: "今の会社の事業内容と強みを具体的に入力してください"
+      input_modes:
+        micro_tasks:
+          - task_id: "MINI_008_INDUSTRY"
+            label: "主業種"
+            type: "select"
+            options: ["製造","小売","サービス","IT","建設","農業","その他"]
+            required: true
+          - task_id: "MINI_011_MAIN_SERVICE"
+            label: "主力製品・サービス（20字以内）"
+            type: "text"
+            max_length: 20
+            placeholder: "アルミ部品の短納期加工"
+            required: true
+          - task_id: "MINI_014_STRENGTHS"
+            label: "強み（最大3つ）"
+            type: "multi_select"
+            options: ["設備","技術","品質","納期","価格","デザイン","営業","ブランド","その他"]
+            max_selections: 3
+            required: true
+          - task_id: "MINI_015_ISSUES"
+            label: "現在の課題（最大3つ）"
+            type: "multi_select"
+            options: ["人手不足","資金","販路拡大","原価削減","品質向上","法規対応","その他"]
+            max_selections: 3
+        integrated:
+          - task_name: "T2: 事業の強みと課題"
+            description: "選択式で1分"
+
+    - id: customer_problem
+      title: 顧客の困りごと・社会課題
+      min: 80
       max: 600
-      hint: "あなたの事業アイデアの核となる「やりたいこと」は何ですか？既存事業の強みをどのように活かしますか？"
-    - id: social_issue
-      title: 社会課題とインパクト
-      min: 120
+      hint: "お客様や社会が抱える課題を具体的に記述してください"
+      input_modes:
+        micro_tasks:
+          - task_id: "MINI_020_PAINS"
+            label: "顧客が困っていること（最大3つ）"
+            type: "text_array"
+            max_items: 3
+            max_length_per_item: 80
+            placeholder: "小ロットの試作が高くて遅い"
+            required: true
+          - task_id: "MINI_021_COMPETITORS"
+            label: "競合他社（あれば1-3社）"
+            type: "text_array"
+            max_items: 3
+          - task_id: "MINI_022_DIFFERENTIATION"
+            label: "競合との違い（最大3つ）"
+            type: "text_array"
+            max_items: 3
+            max_length_per_item: 80
+
+    - id: solution_idea
+      title: 新しい事業アイデア
+      min: 100
       max: 800
-      hint: "その事業アイデアは、社会のどのような課題を解決し、誰を、どのように幸せにしますか？具体的なインパクトを教えてください。"
-    - id: motivation
-      title: 個人的な想い・動機
-      min: 120
+      hint: "どのような解決策で、誰を、どう幸せにするか具体的に記述してください"
+      input_modes:
+        micro_tasks:
+          - task_id: "MINI_023_CATCH"
+            label: "一言キャッチ（20字以内）"
+            type: "text"
+            max_length: 20
+            placeholder: "3日で届く小ロット試作"
+            required: true
+          - task_id: "MINI_024_WHO"
+            label: "誰に提供するか"
+            type: "select"
+            options: ["既存顧客","新規B2B","一般消費者","海外","地域社会"]
+            required: true
+          - task_id: "MINI_025_WHAT"
+            label: "何を提供するか"
+            type: "text"
+            min_length: 20
+            max_length: 40
+            required: true
+          - task_id: "MINI_026_HOW"
+            label: "どうやって実現するか"
+            type: "text"
+            min_length: 20
+            max_length: 40
+            required: true
+          - task_id: "MINI_027_VALUE"
+            label: "提供価値（最大3つ）"
+            type: "multi_select"
+            options: ["速い","安い","高品質","新体験","環境に良い","安全","便利","その他"]
+            max_selections: 3
+            required: true
+        integrated:
+          - task_name: "T3: 課題→解決→価値"
+            description: "一連の流れを2分で入力"
+
+    - id: business_model
+      title: 収益モデル・実現性
+      min: 80
+      max: 600
+      hint: "どのように収益を得て、実現していくか数値とともに記述してください"
+      input_modes:
+        micro_tasks:
+          - task_id: "MINI_028_UNIT_PRICE"
+            label: "想定単価（円）"
+            type: "number"
+            placeholder: "50000"
+            note: "だいたいでOK"
+            required: true
+          - task_id: "MINI_029_MONTHLY_QTY"
+            label: "月あたり想定数量"
+            type: "number"
+            placeholder: "10"
+            note: "だいたいでOK"
+            required: true
+          - task_id: "MINI_030_GROSS_MARGIN"
+            label: "目標粗利率（%）"
+            type: "number"
+            placeholder: "30"
+            note: "だいたいでOK"
+            required: true
+          - task_id: "MINI_033_STAGE"
+            label: "現在の検証状況"
+            type: "select"
+            options: ["アイデア段階","試作済み","テスト販売済み","本格販売中"]
+          - task_id: "MINI_035_VOICES"
+            label: "お客様の声（あれば1-2件）"
+            type: "text_array"
+            max_items: 2
+            max_length_per_item: 80
+        integrated:
+          - task_name: "T4: 数字モデル"
+            description: "収益性を1分で入力"
+
+    - id: personal_story
+      title: 個人的な想い・継ぐ理由
+      min: 100
       max: 800
-      hint: "なぜあなた（後継者）が、この事業を「やりたい」のですか？その背景にある個人的な想いや、これまでの経験から得た動機を具体的に教えてください。"
-    - id: resources
-      title: 経営資源の活用
-      min: 120
-      max: 800
-      hint: "この事業アイデアを実現するために、現在の会社の経営資源（ヒト・モノ・カネ・情報・技術・顧客基盤など）をどのように活用しますか？具体的に記述してください。"
+      hint: "なぜあなたがこの事業をやりたいのか、承継への想いを記述してください"
+      input_modes:
+        micro_tasks:
+          - task_id: "STORY_WHY_ME"
+            label: "なぜあなたがやるのか"
+            type: "text"
+            min_length: 50
+            max_length: 200
+            placeholder: "父の背中を見て育ち、この技術を次世代に繋げたい"
+            required: true
+          - task_id: "STORY_SUCCESSION_FEELING"
+            label: "事業承継への想い"
+            type: "text"
+            min_length: 50
+            max_length: 200
+            placeholder: "家業を守るだけでなく、新しい価値を生み出したい"
+            required: true
+          - task_id: "STORY_FUTURE_VISION"
+            label: "実現したい未来"
+            type: "text"
+            min_length: 50
+            max_length: 200
+            placeholder: "地域の雇用を守り、業界全体を活性化したい"
+            required: true
+
+    - id: execution_plan
+      title: 実行計画・体制
+      min: 80
+      max: 600
+      hint: "どのような体制とスケジュールで実現していくか記述してください"
+      input_modes:
+        micro_tasks:
+          - task_id: "MINI_036_MEMBERS"
+            label: "実行メンバー（役割付き）"
+            type: "structured_array"
+            fields: ["name","role"]
+            max_items: 5
+            required: true
+          - task_id: "MINI_037_PARTNERS"
+            label: "外部パートナー（あれば）"
+            type: "text_array"
+            max_items: 3
+          - task_id: "MINI_038_MILESTONES"
+            label: "主要マイルストーン（3つまで）"
+            type: "structured_array"
+            fields: ["time","milestone"]
+            max_items: 3
+            placeholder: "例: 2025年3月 - プロトタイプ完成"
+            required: true
+          - task_id: "MINI_031_INITIAL_COST"
+            label: "初期必要資金（円）"
+            type: "number"
+            placeholder: "1000000"
+            note: "だいたいでOK"
+        integrated:
+          - task_name: "T5: 実行計画"
+            description: "体制とスケジュールを1分で入力"
   validation:
-    required: ["overview", "social_issue", "motivation", "resources"]
+    required: ["basic_info", "solution_idea", "personal_story"]
+    micro_tasks_required:
+      - "MINI_001_AGE"
+      - "MINI_005_NAME" 
+      - "MINI_006_COMPANY"
+      - "MINI_023_CATCH"
+      - "STORY_WHY_ME"
+      - "STORY_SUCCESSION_FEELING"
+    age_limit:
+      field: "MINI_001_AGE"
+      max: 39
   checklist:
-    - "各項目を具体的かつ情熱的に記述した"
-    - "第三者が読んでも理解できる内容になっている"
-    - "誤字脱字がないか確認した"
+    - "年齢が39歳以下であることを確認した"
+    - "承継予定について明確に回答した"
+    - "事業アイデアのキャッチフレーズを20字以内で作成した"
+    - "個人的な想いを具体的に記述した"
+    - "実現可能な計画を立てた"
+    - "8ページのスライド形式で整理できる内容になっている"
   tasks:
     milestones:
       - id: m1
-        name: "アイデアの言語化"
-        lead: "P-14d"
+        name: "基本情報・現状整理"
+        lead: "P-21d"
       - id: m2
-        name: "ドラフト作成"
-        lead: "P-10d"
+        name: "アイデア具体化・検証"
+        lead: "P-14d"  
       - id: m3
-        name: "推敲・修正"
-        lead: "P-5d"
+        name: "ストーリー作成・数値計算"
+        lead: "P-10d"
       - id: m4
-        name: "最終確認"
+        name: "8ページスライド作成"
+        lead: "P-5d"
+      - id: m5
+        name: "最終チェック・提出"
         lead: "P-1d"
   docxtemplate:
     project:
@@ -140,16 +366,119 @@
       motivation: "{motivation}"
       resources: "{resources}"
   llm_prompt_template: |
-    あなたは「アトツギ甲子園」の応募支援AIメンターです。ユーザーの回答に基づき、エントリーシートをより魅力的にするためのアドバイスを日本語で提供してください。
-    ユーザーの回答: 
-    {user_answers}
+    # アトツギ甲子園申請書レビューと改善提案
 
-    審査で重要な以下の観点について、ユーザー回答内容を評価し改善提案を行ってください:
-    1. 事業の独自性・革新性: アイデアのどこがユニークで、なぜ今やるべきなのか。
-    2. 社会的インパクト: この事業が実現すると、世の中にどんな良い変化が生まれるか。
-    3. 情熱・実現可能性: なぜ「あなた」がやるのか。その熱意と、実現できる根拠は何か。
-    
-    出力フォーマット: 箇条書きや短い段落で、具体的な改善アドバイスを箇条書きで示すこと。ユーザーを勇気づけ、背中を押すような前向きな口調で、改善点を提案してください。
+    ## 📋 入力内容の確認
+
+    **基本情報**
+    - 氏名: {MINI_005_NAME}
+    - 会社名: {MINI_006_COMPANY}
+    - 年齢: {MINI_001_AGE}歳
+    - 承継予定: {MINI_002_SUCCESSION_PLAN}
+
+    **現在の事業**
+    - 業種: {MINI_008_INDUSTRY}
+    - 主力事業: {MINI_011_MAIN_SERVICE}
+    - 強み: {MINI_014_STRENGTHS}
+    - 課題: {MINI_015_ISSUES}
+
+    **新事業アイデア**
+    - キャッチ: {MINI_023_CATCH}
+    - 対象: {MINI_024_WHO}
+    - 提供内容: {MINI_025_WHAT}
+    - 実現方法: {MINI_026_HOW}
+    - 価値: {MINI_027_VALUE}
+
+    **収益モデル**
+    - 単価: {MINI_028_UNIT_PRICE}円
+    - 月数量: {MINI_029_MONTHLY_QTY}個/月
+    - 粗利率: {MINI_030_GROSS_MARGIN}%
+
+    **個人的想い**
+    - やる理由: {STORY_WHY_ME}
+    - 承継への想い: {STORY_SUCCESSION_FEELING}
+    - 実現したい未来: {STORY_FUTURE_VISION}
+
+    ## 🎯 審査基準に基づく改善提案
+
+    ### 1. 新規性・革新性の強化
+    **現在の状況:** [現在のアイデアの新規性を評価]
+    **改善提案:**
+    - キャッチフレーズをより印象的にする方法
+    - 競合との差別化ポイントを明確にする具体案
+    - 「なぜ今なのか」のタイミングの説明を強化
+
+    ### 2. 社会的インパクトの明確化  
+    **現在の状況:** [社会課題解決の視点を評価]
+    **改善提案:**
+    - より具体的な社会課題の特定方法
+    - 解決により生まれる変化の数値化
+    - 地域・業界への波及効果の表現
+
+    ### 3. 持続可能性・実現可能性の向上
+    **現在の状況:** [ビジネスモデルと実行計画を評価]
+    **改善提案:**
+    - 収益性を示すより説得力のある数値
+    - リスクと対策の具体化
+    - 段階的な成長ストーリーの構築
+
+    ### 4. 経営資源活用の最適化
+    **現在の状況:** [家業の資源活用を評価]
+    **改善提案:**
+    - 既存資産をより効果的に活用する方法
+    - 新事業との相乗効果の明確化
+    - 承継だからこそできることの強調
+
+    ### 5. 熱意・ストーリーの深化
+    **現在の状況:** [個人的動機と情熱を評価]
+    **改善提案:**
+    - より心に響くエピソードの発掘
+    - 承継者としての覚悟の表現強化
+    - 審査員を納得させる成長ストーリー
+
+    ## 💡 次のアクションプラン
+
+    ### 🔥 今すぐできること（30分以内）
+    1. [ ] キャッチフレーズを3パターン作成して比較
+    2. [ ] 競合他社を具体的に2-3社調査
+    3. [ ] 初期顧客候補を5社リストアップ
+
+    ### 📊 データ収集が必要なもの（1週間以内）
+    1. [ ] 市場規模の具体的数値を調査
+    2. [ ] 類似事例の成功・失敗要因を分析
+    3. [ ] 初期費用の詳細見積もり取得
+
+    ### 🎨 ストーリー強化が必要なもの（随時）
+    1. [ ] 家族・従業員との対話から具体エピソード収集  
+    2. [ ] 「なぜこの事業なのか」の深掘り
+    3. [ ] 10年後のビジョンを具体的に描画
+
+    ## 📋 コピペ用：専門家・メンター相談リスト
+
+    **事業計画について相談したいこと**
+    ```
+    1. 市場規模「{MINI_025_WHAT}」の{MINI_024_WHO}向け市場はどの程度ですか？
+    2. 単価{MINI_028_UNIT_PRICE}円は妥当でしょうか？競合相場を教えてください
+    3. {MINI_014_STRENGTHS}を活かした差別化戦略についてアドバイスください
+    ```
+
+    **技術・実現方法について相談したいこと**
+    ```
+    1. {MINI_026_HOW}の実現に必要な技術的課題は何ですか？
+    2. 初期費用{MINI_031_INITIAL_COST}円での実現可能性はいかがですか？
+    3. {MINI_037_PARTNERS}のような外部連携先の選び方を教えてください
+    ```
+
+    **ピッチ・プレゼンについて相談したいこと**
+    ```
+    1. 「{MINI_023_CATCH}」をより印象的にする表現方法は？
+    2. {STORY_WHY_ME}の想いをどう伝えれば審査員の心に響きますか？
+    3. 8枚のスライドでの効果的な構成順序を教えてください
+    ```
+
+    ---
+    💪 **応援メッセージ**
+    あなたの「{MINI_023_CATCH}」というアイデアには大きな可能性を感じます。{STORY_WHY_ME}という想いがあるからこそ実現できる事業だと思います。一歩ずつ着実に準備を進めて、素晴らしいプレゼンテーションにしていきましょう！
 - id: monodukuri_r7_21th
   name: ものづくり・商業・サービス生産性向上促進補助金（令和7年度 第21次公募）
   sections:
