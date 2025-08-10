@@ -1,13 +1,19 @@
+import sys
+import os
+
+# プロジェクトルートをパスに追加
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from fastapi import FastAPI, Request, HTTPException, Depends
 from fastapi.responses import FileResponse, JSONResponse
-from word_generator import generate_word
+# from word_generator import generate_word
 import os
 import json
 import yaml
 from fastapi.middleware.cors import CORSMiddleware
-from middleware.security import SecurityMiddleware, ErrorHandlingMiddleware, RateLimitMiddleware
-from models import DesireRequest, ApplicationAdviceRequest, TextbookRequest, BusinessPlanRequest
-from secure_file_utils import get_secure_file_manager
+from .middleware.security import SecurityMiddleware, ErrorHandlingMiddleware, RateLimitMiddleware
+from .models import DesireRequest, ApplicationAdviceRequest, TextbookRequest, BusinessPlanRequest
+from .secure_file_utils import get_secure_file_manager
 import logging
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -125,17 +131,17 @@ async def generate_application_advice(advice_request: ApplicationAdviceRequest):
         elif advice_request.target == "human":
             # human_consultation_pointは新しい構造では定義されていないため、
             # 固定の文言を返すか、あるいはプロンプトをそのまま返す仕様に変更する。
-            summary = f"専門家への相談:
+            summary = f"""専門家への相談:
 
-{final_prompt}"
+{final_prompt}"""
             security_logger.info(f"Human consultation summary generated for subsidy: {advice_request.subsidy_id}")
             return {"output": summary, "type": "summary"}
         elif advice_request.target == "self":
             # self_reflection_questionsも新しい構造では定義されていないため、
             # 固定の文言を返すか、あるいはプロンプトをそのまま返す仕様に変更する。
-            reflection = f"自己評価用の問いかけ:
+            reflection = f"""自己評価用の問いかけ:
 
-{final_prompt}"
+{final_prompt}"""
             security_logger.info(f"Self-reflection questions generated for subsidy: {advice_request.subsidy_id}")
             return {"output": reflection, "type": "reflection"}
         else:
@@ -168,19 +174,51 @@ async def save_desire(desire_request: DesireRequest):
 async def generate_textbook(textbook_request: TextbookRequest):
     """教科書をセキュアに生成（REQ-SEC-002, REQ-SEC-006）"""
     try:
-        secure_file_manager = get_secure_file_manager()
+        from docx import Document
+        from docx.shared import Inches
+        import tempfile
+        import json
         
-        # セキュアな一時ファイルを作成
-        temp_file_path = secure_file_manager.create_secure_temp_file(".docx")
+        security_logger.info("Textbook generation requested")
         
-        # ファイル生成
-        generate_word(temp_file_path, textbook_request.content)
-
+        # 新しいWord文書を作成
+        doc = Document()
+        
+        # タイトルを追加
+        title = doc.add_heading(getattr(textbook_request, 'title', '事業承継診断レポート'), 0)
+        
+        # 生成日時を追加
+        doc.add_paragraph(f"生成日時: {str(__import__('datetime').datetime.now().strftime('%Y年%m月%d日 %H:%M:%S'))}")
+        doc.add_paragraph("")
+        
+        # コンテンツをパース
+        try:
+            content_data = json.loads(textbook_request.content)
+            if isinstance(content_data, list):
+                for item in content_data:
+                    if isinstance(item, dict) and 'question' in item and 'answer' in item:
+                        # 質問をヘディングとして追加
+                        doc.add_heading(f"Q: {item['question']}", level=2)
+                        # 回答を段落として追加
+                        doc.add_paragraph(f"A: {item['answer'] or '（回答なし）'}")
+                        doc.add_paragraph("")
+            else:
+                doc.add_paragraph(str(content_data))
+        except (json.JSONDecodeError, TypeError):
+            # JSONでない場合はそのまま追加
+            doc.add_paragraph(textbook_request.content)
+        
+        # 一時ファイルに保存
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.docx')
+        doc.save(temp_file.name)
+        temp_file.close()
+        
         return FileResponse(
-            temp_file_path, 
-            media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
-            filename="経営者の教科書.docx"
+            temp_file.name,
+            media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            filename="事業承継診断レポート.docx"
         )
+        
     except Exception as e:
         security_logger.error(f"Failed to generate textbook: {e}")
         raise HTTPException(status_code=500, detail="Failed to generate textbook")
@@ -189,22 +227,50 @@ async def generate_textbook(textbook_request: TextbookRequest):
 async def generate_business_plan(business_plan_request: BusinessPlanRequest):
     """事業計画書をセキュアに生成（REQ-SEC-002, REQ-SEC-006）"""
     try:
-        secure_file_manager = get_secure_file_manager()
+        from docx import Document
+        import tempfile
         
-        # セキュアな一時ファイルを作成
-        temp_file_path = secure_file_manager.create_secure_temp_file(".docx")
+        security_logger.info("Business plan generation requested")
         
-        # データをJSONに変換
-        plan_data = business_plan_request.dict(exclude_none=True)
+        # 新しいWord文書を作成
+        doc = Document()
         
-        # ファイル生成
-        generate_word(temp_file_path, json.dumps(plan_data, ensure_ascii=False, indent=2))
-
+        # タイトル
+        doc.add_heading('事業計画書', 0)
+        
+        # 生成日時
+        doc.add_paragraph(f"生成日時: {str(__import__('datetime').datetime.now().strftime('%Y年%m月%d日 %H:%M:%S'))}")
+        doc.add_paragraph("")
+        
+        # 各セクションを追加
+        sections = [
+            ('事業概要', business_plan_request.business_summary),
+            ('市場分析', business_plan_request.market_analysis),
+            ('競合優位性', business_plan_request.competitive_advantage),
+            ('製品・サービス', business_plan_request.products_services),
+            ('マーケティング戦略', business_plan_request.marketing_strategy),
+            ('収益計画', business_plan_request.revenue_plan),
+            ('資金計画', business_plan_request.funding_plan),
+            ('実施体制', business_plan_request.implementation_structure)
+        ]
+        
+        for title, content in sections:
+            if content:
+                doc.add_heading(title, level=1)
+                doc.add_paragraph(content)
+                doc.add_paragraph("")
+        
+        # 一時ファイルに保存
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.docx')
+        doc.save(temp_file.name)
+        temp_file.close()
+        
         return FileResponse(
-            temp_file_path, 
-            media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+            temp_file.name,
+            media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             filename="事業計画書.docx"
         )
+        
     except Exception as e:
         security_logger.error(f"Failed to generate business plan: {e}")
         raise HTTPException(status_code=500, detail="Failed to generate business plan")

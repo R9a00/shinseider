@@ -72,11 +72,11 @@
         lead: "P-3d"
   docxtemplate:
     project:
-      title: "{overview}",
-      applicant: "{applicant_name}",
-      contact: "{contact}",
-      summary: "{new_market_potential}",
-      viability: "{business_viability}",
+      title: "{overview}"
+      applicant: "{applicant_name}"
+      contact: "{contact}"
+      summary: "{new_market_potential}"
+      viability: "{business_viability}"
       feasibility: "{feasibility}"
   llm_prompt_template: |
     あなたは「中小企業新事業進出補助金」の申請支援AIアドバイザーです。ユーザーの回答に基づき、申請計画書をブラッシュアップする具体的なアドバイスを日本語で提供してください。
@@ -134,10 +134,10 @@
         lead: "P-1d"
   docxtemplate:
     project:
-      title: "{overview}",
-      applicant: "{applicant_name}",
-      social_issue: "{social_issue}",
-      motivation: "{motivation}",
+      title: "{overview}"
+      applicant: "{applicant_name}"
+      social_issue: "{social_issue}"
+      motivation: "{motivation}"
       resources: "{resources}"
   llm_prompt_template: |
     あなたは「アトツギ甲子園」の応募支援AIメンターです。ユーザーの回答に基づき、エントリーシートをより魅力的にするためのアドバイスを日本語で提供してください。
