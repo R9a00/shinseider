@@ -1,0 +1,749 @@
+meta:
+  name: "アトツギ甲子園 統合入力システム（シンセイダー版 v2.0）"
+  version: "2.0.0"
+  generated_at: "2025-08-10 21:35:00"
+  locale: "ja-JP"
+  purpose: "公式要件準拠 + 超ミニタスク群 + 統合タスク による初心者完全対応システム"
+  notes: |
+    - 1タスク=1設問・1入力（複数聞かない）
+    - 可能な限り選択式（自由記述は30〜80字の短文のみ）
+    - すべてに入力例を表示（プレースホルダ）
+    - 統合タスク（まとめて入力→自動分解）も併用可能
+    - 8枚テンプレのどこに使われるかを常に表示
+
+# 基本設計（v1.0から継承）
+axes:
+  - code: "N"
+    name: "新規性"
+  - code: "S" 
+    name: "持続可能性"
+  - code: "Soc"
+    name: "社会性"
+  - code: "R"
+    name: "経営資源活用"
+  - code: "St"
+    name: "熱量・ストーリー"
+
+pages:
+  - code: "P1"
+    title: "表紙"
+  - code: "P2"
+    title: "自分らしさ"
+  - code: "P3"
+    title: "家業・経営資源"
+  - code: "P4"
+    title: "時代・市場トレンド"
+  - code: "P5"
+    title: "新規事業アイデア"
+  - code: "P6"
+    title: "ビジネスモデル"
+  - code: "P7"
+    title: "詳細情報"
+  - code: "P8"
+    title: "計画・体制（付記）"
+
+enforcement_profile:
+  FULL:
+    default: "BLOCKER"
+  SELF_GUARD:
+    default: "WARN"
+    override_blocker_keys:
+      - "FMT_*"
+      - "PAGES_*" 
+      - "ELI_*"
+      - "MINI_*_REQUIRED"
+      - "AXIS_*"
+  PAST_FINISH:
+    default: "WARN"
+    override_blocker_keys:
+      - "FMT_*"
+      - "PAGES_*"
+      - "AXIS_*"
+
+# 新機能: 超ミニタスク群（42項目）
+mini_tasks:
+  section_0_entry:
+    name: "0. 入口・条件（アトツギ甲子園入口のみ）"
+    tasks:
+      - key: "MINI_001_AGE"
+        label: "年齢（数値）"
+        type: "number"
+        pages: ["P1"]
+        axes: []
+        required: true
+        placeholder: "34"
+        validation: "age <= 39"
+        enforcement: "BLOCKER"
+      - key: "MINI_002_SUCCESSION_PLAN"
+        label: "承継予定の有無"
+        type: "select"
+        options: ["あり","なし","検討中"]
+        pages: ["P2","P3"]
+        required: true
+        enforcement: "BLOCKER"
+      - key: "MINI_003_SUCCESSION_WHEN"
+        label: "承継予定時期（年月）"
+        type: "date_ym"
+        pages: ["P8"]
+        placeholder: "2026-04"
+        required: false
+      - key: "MINI_004_SUCCESSION_TYPE"
+        label: "承継の型"
+        type: "select"
+        options: ["親族内","親族外","MBO","未定"]
+        pages: ["P3"]
+        required: false
+
+  section_1_basic:
+    name: "1. 申請者・会社の基礎"
+    tasks:
+      - key: "MINI_005_NAME"
+        label: "氏名"
+        type: "text"
+        pages: ["P1"]
+        required: true
+        max_length: 50
+        enforcement: "BLOCKER"
+      - key: "MINI_006_COMPANY"
+        label: "会社名"
+        type: "text"
+        pages: ["P1"]
+        required: true
+        max_length: 100
+        enforcement: "BLOCKER"
+      - key: "MINI_007_PREFECTURE" 
+        label: "所在地（都道府県）"
+        type: "select"
+        options: ["北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県","茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県","新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県","静岡県","愛知県","三重県","滋賀県","京都府","大阪府","兵庫県","奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山口県","徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県","熊本県","大分県","宮崎県","鹿児島県","沖縄県"]
+        pages: ["P1"]
+        required: true
+        enforcement: "BLOCKER"
+      - key: "MINI_008_INDUSTRY"
+        label: "主業種"
+        type: "select" 
+        options: ["製造","小売","サービス","IT","建設","運輸","金融","不動産","農林水産","その他"]
+        pages: ["P3"]
+        required: true
+        other_field_enabled: true
+        enforcement: "BLOCKER"
+      - key: "MINI_009_FOUNDED_YEAR"
+        label: "設立年（西暦）"
+        type: "number"
+        pages: ["P2"]
+        placeholder: "1985"
+        required: false
+      - key: "MINI_010_EMPLOYEES"
+        label: "従業員数"
+        type: "number"
+        pages: ["P3"]
+        placeholder: "25"
+        required: false
+
+  section_2_current:
+    name: "2. 現在の事業（今やっていること）"
+    tasks:
+      - key: "MINI_011_MAIN_SERVICE"
+        label: "主力製品/サービス（20字以内）"
+        type: "text"
+        pages: ["P3"]
+        required: true
+        max_length: 20
+        placeholder: "アルミ部品の短納期加工"
+        enforcement: "BLOCKER"
+        axes: ["R"]
+      - key: "MINI_012_CUSTOMERS"
+        label: "主なお客様"
+        type: "multi_select"
+        options: ["B2B","自治体","B2C","海外"]
+        pages: ["P3"]
+        required: true
+        axes: ["R"]
+      - key: "MINI_013_SALES_AREA"
+        label: "販売エリア"
+        type: "multi_select"
+        options: ["地元","全国","海外"]
+        pages: ["P3"]
+        required: true
+        axes: ["R"]
+
+  section_3_strengths:
+    name: "3. 強み・課題（今の資源とギャップ）"
+    tasks:
+      - key: "MINI_014_STRENGTHS"
+        label: "強み（最大3つ）"
+        type: "multi_select"
+        options: ["設備","技術","品質","納期","価格","デザイン","営業","ブランド","その他"]
+        max_selections: 3
+        pages: ["P3","P4"]
+        required: true
+        axes: ["R","S"]
+        enforcement: "BLOCKER"
+      - key: "MINI_015_ISSUES"
+        label: "課題（最大3つ）"
+        type: "multi_select" 
+        options: ["人手","資金","販路","原価","品質","法規","その他"]
+        max_selections: 3
+        pages: ["P4"]
+        required: true
+        axes: ["Soc"]
+
+  section_4_assets:
+    name: "4. 経営資源（棚卸し）"
+    tasks:
+      - key: "MINI_016_EQUIPMENT"
+        label: "設備の台数"
+        type: "text"
+        pages: ["P3"]
+        placeholder: "5軸MC×1, 3軸MC×2"
+        max_length: 80
+        axes: ["R"]
+      - key: "MINI_017_CERTIFICATIONS"
+        label: "認証・許認可"
+        type: "multi_select"
+        options: ["なし","ISO9001","ISO14001","食品衛生","その他"]
+        pages: ["P3"]
+        other_field_enabled: true
+        axes: ["R"]
+      - key: "MINI_018_IP"
+        label: "知財"
+        type: "select"
+        options: ["なし","出願中","保有あり"]
+        pages: ["P3"]
+        axes: ["R","N"]
+      - key: "MINI_019_CLIENTS"
+        label: "代表的な取引先（最大3社）"
+        type: "text_array"
+        pages: ["P3"]
+        max_items: 3
+        max_length_per_item: 30
+        axes: ["R"]
+
+  section_5_market:
+    name: "5. 市場・顧客の困りごと"
+    tasks:
+      - key: "MINI_020_PAINS"
+        label: "顧客が困っていること（最大3つ）"
+        type: "text_array"
+        pages: ["P4"]
+        required: true
+        max_items: 3
+        max_length_per_item: 80
+        placeholder: "小ロットの試作が高くて遅い"
+        axes: ["Soc","N"]
+        enforcement: "BLOCKER"
+      - key: "MINI_021_COMPETITORS"
+        label: "競合名（1〜3社）"
+        type: "text_array"
+        pages: ["P6"]
+        max_items: 3
+        max_length_per_item: 50
+        axes: ["S"]
+      - key: "MINI_022_DIFFERENTIATION"
+        label: "競合との違い（最大3つ）"
+        type: "text_array"
+        pages: ["P6"]
+        max_items: 3
+        max_length_per_item: 80
+        axes: ["N","S"]
+
+  section_6_solution:
+    name: "6. 新しくやること（アイデアの芯）"
+    tasks:
+      - key: "MINI_023_CATCH"
+        label: "一言キャッチ（20字）"
+        type: "text"
+        pages: ["P5"]
+        required: true
+        max_length: 20
+        placeholder: "3日で届く小ロット試作"
+        axes: ["N","St"]
+        enforcement: "BLOCKER"
+      - key: "MINI_024_WHO"
+        label: "誰に"
+        type: "select"
+        options: ["既存顧客","新規B2B","消費者","海外"]
+        pages: ["P5"]
+        required: true
+        axes: ["S","Soc"]
+        enforcement: "BLOCKER"
+      - key: "MINI_025_WHAT"
+        label: "何を"
+        type: "text"
+        pages: ["P5"]
+        required: true
+        min_length: 20
+        max_length: 40
+        axes: ["N"]
+        enforcement: "BLOCKER"
+      - key: "MINI_026_HOW"
+        label: "どうやって"
+        type: "text"
+        pages: ["P5"]
+        required: true
+        min_length: 20
+        max_length: 40
+        axes: ["N","R"]
+        enforcement: "BLOCKER"
+      - key: "MINI_027_VALUE"
+        label: "良さ（最大3つ）"
+        type: "multi_select"
+        options: ["速い","安い","高品質","体験","環境","安全","その他"]
+        max_selections: 3
+        pages: ["P5"]
+        required: true
+        axes: ["N","Soc"]
+        enforcement: "BLOCKER"
+
+  section_7_model:
+    name: "7. 収益モデル（数値はだいたいでOK）"
+    tasks:
+      - key: "MINI_028_UNIT_PRICE"
+        label: "想定単価（円）"
+        type: "number"
+        pages: ["P6"]
+        required: true
+        note: "だいたいでOK"
+        axes: ["S"]
+        enforcement: "BLOCKER"
+      - key: "MINI_029_MONTHLY_QTY"
+        label: "月あたり数量"
+        type: "number"
+        pages: ["P6"] 
+        required: true
+        note: "だいたいでOK"
+        axes: ["S"]
+        enforcement: "BLOCKER"
+      - key: "MINI_030_GROSS_MARGIN"
+        label: "目標粗利率（%）"
+        type: "number"
+        pages: ["P6"]
+        required: true
+        note: "だいたいでOK"
+        axes: ["S"]
+        enforcement: "BLOCKER"
+      - key: "MINI_031_INITIAL_COST"
+        label: "初期費用（円）"
+        type: "number"
+        pages: ["P8"]
+        note: "だいたいでOK"
+        axes: ["S"]
+      - key: "MINI_032_PAYBACK_MONTHS"
+        label: "回収見込み（月数）"
+        type: "number"
+        pages: ["P8"]
+        note: "だいたいでOK"
+        axes: ["S"]
+
+  section_8_validation:
+    name: "8. 検証・実績（ある範囲で）"
+    tasks:
+      - key: "MINI_033_STAGE"
+        label: "検証状況"
+        type: "select"
+        options: ["未実施","PoC済","試作販売","本販売"]
+        pages: ["P7"]
+        axes: ["S"]
+      - key: "MINI_034_KPIS"
+        label: "実績数値（任意）"
+        type: "text"
+        pages: ["P7"]
+        placeholder: "試作3件/再注文1件"
+        max_length: 50
+        axes: ["S"]
+      - key: "MINI_035_VOICES"
+        label: "お客様の声（最大2件）"
+        type: "text_array"
+        pages: ["P7"]
+        max_items: 2
+        max_length_per_item: 80
+        axes: ["S","Soc"]
+
+  section_9_team:
+    name: "9. 体制・計画"
+    tasks:
+      - key: "MINI_036_MEMBERS"
+        label: "担当者（氏名/担当/関与割合%）"
+        type: "structured_array"
+        pages: ["P8"]
+        fields: ["name","role","ratio_pct"]
+        max_items: 5
+        axes: ["S"]
+      - key: "MINI_037_PARTNERS"
+        label: "外部パートナー"
+        type: "text_array"
+        pages: ["P8"]
+        max_items: 3
+        placeholder: "なし"
+        axes: ["S","R"]
+      - key: "MINI_038_MILESTONES"
+        label: "マイルストーン（年月+内容×3）"
+        type: "structured_array"
+        pages: ["P8"]
+        fields: ["ym","note"]
+        max_items: 3
+        required: true
+        axes: ["S"]
+        enforcement: "BLOCKER"
+
+  section_10_media:
+    name: "10. 画像・資料"
+    tasks:
+      - key: "MINI_039_IMAGES"
+        label: "画像/図（最大3点+説明30字）"
+        type: "file_array"
+        pages: ["P2","P3","P4","P5","P6","P7"]
+        max_files: 3
+        description_max_length: 30
+        file_types: ["jpg","png","pdf"]
+        axes: ["N","S","R"]
+      - key: "MINI_040_REFERENCES"
+        label: "参考資料（PDF/URL）"
+        type: "file_or_url_array"
+        pages: ["P8"]
+        max_items: 3
+
+  section_11_submission:
+    name: "11. 提出まわり"
+    tasks:
+      - key: "MINI_041_EMAIL"
+        label: "連絡先メール"
+        type: "email"
+        required: true
+        enforcement: "BLOCKER"
+      - key: "MINI_042_PUBLISH_OK"
+        label: "公開可否"
+        type: "select"
+        options: ["可","不可","調整中"]
+        required: true
+        enforcement: "BLOCKER"
+
+# 統合タスク（時短入力）
+integration_tasks:
+  T1:
+    name: "会社と自分（1分）"
+    description: "基本情報をまとめて入力"
+    target_pages: ["P1","P2","P3"]
+    combines_mini_tasks: ["MINI_005","MINI_006","MINI_007","MINI_008","MINI_009","MINI_010","MINI_001","MINI_002"]
+    fields:
+      company_name:
+        label: "会社名"
+        type: "text"
+        required: true
+      prefecture:
+        label: "所在地"
+        type: "select"
+        options: ["東京都","大阪府","愛知県","その他"]
+        other_field_enabled: true
+        required: true
+      industry:
+        label: "業種"
+        type: "select"
+        options: ["製造","小売","サービス","IT","その他"]
+        other_field_enabled: true
+        required: true
+      employees:
+        label: "従業員数"
+        type: "number"
+      applicant_name:
+        label: "氏名"
+        type: "text"
+        required: true
+      age:
+        label: "年齢"
+        type: "number"
+        required: true
+      succession_plan:
+        label: "承継予定"
+        type: "select"
+        options: ["あり","なし","検討中"]
+        required: true
+
+  T2:
+    name: "今の強みと課題（1分）"
+    description: "選択のみで簡単入力"
+    target_pages: ["P3","P4"]
+    combines_mini_tasks: ["MINI_014","MINI_015"]
+    fields:
+      strengths:
+        label: "強み（3つまで）"
+        type: "multi_select"
+        options: ["設備","技術","品質","納期","価格","デザイン","営業","ブランド","その他"]
+        max_selections: 3
+        required: true
+      issues:
+        label: "課題（3つまで）"
+        type: "multi_select"
+        options: ["人手","資金","販路","原価","品質","法規","その他"]
+        max_selections: 3
+        required: true
+
+  T3:
+    name: "課題→解決→違い（2分）"
+    description: "顧客課題から解決策、競合優位性まで"
+    target_pages: ["P4","P5","P6"]
+    combines_mini_tasks: ["MINI_020","MINI_025","MINI_026","MINI_027","MINI_021"]
+    fields:
+      customer_pains:
+        label: "顧客の困りごと（1文）"
+        type: "text"
+        max_length: 80
+        required: true
+      solution_what:
+        label: "何を"
+        type: "text"
+        max_length: 40
+        required: true
+      solution_how:
+        label: "どうやって"
+        type: "text"
+        max_length: 40
+        required: true
+      value_props:
+        label: "良さ（3つまで）"
+        type: "multi_select"
+        options: ["速い","安い","高品質","体験","環境","安全","その他"]
+        max_selections: 3
+        required: true
+      competitors:
+        label: "競合名"
+        type: "text_array"
+        max_items: 3
+
+  T4:
+    name: "数字だけモデル（1分）"
+    description: "収益性の数値入力"
+    target_pages: ["P6","P8"]
+    combines_mini_tasks: ["MINI_028","MINI_029","MINI_030","MINI_031","MINI_032"]
+    fields:
+      unit_price:
+        label: "単価（円）"
+        type: "number"
+        required: true
+        note: "だいたいでOK"
+      monthly_qty:
+        label: "月数量"
+        type: "number"
+        required: true
+        note: "だいたいでOK"
+      gross_margin_pct:
+        label: "粗利率（%）"
+        type: "number"
+        required: true
+        note: "だいたいでOK"
+      initial_cost:
+        label: "初期費用（円）"
+        type: "number"
+        note: "だいたいでOK"
+      payback_months:
+        label: "回収月数"
+        type: "number"
+        note: "だいたいでOK"
+
+  T5:
+    name: "計画と体制（1分）"
+    description: "実行計画の要点"
+    target_pages: ["P8"]
+    combines_mini_tasks: ["MINI_038","MINI_036","MINI_037"]
+    fields:
+      milestones:
+        label: "マイルストーン（3つまで）"
+        type: "structured_array"
+        fields: ["ym","note"]
+        max_items: 3
+        required: true
+      team_members:
+        label: "担当者"
+        type: "structured_array"
+        fields: ["name","role"]
+        max_items: 5
+      partners:
+        label: "外部パートナー"
+        type: "text_array"
+        max_items: 3
+
+  T6:
+    name: "画像まとめ（1分）"
+    description: "画像アップロード一括処理"
+    target_pages: ["P2","P3","P4","P5","P6","P7"]
+    combines_mini_tasks: ["MINI_039"]
+    fields:
+      images:
+        label: "画像（最大3点+説明）"
+        type: "file_array"
+        max_files: 3
+        description_required: true
+        description_max_length: 30
+
+# CSVインポート用テンプレート
+csv_template:
+  headers:
+    - "氏名"
+    - "会社名" 
+    - "所在地"
+    - "年齢"
+    - "承継有無"
+    - "主業種"
+    - "設立年"
+    - "従業員数"
+    - "主力サービス"
+    - "顧客区分"
+    - "販売エリア"
+    - "強み1"
+    - "強み2"
+    - "強み3"
+    - "課題1"
+    - "課題2"
+    - "課題3"
+    - "設備"
+    - "認証"
+    - "知財"
+    - "取引先1"
+    - "取引先2"
+    - "取引先3"
+    - "顧客困りごと1"
+    - "顧客困りごと2"
+    - "顧客困りごと3"
+    - "競合1"
+    - "競合2"
+    - "競合3"
+    - "キャッチ"
+    - "誰に"
+    - "何を"
+    - "どうやって"
+    - "良さ1"
+    - "良さ2"
+    - "良さ3"
+    - "単価"
+    - "月数量"
+    - "粗利率"
+    - "初期費用"
+    - "回収月"
+    - "検証状況"
+    - "実績"
+    - "声1"
+    - "声2"
+    - "担当"
+    - "外部パートナー"
+    - "MS1年月"
+    - "MS1内容"
+    - "MS2年月"
+    - "MS2内容"
+    - "MS3年月"
+    - "MS3内容"
+  
+# 継承: 既存の公式要件チェック（v1.0）
+preflight_rules:
+  - key: "FMT_RATIO"
+    label: "スライド比率が 16:9 / 4:3 / A4横 のいずれか"
+    type: "auto_check"
+    enforcement: "BLOCKER"
+    check: "aspect_ratio in ['16:9','4:3','A4_landscape']"
+  - key: "PAGES_COUNT"
+    label: "枚数が 7枚＋表紙＝8枚"
+    type: "auto_check"
+    enforcement: "BLOCKER"
+    check: "page_count == 8"
+  - key: "FMT_NO_MEDIA"
+    label: "動画・音声・アニメーションの埋め込みが無い"
+    type: "auto_check"
+    enforcement: "BLOCKER"
+    check: "no_embedded_media == true"
+  - key: "FMT_PDF"
+    label: "PowerPointをPDFに変換済（PDF提出）"
+    type: "manual_check"
+    enforcement: "BLOCKER"
+    hint: "出力ファイルがPDFであることを確認"
+
+eligibility:
+  - key: "ELI_AGE"
+    label: "39歳以下"
+    type: "number"
+    required: true
+    enforcement: "BLOCKER"
+    pass_if: "age <= 39"
+    evidence: "MINI_001_AGE の値を参照"
+  - key: "ELI_SUCCESSION_PLAN" 
+    label: "事業承継予定の有無"
+    type: "select"
+    options: ["あり","なし","検討中"]
+    required: true
+    enforcement: "BLOCKER"
+    evidence: "MINI_002_SUCCESSION_PLAN の値を参照"
+
+axis_matrix:
+  - key: "AXIS_NOVELTY"
+    label: "①新規性：P4/P5/P7に具体例あり"
+    axes: ["N"]
+    pages_required_any: ["P4","P5","P7"]
+    enforcement: "BLOCKER"
+    mini_tasks_evidence: ["MINI_020","MINI_023","MINI_025","MINI_026","MINI_027","MINI_018"]
+  - key: "AXIS_SUSTAIN"
+    label: "②持続可能性：P2/P3/P6に根拠（数値）あり"
+    axes: ["S"]
+    pages_required_any: ["P2","P3","P6"]
+    enforcement: "BLOCKER"
+    mini_tasks_evidence: ["MINI_028","MINI_029","MINI_030","MINI_031","MINI_032","MINI_033","MINI_034"]
+  - key: "AXIS_SOCIAL"
+    label: "③社会性：P4/P7で社会課題と接続"
+    axes: ["Soc"]
+    pages_required_any: ["P4","P7"]
+    enforcement: "BLOCKER"
+    mini_tasks_evidence: ["MINI_020","MINI_015","MINI_035"]
+  - key: "AXIS_RESOURCES"
+    label: "④経営資源活用：P3/P5/P7で活用像を提示"
+    axes: ["R"]
+    pages_required_any: ["P3","P5","P7"]
+    enforcement: "BLOCKER"
+    mini_tasks_evidence: ["MINI_011","MINI_012","MINI_013","MINI_014","MINI_016","MINI_017","MINI_018","MINI_019","MINI_026","MINI_037"]
+  - key: "AXIS_STORY"
+    label: "⑤熱量・ストーリー：P2/P5で本人の背景・想い"
+    axes: ["St"]
+    pages_required_any: ["P2","P5"]
+    enforcement: "BLOCKER"
+    mini_tasks_evidence: ["MINI_002","MINI_023"]
+
+# 自動マッピング（8枚テンプレートとの対応）
+mapping_8pages:
+  P1:
+    mini_tasks: ["MINI_001","MINI_005","MINI_006","MINI_007","MINI_023"]
+    integration_tasks: ["T1"]
+  P2:
+    mini_tasks: ["MINI_002","MINI_009","MINI_039"]
+    integration_tasks: ["T1"]
+  P3:
+    mini_tasks: ["MINI_008","MINI_010","MINI_011","MINI_012","MINI_013","MINI_014","MINI_016","MINI_017","MINI_018","MINI_019","MINI_039"]
+    integration_tasks: ["T1","T2"]
+  P4:
+    mini_tasks: ["MINI_015","MINI_020","MINI_039"]
+    integration_tasks: ["T2","T3"]
+  P5:
+    mini_tasks: ["MINI_023","MINI_024","MINI_025","MINI_026","MINI_027","MINI_039"]
+    integration_tasks: ["T3"]
+  P6:
+    mini_tasks: ["MINI_021","MINI_022","MINI_028","MINI_029","MINI_030","MINI_039"]
+    integration_tasks: ["T3","T4"]
+  P7:
+    mini_tasks: ["MINI_033","MINI_034","MINI_035","MINI_039"]
+    integration_tasks: []
+  P8:
+    mini_tasks: ["MINI_031","MINI_032","MINI_036","MINI_037","MINI_038","MINI_040"]
+    integration_tasks: ["T4","T5"]
+
+# UI/UX ガイドライン
+ui_guidelines:
+  principles:
+    - "1タスク=1設問・1入力（複数聞かない）"
+    - "可能な限り選択式（自由記述は30〜80字の短文のみ）"
+    - "すべてに入力例を表示（プレースホルダ）"
+    - "8枚テンプレのどこに使われるかを常に表示（マッピングラベル）"
+    - "赤が1つでもあると提出ブロック"
+  
+  display_features:
+    - "各行は『☐→☑』のトグル＋証拠ファイル添付スロット"
+    - "Blockerが1つでも未充足なら提出ボタンを無効化"
+    - "ページ別の赤/黄/緑インジケータで進捗を可視化"
+    - "提出直前にPreflight（自動チェック）を再実行"
+    - "統合タスクと小タスクの双方向同期"
+    - "選択肢先頭に「わからない/未定」を必ず置く"
+    - "文字数ガイド：短文は30〜80字の帯でサジェスト"
+    - "数値欄は「だいたいでOK」の注記を表示"
