@@ -6,7 +6,7 @@ function SubsidyApplicationSupport() {
   const [sections, setSections] = useState([]);
   const [subsidyName, setSubsidyName] = useState('');
   const [answers, setAnswers] = useState({});
-  const [inputMode, setInputMode] = useState('guided');
+  const [inputMode, setInputMode] = useState('micro_tasks'); // micro_tasks or integrated
   const [output, setOutput] = useState('');
   const [outputTitle, setOutputTitle] = useState('');
   const [loading, setLoading] = useState(true);
@@ -42,8 +42,234 @@ function SubsidyApplicationSupport() {
     }
   }, [subsidyId]);
 
-  const handleAnswerChange = (sectionId, value) => {
-    setAnswers(prev => ({ ...prev, [sectionId]: value }));
+  const handleAnswerChange = (sectionId, value, taskId = null) => {
+    if (taskId) {
+      // ミニタスクの場合
+      setAnswers(prev => ({
+        ...prev,
+        [sectionId]: {
+          ...prev[sectionId],
+          [taskId]: value
+        }
+      }));
+    } else {
+      // 通常のセクションの場合
+      setAnswers(prev => ({ ...prev, [sectionId]: value }));
+    }
+  };
+
+  const renderMicroTask = (section, task, sectionIndex, taskIndex) => {
+    const currentValue = answers[section.id]?.[task.task_id] || '';
+    
+    return (
+      <div key={task.task_id} className="border-b border-gray-100 last:border-b-0 p-4">
+        <div className="flex items-start space-x-3">
+          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-xs font-medium text-blue-800">
+            {taskIndex + 1}
+          </span>
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-gray-900 mb-2">
+              {task.label}
+              {task.required && <span className="text-red-500 ml-1">*</span>}
+            </label>
+            
+            {task.type === 'text' && (
+              <input
+                type="text"
+                value={currentValue}
+                onChange={(e) => handleAnswerChange(section.id, e.target.value, task.task_id)}
+                placeholder={task.placeholder || ''}
+                maxLength={task.max_length}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            )}
+            
+            {task.type === 'number' && (
+              <input
+                type="number"
+                value={currentValue}
+                onChange={(e) => handleAnswerChange(section.id, e.target.value, task.task_id)}
+                placeholder={task.placeholder || ''}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            )}
+            
+            {task.type === 'select' && (
+              <select
+                value={currentValue}
+                onChange={(e) => handleAnswerChange(section.id, e.target.value, task.task_id)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">選択してください</option>
+                {task.options?.map((option, idx) => (
+                  <option key={idx} value={option}>{option}</option>
+                ))}
+              </select>
+            )}
+            
+            {task.type === 'multi_select' && (
+              <div className="space-y-2">
+                {task.options?.map((option, idx) => {
+                  const selectedValues = Array.isArray(currentValue) ? currentValue : [];
+                  const isSelected = selectedValues.includes(option);
+                  
+                  return (
+                    <label key={idx} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={(e) => {
+                          const newValues = e.target.checked 
+                            ? [...selectedValues, option]
+                            : selectedValues.filter(v => v !== option);
+                          
+                          // max_selections制限をチェック
+                          if (task.max_selections && newValues.length > task.max_selections) {
+                            return;
+                          }
+                          
+                          handleAnswerChange(section.id, newValues, task.task_id);
+                        }}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">{option}</span>
+                    </label>
+                  );
+                })}
+                {task.max_selections && (
+                  <p className="text-xs text-gray-500">最大{task.max_selections}個まで選択可能</p>
+                )}
+              </div>
+            )}
+            
+            {task.type === 'text_array' && (
+              <div className="space-y-2">
+                {Array.from({ length: task.max_items || 3 }, (_, idx) => {
+                  const arrayValues = Array.isArray(currentValue) ? currentValue : [];
+                  return (
+                    <input
+                      key={idx}
+                      type="text"
+                      value={arrayValues[idx] || ''}
+                      onChange={(e) => {
+                        const newArray = [...arrayValues];
+                        newArray[idx] = e.target.value;
+                        // 空の末尾要素を削除
+                        while (newArray.length > 0 && newArray[newArray.length - 1] === '') {
+                          newArray.pop();
+                        }
+                        handleAnswerChange(section.id, newArray, task.task_id);
+                      }}
+                      placeholder={task.placeholder || `項目${idx + 1}`}
+                      maxLength={task.max_length_per_item}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  );
+                })}
+              </div>
+            )}
+
+            {/* 文字数制限表示 */}
+            {(task.type === 'text' && task.max_length) && (
+              <p className="text-xs text-gray-500 mt-1">
+                {currentValue.length}/{task.max_length}文字
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderSection = (section, sectionIndex) => {
+    // アトツギ甲子園の場合はミニタスクモードを使用
+    const hasInputModes = section.input_modes && (section.input_modes.micro_tasks || section.input_modes.integrated);
+    
+    if (subsidyId === 'atotsugi' && hasInputModes) {
+      return (
+        <div key={section.id} className="bg-white rounded-xl border border-gray-200 shadow-sm">
+          <div className="p-6 border-b border-gray-100">
+            <div className="flex items-start space-x-3">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-yellow-600 text-sm font-medium text-white">
+                {sectionIndex + 1}
+              </span>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  {section.title}
+                </h3>
+                {section.hint && (
+                  <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-sm text-yellow-800 leading-relaxed">
+                      <svg className="inline h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <strong>ヒント:</strong> {section.hint}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          <div className="divide-y divide-gray-100">
+            {inputMode === 'micro_tasks' && section.input_modes.micro_tasks?.map((task, taskIndex) => 
+              renderMicroTask(section, task, sectionIndex, taskIndex)
+            )}
+            
+            {inputMode === 'integrated' && section.input_modes.integrated && (
+              <div className="p-4">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <h4 className="font-medium text-green-800 mb-2">統合入力モード</h4>
+                  <p className="text-sm text-green-700 mb-4">
+                    このセクションの項目をまとめて入力できます
+                  </p>
+                  <textarea
+                    value={answers[section.id] || ''}
+                    onChange={(e) => handleAnswerChange(section.id, e.target.value)}
+                    rows="6"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    placeholder="まとめて入力してください..."
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // 従来形式のセクション
+    return (
+      <div key={section.id} className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+        <div className="flex items-start space-x-3 mb-4">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-purple-600 text-sm font-medium text-white">
+            {sectionIndex + 1}
+          </span>
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-gray-900">
+              {section.title}
+            </h3>
+            {section.hint && (
+              <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-800 leading-relaxed">
+                  <svg className="inline h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <strong>ヒント:</strong> {section.hint}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+        <textarea
+          value={answers[section.id] || ''}
+          onChange={(e) => handleAnswerChange(section.id, e.target.value)}
+          rows="6"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none"
+          placeholder="ここに回答を入力してください..."
+        />
+      </div>
+    );
   };
 
   const handleInitialSubmit = (e) => {
@@ -88,6 +314,33 @@ function SubsidyApplicationSupport() {
     });
   };
 
+  const getProgressPercentage = () => {
+    if (subsidyId !== 'atotsugi') return 0;
+    
+    let totalTasks = 0;
+    let completedTasks = 0;
+    
+    sections.forEach(section => {
+      if (section.input_modes?.micro_tasks) {
+        section.input_modes.micro_tasks.forEach(task => {
+          totalTasks++;
+          const value = answers[section.id]?.[task.task_id];
+          if (value !== undefined && value !== '' && value !== null) {
+            if (Array.isArray(value)) {
+              if (value.length > 0 && value.some(v => v.trim() !== '')) {
+                completedTasks++;
+              }
+            } else {
+              completedTasks++;
+            }
+          }
+        });
+      }
+    });
+    
+    return totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white">
@@ -123,72 +376,126 @@ function SubsidyApplicationSupport() {
     );
   }
 
+  const isAtotsugi = subsidyId === 'atotsugi';
+  const headerColor = isAtotsugi ? 'yellow' : 'purple';
+
   return (
     <div className="min-h-screen bg-white">
       {/* ヘッダー部分 */}
-      <div className="bg-gradient-to-r from-purple-50 to-purple-100 border-b border-purple-200">
+      <div className={`bg-gradient-to-r from-${headerColor}-50 to-${headerColor}-100 border-b border-${headerColor}-200`}>
         <div className="mx-auto max-w-4xl px-4 py-12">
           <div className="text-center">
+            {isAtotsugi && (
+              <div className="mb-4">
+                <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                  🏆 アトツギ甲子園申請支援システム
+                </span>
+              </div>
+            )}
             <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
               シンセイ準備: {subsidyName}
             </h1>
             <p className="mt-4 text-lg leading-8 text-gray-600">
-              補助金申請に必要な情報を入力してください。<br />
-              入力内容をもとに、最適なアウトプットを生成します。
+              {isAtotsugi ? (
+                <>
+                  42のミニタスクで簡単申請書作成！<br />
+                  1タスク=1設問で迷わず入力できます。
+                </>
+              ) : (
+                <>
+                  補助金申請に必要な情報を入力してください。<br />
+                  入力内容をもとに、最適なアウトプットを生成します。
+                </>
+              )}
             </p>
+            
+            {isAtotsugi && (
+              <div className="mt-6">
+                <div className="flex items-center justify-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium text-gray-700">進捗:</span>
+                    <div className="w-32 bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-yellow-600 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${getProgressPercentage()}%` }}
+                      ></div>
+                    </div>
+                    <span className="text-sm font-medium text-gray-700">{getProgressPercentage()}%</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       <div className="mx-auto max-w-4xl px-4 py-8">
         {!showOutputOptions ? (
-          <form onSubmit={handleInitialSubmit} className="space-y-8">
-            <div className="space-y-6">
-              {sections.map((section, index) => (
-                <div key={section.id} className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-purple-600 text-sm font-medium text-white">
-                      {index + 1}
-                    </span>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        {section.title}
-                      </h3>
-                      {section.hint && (
-                        <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                          <p className="text-sm text-blue-800 leading-relaxed">
-                            <svg className="inline h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <strong>ヒント:</strong> {section.hint}
-                          </p>
-                        </div>
-                      )}
-                    </div>
+          <div>
+            {/* アトツギ甲子園の場合の入力モード切り替え */}
+            {isAtotsugi && (
+              <div className="mb-8">
+                <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">入力方式を選択</h3>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <button
+                      type="button"
+                      onClick={() => setInputMode('micro_tasks')}
+                      className={`p-4 rounded-lg border-2 text-left transition-all ${
+                        inputMode === 'micro_tasks' 
+                          ? 'border-yellow-500 bg-yellow-50' 
+                          : 'border-gray-200 hover:border-yellow-300'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-2 mb-2">
+                        <span className="text-lg">🎯</span>
+                        <h4 className="font-medium text-gray-900">ミニタスクモード</h4>
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        1タスク=1設問で簡単入力（推奨）
+                      </p>
+                    </button>
+                    
+                    <button
+                      type="button"
+                      onClick={() => setInputMode('integrated')}
+                      className={`p-4 rounded-lg border-2 text-left transition-all ${
+                        inputMode === 'integrated' 
+                          ? 'border-green-500 bg-green-50' 
+                          : 'border-gray-200 hover:border-green-300'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-2 mb-2">
+                        <span className="text-lg">⚡</span>
+                        <h4 className="font-medium text-gray-900">統合モード</h4>
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        まとめて入力で時短
+                      </p>
+                    </button>
                   </div>
-                  <textarea
-                    value={answers[section.id] || ''}
-                    onChange={(e) => handleAnswerChange(section.id, e.target.value)}
-                    rows="6"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none"
-                    placeholder="ここに回答を入力してください..."
-                  />
                 </div>
-              ))}
-            </div>
-            
-            <div className="text-center pt-8">
-              <button 
-                type="submit"
-                className="inline-flex items-center rounded-xl bg-purple-600 px-8 py-4 text-lg font-semibold text-white shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200"
-              >
-                <svg className="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-                分析・生成する
-              </button>
-            </div>
-          </form>
+              </div>
+            )}
+
+            <form onSubmit={handleInitialSubmit} className="space-y-8">
+              <div className="space-y-6">
+                {sections.map((section, index) => renderSection(section, index))}
+              </div>
+              
+              <div className="text-center pt-8">
+                <button 
+                  type="submit"
+                  className={`inline-flex items-center rounded-xl bg-${headerColor}-600 px-8 py-4 text-lg font-semibold text-white shadow-sm hover:bg-${headerColor}-700 focus:outline-none focus:ring-2 focus:ring-${headerColor}-500 focus:ring-offset-2 transition-all duration-200`}
+                >
+                  <svg className="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                  {isAtotsugi ? 'アドバイス・ヒントを生成' : '分析・生成する'}
+                </button>
+              </div>
+            </form>
+          </div>
         ) : (
           <div className="space-y-8">
             <div className="text-center">
@@ -265,7 +572,7 @@ function SubsidyApplicationSupport() {
             {isSubmitting && (
               <div className="text-center py-8">
                 <div className="inline-flex items-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-600"></div>
                   <span className="ml-3 text-lg text-gray-600">生成中...</span>
                 </div>
               </div>

@@ -116,55 +116,45 @@ function Home() {
               </div>
             </div>
 
-            {/* ビジュアル（UIモック） */}
+            {/* ビジュアル（ベネフィット表示） */}
             <div className="relative w-full max-w-lg mx-auto lg:mx-0 lg:ml-auto">
               <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-lg">
-                <div className="space-y-6">
-                  <div className="text-center space-y-2">
-                    <h3 className="text-lg font-semibold text-gray-900">申請準備を始めましょう</h3>
-                    <p className="text-sm text-gray-600">最適な補助金を見つけて、効率的に申請を進められます</p>
+                <div className="text-center space-y-2 mb-6">
+                  <h3 className="text-xl font-bold text-gray-900">ややこしいシンセイよ、さらば。</h3>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3 p-4 rounded-lg border border-gray-100 hover:border-red-200 hover:bg-red-50 transition-all duration-200">
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-900 text-white flex-shrink-0">
+                      <IconTarget className="h-4 w-4" />
+                    </span>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">最適な補助金が見つかる</p>
+                      <p className="text-xs text-gray-600 mt-1 leading-relaxed">簡単な質問で、あなたが利用できる補助金や優遇策をレコメンドします。</p>
+                    </div>
                   </div>
                   
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <Link to="/subsidy-selection" className="group rounded-xl border border-gray-200 p-4 text-left hover:border-red-200 hover:bg-red-50 transition-all duration-200">
-                      <div className="space-y-1">
-                        <p className="text-sm font-semibold text-gray-900 group-hover:text-red-700">シンセイ準備</p>
-                        <p className="text-xs text-gray-500 group-hover:text-red-600 leading-relaxed">補助金を選んで、すぐ下書き開始</p>
-                      </div>
-                    </Link>
-                    <Link to="/phase1" className="group rounded-xl border border-gray-200 p-4 text-left hover:border-red-200 hover:bg-red-50 transition-all duration-200">
-                      <div className="space-y-1">
-                        <p className="text-sm font-semibold text-gray-900 group-hover:text-red-700">3分診断</p>
-                        <p className="text-xs text-gray-500 group-hover:text-red-600 leading-relaxed">最適な補助金をレコメンド</p>
-                      </div>
-                    </Link>
-                    <button className="group rounded-xl border border-gray-200 p-4 text-left hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 opacity-60">
-                      <div className="space-y-1">
-                        <p className="text-sm font-semibold text-gray-700">抜け漏れチェック</p>
-                        <p className="text-xs text-gray-500 leading-relaxed">要項に沿って自動検証（準備中）</p>
-                      </div>
-                    </button>
-                    <button className="group rounded-xl border border-gray-200 p-4 text-left hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 opacity-60">
-                      <div className="space-y-1">
-                        <p className="text-sm font-semibold text-gray-700">提出前チェックリスト</p>
-                        <p className="text-xs text-gray-500 leading-relaxed">提出直前の総点検（準備中）</p>
-                      </div>
-                    </button>
+                  <div className="flex items-start gap-3 p-4 rounded-lg border border-gray-100 hover:border-red-200 hover:bg-red-50 transition-all duration-200">
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-900 text-white flex-shrink-0">
+                      <IconDoc className="h-4 w-4" />
+                    </span>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">申請書の下書きが完成</p>
+                      <p className="text-xs text-gray-600 mt-1 leading-relaxed">提示された項目に入力をすると、審査項目を満たした申請書のドラフトが自動で出来上がります。</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3 p-4 rounded-lg border border-gray-100 hover:border-red-200 hover:bg-red-50 transition-all duration-200">
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-900 text-white flex-shrink-0">
+                      <IconShield className="h-4 w-4" />
+                    </span>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">抜け漏れを徹底防止</p>
+                      <p className="text-xs text-gray-600 mt-1 leading-relaxed">公募要領に基づいたチェックリストで、ややこしいシンセイから解放されます。</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ベネフィット */}
-        <section className="border-t border-gray-100 bg-gray-50/60" aria-labelledby="benefits-title">
-          <div className="mx-auto max-w-7xl px-4 py-14 lg:px-6">
-            <h2 id="benefits-title" className="text-center text-2xl font-bold tracking-tight sm:text-3xl">面倒な申請よ、さらば。</h2>
-            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              <Benefit icon={IconTarget} title="最適な補助金が見つかる" desc="簡単なヒアリングで、あなたにぴったりの補助金をAIが推薦します。" />
-              <Benefit icon={IconDoc} title="申請書の下書きが完成" desc="質問に答えるだけで、審査項目を満たした申請書のドラフトが自動で出来上がります。" />
-              <Benefit icon={IconShield} title="抜け漏れを徹底防止" desc="公募要領に基づいた完璧なチェックリストで、面倒な確認作業から解放されます。" />
             </div>
           </div>
         </section>

@@ -109,9 +109,34 @@ async def generate_application_advice(advice_request: ApplicationAdviceRequest):
                 section_id = section.get("id")
                 if section_id in answers:
                     title = section.get("title", "不明な項目")
-                    answer_text = answers.get(section_id, '（回答なし）')
                     formatted += f"▼ {title}\n"
-                    formatted += f"A: {answer_text}\n\n"
+                    
+                    # ミニタスク形式のデータ構造をチェック
+                    section_data = answers.get(section_id)
+                    if isinstance(section_data, dict):
+                        # ミニタスクの場合（各タスクIDがキーになっている）
+                        for task_id, task_value in section_data.items():
+                            # セクション内のタスクを見つける
+                            task_label = task_id
+                            if section.get("input_modes", {}).get("micro_tasks"):
+                                for task in section["input_modes"]["micro_tasks"]:
+                                    if task.get("task_id") == task_id:
+                                        task_label = task.get("label", task_id)
+                                        break
+                            
+                            if task_value:
+                                if isinstance(task_value, list):
+                                    # 配列の場合
+                                    if task_value:  # 空でない場合
+                                        formatted += f"  {task_label}: {', '.join(str(v) for v in task_value if v)}\n"
+                                else:
+                                    formatted += f"  {task_label}: {task_value}\n"
+                    else:
+                        # 通常の文字列データの場合
+                        answer_text = section_data or '（回答なし）'
+                        formatted += f"A: {answer_text}\n"
+                    
+                    formatted += "\n"
             return formatted
 
         formatted_answers = format_answers(advice_request.answers, subsidy.get("sections", []))
