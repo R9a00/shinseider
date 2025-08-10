@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 function SubsidySelection() {
   const [subsidies, setSubsidies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const location = useLocation();
+  
+  // URLパラメータからフォーカス対象を取得
+  const urlParams = new URLSearchParams(location.search);
+  const focusSubsidy = urlParams.get('focus');
 
   useEffect(() => {
     const fetchSubsidies = async () => {
@@ -88,24 +93,85 @@ function SubsidySelection() {
       {/* メインコンテンツ */}
       <div className="mx-auto max-w-4xl px-4 py-12">
         {subsidies.length > 0 ? (
-          <div className="space-y-4">
+          <div className="space-y-6">
+            {focusSubsidy === 'atotsugi' && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0">
+                    <svg className="w-6 h-6 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-medium text-yellow-800 mb-2">
+                      🏆 アトツギ甲子園申請サポート
+                    </h3>
+                    <p className="text-sm text-yellow-700 mb-4">
+                      アトツギ甲子園の申請書準備をお手伝いします！下記の「アトツギ甲子園」を選択して、専用の42項目ミニタスクシステムで簡単に申請書を作成できます。
+                    </p>
+                    <div className="bg-white border border-yellow-200 rounded-md p-3">
+                      <div className="flex items-center space-x-2 text-sm text-yellow-800">
+                        <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        <span>1タスク=1設問の簡単入力</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm text-yellow-800 mt-1">
+                        <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        <span>選択式中心で初心者でも安心</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm text-yellow-800 mt-1">
+                        <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        <span>統合タスクで時短入力も可能</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
               利用可能な補助金一覧（{subsidies.length}件）
             </h2>
             <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2">
-              {subsidies.map((subsidy) => (
+              {subsidies.map((subsidy) => {
+                const isAtotsugiAndFocused = subsidy.id === 'atotsugi' && focusSubsidy === 'atotsugi';
+                return (
                 <Link
                   key={subsidy.id}
                   to={`/subsidy-application-support/${subsidy.id}`}
-                  className="group relative rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:border-red-300 hover:bg-red-50"
+                  className={`group relative rounded-xl border p-6 shadow-sm transition-all duration-200 hover:shadow-md ${
+                    isAtotsugiAndFocused 
+                      ? 'border-yellow-400 bg-yellow-50 ring-2 ring-yellow-300 hover:bg-yellow-100' 
+                      : 'border-gray-200 bg-white hover:border-red-300 hover:bg-red-50'
+                  }`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 group-hover:text-red-700 mb-2">
+                      {isAtotsugiAndFocused && (
+                        <div className="flex items-center space-x-1 mb-2">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                            🎯 おすすめ
+                          </span>
+                        </div>
+                      )}
+                      <h3 className={`text-lg font-semibold mb-2 ${
+                        isAtotsugiAndFocused 
+                          ? 'text-yellow-900 group-hover:text-yellow-700' 
+                          : 'text-gray-900 group-hover:text-red-700'
+                      }`}>
                         {subsidy.name}
+                        {isAtotsugiAndFocused && ' 🏆'}
                       </h3>
-                      <div className="flex items-center text-sm text-gray-500 group-hover:text-red-600">
-                        <span>申請サポートを開始</span>
+                      <div className={`flex items-center text-sm ${
+                        isAtotsugiAndFocused 
+                          ? 'text-yellow-600 group-hover:text-yellow-500' 
+                          : 'text-gray-500 group-hover:text-red-600'
+                      }`}>
+                        <span>{isAtotsugiAndFocused ? 'ミニタスクで簡単申請書作成' : '申請サポートを開始'}</span>
                         <svg className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
@@ -113,7 +179,8 @@ function SubsidySelection() {
                     </div>
                   </div>
                 </Link>
-              ))}
+                );
+              })}
             </div>
           </div>
         ) : (
