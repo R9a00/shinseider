@@ -32,7 +32,7 @@ function OperatorInfo() {
           <div>
             <p><strong>プロフィール：</strong> 「キノコから宇宙まで」圧力容器・装置・ラインを手がける鉄工敀5か6代目/第3回アトツギ甲子園ファイナリスト/CFRPのハードルを下げるコンポジットセンター運営/AI×鉄工所/ Vibe cording/東京⇄長野/アトツギ甲子園地域アンバサダー。お気軽にご相談ください。</p>
             <p className="mt-3 text-sm text-blue-600">
-              <a href="https://x.com/hanyu_da_taiju" target="_blank" rel="noopener noreferrer" className="hover:text-blue-800 underline">
+              <a href="https://x.com/rikuhnd" target="_blank" rel="noopener noreferrer" className="hover:text-blue-800 underline">
                 X（Twitter）プロフィールを見る
               </a>
             </p>
