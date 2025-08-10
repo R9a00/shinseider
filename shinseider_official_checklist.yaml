@@ -1,0 +1,218 @@
+meta:
+  name: "アトツギ甲子園 公式要件準拠チェックリスト（シンセイダー版）"
+  version: "1.0.0"
+  generated_at: "2025-08-10 21:27:11"
+  locale: "ja-JP"
+  purpose: "公式要件（資格・締切・提出形式・章立て・審査基準）を、根拠付きで満たしていることを証明するためのチェックリスト。シンセイダーへの取込みを想定。"
+  notes: |
+    - このファイルは『A:フル伴走／B:自走チェック／C:過去申請仕上げ』の共通チェック基盤です。
+    - enforcement_profileで各コースの必須レベルを切り替え可能です。
+
+axes:
+  - code: "N"
+    name: "新規性"
+  - code: "S"
+    name: "持続可能性"
+  - code: "Soc"
+    name: "社会性"
+  - code: "R"
+    name: "経営資源活用"
+  - code: "St"
+    name: "熱量・ストーリー"
+
+pages:
+  - code: "P1"
+    title: "表紙"
+  - code: "P2"
+    title: "自分らしさ"
+  - code: "P3"
+    title: "家業・経営資源"
+  - code: "P4"
+    title: "時代・市場トレンド"
+  - code: "P5"
+    title: "新規事業アイデア"
+  - code: "P6"
+    title: "ビジネスモデル"
+  - code: "P7"
+    title: "詳細情報"
+  - code: "P8"
+    title: "計画・体制（付記）"
+
+enforcement_profile:
+  FULL:     # A｜フル伴走：すべてBlocker（未充足なら提出不可）
+    default: "BLOCKER"
+  SELF_GUARD:   # B｜自走チェック：形式・章立て・5軸をBlocker、他はWarn
+    default: "WARN"
+    override_blocker_keys:
+      - "FMT_*"
+      - "PAGES_*"
+      - "ELI_*"
+      - "CONT_*"
+      - "AXIS_*"
+  PAST_FINISH:  # C｜過去申請仕上げ：欠落検出に集中。形式と欠落はBlocker
+    default: "WARN"
+    override_blocker_keys:
+      - "FMT_*"
+      - "PAGES_*"
+      - "CONT_*"
+      - "AXIS_*"
+
+preflight_rules:
+  - key: "FMT_RATIO"
+    label: "スライド比率が 16:9 / 4:3 / A4横 のいずれか"
+    type: "auto_check"
+    enforcement: "BLOCKER"
+    check: "aspect_ratio in ['16:9','4:3','A4_landscape']"
+  - key: "PAGES_COUNT"
+    label: "枚数が 7枚＋表紙＝8枚"
+    type: "auto_check"
+    enforcement: "BLOCKER"
+    check: "page_count == 8"
+  - key: "FMT_NO_MEDIA"
+    label: "動画・音声・アニメーションの埋め込みが無い"
+    type: "auto_check"
+    enforcement: "BLOCKER"
+    check: "no_embedded_media == true"
+  - key: "FMT_PDF"
+    label: "PowerPointをPDFに変換済（PDF提出）"
+    type: "manual_check"
+    enforcement: "BLOCKER"
+    hint: "出力ファイルがPDFであることを確認"
+  - key: "SUBMIT_METHOD"
+    label: "提出方法（メール）に従っている"
+    type: "manual_check"
+    enforcement: "BLOCKER"
+    hint: "指定メールアドレス宛に送信、送信ログ保存"
+
+eligibility:
+  - key: "ELI_AGE"
+    label: "39歳以下"
+    type: "number"
+    required: true
+    enforcement: "BLOCKER"
+    pass_if: "age <= 39"
+    evidence: "身分証の生年確認メモ"
+  - key: "ELI_SUCCESSION_PLAN"
+    label: "事業承継予定の有無"
+    type: "select"
+    options: ["あり","なし","検討中"]
+    required: true
+    enforcement: "BLOCKER"
+  - key: "ELI_ROLE"
+    label: "後継予定者（代表権未取得）か"
+    type: "boolean"
+    required: true
+    enforcement: "BLOCKER"
+  - key: "ELI_SME"
+    label: "中小企業の定義に該当"
+    type: "boolean"
+    required: false
+    enforcement: "WARN"
+    note: "必要時のみ確認する"
+
+content_coverage:  # 章立ての充足（言及＋証拠）
+  - key: "CONT_SELF_P2"
+    label: "自分らしさ：動機・強み・継ぐ理由（P2）"
+    page: "P2"
+    axes: ["S","St"]
+    mention_required: true
+    evidence_required: true
+    enforcement: "BLOCKER"
+  - key: "CONT_ASSETS_P3"
+    label: "家業・経営資源：会社概要・強み・課題（P3）"
+    page: "P3"
+    axes: ["S","R"]
+    mention_required: true
+    evidence_required: true
+    enforcement: "BLOCKER"
+  - key: "CONT_TREND_P4"
+    label: "時代・市場トレンドと課題定義（P4）"
+    page: "P4"
+    axes: ["N","Soc"]
+    mention_required: true
+    evidence_required: true
+    enforcement: "BLOCKER"
+  - key: "CONT_IDEA_P5"
+    label: "新規事業アイデア（概要・将来像）（P5）"
+    page: "P5"
+    axes: ["N","S","Soc","R","St"]
+    mention_required: true
+    evidence_required: true
+    enforcement: "BLOCKER"
+  - key: "CONT_BIZMODEL_P6"
+    label: "ビジネスモデル（収益性・優位性）（P6）"
+    page: "P6"
+    axes: ["S"]
+    mention_required: true
+    evidence_required: true
+    enforcement: "BLOCKER"
+  - key: "CONT_DETAIL_P7"
+    label: "詳細情報（顧客課題・提供価値・新規性等）（P7）"
+    page: "P7"
+    axes: ["N","S","Soc","R","St"]
+    mention_required: true
+    evidence_required: true
+    enforcement: "BLOCKER"
+
+axis_matrix:  # 5軸がどのページで主張されているかの最終チェック
+  - key: "AXIS_NOVELTY"
+    label: "①新規性：P4/P5/P7に具体例あり"
+    axes: ["N"]
+    pages_required_any: ["P4","P5","P7"]
+    enforcement: "BLOCKER"
+  - key: "AXIS_SUSTAIN"
+    label: "②持続可能性：P2/P3/P6に根拠（数値）あり"
+    axes: ["S"]
+    pages_required_any: ["P2","P3","P6"]
+    enforcement: "BLOCKER"
+  - key: "AXIS_SOCIAL"
+    label: "③社会性：P4/P7で社会課題と接続"
+    axes: ["Soc"]
+    pages_required_any: ["P4","P7"]
+    enforcement: "BLOCKER"
+  - key: "AXIS_RESOURCES"
+    label: "④経営資源活用：P3/P5/P7で活用像を提示"
+    axes: ["R"]
+    pages_required_any: ["P3","P5","P7"]
+    enforcement: "BLOCKER"
+  - key: "AXIS_STORY"
+    label: "⑤熱量・ストーリー：P2/P5で本人の背景・想い"
+    axes: ["St"]
+    pages_required_any: ["P2","P5"]
+    enforcement: "BLOCKER"
+
+submission_evidence:
+  - key: "SUB_ENTRY_DEADLINE"
+    label: "エントリー締切（12:00）内の送信記録を保存"
+    type: "manual_check"
+    enforcement: "BLOCKER"
+    proof: "送信メールのヘッダ/スクショ"
+  - key: "SUB_DOC_DEADLINE"
+    label: "応募書類締切（12:00）内の送信記録を保存"
+    type: "manual_check"
+    enforcement: "BLOCKER"
+    proof: "送信メールのヘッダ/スクショ"
+
+mapping_8pages:  # 自動配置の指針（シンセイダー側のテンプレマッピングに利用）
+  P1:
+    fields: ["表紙.タイトル","氏名","会社名","所在地","キャッチコピー"]
+  P2:
+    fields: ["動機","強み（人物）","継ぐ理由","背景エピソード"]
+  P3:
+    fields: ["会社概要","主力/顧客/エリア","経営資源（設備/人材/知財/ブランド）","課題"]
+  P4:
+    fields: ["時代トレンド","顧客の困りごと","なぜ今"]
+  P5:
+    fields: ["誰に/何を/どうやって/良さ"]
+  P6:
+    fields: ["単価×数量","粗利率","競合と違い","販売チャネル"]
+  P7:
+    fields: ["検証状況","実績KPI","お客様の声","参考資料"]
+  P8:
+    fields: ["体制（担当/外部）","マイルストーン","初期費用","回収見込み"]
+
+ui_hints:
+  - "各行は『☐→☑』のトグル＋証拠ファイル添付スロット（任意/必須）を表示"
+  - "Blockerが1つでも未充足なら提出ボタンを無効化"
+  - "ページ別の赤/黄/緑インジケータで進捗を可視化"
+  - "提出直前にPreflight（自動チェック）を再実行"
