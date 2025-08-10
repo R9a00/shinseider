@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Phase1 from './components/Phase1';
 import SubsidySelection from './components/SubsidySelection';
 import SubsidyApplicationSupport from './components/SubsidyApplicationSupport';
+import OperatorInfo from './components/OperatorInfo';
+import PrivacyPolicy from './components/PrivacyPolicy';
 
 /**
  * Shinseider Top Page (Home)
@@ -33,6 +35,7 @@ function Home() {
           <nav className="hidden items-center gap-6 md:flex" aria-label="メインナビゲーション">
             <Link to="/subsidy-selection" className="text-sm font-medium text-gray-700 hover:text-gray-900">シンセイ準備</Link>
             <Link to="/phase1" className="text-sm font-medium text-gray-700 hover:text-gray-900">3分診断</Link>
+            <a href="#atotsugi" className="text-sm font-medium text-gray-700 hover:text-gray-900">アトツギの方へ</a>
             <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">下書きを開く</a>
             <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">相談する</a>
             <Link to="/subsidy-selection" className="rounded-xl bg-red-700 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700">シンセイ準備をはじめる</Link>
@@ -56,6 +59,7 @@ function Home() {
             <div className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
               <Link to="/subsidy-selection" className="rounded-md px-3 py-2 text-base font-medium hover:bg-gray-50">シンセイ準備</Link>
               <Link to="/phase1" className="rounded-md px-3 py-2 text-base font-medium hover:bg-gray-50">3分診断</Link>
+              <a href="#atotsugi" className="rounded-md px-3 py-2 text-base font-medium hover:bg-gray-50">アトツギの方へ</a>
               <a href="#" className="rounded-md px-3 py-2 text-base font-medium hover:bg-gray-50">下書きを開く</a>
               <a href="#" className="rounded-md px-3 py-2 text-base font-medium hover:bg-gray-50">相談する</a>
               <Link to="/subsidy-selection" className="mt-2 rounded-xl bg-red-700 px-4 py-2 text-center text-sm font-semibold text-white shadow hover:bg-red-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700">シンセイ準備をはじめる</Link>
@@ -166,20 +170,164 @@ function Home() {
         </section>
 
         {/* アトツギ導線 */}
-        <section id="atotsugi" className="bg-white" aria-labelledby="atotsugi-title">
-          <div className="mx-auto max-w-7xl px-4 py-16 lg:px-6">
-            <h2 id="atotsugi-title" className="text-2xl font-bold tracking-tight sm:text-3xl">事業承継者（アトツギ）の方へ</h2>
-            <div className="mt-6 grid items-center gap-8 lg:grid-cols-3">
-              <div className="lg:col-span-2">
-                <p className="text-gray-700">「アトツギ甲子園」への挑戦をサポートする特別メニューをご用意しています。壁打ち相談（アンバサダー制度）で、ドラフトの磨き込みから提出まで伴走します。</p>
-                <div className="mt-6">
-                  <a href="#" className="rounded-xl bg-indigo-700 px-5 py-3 text-white font-semibold shadow hover:bg-indigo-800">アトツギ甲子園について詳しく見る</a>
+        <section id="atotsugi" className="bg-white border-y border-gray-200" aria-labelledby="atotsugi-title">
+          <div className="mx-auto max-w-7xl px-4 py-12 lg:px-6">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center rounded-full bg-orange-100 px-3 py-1 text-sm font-medium text-orange-800 mb-3">
+                <svg className="mr-1 h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                特別メニュー
+              </div>
+              <h2 id="atotsugi-title" className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl mb-3">
+                事業承継者（アトツギ）の方へ
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                アトツギ甲子園への申請サポートメニューもご用意しています。<br />
+                中小企業庁長官任命の「アトツギ甲子園地域アンバサダー」が皆さんの挑戦をサポートします。
+              </p>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-3">
+              {/* 左側：加点措置バナー */}
+              <div className="lg:col-span-1">
+                <div className="bg-black rounded-lg p-6 text-white h-full">
+                  <div className="flex items-center space-x-2 mb-4">
+                    <svg className="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <h3 className="text-xl font-bold">
+                      補助金申請が有利に！
+                    </h3>
+                  </div>
+                  <p className="text-base text-white mb-6">
+                    アトツギ甲子園の地方予選進出で、以下の補助金申請時に加点措置が適用されます
+                  </p>
+                  
+                  {/* 対象補助金をより見やすく表示 */}
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-start space-x-2">
+                      <div className="w-2 h-2 bg-yellow-400 rounded-full flex-shrink-0 mt-2"></div>
+                      <span className="text-white leading-relaxed">中小企業省力化投資補助金一般型</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <div className="w-2 h-2 bg-yellow-400 rounded-full flex-shrink-0 mt-2"></div>
+                      <span className="text-white leading-relaxed">ものづくり・商業・サービス生産性向上促進補助金</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <div className="w-2 h-2 bg-yellow-400 rounded-full flex-shrink-0 mt-2"></div>
+                      <span className="text-white leading-relaxed">事業承継・M&A補助金</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <div className="w-2 h-2 bg-yellow-400 rounded-full flex-shrink-0 mt-2"></div>
+                      <span className="text-white leading-relaxed">Go-tech事業（成長型中小企業等研究開発支援事業）</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <div className="w-2 h-2 bg-yellow-400 rounded-full flex-shrink-0 mt-2"></div>
+                      <span className="text-white leading-relaxed">中小企業新事業進出補助金</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-5 text-sm text-indigo-900">
-                <p className="font-semibold">アンバサダー連絡先</p>
-                <p className="mt-1 opacity-90">ご相談は随時承ります。フォームよりご連絡ください。</p>
-                <a href="#" className="mt-4 inline-block rounded-lg bg-white px-4 py-2 font-medium text-indigo-700 ring-1 ring-inset ring-indigo-200 hover:bg-indigo-100">相談する</a>
+
+              {/* 右側上：アトツギ甲子園サポート + 右側下：アンバサダー連絡先 */}
+              <div className="lg:col-span-2 space-y-6">
+                {/* アトツギ甲子園サポート */}
+                <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+                  <div className="flex items-start space-x-3 mb-4">
+                    <div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-gray-900 mb-2">
+                        アトツギ甲子園サポート
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        コンペティションでの成功を目指し、申請書の作成から提出まで、経験豊富なアンバサダーが徹底的にサポートします。
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2 text-sm">
+                        <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        <span className="text-gray-700">専門アンバサダーによる個別メンタリング</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm">
+                        <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        <span className="text-gray-700">ドラフト作成から最終提出まで完全伴走</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm">
+                        <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        <span className="text-gray-700">壁打ち相談でアイデアをブラッシュアップ</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center">
+                      <a href="https://atotsugi-koshien.go.jp/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center w-full rounded-lg bg-gray-800 px-4 py-3 text-sm font-semibold text-white shadow hover:bg-gray-700 transition-all duration-200">
+                        <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        アトツギ甲子園について詳しく見る
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* アンバサダー連絡カード */}
+                <div className="bg-gray-800 rounded-lg shadow-md p-6 text-white">
+                  <div className="flex items-center space-x-2 mb-4">
+                    <div className="w-6 h-6 bg-white/20 rounded flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-lg font-bold">
+                      アンバサダー連絡先
+                    </h3>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <p className="text-gray-300 text-sm mb-3">
+                        ご相談は随時承ります。経験豊富なアンバサダーが、あなたのアトツギ挑戦をサポートします。
+                      </p>
+                      
+                      <div className="bg-white/10 rounded-lg p-3 space-y-1">
+                        <div className="flex items-center space-x-2 text-gray-300 text-xs">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span>対応時間: 平日 9:00-18:00</span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-gray-300 text-xs">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                          </svg>
+                          <span>初回相談無料</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center">
+                      <a href="#" className="inline-flex items-center justify-center w-full rounded-lg bg-white px-4 py-3 text-sm font-semibold text-gray-800 shadow hover:bg-gray-100 transition-all duration-200">
+                        <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        今すぐ相談する
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -194,8 +342,8 @@ function Home() {
               <img src="/shinseider_logo.png" alt="Shinseider" className="h-12 w-auto" />
             </div>
             <nav className="flex flex-wrap items-center gap-x-6 gap-y-2" aria-label="フッターナビ">
-              <a href="#" className="hover:text-gray-900">運営者情報</a>
-              <a href="#" className="hover:text-gray-900">プライバシーポリシー</a>
+              <Link to="/operator-info" className="hover:text-gray-900">運営者情報</Link>
+              <Link to="/privacy-policy" className="hover:text-gray-900">プライバシーポリシー</Link>
               <a href="#" className="hover:text-gray-900">お問い合わせ</a>
             </nav>
           </div>
@@ -263,6 +411,8 @@ export default function App() {
           <Route path="/phase1" element={<Phase1 />} />
           <Route path="/subsidy-selection" element={<SubsidySelection />} />
           <Route path="/subsidy-application-support/:subsidyId" element={<SubsidyApplicationSupport />} />
+          <Route path="/operator-info" element={<OperatorInfo />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         </Routes>
       </div>
     </Router>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const questions = [
   {
@@ -213,85 +214,211 @@ function Phase1() {
   };
 
   if (isLoading) {
-    return <div>データを読み込み中...</div>;
+    return (
+      <div className="min-h-screen bg-white">
+        <div className="mx-auto max-w-4xl px-4 py-16">
+          <div className="flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
+            <span className="ml-3 text-lg text-gray-600">診断データを読み込み中...</span>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (completed) {
     return (
-      <div>
-        <h2>診断完了</h2>
-        <p>すべての質問に回答しました。</p>
-        <button onClick={downloadWord}>Wordファイルをダウンロード</button>
+      <div className="min-h-screen bg-white">
+        <div className="bg-gradient-to-r from-green-50 to-green-100 border-b border-green-200">
+          <div className="mx-auto max-w-4xl px-4 py-12">
+            <div className="text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-600">
+                <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                診断完了
+              </h1>
+              <p className="mt-4 text-lg leading-8 text-gray-600">
+                すべての質問に回答していただき、ありがとうございました。<br />
+                診断結果をWordファイルでダウンロードできます。
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="mx-auto max-w-4xl px-4 py-12">
+          <div className="text-center space-y-6">
+            <button 
+              onClick={downloadWord}
+              className="inline-flex items-center rounded-xl bg-red-600 px-8 py-4 text-lg font-semibold text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200"
+            >
+              <svg className="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              診断レポートをダウンロード
+            </button>
+            
+            <div className="mt-8">
+              <Link 
+                to="/"
+                className="text-gray-600 hover:text-gray-900 font-medium"
+              >
+                ホームに戻る
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <h2>3分診断</h2>
-      
-      {/* データ保存状況の表示 */}
-      {lastSaved && (
-        <div style={{ 
-          backgroundColor: '#e8f5e8', 
-          padding: '10px', 
-          marginBottom: '20px', 
-          borderRadius: '5px',
-          fontSize: '14px'
-        }}>
-          <strong>✓ データが自動保存されています</strong><br />
-          最終保存: {lastSaved.toLocaleString()}
+    <div className="min-h-screen bg-white">
+      {/* ヘッダー部分 */}
+      <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-b border-blue-200">
+        <div className="mx-auto max-w-4xl px-4 py-8">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              3分診断
+            </h1>
+            <p className="mt-4 text-lg leading-8 text-gray-600">
+              事業承継に関する質問にお答えください。<br />
+              あなたに最適な補助金をレコメンドします。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-4xl px-4 py-8">
+        {/* データ保存状況の表示 */}
+        {lastSaved && (
+          <div className="mb-6 rounded-lg bg-green-50 border border-green-200 p-4">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3 flex-1">
+                <h3 className="text-sm font-medium text-green-800">
+                  データが自動保存されています
+                </h3>
+                <p className="mt-1 text-sm text-green-700">
+                  最終保存: {lastSaved.toLocaleString()}
+                </p>
+              </div>
+              <div className="ml-4 flex-shrink-0">
+                <button 
+                  onClick={clearSavedData}
+                  className="rounded-md bg-red-600 px-3 py-2 text-xs font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                >
+                  データ削除
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* 進捗表示 */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+            <span>質問 {currentQuestion + 1} / {questions.length}</span>
+            <span>{Math.round(((currentQuestion + 1) / questions.length) * 100)}% 完了</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div 
+              className="bg-red-600 h-2 rounded-full transition-all duration-300 ease-out" 
+              style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
+            ></div>
+          </div>
+        </div>
+
+        {/* 質問カード */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8 mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            {questions[currentQuestion].question}
+          </h2>
+          
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <p className="text-sm text-blue-800 leading-relaxed">
+              <svg className="inline h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <strong>記入例:</strong> {questions[currentQuestion].example_hint}
+            </p>
+          </div>
+
+          {questions[currentQuestion].type === 'choice' ? (
+            <div className="space-y-3 mb-8">
+              {questions[currentQuestion].options.map((option, index) => (
+                <label 
+                  key={index}
+                  className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                >
+                  <input
+                    type="radio"
+                    name="choice"
+                    value={option}
+                    checked={answers[currentQuestion] === option}
+                    onChange={handleAnswer}
+                    className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300"
+                  />
+                  <span className="ml-3 text-gray-900">{option}</span>
+                </label>
+              ))}
+            </div>
+          ) : (
+            <div className="mb-8">
+              <textarea
+                value={answers[currentQuestion]}
+                onChange={handleAnswer}
+                rows="8"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none"
+                placeholder="ここに回答を入力してください..."
+              />
+            </div>
+          )}
+        </div>
+
+        {/* ナビゲーションボタン */}
+        <div className="flex justify-between items-center">
+          <div>
+            {currentQuestion > 0 && (
+              <button 
+                onClick={prevQuestion}
+                className="inline-flex items-center rounded-md border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              >
+                <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                前へ
+              </button>
+            )}
+          </div>
+          
           <button 
-            onClick={clearSavedData}
-            style={{ 
-              marginLeft: '10px', 
-              padding: '5px 10px', 
-              backgroundColor: '#ff6b6b', 
-              color: 'white', 
-              border: 'none', 
-              borderRadius: '3px',
-              cursor: 'pointer'
-            }}
+            onClick={nextQuestion}
+            className="inline-flex items-center rounded-md bg-red-600 px-6 py-3 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
           >
-            データ削除
+            {currentQuestion === questions.length - 1 ? '診断完了' : '次へ'}
+            <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7-7 7" />
+            </svg>
           </button>
         </div>
-      )}
-      
-      <div>
-        <p>質問 {currentQuestion + 1} / {questions.length}</p>
-        <h3>{questions[currentQuestion].question}</h3>
-        <p className="example-hint">{questions[currentQuestion].example_hint}</p>
-        {questions[currentQuestion].type === 'choice' ? (
-          <div>
-            {questions[currentQuestion].options.map((option, index) => (
-              <div key={index}>
-                <input
-                  type="radio"
-                  id={option}
-                  name="choice"
-                  value={option}
-                  checked={answers[currentQuestion] === option}
-                  onChange={handleAnswer}
-                />
-                <label htmlFor={option}>{option}</label>
-              </div>
-            ))}
+
+        {/* 下部ナビゲーション */}
+        <div className="mt-12 pt-8 border-t border-gray-200">
+          <div className="text-center">
+            <Link
+              to="/"
+              className="text-sm text-gray-500 hover:text-gray-700"
+            >
+              ホームに戻る
+            </Link>
           </div>
-        ) : (
-          <textarea
-            value={answers[currentQuestion]}
-            onChange={handleAnswer}
-            rows="10"
-            cols="80"
-            placeholder="ここに回答を入力してください..."
-          />
-        )}
-        <div>
-          {currentQuestion > 0 && <button onClick={prevQuestion}>前へ</button>}
-          <button onClick={nextQuestion}>
-            {currentQuestion === questions.length - 1 ? '完了' : '次へ'}
-          </button>
         </div>
       </div>
     </div>
