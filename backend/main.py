@@ -13,7 +13,7 @@ import yaml
 from typing import Dict, Any
 from fastapi.middleware.cors import CORSMiddleware
 from middleware.security import SecurityMiddleware, ErrorHandlingMiddleware, RateLimitMiddleware
-from models import DesireRequest, ApplicationAdviceRequest, TextbookRequest, BusinessPlanRequest
+from models import DesireRequest, ApplicationAdviceRequest, TextbookRequest, BusinessPlanRequest, ContactRequest
 from secure_file_utils import get_secure_file_manager
 from config import settings
 import logging
@@ -544,3 +544,60 @@ async def generate_business_plan(business_plan_request: BusinessPlanRequest):
     except Exception as e:
         security_logger.error(f"Failed to generate business plan: {e}")
         raise HTTPException(status_code=500, detail="Failed to generate business plan")
+
+@app.post("/send_contact")
+async def send_contact(contact_request: ContactRequest):
+    """お問い合わせメールを送信"""
+    try:
+        import aiosmtplib
+        from email.message import EmailMessage
+        import os
+        
+        security_logger.info("Contact form submission received")
+        
+        # Gmail SMTP設定
+        SMTP_HOST = "smtp.gmail.com"
+        SMTP_PORT = 587
+        SMTP_USER = os.getenv("GMAIL_USER")  # Gmailアドレス
+        SMTP_PASS = os.getenv("GMAIL_APP_PASSWORD")  # アプリパスワード
+        TO_EMAIL = SMTP_USER  # 自分宛に送信
+        
+        if not SMTP_USER or not SMTP_PASS:
+            raise HTTPException(status_code=500, detail="Mail configuration not found")
+        
+        # メール内容作成
+        message = EmailMessage()
+        message["From"] = SMTP_USER
+        message["To"] = TO_EMAIL
+        message["Subject"] = f"【シンセイダー】{contact_request.subject}"
+        
+        body = f"""シンセイダーからのお問い合わせです。
+
+お名前: {contact_request.name}
+メールアドレス: {contact_request.email}
+件名: {contact_request.subject}
+
+メッセージ:
+{contact_request.message}
+
+---
+送信日時: {__import__('datetime').datetime.now().strftime('%Y年%m月%d日 %H:%M:%S')}
+"""
+        message.set_content(body)
+        
+        # メール送信
+        await aiosmtplib.send(
+            message,
+            hostname=SMTP_HOST,
+            port=SMTP_PORT,
+            start_tls=True,
+            username=SMTP_USER,
+            password=SMTP_PASS
+        )
+        
+        security_logger.info(f"Contact email sent successfully from {contact_request.email}")
+        return {"message": "お問い合わせを送信しました", "success": True}
+        
+    except Exception as e:
+        security_logger.error(f"Failed to send contact email: {e}")
+        raise HTTPException(status_code=500, detail="メール送信に失敗しました")

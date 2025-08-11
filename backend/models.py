@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, EmailStr
 from typing import List, Dict, Optional, Any
 import re
 
@@ -111,4 +111,20 @@ class ApplicationAdvice(BaseModel):
         for item in v:
             if 'item' not in item or 'feedback' not in item:
                 raise ValueError("Invalid advice item format")
+        return v
+
+class ContactRequest(BaseModel):
+    """お問い合わせフォームリクエストモデル"""
+    name: str = Field(..., max_length=100, description="お名前")
+    email: EmailStr = Field(..., description="メールアドレス")
+    subject: str = Field(..., max_length=200, description="件名")
+    message: str = Field(..., max_length=2000, description="メッセージ")
+    
+    @validator('name', 'subject', 'message')
+    def validate_content(cls, v):
+        """危険な文字を含まないことを確認"""
+        dangerous_chars = ['<', '>', '"', "'", '&', 'script', 'javascript']
+        for char in dangerous_chars:
+            if char.lower() in v.lower():
+                raise ValueError(f"Dangerous content detected: {char}")
         return v

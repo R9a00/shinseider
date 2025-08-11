@@ -10,6 +10,10 @@ services:
         value: "3.9.19"
       - key: CORS_ORIGIN
         value: "https://shinseider-web-v1.onrender.com"
+      - key: GMAIL_USER
+        value: "shinseider@gmail.com"
+      - key: GMAIL_APP_PASSWORD
+        value: "tuto rudl jimx xghb"
 
   - type: web
     name: shinseider-web-v1

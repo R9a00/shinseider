@@ -6,6 +6,7 @@ import SubsidyApplicationSupport from './components/SubsidyApplicationSupport';
 import OperatorInfo from './components/OperatorInfo';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import UpdateHistory from './components/UpdateHistory';
+import Contact from './components/Contact';
 
 
 // ──────────────────────────────────────────────────────────────
@@ -326,7 +327,7 @@ function Home() {
               <Link to="/operator-info" className="hover:text-gray-900">運営者情報</Link>
               <Link to="/update-history" className="hover:text-gray-900">情報更新履歴・参照元</Link>
               <Link to="/privacy-policy" className="hover:text-gray-900">プライバシーポリシー</Link>
-              <button className="hover:text-gray-900 bg-transparent border-none p-0">お問い合わせ</button>
+              <Link to="/contact" className="hover:text-gray-900">お問い合わせ</Link>
             </nav>
           </div>
           <p className="mt-6 text-xs text-gray-400">© {new Date().getFullYear()} Shinseider. All rights reserved.</p>
@@ -381,6 +382,7 @@ export default function App() {
           <Route path="/operator-info" element={<OperatorInfo />} />
           <Route path="/update-history" element={<UpdateHistory />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </div>
     </Router>

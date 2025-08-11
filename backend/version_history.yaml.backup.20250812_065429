@@ -1,0 +1,112 @@
+# 補助金情報更新履歴とメタデータ
+metadata:
+  last_updated: "2025-01-11"
+  version: "1.0.0"
+  maintainer: "シンセイダー運営チーム"
+
+subsidies:
+  shinjigyo_shinshutsu:
+    version: "1.0.0"
+    last_updated: "2025-01-11"
+    source_references:
+      - title: "中小企業新事業進出補助金公募要領"
+        url: "https://example-official-site.go.jp/guideline.pdf"
+        accessed_date: "2025-01-11"
+        version: "令和7年度版"
+    change_history:
+      - version: "1.0.0"
+        date: "2025-01-11"
+        changes: "初回作成"
+        author: "シンセイダー運営チーム"
+        reference_updated: true
+
+  atotsugi:
+    version: "1.2.0"
+    last_updated: "2025-01-11"
+    source_references:
+      - title: "アトツギ甲子園公式サイト"
+        url: "https://atotsugi-koshien.go.jp/"
+        accessed_date: "2025-01-11"
+        version: "最新版"
+      - title: "アトツギ甲子園エントリー要領"
+        url: "https://atotsugi-koshien.go.jp/entry-guide"
+        accessed_date: "2025-01-11"
+        version: "第7回大会版"
+    change_history:
+      - version: "1.2.0"
+        date: "2025-01-11"
+        changes: "micro_tasksの充実化、収益モデル項目の詳細化"
+        author: "シンセイダー運営チーム"
+        reference_updated: true
+      - version: "1.1.0"
+        date: "2025-01-05"
+        changes: "バリデーションルール追加"
+        author: "シンセイダー運営チーム"
+        reference_updated: false
+
+  monodukuri_r7_21th:
+    version: "1.0.0"
+    last_updated: "2025-01-11"
+    source_references:
+      - title: "ものづくり・商業・サービス生産性向上促進補助金公募要領"
+        url: "https://portal.monodukuri-hojo.jp/"
+        accessed_date: "2025-01-11"
+        version: "令和7年度第21次公募版"
+    change_history:
+      - version: "1.0.0"
+        date: "2025-01-11"
+        changes: "初回作成（令和7年度第21次公募対応）"
+        author: "シンセイダー運営チーム"
+        reference_updated: true
+
+  jigyou_shoukei_ma:
+    version: "1.0.0"
+    last_updated: "2025-01-11"
+    source_references:
+      - title: "事業承継・M&A補助金（専門家活用枠）公募要領"
+        url: "https://jigyo-shokei.go.jp/"
+        accessed_date: "2025-01-11"
+        version: "令和7年度版"
+    change_history:
+      - version: "1.0.0"
+        date: "2025-01-11"
+        changes: "初回作成"
+        author: "シンセイダー運営チーム"
+        reference_updated: true
+
+  gotech_rd_support:
+    version: "1.0.0"
+    last_updated: "2025-01-11"
+    source_references:
+      - title: "Go-Tech事業公募要領"
+        url: "https://www.chusho.meti.go.jp/keiei/sapoin/2024/240401gotech.html"
+        accessed_date: "2025-01-11"
+        version: "令和6年度版"
+    change_history:
+      - version: "1.0.0"
+        date: "2025-01-11"
+        changes: "初回作成"
+        author: "シンセイダー運営チーム"
+        reference_updated: true
+
+  shoukuritsuka_ippan:
+    version: "1.0.0"
+    last_updated: "2025-01-11"
+    source_references:
+      - title: "中小企業省力化投資補助金公募要領"
+        url: "https://shoryokuka.smrj.go.jp/"
+        accessed_date: "2025-01-11"
+        version: "一般型 第1次公募版"
+    change_history:
+      - version: "1.0.0"
+        date: "2025-01-11"
+        changes: "初回作成"
+        author: "シンセイダー運営チーム"
+        reference_updated: true
+
+# 全体的な更新方針
+update_policy:
+  check_frequency: "月1回"
+  priority_subsidies: ["atotsugi", "monodukuri_r7_21th", "shoukuritsuka_ippan"]
+  notification_required: true
+  backup_before_update: true
