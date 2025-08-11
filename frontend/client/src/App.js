@@ -46,13 +46,17 @@ function Home() {
   aria-label="グローバルヘッダー"
 >
   <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 md:py-3 lg:px-6">
-    {/* ロゴ（ロゴマーク＋ロゴタイプの可読サイズを維持） */}
-    <Link to="/" className="flex items-center gap-2" aria-label="Shinseider ホーム">
+    {/* ロゴ + タグライン */}
+    <Link to="/" className="flex items-center gap-3" aria-label="シンセイダー - 補助金申請のハードルを下げる。">
       <img
         src="/shinseider_logo.png"
-        alt="Shinseider"
+        alt="シンセイダー"
         className={`h-32 w-auto ${scrolled ? 'h-24' : 'h-32'}`}
       />
+      <span className="hidden md:inline-block h-4 w-px bg-slate-300"></span>
+      <span className="hidden md:inline-block text-sm leading-none text-slate-600 tracking-tight">
+        補助金申請のハードルを下げる。
+      </span>
     </Link>
 
     {/* ナビ（デスクトップ） */}
