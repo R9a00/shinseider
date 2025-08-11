@@ -315,7 +315,7 @@ function SubsidySelection() {
                   どの補助金が適しているか迷っていますか？
                 </h3>
                 <p className="text-gray-600">
-                  3分診断で、あなたに最適な補助金を見つけることができます
+                  30秒診断で、あなたに最適な補助金を見つけることができます
                 </p>
               </div>
               
@@ -327,7 +327,7 @@ function SubsidySelection() {
                   <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
-                  3分診断を試す
+                  30秒診断を試す
                 </Link>
                 
                 <Link

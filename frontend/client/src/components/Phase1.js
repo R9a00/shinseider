@@ -3,22 +3,16 @@ import { Link } from 'react-router-dom';
 
 const questions = [
   {
-    question: 'あなたは事業の後継者（アトツギ）ですか？',
+    question: 'あなたの会社の業界を教えてください',
     type: 'choice',
-    options: ['はい、後継者です', 'いいえ、後継者ではありません'],
-    key: 'is_successor'
+    options: ['製造業', '建設業', '情報通信業', '小売業', '卸売業', 'サービス業', '飲食業', '医療・介護', '教育', '運輸業', 'その他'],
+    key: 'industry'
   },
   {
     question: 'あなたの年齢を教えてください',
     type: 'choice',
     options: ['20代', '30代', '40代', '50代', '60代以上'],
     key: 'age'
-  },
-  {
-    question: 'あなたの会社の業界を教えてください',
-    type: 'choice',
-    options: ['製造業', '建設業', '情報通信業', '小売業', '卸売業', 'サービス業', '飲食業', '医療・介護', '教育', '運輸業', 'その他'],
-    key: 'industry'
   },
   {
     question: '従業員数を教えてください',
@@ -31,6 +25,12 @@ const questions = [
     type: 'multiple',
     options: ['新製品・サービスの開発', '設備投資・機械導入', 'ITシステム導入', '工場・店舗の自動化', '環境対応・省エネ', '人材育成・スキルアップ', '海外展開', '事業承継', 'どれも該当しない'],
     key: 'initiatives'
+  },
+  {
+    question: 'あなたもしくはご家族で事業承継について関心がありますか？',
+    type: 'choice',
+    options: ['はい、事業承継予定者です', 'はい、検討中です', 'はい、情報収集段階です', 'いいえ、関心はありません'],
+    key: 'is_successor'
   },
   {
     question: '予定している投資規模はどれくらいですか？',
@@ -183,6 +183,28 @@ function Phase1() {
     setLastSaved(null);
   };
 
+  const getSubsidyLink = (subsidyName) => {
+    // 補助金名から適切なsubsidyIdを取得してリンクを生成
+    if (subsidyName.includes('アトツギ甲子園')) {
+      return '/subsidy-application-support/atotsugi';
+    } else if (subsidyName.includes('ものづくり')) {
+      return '/subsidy-application-support/monodukuri_r7_21th';
+    } else if (subsidyName.includes('省力化')) {
+      return '/subsidy-application-support/shoukuritsuka_ippan';
+    } else if (subsidyName.includes('Go-tech') || subsidyName.includes('Go-Tech')) {
+      return '/subsidy-application-support/gotech_rd_support';
+    } else if (subsidyName.includes('事業承継')) {
+      return '/subsidy-application-support/jigyou_shoukei_ma';
+    } else if (subsidyName.includes('人材開発')) {
+      return '/subsidy-application-support/jinzaikaihatsu';
+    } else if (subsidyName.includes('海外展開') || subsidyName.includes('新事業進出')) {
+      return '/subsidy-application-support/shinjigyo_shinshutsu';
+    } else {
+      // デフォルトは一覧ページ
+      return '/subsidy-selection';
+    }
+  };
+
   const getRecommendations = () => {
     const diagnosisResults = JSON.parse(localStorage.getItem('diagnosis_results') || '[]');
     const responses = {};
@@ -197,7 +219,6 @@ function Phase1() {
     const recommendations = [];
     const initiatives = responses.initiatives || [];
     const industry = responses.industry;
-    const employees = responses.employees;
     const investment = responses.investment_scale;
     const priority = responses.priority;
     
@@ -249,7 +270,7 @@ function Phase1() {
     }
     
     // アトツギ甲子園特別推奨（後継者かつ年齢条件を満たす場合）
-    if (responses.is_successor === 'はい、後継者です' && 
+    if (responses.is_successor === 'はい、事業承継予定者です' && 
         (responses.age === '20代' || responses.age === '30代' || 
          (responses.age === '40代' && new Date().getFullYear() - 1980 <= 40))) { // 簡略的な40歳以下判定
       recommendations.unshift({
@@ -282,13 +303,15 @@ function Phase1() {
       }
     }
     
-    // 人材育成関連
+    // 人材育成関連は他の補助金で対応
     if (initiatives.includes('人材育成・スキルアップ')) {
-      recommendations.push({
-        name: '人材開発支援助成金',
-        reason: '従業員のスキルアップや資格取得を支援。',
-        match_score: 80
-      });
+      if (!recommendations.some(r => r.name.includes('ものづくり'))) {
+        recommendations.push({
+          name: 'ものづくり・商業・サービス生産性向上促進補助金',
+          reason: '人材育成を含む生産性向上の取り組みを支援。',
+          match_score: 75
+        });
+      }
     }
     
     // 海外展開関連
@@ -431,7 +454,7 @@ function Phase1() {
                         </div>
                         <p className="text-gray-600 mb-4">{rec.reason}</p>
                         <Link
-                          to={rec.name.includes('アトツギ甲子園') ? '/subsidy-application-support/atotsugi' : '/subsidy-selection'}
+                          to={getSubsidyLink(rec.name)}
                           className={`inline-flex items-center font-medium ${
                             isSpecial ? 'text-yellow-700 hover:text-yellow-800' : 'text-red-600 hover:text-red-700'
                           }`}
@@ -479,7 +502,7 @@ function Phase1() {
         <div className="mx-auto max-w-4xl px-4 py-8">
           <div className="text-center">
             <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              3分診断
+              30秒診断
             </h1>
             <p className="mt-4 text-lg leading-8 text-gray-600">
               5つの簡単な質問にお答えください。<br />

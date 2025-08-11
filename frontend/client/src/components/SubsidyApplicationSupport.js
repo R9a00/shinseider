@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import config from '../config';
 
@@ -17,7 +17,191 @@ function SubsidyApplicationSupport() {
   const [validation, setValidation] = useState({});
   const [checklist, setChecklist] = useState([]);
   const [tasks, setTasks] = useState({});
-  const [checklistState, setChecklistState] = useState({});
+  const [diagnosisData, setDiagnosisData] = useState(null);
+  const [attachments, setAttachments] = useState([]);
+
+  // Pre-fill form fields based on diagnosis data
+  const prefillFromDiagnosis = useCallback((diagnosis) => {
+    const prefilledAnswers = {};
+    
+    // Map diagnosis data to relevant form fields
+    if (diagnosis.industry) {
+      prefilledAnswers['industry'] = diagnosis.industry;
+    }
+    if (diagnosis.employees) {
+      prefilledAnswers['employee_count'] = diagnosis.employees;
+    }
+    if (diagnosis.initiatives && Array.isArray(diagnosis.initiatives)) {
+      prefilledAnswers['business_goals'] = diagnosis.initiatives.join('、');
+    }
+    if (diagnosis.investment_scale) {
+      prefilledAnswers['investment_amount'] = diagnosis.investment_scale;
+    }
+    if (diagnosis.timeline) {
+      prefilledAnswers['implementation_timeline'] = diagnosis.timeline;
+    }
+    
+    // For Atotsugi specific data
+    if (subsidyId === 'atotsugi' && diagnosis.is_successor) {
+      if (diagnosis.is_successor === 'はい、事業承継予定者です') {
+        prefilledAnswers['MINI_002_SUCCESSION_PLAN'] = 'あり';
+      } else if (diagnosis.is_successor === 'はい、検討中です') {
+        prefilledAnswers['MINI_002_SUCCESSION_PLAN'] = '検討中';
+      } else if (diagnosis.is_successor === 'はい、情報収集段階です') {
+        prefilledAnswers['MINI_002_SUCCESSION_PLAN'] = '検討中';
+      } else {
+        prefilledAnswers['MINI_002_SUCCESSION_PLAN'] = 'なし';
+      }
+    }
+    
+    setAnswers(prev => ({ ...prev, ...prefilledAnswers }));
+  }, [subsidyId]);
+
+  // Load diagnosis data from 30-second diagnosis
+  const loadDiagnosisData = useCallback(() => {
+    try {
+      const diagnosisResults = localStorage.getItem('diagnosis_results');
+      if (diagnosisResults) {
+        const parsedResults = JSON.parse(diagnosisResults);
+        const diagnosisObj = {};
+        parsedResults.forEach(item => {
+          diagnosisObj[item.key] = item.answer;
+        });
+        setDiagnosisData(diagnosisObj);
+        
+        // Pre-fill relevant fields based on diagnosis data
+        prefillFromDiagnosis(diagnosisObj);
+      }
+    } catch (error) {
+      console.error('診断データの読み込みに失敗:', error);
+    }
+  }, [prefillFromDiagnosis]);
+
+  // Classify checklist items by type
+  const classifyChecklistItems = () => {
+    const needSupport = [
+      '賃金引上げ計画の表明書',
+      '賃金引上げ計画',
+      '誓約書',
+      '年率平均1.5%以上増加',
+      '最低賃金+30円以上',
+      '次世代法に基づく行動計画'
+    ];
+    
+    const needDiscussion = [
+      '生産性向上が期待',
+      '革新的な製品・サービス開発',
+      '生産プロセス改善'
+    ];
+    
+    const autoCheck = [
+      '中小企業基本法',
+      '中小企業の定義',
+      '日本国内',
+      '補助事業実施場所'
+    ];
+
+    return checklist.map(item => {
+      if (needSupport.some(keyword => item.includes(keyword))) {
+        return { item, category: 'support', icon: '🆘' };
+      } else if (needDiscussion.some(keyword => item.includes(keyword))) {
+        return { item, category: 'discussion', icon: '💬' };
+      } else if (autoCheck.some(keyword => item.includes(keyword))) {
+        return { item, category: 'auto', icon: '✅' };
+      } else {
+        return { item, category: 'manual', icon: '□' };
+      }
+    });
+  };
+
+  // Download checklist as text file
+  const downloadChecklist = () => {
+    const today = new Date().toLocaleDateString('ja-JP');
+    let content = `${subsidyName} - 申請準備完全ガイド\n`;
+    content += `作成日: ${today}\n`;
+    content += `============================================\n\n`;
+    
+    const classifiedItems = classifyChecklistItems();
+    
+    content += `【サポートが必要な項目】\n`;
+    content += `※専門知識が必要な項目です\n`;
+    content += `-------------------------------------------\n`;
+    classifiedItems.filter(c => c.category === 'support').forEach(c => {
+      content += `🆘 ${c.item}\n   → 社労士や専門家にご相談ください\n\n`;
+    });
+    
+    content += `\n【相談・検討が必要な項目】\n`;
+    content += `※事業内容の精査が必要です\n`;
+    content += `-------------------------------------------\n`;
+    classifiedItems.filter(c => c.category === 'discussion').forEach(c => {
+      content += `💬 ${c.item}\n   → 事業計画を詳しく検討してください\n\n`;
+    });
+    
+    content += `\n【手動確認項目】\n`;
+    content += `※ご自身で確認してください\n`;
+    content += `-------------------------------------------\n`;
+    classifiedItems.filter(c => c.category === 'manual').forEach(c => {
+      content += `□ ${c.item}\n\n`;
+    });
+    
+    content += `\n【自動確認済み項目】\n`;
+    content += `※システムで確認済みです\n`;
+    content += `-------------------------------------------\n`;
+    classifiedItems.filter(c => c.category === 'auto').forEach(c => {
+      content += `✅ ${c.item}\n\n`;
+    });
+    
+    if (attachments.length > 0) {
+      content += `\n【必要書類一覧】\n`;
+      content += `============================================\n`;
+      attachments.forEach((doc, index) => {
+        content += `${doc.severity === 'block' ? '●' : '○'} ${doc.desc}\n`;
+        if (doc.severity === 'block') {
+          content += `   ※必須書類\n`;
+        }
+        content += `\n`;
+      });
+    }
+    
+    if (tasks.milestones) {
+      content += `\n【申請準備スケジュール】\n`;
+      content += `============================================\n`;
+      tasks.milestones.forEach(milestone => {
+        const deadline = `申請${milestone.lead.replace('P-', '').replace('d', '')}日前`;
+        content += `• ${milestone.name}\n`;
+        content += `  期限: ${deadline}\n\n`;
+      });
+    }
+    
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${subsidyName}_申請準備完全ガイド_${today.replace(/\//g, '')}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Download task schedule as CSV
+  const downloadTaskSchedule = () => {
+    const today = new Date().toLocaleDateString('ja-JP');
+    let csvContent = `タスク名,期限,説明\n`;
+    
+    if (tasks.milestones) {
+      tasks.milestones.forEach(milestone => {
+        const deadline = `申請${milestone.lead.replace('P-', '').replace('d', '')}日前`;
+        csvContent += `"${milestone.name}","${deadline}","${milestone.id}"\n`;
+      });
+    }
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${subsidyName}_タスクスケジュール_${today.replace(/\//g, '')}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   useEffect(() => {
     const fetchSubsidyData = async () => {
@@ -32,13 +216,12 @@ function SubsidyApplicationSupport() {
         setValidation(sectionsData.validation || {});
         setChecklist(sectionsData.checklist || []);
         setTasks(sectionsData.tasks || {});
+        setAttachments(sectionsData.validation?.attachments || []);
         
         // Initialize checklist state
-        const initialChecklistState = {};
-        (sectionsData.checklist || []).forEach((_, index) => {
-          initialChecklistState[index] = false;
-        });
-        setChecklistState(initialChecklistState);
+
+        // Load diagnosis data from localStorage if available
+        loadDiagnosisData();
 
         const metadataResponse = await fetch(`${config.API_BASE_URL}/subsidies/${subsidyId}/metadata`);
         if (metadataResponse.ok) {
@@ -55,7 +238,7 @@ function SubsidyApplicationSupport() {
     if (subsidyId) {
       fetchSubsidyData();
     }
-  }, [subsidyId]);
+  }, [subsidyId, loadDiagnosisData]);
 
 
   const handleAnswerChange = (sectionId, value, taskId = null) => {
@@ -152,19 +335,38 @@ function SubsidyApplicationSupport() {
   const renderMicroTask = (section, task, sectionIndex, taskIndex) => {
     const currentValue = answers[section.id]?.[task.task_id] || '';
     
-    // 条件付きレンダリングのチェック
+    // 条件付きレンダリングのチェック（開発モードでは全て表示）
     if (task.conditional_on && task.conditional_value) {
       const conditionValue = answers[section.id]?.[task.conditional_on];
-      if (Array.isArray(conditionValue)) {
-        // multi_selectの場合
-        if (!conditionValue.includes(task.conditional_value)) {
-          return null; // 非表示
+      
+      // 開発・デバッグ用：条件を満たさない場合でも薄く表示
+      const shouldShow = (() => {
+        if (Array.isArray(conditionValue)) {
+          // multi_selectの場合
+          return conditionValue && conditionValue.includes(task.conditional_value);
+        } else {
+          // selectの場合
+          return conditionValue === task.conditional_value;
         }
-      } else {
-        // selectの場合
-        if (conditionValue !== task.conditional_value) {
-          return null; // 非表示
-        }
+      })();
+      
+      // 条件を満たさない場合は薄く表示（完全非表示にしない）
+      if (!shouldShow) {
+        return (
+          <div key={task.task_id} className="border-b border-gray-100 last:border-b-0 p-4 opacity-50">
+            <div className="flex items-start space-x-3">
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-xs font-medium text-gray-400">
+                {taskIndex + 1}
+              </span>
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
+                  {task.label} <span className="text-xs">(条件待ち: {task.conditional_on} = {task.conditional_value})</span>
+                </label>
+                <p className="text-xs text-gray-400">この項目は「{task.conditional_on}」で「{task.conditional_value}」を選択すると入力可能になります。</p>
+              </div>
+            </div>
+          </div>
+        );
       }
     }
     
@@ -706,7 +908,11 @@ function SubsidyApplicationSupport() {
           subsidy_id: subsidyId, 
           subsidy_name: subsidyName,
           answers: processGuidedAnswers(), 
-          progress: getProgressPercentage()
+          progress: getProgressPercentage(),
+          checklist: checklist,
+          tasks: tasks,
+          attachments: attachments,
+          diagnosis_data: diagnosisData
         })
       });
       if (!response.ok) {
@@ -926,6 +1132,26 @@ function SubsidyApplicationSupport() {
       </div>
 
       <div className="mx-auto max-w-4xl px-4 py-8">
+        {/* 診断データからの事前入力通知 */}
+        {diagnosisData && (
+          <div className="mb-6 rounded-lg bg-blue-50 border border-blue-200 p-4">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3 flex-1">
+                <h3 className="text-sm font-medium text-blue-800">
+                  30秒診断の結果を反映
+                </h3>
+                <p className="mt-1 text-sm text-blue-700">
+                  30秒診断で入力されたデータ（業界：{diagnosisData.industry}、従業員数：{diagnosisData.employees}など）を自動的に反映しました。必要に応じて修正してください。
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
         {!showOutputOptions ? (
           <div>
             {/* アトツギ甲子園の場合の入力モード切り替え */}
@@ -996,6 +1222,138 @@ function SubsidyApplicationSupport() {
               <div className="space-y-6">
                 {sections.map((section, index) => renderSection(section, index))}
               </div>
+
+              {/* Checklist Section - Downloadable */}
+              {(checklist.length > 0 || attachments.length > 0) && (
+                <div className="bg-yellow-50 rounded-lg p-6 border border-yellow-200">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                      <svg className="mr-2 h-5 w-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      提出前チェックリスト
+                    </h3>
+                    <button
+                      onClick={downloadChecklist}
+                      className="inline-flex items-center px-3 py-2 border border-yellow-300 rounded-md shadow-sm text-sm font-medium text-yellow-800 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                    >
+                      <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      ダウンロード
+                    </button>
+                  </div>
+                  
+                  {checklist.length > 0 && (
+                    <div className="mb-6">
+                      <h4 className="font-medium text-gray-900 mb-3">提出前確認事項（分類別）</h4>
+                      <div className="space-y-2">
+                        {classifyChecklistItems().slice(0, 4).map(({ item, category, icon }, index) => (
+                          <div key={index} className="flex items-start space-x-2">
+                            <span className={`mt-1 ${
+                              category === 'support' ? 'text-red-600' : 
+                              category === 'discussion' ? 'text-blue-600' : 
+                              category === 'auto' ? 'text-green-600' : 'text-yellow-600'
+                            }`}>
+                              {icon}
+                            </span>
+                            <div className="flex-1">
+                              <span className="text-sm text-gray-700">{item}</span>
+                              <span className={`ml-2 text-xs ${
+                                category === 'support' ? 'text-red-500' : 
+                                category === 'discussion' ? 'text-blue-500' : 
+                                category === 'auto' ? 'text-green-500' : 'text-gray-500'
+                              }`}>
+                                {category === 'support' ? '(要サポート)' : 
+                                 category === 'discussion' ? '(要検討)' : 
+                                 category === 'auto' ? '(確認済み)' : '(要確認)'}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                        {checklist.length > 4 && (
+                          <p className="text-xs text-gray-500 ml-6">他 {checklist.length - 4} 項目</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {attachments.length > 0 && (
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-3">必要書類一覧</h4>
+                      <div className="space-y-2">
+                        {attachments.map((doc, index) => (
+                          <div key={index} className="flex items-start space-x-2">
+                            <span className={`mt-1 ${doc.severity === 'block' ? 'text-red-600' : 'text-yellow-600'}`}>
+                              {doc.severity === 'block' ? '●' : '○'}
+                            </span>
+                            <div className="flex-1">
+                              <span className="text-sm text-gray-700">{doc.desc}</span>
+                              {doc.severity === 'block' && (
+                                <span className="ml-2 text-xs text-red-600 font-medium">必須</span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="mt-4 p-3 bg-yellow-100 rounded-md">
+                    <p className="text-sm text-yellow-800">
+                      📋 完全版ガイドをダウンロードすると、分類済みチェックリスト・必要書類一覧・スケジュールがまとめて入手できます
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Tasks/Timeline Section - Downloadable */}
+              {tasks.milestones && tasks.milestones.length > 0 && (
+                <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                      <svg className="mr-2 h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                      </svg>
+                      申請準備タスク・スケジュール
+                    </h3>
+                    <button
+                      onClick={downloadTaskSchedule}
+                      className="inline-flex items-center px-3 py-2 border border-blue-300 rounded-md shadow-sm text-sm font-medium text-blue-800 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      CSV出力
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {tasks.milestones.slice(0, 4).map((milestone, index) => (
+                      <div key={milestone.id} className="flex items-start space-x-3 p-3 bg-white rounded-md border border-blue-100">
+                        <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-xs font-medium text-blue-800">
+                          {index + 1}
+                        </span>
+                        <div className="flex-1">
+                          <h4 className="text-sm font-medium text-gray-900">{milestone.name}</h4>
+                          <p className="text-xs text-gray-600 mt-1">
+                            目標: 申請{milestone.lead.replace('P-', '').replace('d', '')}日前までに完了
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                    {tasks.milestones.length > 4 && (
+                      <p className="text-xs text-gray-500 text-center">他 {tasks.milestones.length - 4} タスク</p>
+                    )}
+                  </div>
+                  
+                  <div className="mt-4 p-3 bg-blue-100 rounded-md">
+                    <p className="text-sm text-blue-800">
+                      📅 スケジュールをCSVでダウンロードして、カレンダーアプリやプロジェクト管理ツールでご活用ください
+                    </p>
+                  </div>
+                </div>
+              )}
               
               <div className="flex justify-center gap-4 pt-8">
                 <button 

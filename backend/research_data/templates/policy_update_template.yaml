@@ -1,0 +1,55 @@
+# 政策・制度変更調査テンプレート
+investigation:
+  date: "YYYY-MM-DD"
+  investigator: "claude/manual"
+  type: "policy_updates"
+  scope: ["subsidy_id1", "subsidy_id2", "etc"]
+  description: "補助金制度の変更・新規情報の調査"
+
+findings:
+  # 制度変更があった補助金
+  subsidy_id:
+    changes_detected: true
+    change_type: "requirement_change"  # requirement_change/deadline_change/amount_change/new_category
+    new_information:
+      - field: "application_deadline"
+        old_value: "2025-01-31"
+        new_value: "2025-02-28"
+        confidence: "high"
+        source: "official announcement"
+        impact: "medium"  # high/medium/low
+        notes: "締切が1ヶ月延長された"
+      - field: "subsidy_rate"
+        old_value: "1/2"
+        new_value: "2/3"
+        confidence: "high" 
+        source: "updated guideline"
+        impact: "high"
+        notes: "補助率が向上"
+    
+  # 新規補助金
+  new_subsidy_2025:
+    is_new_subsidy: true
+    official_name: "新規補助金制度の正式名称"
+    subsidy_id_proposal: "new_subsidy_2025"
+    target_industries: ["製造業", "IT業"]
+    application_period: "2025-03-01 to 2025-03-31"
+    max_amount: "50000000"  # 円
+    subsidy_rate: "2/3"
+    managing_agency: "中小企業庁"
+    official_url: "https://official-site.go.jp"
+    confidence: "high"
+    source: "official press release"
+    notes: "令和7年度新設予定"
+
+metadata:
+  research_duration: "XX minutes"
+  tools_used: ["official_websites", "press_releases", "legal_documents"]
+  next_check_recommended: "YYYY-MM-DD"
+  critical_changes: true  # 重要な変更があった場合はtrue
+  notes: "調査時の特記事項"
+
+# 変更インパクトレベル定義:
+# high: 申請要件・補助率・制度の根本的変更
+# medium: 締切・手続き方法の変更
+# low: 様式・記載方法の軽微な変更

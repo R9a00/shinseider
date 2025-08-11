@@ -28,6 +28,14 @@ def load_subsidy_data():
     with open(settings.SUBSIDIES_CONFIG_PATH, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
+def load_version_history():
+    version_history_path = os.path.join(BASE_DIR, "version_history.yaml")
+    try:
+        with open(version_history_path, "r", encoding="utf-8") as f:
+            return yaml.safe_load(f)
+    except FileNotFoundError:
+        return {"metadata": {}, "subsidies": {}}
+
 app = FastAPI()
 
 origins = settings.CORS_ORIGINS + [
@@ -77,6 +85,52 @@ async def get_subsidy_metadata(subsidy_id: str):
     if not subsidy:
         raise HTTPException(status_code=404, detail="Subsidy not found")
     return {"id": subsidy.get("id"), "name": subsidy.get("name")}
+
+@app.get("/version-history")
+async def get_version_history():
+    """全体のバージョン履歴情報を取得します。"""
+    try:
+        version_data = load_version_history()
+        return version_data
+    except Exception as e:
+        security_logger.error(f"Failed to load version history: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to load version history")
+
+@app.get("/subsidies/{subsidy_id}/version-history")
+async def get_subsidy_version_history(subsidy_id: str):
+    """指定された補助金のバージョン履歴を取得します。"""
+    try:
+        version_data = load_version_history()
+        subsidies_data = load_subsidy_data()
+        
+        # 補助金が存在するかチェック
+        subsidy = next((s for s in subsidies_data if s.get("id") == subsidy_id), None)
+        if not subsidy:
+            raise HTTPException(status_code=404, detail="Subsidy not found")
+        
+        # バージョン履歴を取得
+        subsidy_version = version_data.get("subsidies", {}).get(subsidy_id, {})
+        if not subsidy_version:
+            return {
+                "subsidy_id": subsidy_id,
+                "subsidy_name": subsidy.get("name"),
+                "version": "未設定",
+                "last_updated": "未設定",
+                "source_references": [],
+                "change_history": []
+            }
+        
+        return {
+            "subsidy_id": subsidy_id,
+            "subsidy_name": subsidy.get("name"),
+            **subsidy_version
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        security_logger.error(f"Failed to load version history for {subsidy_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to load version history")
 
 @app.get("/get_application_questions/{subsidy_id}")
 async def get_application_questions(subsidy_id: str):

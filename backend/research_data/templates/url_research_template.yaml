@@ -1,0 +1,70 @@
+# URL調査テンプレート
+investigation:
+  date: "YYYY-MM-DD"
+  investigator: "claude/manual"
+  type: "url_research"
+  scope: ["subsidy_id1", "subsidy_id2", "etc"]
+  description: "補助金公式URL・資料の最新性確認"
+
+findings:
+  # 以下、各補助金ごとにコピーして使用
+  shinjigyo_shinshutsu:
+    changes_detected: false  # true/false
+    last_verified_url: ""
+    verification_status: "success"  # success/failed/redirect/404
+    new_information:
+      - field: "official_url"
+        old_value: "https://example-official-site.go.jp/guideline.pdf"
+        new_value: "https://actual-official-site.go.jp/guideline.pdf"
+        confidence: "high"  # high/medium/low
+        source: "official website"
+        notes: "正確なURLを確認"
+      - field: "guideline_version"
+        old_value: "令和7年度版"
+        new_value: "令和7年度第2版"
+        confidence: "high"
+        source: "official document"
+        notes: "最新版が公開されている"
+    
+  atotsugi:
+    changes_detected: false
+    last_verified_url: "https://atotsugi-koshien.go.jp/"
+    verification_status: "success"
+    new_information: []
+    
+  monodukuri_r7_21th:
+    changes_detected: false
+    last_verified_url: ""
+    verification_status: "pending"
+    new_information: []
+    
+  jigyou_shoukei_ma:
+    changes_detected: false
+    last_verified_url: ""
+    verification_status: "pending"
+    new_information: []
+    
+  gotech_rd_support:
+    changes_detected: false
+    last_verified_url: ""
+    verification_status: "pending"
+    new_information: []
+    
+  shoukuritsuka_ippan:
+    changes_detected: false
+    last_verified_url: ""
+    verification_status: "pending"
+    new_information: []
+
+metadata:
+  research_duration: "XX minutes"
+  tools_used: ["web_browser", "official_documents"]
+  next_check_recommended: "YYYY-MM-DD"
+  priority_subsidies: ["atotsugi", "monodukuri_r7_21th", "shoukuritsuka_ippan"]
+  notes: "調査時の特記事項"
+
+# 使用方法:
+# 1. このテンプレートを investigations/ フォルダにコピー
+# 2. ファイル名を "YYYY-MM-DD_url_research_[調査者].yaml" に変更
+# 3. 各項目を調査結果で更新
+# 4. スクリプトで version_history.yaml に反映
