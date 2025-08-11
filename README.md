@@ -22,7 +22,7 @@
 ## ✨ Features
 
 ### 🎯 Smart Recommendation Engine
-- **3分診断**: 7つの質問で最適な補助金を自動推薦
+- **30秒診断**: 7つの質問で最適な補助金を自動推薦
 - **マッチ度スコア**: 精度の高いレコメンドシステム
 - **事業承継者特化**: アトツギ甲子園への特別ルート
 
@@ -30,6 +30,7 @@
 - **段階的入力支援**: 複雑な申請書を分かりやすいステップで作成
 - **複数入力モード**: シンプル・ガイド付き・統合入力から選択
 - **リアルタイム保存**: ブラウザ内自動保存で安心
+- **30秒診断連携**: 診断結果を申請フォームに自動事前入力
 
 ### 🔒 Privacy-First Design
 - **ゼロサーバーストレージ**: すべての処理がクライアント側で完結
@@ -38,8 +39,15 @@
 
 ### 📄 Professional Output Generation
 - **Word文書出力**: 申請に適した形式で自動生成
-- **専門家相談資料**: 第三者レビュー用サマリー作成
-- **自己チェックリスト**: 申請前の最終確認ツール
+- **統合チェックリスト**: 申請前の最終確認ツール
+- **タスクスケジュール**: 申請プロセス管理ツール
+- **書類一覧**: 必要書類のチェックリスト
+
+### 🔄 Version & Research Management
+- **バージョン管理**: 補助金情報の更新履歴とソース管理
+- **自動URL検証**: 公式サイトの稼働状況チェック
+- **研究データシステム**: 調査結果の記録・検証・マージ機能
+- **更新履歴表示**: ユーザー向け情報更新ページ
 
 ## 🎬 Demo
 
@@ -63,6 +71,8 @@
 - 📋 PyYAML Configuration
 - 📄 python-docx Document Generation
 - 🔐 Security Middleware
+- 📅 Version Management System
+- 🔍 Research Data Management
 
 **Architecture**
 - 🏗️ RESTful API Design
@@ -81,7 +91,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/shinseider.git
+git clone https://github.com/R9a00/shinseider.git
 cd shinseider
 
 # Auto setup (recommended)
@@ -128,7 +138,7 @@ cd frontend/client && npm start
 
 ### 1. 診断フロー (Diagnostic Flow)
 ```
-Home → 3分診断 → 質問回答 → 補助金推薦 → 申請開始
+Home → 30秒診断 → 質問回答 → 補助金推薦 → 申請開始
 ```
 
 ### 2. 申請フロー (Application Flow)
@@ -137,12 +147,12 @@ Home → 3分診断 → 質問回答 → 補助金推薦 → 申請開始
 ```
 
 ### 3. 対応補助金 (Supported Subsidies)
-- ✅ ものづくり・商業・サービス生産性向上促進補助金
-- ✅ 中小企業省力化投資補助金
-- ✅ Go-tech事業（成長型中小企業等研究開発支援事業）
-- ✅ 事業承継・M&A補助金
-- ✅ アトツギ甲子園申請サポート
-- ✅ その他中小企業向け補助金
+- ✅ **中小企業新事業進出補助金** (shinjigyo_shinshutsu)
+- ✅ **アトツギ甲子園申請サポート** (atotsugi)
+- ✅ **ものづくり補助金第21次** (monodukuri_r7_21th)
+- ✅ **事業承継・M&A補助金** (jigyou_shoukei_ma)
+- ✅ **Go-tech事業研究開発支援** (gotech_rd_support)
+- ✅ **中小企業省力化投資補助金** (shoukuritsuka_ippan)
 
 ## 🔧 Configuration
 
@@ -164,15 +174,31 @@ Edit `backend/subsidies.yaml` to customize:
 - 入力フィールド (Input fields)
 - メタデータ (Metadata)
 
+### Version Management
+
+Edit `backend/version_history.yaml` to track:
+- 補助金情報更新履歴 (Subsidy update history)
+- 参照情報ソース (Reference sources)
+- URLチェック結果 (URL verification results)
+
+### Research Data Management
+
+Use `backend/research_data/` system to manage subsidy updates:
+- **Validation Scripts**: `scripts/validate_research_data.py`
+- **Merge Scripts**: `scripts/merge_research_data.py`
+- **Investigation Templates**: `templates/url_research_template.yaml`
+- **Research Results**: `investigations/` directory
+
 ## 🏗️ Architecture
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   React Client  │ ←→ │   FastAPI Server │ ←→ │  YAML Configs   │
+│   React Client  │ ←→ │   FastAPI Server │ ←→ │  Data Layer     │
 │                 │    │                  │    │                 │
-│ • 3分診断       │    │ • REST APIs      │    │ • Subsidies     │
-│ • 申請支援      │    │ • Word Generation│    │ • Questions     │
-│ • UI/UX         │    │ • Security       │    │ • Metadata      │
+│ • 30秒診断      │    │ • REST APIs      │    │ • Subsidies     │
+│ • 申請支援      │    │ • Word Generation│    │ • Version Mgmt  │
+│ • UI/UX         │    │ • Security       │    │ • Research Data │
+│ • 更新履歴     │    │ • Version APIs   │    │ • Validation    │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
@@ -193,6 +219,8 @@ We welcome contributions! Here's how you can help:
 - 📝 **Documentation**: Improve README, add examples
 - 🧪 **Testing**: Add test cases, report edge cases
 - 🌐 **Translation**: Help translate the interface
+- 🔄 **Subsidy Data Updates**: Report outdated URLs or policy changes
+- 🔍 **Research Contributions**: Submit URL verification and policy updates
 
 ### Development Workflow
 
