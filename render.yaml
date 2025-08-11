@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: shinseider-api
+    env: python
+    buildCommand: "cd backend && pip install -r requirements.txt"
+    startCommand: "cd backend && python -m uvicorn main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9
+      - key: CORS_ORIGIN
+        value: https://shinseider-web.onrender.com
+
+  - type: web
+    name: shinseider-web
+    env: static
+    buildCommand: "cd frontend/client && npm install && npm run build"
+    staticPublishPath: ./frontend/client/build
+    envVars:
+      - key: REACT_APP_API_BASE_URL
+        value: https://shinseider-api.onrender.com
