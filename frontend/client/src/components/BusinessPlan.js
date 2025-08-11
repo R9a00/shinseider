@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import config from '../config';
 
 function BusinessPlan() {
   const [formData, setFormData] = useState({
@@ -19,7 +20,7 @@ function BusinessPlan() {
 
   const handleSave = async () => {
     try {
-      const response = await fetch('http://localhost:8888/generate_business_plan', {
+      const response = await fetch(`${config.API_BASE_URL}/generate_business_plan`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

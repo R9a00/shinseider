@@ -31,7 +31,7 @@ class ApplicationAdviceRequest(BaseModel):
     """申請書アドバイス生成リクエストモデル"""
     subsidy_id: str = Field(..., max_length=50, description="補助金ID")
     answers: Dict[str, Any] = Field(..., description="回答データ")
-    input_mode: str = Field(..., pattern="^(simple|guided)$", description="入力モード")
+    input_mode: str = Field(..., pattern="^(simple|guided|micro_tasks|integrated)$", description="入力モード")
     target: str = Field(..., pattern="^(ai|human|self)$", description="生成するアウトプットのターゲット")
     
     @validator('subsidy_id')

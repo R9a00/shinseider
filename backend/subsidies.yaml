@@ -182,6 +182,9 @@
             type: "text_array"
             max_items: 3
             max_length_per_item: 80
+        integrated:
+          - task_name: "T3: 課題→競合→差別化"
+            description: "顧客の困りごと、競合状況、差別化ポイントをまとめて入力"
 
     - id: solution_idea
       title: 新しい事業アイデア
@@ -420,6 +423,9 @@
             max_length: 200
             placeholder: "地域の雇用を守り、業界全体を活性化したい"
             required: true
+        integrated:
+          - task_name: "T6: 想い・承継理由・未来像"
+            description: "個人的な動機、承継への想い、実現したい未来をまとめて記述"
 
     - id: feasibility_assessment
       title: 実現性評価

@@ -56,3 +56,20 @@ Thumbs.db
 .env
 .env.local
 .env.production
+
+# Research and documentation files
+research_results/
+参照/
+deep_research_prompts.md
+*.rtf
+*.fld/
+
+# Project-specific generated files
+shinseider_*.yaml
+subsidies_additions.yaml
+アトツギ甲子園用システム.rtf
+
+# Backup files
+*~
+*.bak
+*.backup

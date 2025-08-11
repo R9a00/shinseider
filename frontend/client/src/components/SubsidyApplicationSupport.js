@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import config from '../config';
 
 function SubsidyApplicationSupport() {
   const { subsidyId } = useParams();
@@ -18,14 +19,14 @@ function SubsidyApplicationSupport() {
     const fetchSubsidyData = async () => {
       try {
         setLoading(true);
-        const sectionsResponse = await fetch(`http://localhost:8888/get_application_questions/${subsidyId}`);
+        const sectionsResponse = await fetch(`${config.API_BASE_URL}/get_application_questions/${subsidyId}`);
         if (!sectionsResponse.ok) {
           throw new Error('質問データの取得に失敗しました');
         }
         const sectionsData = await sectionsResponse.json();
         setSections(sectionsData.sections || []);
 
-        const metadataResponse = await fetch(`http://localhost:8888/subsidies/${subsidyId}/metadata`);
+        const metadataResponse = await fetch(`${config.API_BASE_URL}/subsidies/${subsidyId}/metadata`);
         if (metadataResponse.ok) {
           const metadataData = await metadataResponse.json();
           setSubsidyName(metadataData.name);
@@ -42,6 +43,7 @@ function SubsidyApplicationSupport() {
     }
   }, [subsidyId]);
 
+
   const handleAnswerChange = (sectionId, value, taskId = null) => {
     if (taskId) {
       // ミニタスクの場合
@@ -56,6 +58,81 @@ function SubsidyApplicationSupport() {
       // 通常のセクションの場合
       setAnswers(prev => ({ ...prev, [sectionId]: value }));
     }
+  };
+
+  const getIntegratedPlaceholder = (sectionId) => {
+    const placeholders = {
+      basic_info: `例:
+氏名: 田中太郎
+会社名: 株式会社田中製作所
+年齢: 34歳
+所在地: 東京都
+承継予定: あり（来年度予定）`,
+
+      current_business: `例:
+主業種: 製造業
+主力製品: 精密機械部品の加工
+強み: 短納期対応、高精度加工技術、品質管理
+現在の課題: 人手不足、新規顧客開拓、設備老朽化`,
+
+      customer_problem: `例:
+顧客の困りごと:
+• 小ロットの試作が高額で納期が長い
+• 急な仕様変更に対応してくれる業者が少ない
+• 品質が安定しない
+
+競合他社: A製作所、B工業、C技研
+競合との違い:
+• 当社は3日で試作対応可能（競合は2週間）
+• CADデータから直接加工できる技術力
+• 品質保証体制が充実`,
+
+      solution_idea: `例:
+キャッチ: 「3日で届く小ロット試作サービス」
+誰に: 開発段階の製造業（ベンチャー企業、大手の開発部門）
+何を: 小ロット・短納期の精密部品試作サービス
+どうやって: AIを活用した自動見積もり+専用ラインで効率化
+提供価値: スピード、品質、コスト削減`,
+
+      revenue_model: `例:
+収益の取り方: 単発販売（試作受託）
+販売先: 新規B2B（開発部門）
+販売チャネル: 直販、Web受注
+単価: 5万円/件
+月間件数: 50件
+月間売上: 250万円
+固定費: 月120万円（人件費・設備費）
+現在の検証状況: テスト販売済み`,
+
+      personal_story: `例:
+なぜ私がやるのか:
+父が築いた技術を受け継ぎ、さらに発展させたい。長年培った加工技術に最新のデジタル技術を組み合わせることで、業界に新しい価値を提供できると確信している。
+
+事業承継への想い:
+単に家業を継ぐのではなく、新しいビジネスモデルで成長させたい。従業員の雇用を守りながら、次世代に誇れる会社にしたい。
+
+実現したい未来:
+地域の製造業のハブとして、中小企業の開発力向上に貢献したい。技術の街として地域全体を活性化させたい。`,
+
+      feasibility_assessment: `例:
+技術成熟度: TRL6（実証済み）
+体制: 営業・開発・品質は社内でカバー済み
+初期投資: 300万円（設備導入・システム開発）
+月次運営費: 50万円（マーケティング・維持費）
+許認可: 不要
+供給体制: 主要材料サプライヤーと基本合意済み
+
+主要リスク: 受注変動、競合参入、人材確保
+対策: 複数チャネル展開、独自技術の特許化、研修制度充実
+
+マイルストーン:
+2025-11: 試作システム完成
+2026-01: β版サービス開始
+2026-04: 本格サービスローンチ
+2026-12: 月間100件達成`
+    };
+    
+    return placeholders[sectionId] || 'まとめて入力してください...';
   };
 
   const renderMicroTask = (section, task, sectionIndex, taskIndex) => {
@@ -105,6 +182,12 @@ function SubsidyApplicationSupport() {
                 type="number"
                 value={currentValue}
                 onChange={(e) => handleAnswerChange(section.id, e.target.value, task.task_id)}
+                onFocus={(e) => {
+                  // フォーカス時に値が空でプレースホルダーがある場合は設定
+                  if (!currentValue && task.placeholder) {
+                    handleAnswerChange(section.id, task.placeholder, task.task_id);
+                  }
+                }}
                 placeholder={task.placeholder || ''}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
@@ -198,42 +281,162 @@ function SubsidyApplicationSupport() {
             
             {task.type === 'structured_array' && (
               <div className="space-y-3">
-                {Array.from({ length: task.max_items || 3 }, (_, idx) => {
-                  const arrayValues = Array.isArray(currentValue) ? currentValue : [];
-                  const itemValue = arrayValues[idx] || {};
-                  
-                  return (
-                    <div key={idx} className="border border-gray-200 rounded-lg p-3">
-                      <div className="text-xs text-gray-500 mb-2">項目 {idx + 1}</div>
-                      <div className="grid gap-2" style={{gridTemplateColumns: `repeat(${task.fields?.length || 2}, 1fr)`}}>
-                        {task.fields?.map((field, fieldIdx) => (
-                          <input
-                            key={fieldIdx}
-                            type="text"
-                            value={itemValue[field] || ''}
-                            onChange={(e) => {
+                {/* マイルストーン用の特別レイアウト */}
+                {task.task_id === 'MILESTONES' ? (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <div className="mb-3">
+                      <h4 className="text-sm font-medium text-gray-900 mb-1">事業のマイルストーン（重要な節目）</h4>
+                      <p className="text-xs text-gray-600">
+                        事業を進める上での重要な節目（試作完成、サービス開始、売上目標達成など）を時系列で入力してください
+                      </p>
+                    </div>
+{(() => {
+                      const arrayValues = Array.isArray(currentValue) ? currentValue : [];
+                      const displayCount = Math.max(2, arrayValues.length + 1);
+                      
+                      return Array.from({ length: Math.min(displayCount, task.max_items || 5) }, (_, idx) => {
+                        const itemValue = arrayValues[idx] || {};
+                        
+                        return (
+                          <div key={idx} className="border border-yellow-300 rounded-lg p-4 bg-white relative">
+                            <div className="flex items-center justify-between mb-3">
+                              <div className="text-sm text-yellow-700 font-medium">マイルストーン {idx + 1}</div>
+                              <div className="flex items-center space-x-2">
+                                {Object.values(itemValue).some(v => v && v.trim() !== '') && (
+                                  <div className="text-xs text-green-600">✓</div>
+                                )}
+                                {idx > 1 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const newArray = arrayValues.filter((_, i) => i !== idx);
+                                      handleAnswerChange(section.id, newArray, task.task_id);
+                                    }}
+                                    className="text-red-500 hover:text-red-700 text-xs"
+                                  >
+                                    削除
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                            <div className="space-y-3">
+                              <div className="grid grid-cols-3 gap-3">
+                                <div className="col-span-1">
+                                  <label className="block text-xs text-gray-600 mb-1 font-medium">時期</label>
+                                  <input
+                                    type="month"
+                                    value={itemValue.ym || ''}
+                                    onChange={(e) => {
+                                      const newArray = [...arrayValues];
+                                      newArray[idx] = { ...itemValue, ym: e.target.value };
+                                      handleAnswerChange(section.id, newArray, task.task_id);
+                                    }}
+                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                                  />
+                                </div>
+                                <div className="col-span-2">
+                                  <label className="block text-xs text-gray-600 mb-1 font-medium">達成内容</label>
+                                  <input
+                                    type="text"
+                                    value={itemValue.note || ''}
+                                    onChange={(e) => {
+                                      const newArray = [...arrayValues];
+                                      newArray[idx] = { ...itemValue, note: e.target.value };
+                                      handleAnswerChange(section.id, newArray, task.task_id);
+                                    }}
+                                    placeholder="例：試作品完成、β版リリース、売上目標達成"
+                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                                  />
+                                </div>
+                              </div>
+                              <div>
+                                <label className="block text-xs text-gray-600 mb-1 font-medium">詳細・備考（任意）</label>
+                                <input
+                                  type="text"
+                                  value={itemValue.owner || ''}
+                                  onChange={(e) => {
+                                    const newArray = [...arrayValues];
+                                    newArray[idx] = { ...itemValue, owner: e.target.value };
+                                    handleAnswerChange(section.id, newArray, task.task_id);
+                                  }}
+                                  placeholder="例：予算100万円、テストユーザー10社、月間売上50万円目標"
+                                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-gray-50"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      });
+                    })()}
+                    
+                    {/* 追加ボタン */}
+                    {(() => {
+                      const arrayValues = Array.isArray(currentValue) ? currentValue : [];
+                      const canAdd = arrayValues.length < (task.max_items || 5);
+                      
+                      return canAdd && (
+                        <div className="text-center">
+                          <button
+                            type="button"
+                            onClick={() => {
                               const newArray = [...arrayValues];
-                              newArray[idx] = { ...itemValue, [field]: e.target.value };
-                              // 空の末尾要素を削除
-                              while (newArray.length > 0 && 
-                                Object.values(newArray[newArray.length - 1] || {}).every(v => !v || v.trim() === '')) {
-                                newArray.pop();
-                              }
+                              newArray.push({ ym: '', note: '', owner: '' });
                               handleAnswerChange(section.id, newArray, task.task_id);
                             }}
-                            placeholder={task.placeholder ?? `${field}を入力`}
-                            className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                          />
-                        )) || [
-                          <input key="0" type="text" placeholder="項目1" className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" />,
-                          <input key="1" type="text" placeholder="項目2" className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" />
-                        ]}
-                      </div>
+                            className="inline-flex items-center px-4 py-2 border border-yellow-300 rounded-lg text-sm text-yellow-700 bg-yellow-50 hover:bg-yellow-100 transition-colors"
+                          >
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                            マイルストーンを追加
+                          </button>
+                        </div>
+                      );
+                    })()}
+                    <div className="mt-2 text-xs text-yellow-700">
+                      💡 例：「2025-11, 試作完了, 予算100万円」「2026-01, β版リリース, テストユーザー10社」「2026-04, 本格サービス開始, 売上月50万円目標」
                     </div>
-                  );
-                })}
-                {task.placeholder && (
-                  <p className="text-xs text-gray-500 mt-1">{task.placeholder}</p>
+                  </div>
+                ) : (
+                  // 他の構造化配列の場合は従来通り
+                  <>
+                    {Array.from({ length: task.max_items || 3 }, (_, idx) => {
+                      const arrayValues = Array.isArray(currentValue) ? currentValue : [];
+                      const itemValue = arrayValues[idx] || {};
+                      
+                      return (
+                        <div key={idx} className="border border-gray-200 rounded-lg p-3">
+                          <div className="text-xs text-gray-500 mb-2">項目 {idx + 1}</div>
+                          <div className="grid gap-2" style={{gridTemplateColumns: `repeat(${task.fields?.length || 2}, 1fr)`}}>
+                            {task.fields?.map((field, fieldIdx) => (
+                              <input
+                                key={fieldIdx}
+                                type="text"
+                                value={itemValue[field] || ''}
+                                onChange={(e) => {
+                                  const newArray = [...arrayValues];
+                                  newArray[idx] = { ...itemValue, [field]: e.target.value };
+                                  while (newArray.length > 0 && 
+                                    Object.values(newArray[newArray.length - 1] || {}).every(v => !v || v.trim() === '')) {
+                                    newArray.pop();
+                                  }
+                                  handleAnswerChange(section.id, newArray, task.task_id);
+                                }}
+                                placeholder={task.placeholder ?? `${field}を入力`}
+                                className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                              />
+                            )) || [
+                              <input key="0" type="text" placeholder="項目1" className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" />,
+                              <input key="1" type="text" placeholder="項目2" className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" />
+                            ]}
+                          </div>
+                        </div>
+                      );
+                    })}
+                    {task.placeholder && (
+                      <p className="text-xs text-gray-500 mt-1">{task.placeholder}</p>
+                    )}
+                  </>
                 )}
               </div>
             )}
@@ -301,16 +504,12 @@ function SubsidyApplicationSupport() {
             {inputMode === 'integrated' && section.input_modes.integrated && (
               <div className="p-4">
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <h4 className="font-medium text-green-800 mb-2">統合入力モード</h4>
-                  <p className="text-sm text-green-700 mb-4">
-                    このセクションの項目をまとめて入力できます
-                  </p>
                   <textarea
                     value={answers[section.id] || ''}
                     onChange={(e) => handleAnswerChange(section.id, e.target.value)}
                     rows="6"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    placeholder="まとめて入力してください..."
+                    placeholder={getIntegratedPlaceholder(section.id)}
                   />
                 </div>
               </div>
@@ -359,11 +558,45 @@ function SubsidyApplicationSupport() {
     setShowOutputOptions(true);
   };
 
+  const handleSaveData = async () => {
+    try {
+      const response = await fetch(`${config.API_BASE_URL}/save_application_data`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          subsidy_id: subsidyId, 
+          subsidy_name: subsidyName,
+          answers, 
+          progress: getProgressPercentage()
+        })
+      });
+      if (!response.ok) {
+        throw new Error('データの保存に失敗しました。');
+      }
+      
+      // ファイルをダウンロード
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = `申請準備書_${subsidyName}_${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      alert('Word文書として保存しました。印刷や編集が可能です。');
+    } catch (err) {
+      alert('保存に失敗しました: ' + err.message);
+    }
+  };
+
   const handleGenerateOutput = async (target) => {
     setIsSubmitting(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:8888/generate_application_advice', {
+      const response = await fetch(`${config.API_BASE_URL}/generate_application_advice`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ subsidy_id: subsidyId, answers, input_mode: inputMode, target: target })
@@ -381,6 +614,17 @@ function SubsidyApplicationSupport() {
       } else if (data.type === 'reflection') {
         setOutputTitle('自己評価用の問いかけリスト');
       }
+      
+      // 結果エリアに自動スクロール
+      setTimeout(() => {
+        const outputElement = document.getElementById('output-section');
+        if (outputElement) {
+          outputElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+          });
+        }
+      }, 100);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -583,7 +827,18 @@ function SubsidyApplicationSupport() {
                 {sections.map((section, index) => renderSection(section, index))}
               </div>
               
-              <div className="text-center pt-8">
+              <div className="flex justify-center gap-4 pt-8">
+                <button 
+                  type="button"
+                  onClick={handleSaveData}
+                  className="inline-flex items-center rounded-xl bg-gray-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200"
+                >
+                  <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+Word文書で保存
+                </button>
+                
                 <button 
                   type="submit"
                   className={`inline-flex items-center rounded-xl bg-${headerColor}-600 px-8 py-4 text-lg font-semibold text-white shadow-sm hover:bg-${headerColor}-700 focus:outline-none focus:ring-2 focus:ring-${headerColor}-500 focus:ring-offset-2 transition-all duration-200`}
@@ -695,7 +950,7 @@ function SubsidyApplicationSupport() {
             )}
 
             {output && (
-              <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+              <div id="output-section" className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-semibold text-gray-900">
                     {outputTitle}

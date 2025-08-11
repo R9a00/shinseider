@@ -3,56 +3,59 @@ import { Link } from 'react-router-dom';
 
 const questions = [
   {
-    question: 'あなたの事業アイデアは、現在どの段階にありますか？',
+    question: 'あなたは事業の後継者（アトツギ）ですか？',
     type: 'choice',
-    options: ['アイデア着想段階', '事業計画策定段階', '既に事業を開始している'],
-    example_hint: '最も近いものを選択してください。'
+    options: ['はい、後継者です', 'いいえ、後継者ではありません'],
+    key: 'is_successor'
   },
   {
-    question: 'あなたの事業アイデアの核となる「やりたいこと」は何ですか？既存事業の強みをどのように活かしますか？',
-    type: 'text',
-    example_hint: '例：既存の製造技術を活かした新製品開発、長年の顧客基盤を活用した新規サービス展開など'
+    question: 'あなたの年齢を教えてください',
+    type: 'choice',
+    options: ['20代', '30代', '40代', '50代', '60代以上'],
+    key: 'age'
   },
   {
-    question: 'その事業アイデアは、社会のどのような課題を解決し、誰を、どのように幸せにしますか？具体的なインパクトを教えてください。',
-    type: 'text',
-    example_hint: '例：高齢化、環境問題、地域経済の衰退などの課題を解決し、顧客の生活が便利になる、環境負荷が低減される、地域に新たな雇用が生まれるなど'
+    question: 'あなたの会社の業界を教えてください',
+    type: 'choice',
+    options: ['製造業', '建設業', '情報通信業', '小売業', '卸売業', 'サービス業', '飲食業', '医療・介護', '教育', '運輸業', 'その他'],
+    key: 'industry'
   },
   {
-    question: 'なぜあなた（後継者）が、この事業を「やりたい」のですか？その背景にある個人的な想いや、これまでの経験から得た動機を具体的に教えてください。',
-    type: 'text',
-    example_hint: '例：家業への危機感、幼い頃からの夢、社会への貢献意欲、修行時代の学び、失敗からの教訓、人との出会いなど'
+    question: '従業員数を教えてください',
+    type: 'choice',
+    options: ['5人未満', '5人〜20人', '21人〜50人', '51人〜100人', '101人〜300人', '301人以上'],
+    key: 'employees'
   },
   {
-    question: 'この事業アイデアを実現するために、現在の会社の経営資源（ヒト・モノ・カネ・情報・技術・顧客基盤など）をどのように活用しますか？具体的に記述してください。',
-    type: 'text',
-    example_hint: '例：熟練の職人、遊休資産、長年の取引先、蓄積されたデータ、特許技術など'
+    question: '現在検討している取り組みをすべて選んでください（複数選択可）',
+    type: 'multiple',
+    options: ['新製品・サービスの開発', '設備投資・機械導入', 'ITシステム導入', '工場・店舗の自動化', '環境対応・省エネ', '人材育成・スキルアップ', '海外展開', '事業承継', 'どれも該当しない'],
+    key: 'initiatives'
   },
   {
-    question: 'この事業アイデアのターゲット市場はどこですか？その市場の規模、成長性、顧客ニーズについて、データや根拠を交えて説明してください。',
-    type: 'text',
-    example_hint: '例：〇〇兆円市場、年〇〇%成長、〇〇という不満を抱えている層。市場調査レポート、顧客アンケート結果など'
+    question: '予定している投資規模はどれくらいですか？',
+    type: 'choice',
+    options: ['100万円未満', '100万円〜500万円', '500万円〜1,000万円', '1,000万円〜3,000万円', '3,000万円〜1億円', '1億円以上', 'まだ未定'],
+    key: 'investment_scale'
   },
   {
-    question: '競合他社と比較した際の、あなたの事業の優位性や独自性は何ですか？どのように差別化を図りますか？',
-    type: 'text',
-    example_hint: '例：独自の技術、低コスト構造、優れた顧客サービスなど。競合（A社、B社）との比較を通じて具体的に'
+    question: '補助金申請の経験はありますか？',
+    type: 'choice',
+    options: ['初めて', '以前に1回申請したことがある', '複数回申請経験がある', '現在も他の補助金を受給中'],
+    key: 'subsidy_experience'
   },
   {
-    question: 'この事業アイデアを実現する上で、最も大きな課題やリスクは何だと思いますか？また、その課題をどのように乗り越え、リスクを管理しますか？',
-    type: 'text',
-    example_hint: '例：資金調達、人材確保、法規制、技術開発の遅延など。資金調達計画、採用戦略、専門家との連携、フェーズ分け開発など'
+    question: 'いつ頃から取り組みを開始したいですか？',
+    type: 'choice',
+    options: ['すぐに開始したい', '3か月以内', '6か月以内', '1年以内', '1年以上先', 'まだ未定'],
+    key: 'timeline'
   },
   {
-    question: 'この事業アイデアの実現に向けた、具体的な目標（短期・中期・長期）と、その達成のためのロードマップを教えてください。',
-    type: 'text',
-    example_hint: '例：1年後に売上〇〇円達成、3年後に市場シェア〇〇%獲得、5年後にIPOなど。フェーズごとのマイルストーン、主要なタスク、担当者など'
-  },
-  {
-    question: 'この事業を通じて、あなたは経営者としてどのように成長したいですか？5年後の理想の姿を教えてください。',
-    type: 'text',
-    example_hint: '例：業界の変革者になる、従業員が誇れる会社にする、地域社会に貢献するリーダーになるなど、あなたのビジョンを自由に記述してください。'
-  },
+    question: '最も重要視している点を教えてください',
+    type: 'choice',
+    options: ['補助率が高い', '採択率が高い', '申請手続きが簡単', '対象範囲が幅広い', '審査期間が短い', 'どれも同じくらい重要'],
+    key: 'priority'
+  }
 ];
 
 // ローカルストレージのキー
@@ -126,7 +129,16 @@ function Phase1() {
 
   const handleAnswer = (e) => {
     const newAnswers = [...answers];
-    newAnswers[currentQuestion] = e.target.value;
+    if (questions[currentQuestion].type === 'multiple') {
+      const currentAnswers = Array.isArray(newAnswers[currentQuestion]) ? newAnswers[currentQuestion] : [];
+      if (e.target.checked) {
+        newAnswers[currentQuestion] = [...currentAnswers, e.target.value];
+      } else {
+        newAnswers[currentQuestion] = currentAnswers.filter(answer => answer !== e.target.value);
+      }
+    } else {
+      newAnswers[currentQuestion] = e.target.value;
+    }
     setAnswers(newAnswers);
   };
 
@@ -156,61 +168,192 @@ function Phase1() {
   };
 
   const saveDiagnosis = async (data) => {
-    const formattedDesire = data.map((answer, index) => ({
+    // 診断結果をローカルストレージに保存
+    const diagnosisResults = data.map((answer, index) => ({
       question: questions[index].question,
-      answer: answer
+      answer: answer,
+      key: questions[index].key
     }));
-    try {
-      const response = await fetch('http://localhost:8888/save_desire', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ answers: formattedDesire }),
-      });
-      if (!response.ok) {
-        alert('保存に失敗しました。');
-      } else {
-        // 送信成功後にローカルストレージをクリア
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem(LAST_SAVE_KEY);
-        setLastSaved(null);
-      }
-    } catch (error) {
-      console.error('Error saving diagnosis:', error);
-      alert('保存中にエラーが発生しました。');
-    }
+    
+    localStorage.setItem('diagnosis_results', JSON.stringify(diagnosisResults));
+    
+    // 入力データをクリア
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(LAST_SAVE_KEY);
+    setLastSaved(null);
   };
 
-  const downloadWord = async () => {
-    const formattedContent = questions.map((q, index) => ({
-      question: q.question,
-      answer: answers[index]
-    }));
-    try {
-      const response = await fetch('http://localhost:8888/generate_textbook', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ title: "事業承継診断レポート", content: JSON.stringify(formattedContent) }),
-      });
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = "事業承継診断レポート.docx";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+  const getRecommendations = () => {
+    const diagnosisResults = JSON.parse(localStorage.getItem('diagnosis_results') || '[]');
+    const responses = {};
+    diagnosisResults.forEach(item => {
+      if (item.key === 'initiatives' && Array.isArray(item.answer)) {
+        responses[item.key] = item.answer;
       } else {
-        alert('Wordファイルの生成に失敗しました。');
+        responses[item.key] = item.answer;
       }
-    } catch (error) {
-      console.error('Error downloading word file:', error);
-      alert('Wordファイルのダウンロード中にエラーが発生しました。');
+    });
+    
+    const recommendations = [];
+    const initiatives = responses.initiatives || [];
+    const industry = responses.industry;
+    const employees = responses.employees;
+    const investment = responses.investment_scale;
+    const priority = responses.priority;
+    
+    // 製造業特化推奨
+    if (industry === '製造業') {
+      if (initiatives.includes('ITシステム導入') || initiatives.includes('工場・店舗の自動化') || initiatives.includes('新製品・サービスの開発')) {
+        recommendations.push({
+          name: 'ものづくり・商業・サービス生産性向上促進補助金',
+          reason: '製造業での新製品開発・IT導入・生産性向上に最適です。補助率最大1/2。',
+          match_score: 95
+        });
+      }
+      if (initiatives.includes('設備投資・機械導入') || initiatives.includes('工場・店舗の自動化')) {
+        recommendations.push({
+          name: '中小企業省力化投資補助金',
+          reason: '製造業の自動化・省力化設備導入を支援。補助率最大1/2。',
+          match_score: 90
+        });
+      }
     }
+    
+    // IT・情報通信業特化推奨
+    if (industry === '情報通信業') {
+      if (initiatives.includes('新製品・サービスの開発')) {
+        recommendations.push({
+          name: 'Go-tech事業（成長型中小企業等研究開発支援事業）',
+          reason: 'IT業界での革新的な研究開発を支援。補助率最大2/3。',
+          match_score: 95
+        });
+      }
+      if (initiatives.includes('ITシステム導入')) {
+        recommendations.push({
+          name: 'ものづくり・商業・サービス生産性向上促進補助金',
+          reason: 'ITサービス開発・システム構築に利用可能。',
+          match_score: 85
+        });
+      }
+    }
+    
+    // 省力化投資補助金の適用判定
+    if ((initiatives.includes('設備投資・機械導入') || initiatives.includes('工場・店舗の自動化')) && 
+        !recommendations.some(r => r.name.includes('中小企業省力化'))) {
+      const score = (['製造業', '建設業', '小売業', '卸売業'].includes(industry)) ? 90 : 75;
+      recommendations.push({
+        name: '中小企業省力化投資補助金',
+        reason: '自動化・省力化設備の導入を幅広く支援。採択率が高い。',
+        match_score: score
+      });
+    }
+    
+    // アトツギ甲子園特別推奨（後継者かつ年齢条件を満たす場合）
+    if (responses.is_successor === 'はい、後継者です' && 
+        (responses.age === '20代' || responses.age === '30代' || 
+         (responses.age === '40代' && new Date().getFullYear() - 1980 <= 40))) { // 簡略的な40歳以下判定
+      recommendations.unshift({
+        name: 'アトツギ甲子園申請サポート',
+        reason: '事業承継者向け特別プログラム。地方予選進出で各種補助金に加点測定。',
+        match_score: 100,
+        is_special: true
+      });
+    }
+    
+    // 事業承継関連
+    if (initiatives.includes('事業承継')) {
+      if (!recommendations.some(r => r.name.includes('事業承継'))) {
+        recommendations.push({
+          name: '事業承継・M&A補助金',
+          reason: '事業承継時の設備投資や経営革新を支援。',
+          match_score: 95
+        });
+      }
+    }
+    
+    // 環境関連
+    if (initiatives.includes('環境対応・省エネ')) {
+      if (!recommendations.some(r => r.name.includes('ものづくり'))) {
+        recommendations.push({
+          name: 'ものづくり・商業・サービス生産性向上促進補助金',
+          reason: '環境対応・省エネで加点測定。幅広い業種で利用可能。',
+          match_score: 85
+        });
+      }
+    }
+    
+    // 人材育成関連
+    if (initiatives.includes('人材育成・スキルアップ')) {
+      recommendations.push({
+        name: '人材開発支援助成金',
+        reason: '従業員のスキルアップや資格取得を支援。',
+        match_score: 80
+      });
+    }
+    
+    // 海外展開関連
+    if (initiatives.includes('海外展開')) {
+      recommendations.push({
+        name: '中小企業新事業進出補助金',
+        reason: '海外展開や新市場開拓を支援。',
+        match_score: 90
+      });
+    }
+    
+    // 投資規模別フィルタリング
+    if (investment) {
+      if (investment === '100万円未満' || investment === '100万円〜500万円') {
+        // 小規模投資は省力化が適切
+        recommendations.forEach(rec => {
+          if (rec.name.includes('ものづくり')) rec.match_score -= 10;
+        });
+      } else if (investment === '3,000万円〜1億円' || investment === '1億円以上') {
+        // 大規模投資はものづくりが適切
+        recommendations.forEach(rec => {
+          if (rec.name.includes('ものづくり')) rec.match_score += 10;
+          if (rec.name.includes('省力化')) rec.match_score -= 5;
+        });
+      }
+    }
+    
+    // 優先度別調整
+    if (priority === '補助率が高い') {
+      recommendations.forEach(rec => {
+        if (rec.name.includes('ものづくり') || rec.name.includes('Go-tech')) rec.match_score += 10;
+      });
+    } else if (priority === '採択率が高い') {
+      recommendations.forEach(rec => {
+        if (rec.name.includes('省力化')) rec.match_score += 10;
+        if (rec.name.includes('ものづくり')) rec.match_score -= 5;
+      });
+    }
+    
+    // デフォルト推奨（何もマッチしない場合）
+    if (recommendations.length === 0 || initiatives.includes('どれも該当しない')) {
+      recommendations.push({
+        name: '中小企業省力化投資補助金',
+        reason: '幅広い業種で利用可能で採択率が高い一般的な補助金です。',
+        match_score: 70
+      });
+      recommendations.push({
+        name: 'ものづくり・商業・サービス生産性向上促進補助金',
+        reason: '新製品開発や生産性向上に幅広く対応。補助率が高い。',
+        match_score: 75
+      });
+    }
+    
+    // スコア順でソートして重複除去
+    const uniqueRecommendations = recommendations.reduce((acc, current) => {
+      const existing = acc.find(item => item.name === current.name);
+      if (!existing) {
+        acc.push(current);
+      } else if (current.match_score > existing.match_score) {
+        Object.assign(existing, current);
+      }
+      return acc;
+    }, []);
+    
+    return uniqueRecommendations.sort((a, b) => (b.match_score || 0) - (a.match_score || 0)).slice(0, 4);
   };
 
   if (isLoading) {
@@ -219,7 +362,7 @@ function Phase1() {
         <div className="mx-auto max-w-4xl px-4 py-16">
           <div className="flex items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
-            <span className="ml-3 text-lg text-gray-600">診断データを読み込み中...</span>
+            <span className="ml-3 text-lg text-gray-600">診断を準備中...</span>
           </div>
         </div>
       </div>
@@ -241,8 +384,8 @@ function Phase1() {
                 診断完了
               </h1>
               <p className="mt-4 text-lg leading-8 text-gray-600">
-                すべての質問に回答していただき、ありがとうございました。<br />
-                診断結果をWordファイルでダウンロードできます。
+                ご回答ありがとうございました。<br />
+                あなたにおすすめの補助金をご紹介します。
               </p>
             </div>
           </div>
@@ -250,15 +393,70 @@ function Phase1() {
         
         <div className="mx-auto max-w-4xl px-4 py-12">
           <div className="text-center space-y-6">
-            <button 
-              onClick={downloadWord}
-              className="inline-flex items-center rounded-xl bg-red-600 px-8 py-4 text-lg font-semibold text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200"
-            >
-              <svg className="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              診断レポートをダウンロード
-            </button>
+            <div className="space-y-8">
+              <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">おすすめの補助金</h2>
+                <div className="space-y-6">
+                  {getRecommendations().map((rec, index) => {
+                    const isSpecial = rec.is_special;
+                    const isFirst = index === 0;
+                    
+                    return (
+                      <div key={index} className={`border-2 rounded-lg p-6 ${
+                        isSpecial ? 'border-yellow-300 bg-yellow-50' : 
+                        isFirst ? 'border-red-300 bg-red-50' : 'border-gray-200'
+                      }`}>
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="text-lg font-semibold text-gray-900">{rec.name}</h3>
+                          <div className="flex space-x-2">
+                            {isSpecial && (
+                              <span className="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">
+                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21L12 17.77L5.82 21L7 14L2 9L8.91 8.26L12 2Z" />
+                                </svg>
+                                特別推奨
+                              </span>
+                            )}
+                            {isFirst && !isSpecial && (
+                              <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">
+                                最おすすめ
+                              </span>
+                            )}
+                            {rec.match_score && (
+                              <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
+                                マッチ度 {rec.match_score}%
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <p className="text-gray-600 mb-4">{rec.reason}</p>
+                        <Link
+                          to={rec.name.includes('アトツギ甲子園') ? '/subsidy-application-support/atotsugi' : '/subsidy-selection'}
+                          className={`inline-flex items-center font-medium ${
+                            isSpecial ? 'text-yellow-700 hover:text-yellow-800' : 'text-red-600 hover:text-red-700'
+                          }`}
+                        >
+                          {rec.name.includes('アトツギ甲子園') ? 'アトツギ甲子園申請を始める' : '申請サポートを始める'}
+                          <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </Link>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              
+              <Link
+                to="/subsidy-selection"
+                className="inline-flex items-center rounded-xl bg-red-600 px-8 py-4 text-lg font-semibold text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200"
+              >
+                <svg className="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                補助金申請を開始
+              </Link>
+            </div>
             
             <div className="mt-8">
               <Link 
@@ -284,8 +482,8 @@ function Phase1() {
               3分診断
             </h1>
             <p className="mt-4 text-lg leading-8 text-gray-600">
-              事業承継に関する質問にお答えください。<br />
-              あなたに最適な補助金をレコメンドします。
+              5つの簡単な質問にお答えください。<br />
+              あなたの会社に最適な補助金をレコメンドします。
             </p>
           </div>
         </div>
@@ -337,49 +535,34 @@ function Phase1() {
 
         {/* 質問カード */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8 mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
             {questions[currentQuestion].question}
           </h2>
-          
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <p className="text-sm text-blue-800 leading-relaxed">
-              <svg className="inline h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <strong>記入例:</strong> {questions[currentQuestion].example_hint}
-            </p>
-          </div>
 
-          {questions[currentQuestion].type === 'choice' ? (
-            <div className="space-y-3 mb-8">
-              {questions[currentQuestion].options.map((option, index) => (
+          <div className="space-y-3 mb-8">
+            {questions[currentQuestion].options.map((option, index) => {
+              const isMultiple = questions[currentQuestion].type === 'multiple';
+              const currentAnswers = Array.isArray(answers[currentQuestion]) ? answers[currentQuestion] : [];
+              const isChecked = isMultiple ? currentAnswers.includes(option) : answers[currentQuestion] === option;
+              
+              return (
                 <label 
                   key={index}
                   className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
                 >
                   <input
-                    type="radio"
-                    name="choice"
+                    type={isMultiple ? "checkbox" : "radio"}
+                    name={isMultiple ? `multiple_${currentQuestion}` : "choice"}
                     value={option}
-                    checked={answers[currentQuestion] === option}
+                    checked={isChecked}
                     onChange={handleAnswer}
                     className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300"
                   />
                   <span className="ml-3 text-gray-900">{option}</span>
                 </label>
-              ))}
-            </div>
-          ) : (
-            <div className="mb-8">
-              <textarea
-                value={answers[currentQuestion]}
-                onChange={handleAnswer}
-                rows="8"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none"
-                placeholder="ここに回答を入力してください..."
-              />
-            </div>
-          )}
+              );
+            })}
+          </div>
         </div>
 
         {/* ナビゲーションボタン */}

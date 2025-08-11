@@ -66,12 +66,6 @@ function Home() {
       <a href="#atotsugi" className="text-sm font-medium text-gray-800 hover:text-gray-900">
         アトツギの方へ
       </a>
-      <a href="#" className="text-sm font-medium text-gray-800 hover:text-gray-900">
-        下書きを開く
-      </a>
-      <a href="#" className="text-sm font-medium text-gray-800 hover:text-gray-900">
-        相談する
-      </a>
 
       {/* CTA：サイズ/角丸/影を全体で統一 */}
       <Link
@@ -189,8 +183,8 @@ function Home() {
                 事業承継者（アトツギ）の方へ
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                アトツギ甲子園への申請サポートメニューもご用意しています。<br />
-                中小企業庁長官任命の「アトツギ甲子園地域アンバサダー」が皆さんの挑戦をサポートします。
+                アトツギ甲子園への申請サポートメニューをご用意しています。<br />
+                中小企業庁長官任命の「アトツギ甲子園地域アンバサダー」が、皆さんの挑戦をサポートします。
               </p>
             </div>
 
@@ -231,6 +225,25 @@ function Home() {
                     <div className="flex items-start space-x-2">
                       <div className="w-2 h-2 bg-yellow-400 rounded-full flex-shrink-0 mt-2"></div>
                       <span className="text-white leading-relaxed">中小企業新事業進出補助金</span>
+                    </div>
+                  </div>
+                  
+                  {/* スケジュール追加 */}
+                  <div className="mt-6 pt-6 border-t border-white/20">
+                    <h4 className="text-lg font-bold text-white mb-3">第６回アトツギ甲子園 申請スケジュール</h4>
+                    <div className="space-y-2 text-sm text-white">
+                      <div className="flex justify-between items-center">
+                        <span>エントリー締切</span>
+                        <span className="font-mono">11月26日</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span>書類提出締切</span>
+                        <span className="font-mono">11月28日</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span>書類選考結果通知</span>
+                        <span className="font-mono">12月03日</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -283,7 +296,7 @@ function Home() {
                         <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
-                        アトツギ甲子園申請書を準備
+                        アトツギ甲子園へのシンセイを準備
                       </Link>
                       <a href="https://atotsugi-koshien.go.jp/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center w-full rounded-lg bg-gray-800 px-4 py-3 text-sm font-semibold text-white shadow hover:bg-gray-700 transition-all duration-200">
                         <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -311,7 +324,7 @@ function Home() {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>
                       <p className="text-gray-300 text-sm mb-3">
-                        ご相談は随時承ります。経験豊富なアンバサダーが、あなたのアトツギ挑戦をサポートします。
+                        アトツギ甲子園への申請に関するご相談を随時承ります。過去大会出場経験者が、あなたの申請をサポートします。
                       </p>
                       
                       <div className="bg-white/10 rounded-lg p-3 space-y-1">

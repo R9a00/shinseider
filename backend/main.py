@@ -10,28 +10,28 @@ from fastapi.responses import FileResponse, JSONResponse
 import os
 import json
 import yaml
+from typing import Dict, Any
 from fastapi.middleware.cors import CORSMiddleware
 from .middleware.security import SecurityMiddleware, ErrorHandlingMiddleware, RateLimitMiddleware
 from .models import DesireRequest, ApplicationAdviceRequest, TextbookRequest, BusinessPlanRequest
 from .secure_file_utils import get_secure_file_manager
+from .config import settings
 import logging
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # セキュリティログの設定
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=getattr(logging, settings.LOG_LEVEL))
 security_logger = logging.getLogger("security")
 
 def load_subsidy_data():
-    file_path = os.path.join(BASE_DIR, "subsidies.yaml")
-    with open(file_path, "r", encoding="utf-8") as f:
+    with open(settings.SUBSIDIES_CONFIG_PATH, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 app = FastAPI()
 
-origins = [
-    "http://localhost:3333",
-    "http://localhost:3000",
+origins = settings.CORS_ORIGINS + [
+    "http://localhost:3000",  # Development fallback
     "http://127.0.0.1:3333",
     "http://127.0.0.1:3000"
 ]
@@ -102,73 +102,139 @@ async def generate_application_advice(advice_request: ApplicationAdviceRequest):
         if not prompt_template:
             raise HTTPException(status_code=500, detail="Prompt template for this subsidy is not configured.")
 
-        # ユーザーの回答を整形
-        def format_answers(answers, sections):
+        # ユーザーの回答を整形（出場資格情報を除外）
+        def format_answers(answers, sections, exclude_eligibility=False):
             formatted = ""
+            # 出場資格関連のタスクID（除外対象）
+            eligibility_tasks = {"MINI_001_AGE", "MINI_002_UNDER_39", "MINI_005_NAME", "MINI_006_COMPANY", "MINI_003_SUCCESSION_PLAN"}
+            
             for section in sections:
                 section_id = section.get("id")
                 if section_id in answers:
                     title = section.get("title", "不明な項目")
-                    formatted += f"▼ {title}\n"
                     
                     # ミニタスク形式のデータ構造をチェック
                     section_data = answers.get(section_id)
                     if isinstance(section_data, dict):
-                        # ミニタスクの場合（各タスクIDがキーになっている）
+                        # 出場資格関連のタスクを除外するかチェック
+                        filtered_tasks = []
                         for task_id, task_value in section_data.items():
-                            # セクション内のタスクを見つける
-                            task_label = task_id
-                            if section.get("input_modes", {}).get("micro_tasks"):
-                                for task in section["input_modes"]["micro_tasks"]:
-                                    if task.get("task_id") == task_id:
-                                        task_label = task.get("label", task_id)
-                                        break
-                            
+                            if exclude_eligibility and task_id in eligibility_tasks:
+                                continue  # 出場資格情報をスキップ
                             if task_value:
+                                filtered_tasks.append((task_id, task_value))
+                        
+                        if filtered_tasks:  # 有効なタスクがある場合のみセクションを追加
+                            formatted += f"▼ {title}\n"
+                            
+                            # ミニタスクの場合（各タスクIDがキーになっている）
+                            for task_id, task_value in filtered_tasks:
+                                # セクション内のタスクを見つける
+                                task_label = task_id
+                                if section.get("input_modes", {}).get("micro_tasks"):
+                                    for task in section["input_modes"]["micro_tasks"]:
+                                        if task.get("task_id") == task_id:
+                                            task_label = task.get("label", task_id)
+                                            break
+                                
                                 if isinstance(task_value, list):
                                     # 配列の場合
                                     if task_value:  # 空でない場合
                                         formatted += f"  {task_label}: {', '.join(str(v) for v in task_value if v)}\n"
                                 else:
                                     formatted += f"  {task_label}: {task_value}\n"
+                            formatted += "\n"
                     else:
                         # 通常の文字列データの場合
-                        answer_text = section_data or '（回答なし）'
-                        formatted += f"A: {answer_text}\n"
-                    
-                    formatted += "\n"
+                        if section_data:
+                            formatted += f"▼ {title}\n"
+                            formatted += f"A: {section_data}\n\n"
             return formatted
 
-        formatted_answers = format_answers(advice_request.answers, subsidy.get("sections", []))
-
-        # プロンプトテンプレートに情報を埋め込む
-        final_prompt = prompt_template.format(
-            user_answers=formatted_answers,
-            input_mode=advice_request.input_mode
-        )
-
-        # targetに応じた処理は、シンセイダーの設計思想に基づき、
-        # フロントエンド側でプロンプトをどう扱うかを決める形に移行することも考えられるが、
-        # 一旦、既存の枠組みを維持する。
+        # targetに応じて異なる出力を生成
         if advice_request.target == "ai":
+            # AI相談用：全情報を含めたプロンプトテンプレートを使用
+            formatted_answers = format_answers(advice_request.answers, subsidy.get("sections", []), exclude_eligibility=False)
+            final_prompt = prompt_template.format(
+                user_answers=formatted_answers,
+                input_mode=advice_request.input_mode
+            )
             security_logger.info(f"LLM prompt generated for subsidy: {advice_request.subsidy_id}")
             return {"output": final_prompt, "type": "prompt"}
+            
         elif advice_request.target == "human":
-            # human_consultation_pointは新しい構造では定義されていないため、
-            # 固定の文言を返すか、あるいはプロンプトをそのまま返す仕様に変更する。
-            summary = f"""専門家への相談:
+            # 専門家相談用：出場資格情報を除外して具体的な質問を生成
+            formatted_answers = format_answers(advice_request.answers, subsidy.get("sections", []), exclude_eligibility=True)
+            
+            expert_consultation = f"""専門家への相談事項
 
-{final_prompt}"""
+事業内容
+{formatted_answers}
+
+お聞きしたいこと
+
+1. この事業アイデアの独自性をもっと強くアピールするには、どのような点を強調すべきでしょうか？
+
+2. ターゲット市場の規模や成長性を示すために、どのようなデータを調査・収集すべきでしょうか？
+
+3. この事業を実現するために見落としている準備や課題があれば教えてください。
+
+4. 収益予測について、業界水準や市場実態と比較してのご意見をお聞かせください。
+
+5. 初期投資や運転資金の調達で、アトツギという立場を活かせる方法があれば教えてください。
+
+6. 8枚のスライドで最も効果的にアピールする構成順序を教えてください。
+
+7. アトツギ甲子園の審査で特に重視されるポイントがあれば教えてください。"""
+            
             security_logger.info(f"Human consultation summary generated for subsidy: {advice_request.subsidy_id}")
-            return {"output": summary, "type": "summary"}
+            return {"output": expert_consultation, "type": "summary"}
+            
         elif advice_request.target == "self":
-            # self_reflection_questionsも新しい構造では定義されていないため、
-            # 固定の文言を返すか、あるいはプロンプトをそのまま返す仕様に変更する。
-            reflection = f"""自己評価用の問いかけ:
+            # 自己評価用：出場資格情報を除外して問いかけを生成
+            formatted_answers = format_answers(advice_request.answers, subsidy.get("sections", []), exclude_eligibility=True)
+            
+            self_reflection = f"""申請書の自己チェックリスト
 
-{final_prompt}"""
+あなたの入力内容
+{formatted_answers}
+
+自分で確認してみましょう
+
+事業アイデアの魅力度チェック
+□ 似たようなサービス・事業と比べて、明確な違いを3つ説明できますか？
+□ ターゲット顧客が「これは欲しい」と思う理由を具体的に説明できますか？
+□ 「どれくらいの人が使ってくれそうか」を数字で説明できますか？
+
+実現可能性チェック
+□ この事業を成功させるのに必要なスキルや経験は身についていますか？
+□ 人・物・お金の準備はできていますか？不足分の調達方法は決まっていますか？
+□ マイルストーンの日程は現実的で達成可能ですか？
+
+収益計画チェック
+□ 売上予測の根拠は説得力がありますか？「なんとなく」になっていませんか？
+□ 必要な費用をもれなく計算できていますか？
+□ きちんと利益が出る計画になっていますか？
+
+伝わりやすさチェック
+□ 事業内容を30秒で説明できますか？
+□ なぜあなたがこの事業をやるのか、心に響くストーリーがありますか？
+□ 主張を裏付ける具体的な数字やデータが入っていますか？
+
+改善のヒント
+上記でチェックが付かない項目について、以下を試してみてください：
+
+1. 足りない情報やデータを調べる
+2. 感覚的な表現を具体的な数字に変える  
+3. 家族や友人に説明してみて反応を確認
+4. 似たサービスをもう一度詳しく調べる
+5. 上記で不安な点があれば専門家に相談する
+
+最終確認
+全ての項目にチェックが付いたら、あなたの申請書は審査員にしっかり伝わる内容になっています。"""
+            
             security_logger.info(f"Self-reflection questions generated for subsidy: {advice_request.subsidy_id}")
-            return {"output": reflection, "type": "reflection"}
+            return {"output": self_reflection, "type": "reflection"}
         else:
             raise HTTPException(status_code=400, detail="Invalid target specified.")
 
@@ -247,6 +313,122 @@ async def generate_textbook(textbook_request: TextbookRequest):
     except Exception as e:
         security_logger.error(f"Failed to generate textbook: {e}")
         raise HTTPException(status_code=500, detail="Failed to generate textbook")
+
+@app.post("/save_application_data")
+async def save_application_data(data: Dict[str, Any]):
+    """申請データをWord文書形式で保存・ダウンロード"""
+    try:
+        from docx import Document
+        from docx.shared import Inches
+        import tempfile
+        from datetime import datetime
+        
+        security_logger.info("Application data save requested")
+        
+        # 新しいWord文書を作成
+        doc = Document()
+        
+        # タイトル
+        title = data.get('subsidy_name', '補助金') + ' 申請準備書'
+        doc.add_heading(title, 0)
+        
+        # 保存情報
+        doc.add_paragraph(f"保存日時: {datetime.now().strftime('%Y年%m月%d日 %H:%M:%S')}")
+        doc.add_paragraph(f"進捗状況: {data.get('progress', 0)}%完了")
+        doc.add_paragraph("")
+        
+        # 回答データを整理して追加
+        answers = data.get("answers", {})
+        for section_id, section_data in answers.items():
+            if isinstance(section_data, dict):
+                # ミニタスク形式の場合
+                section_title = section_id.replace("_", " ").title()
+                doc.add_heading(f"■ {section_title}", level=1)
+                
+                for task_id, task_value in section_data.items():
+                    if task_value:
+                        # タスクラベルを整形
+                        task_label = task_id.replace("MINI_", "").replace("_", " ").title()
+                        
+                        if isinstance(task_value, list):
+                            if task_value:  # 空でない場合
+                                # マイルストーンの特別処理
+                                if task_id == "MILESTONES":
+                                    doc.add_paragraph(f"◆ 事業マイルストーン")
+                                    
+                                    # 有効なマイルストーンのみ抽出
+                                    valid_milestones = [item for item in task_value 
+                                                      if isinstance(item, dict) and any(v for v in item.values() if v)]
+                                    
+                                    if valid_milestones:
+                                        # 表を作成
+                                        table = doc.add_table(rows=1, cols=3)
+                                        table.style = 'Table Grid'
+                                        
+                                        # ヘッダー行
+                                        hdr_cells = table.rows[0].cells
+                                        hdr_cells[0].text = '時期'
+                                        hdr_cells[1].text = '達成内容'
+                                        hdr_cells[2].text = '備考'
+                                        
+                                        # ヘッダー行を太字に
+                                        for cell in hdr_cells:
+                                            for paragraph in cell.paragraphs:
+                                                for run in paragraph.runs:
+                                                    run.bold = True
+                                        
+                                        # データ行を追加
+                                        for item in valid_milestones:
+                                            row_cells = table.add_row().cells
+                                            row_cells[0].text = item.get('ym', '')
+                                            row_cells[1].text = item.get('note', '')
+                                            row_cells[2].text = item.get('owner', '')
+                                        
+                                        doc.add_paragraph("")  # 表の後にスペース
+                                else:
+                                    doc.add_paragraph(f"◆ {task_label}:")
+                                    for item in task_value:
+                                        if isinstance(item, dict):
+                                            # 他の構造化データの場合
+                                            for key, value in item.items():
+                                                if value:
+                                                    doc.add_paragraph(f"  - {key}: {value}", style='List Bullet')
+                                        else:
+                                            doc.add_paragraph(f"  - {item}", style='List Bullet')
+                        else:
+                            doc.add_paragraph(f"◆ {task_label}: {task_value}")
+                
+                doc.add_paragraph("")  # セクション間のスペース
+                
+            elif section_data:
+                # 通常の文字列データの場合
+                section_title = section_id.replace("_", " ").title()
+                doc.add_heading(f"■ {section_title}", level=1)
+                doc.add_paragraph(section_data)
+                doc.add_paragraph("")
+        
+        # フッター情報
+        doc.add_paragraph("")
+        doc.add_paragraph("=" * 50)
+        doc.add_paragraph("このデータは「シンセイダー」で作成されました。")
+        doc.add_paragraph("プライバシー保護: このデータはサーバーに保存されていません。")
+        
+        # 一時ファイルに保存
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.docx')
+        doc.save(temp_file.name)
+        temp_file.close()
+        
+        filename = f"申請準備書_{data.get('subsidy_name', '補助金')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.docx"
+        
+        return FileResponse(
+            temp_file.name,
+            media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            filename=filename
+        )
+        
+    except Exception as e:
+        security_logger.error(f"Failed to save application data: {e}")
+        raise HTTPException(status_code=500, detail="Failed to save application data")
 
 @app.post("/generate_business_plan")
 async def generate_business_plan(business_plan_request: BusinessPlanRequest):
