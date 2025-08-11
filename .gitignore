@@ -57,7 +57,11 @@ Thumbs.db
 .env.local
 .env.production
 
-# Research and documentation files
+# Private development files (never commit these)
+private/
+.private/
+
+# Research and documentation files  
 research_results/
 参照/
 deep_research_prompts.md
@@ -73,3 +77,15 @@ subsidies_additions.yaml
 *~
 *.bak
 *.backup
+
+# Developer notes and drafts
+NOTES.md
+TODO.md
+DRAFT_*
+*.draft
+*.wip
+
+# Local development files
+local_*
+dev_*
+experiment_*

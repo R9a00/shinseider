@@ -7,13 +7,17 @@ function SubsidyApplicationSupport() {
   const [sections, setSections] = useState([]);
   const [subsidyName, setSubsidyName] = useState('');
   const [answers, setAnswers] = useState({});
-  const [inputMode, setInputMode] = useState('micro_tasks'); // micro_tasks or integrated
+  const [inputMode, setInputMode] = useState('micro_tasks'); // micro_tasks, integrated, or guided
   const [output, setOutput] = useState('');
   const [outputTitle, setOutputTitle] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showOutputOptions, setShowOutputOptions] = useState(false);
+  const [validation, setValidation] = useState({});
+  const [checklist, setChecklist] = useState([]);
+  const [tasks, setTasks] = useState({});
+  const [checklistState, setChecklistState] = useState({});
 
   useEffect(() => {
     const fetchSubsidyData = async () => {
@@ -25,6 +29,16 @@ function SubsidyApplicationSupport() {
         }
         const sectionsData = await sectionsResponse.json();
         setSections(sectionsData.sections || []);
+        setValidation(sectionsData.validation || {});
+        setChecklist(sectionsData.checklist || []);
+        setTasks(sectionsData.tasks || {});
+        
+        // Initialize checklist state
+        const initialChecklistState = {};
+        (sectionsData.checklist || []).forEach((_, index) => {
+          initialChecklistState[index] = false;
+        });
+        setChecklistState(initialChecklistState);
 
         const metadataResponse = await fetch(`${config.API_BASE_URL}/subsidies/${subsidyId}/metadata`);
         if (metadataResponse.ok) {
@@ -468,7 +482,7 @@ function SubsidyApplicationSupport() {
 
   const renderSection = (section, sectionIndex) => {
     // アトツギ甲子園の場合はミニタスクモードを使用
-    const hasInputModes = section.input_modes && (section.input_modes.micro_tasks || section.input_modes.integrated);
+    const hasInputModes = section.input_modes && (section.input_modes.micro_tasks || section.input_modes.integrated || section.input_modes.guided);
     
     if (subsidyId === 'atotsugi' && hasInputModes) {
       return (
@@ -514,6 +528,25 @@ function SubsidyApplicationSupport() {
                 </div>
               </div>
             )}
+            
+            {inputMode === 'guided' && section.input_modes.guided && (
+              <div className="p-4 space-y-4">
+                {section.input_modes.guided.map((question, questionIndex) => (
+                  <div key={questionIndex} className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <label className="block text-sm font-medium text-blue-900 mb-2">
+                      {question}
+                    </label>
+                    <textarea
+                      value={answers[`${section.id}_guided_${questionIndex}`] || ''}
+                      onChange={(e) => handleAnswerChange(`${section.id}_guided_${questionIndex}`, e.target.value)}
+                      rows="4"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="こちらの質問に対する回答を詳しくご記入ください..."
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       );
@@ -555,7 +588,113 @@ function SubsidyApplicationSupport() {
 
   const handleInitialSubmit = (e) => {
     e.preventDefault();
+    
+    // Run validation
+    const validationErrors = validateAnswers();
+    if (validationErrors.length > 0) {
+      alert('入力内容に不備があります:\n\n' + validationErrors.join('\n'));
+      return;
+    }
+    
     setShowOutputOptions(true);
+  };
+
+  const validateAnswers = () => {
+    const errors = [];
+    
+    // Required section validation
+    if (validation.required) {
+      validation.required.forEach(sectionId => {
+        const section = sections.find(s => s.id === sectionId);
+        if (!section) return;
+        
+        if (inputMode === 'micro_tasks' && section.input_modes?.micro_tasks) {
+          let hasAnswer = false;
+          section.input_modes.micro_tasks.forEach(task => {
+            if (task.required && answers[sectionId]?.[task.task_id]) {
+              hasAnswer = true;
+            }
+          });
+          if (!hasAnswer) {
+            errors.push(`${section.title}セクションに必須項目が入力されていません`);
+          }
+        } else if (inputMode === 'integrated' && !answers[sectionId]) {
+          errors.push(`${section.title}セクションが入力されていません`);
+        } else if (inputMode === 'guided' && section.input_modes?.guided) {
+          let hasGuidedAnswers = false;
+          section.input_modes.guided.forEach((_, questionIndex) => {
+            if (answers[`${sectionId}_guided_${questionIndex}`]) {
+              hasGuidedAnswers = true;
+            }
+          });
+          if (!hasGuidedAnswers) {
+            errors.push(`${section.title}セクションに必須項目が入力されていません`);
+          }
+        }
+      });
+    }
+    
+    // Micro tasks required validation
+    if (validation.micro_tasks_required && inputMode === 'micro_tasks') {
+      validation.micro_tasks_required.forEach(taskId => {
+        let found = false;
+        sections.forEach(section => {
+          if (section.input_modes?.micro_tasks) {
+            section.input_modes.micro_tasks.forEach(task => {
+              if (task.task_id === taskId && answers[section.id]?.[taskId]) {
+                found = true;
+              }
+            });
+          }
+        });
+        if (!found) {
+          errors.push(`必須項目 "${taskId}" が入力されていません`);
+        }
+      });
+    }
+    
+    // Age limit validation
+    if (validation.age_limit && inputMode === 'micro_tasks') {
+      const ageField = validation.age_limit.field;
+      let age = null;
+      sections.forEach(section => {
+        if (answers[section.id]?.[ageField]) {
+          age = parseInt(answers[section.id][ageField]);
+        }
+      });
+      if (age && age > validation.age_limit.max) {
+        errors.push(`年齢は${validation.age_limit.max}歳以下である必要があります`);
+      }
+    }
+    
+    return errors;
+  };
+
+  const processGuidedAnswers = () => {
+    if (inputMode !== 'guided') {
+      return answers;
+    }
+
+    const processedAnswers = { ...answers };
+    
+    // Combine guided answers into section-level answers
+    sections.forEach(section => {
+      if (section.input_modes?.guided) {
+        const guidedAnswers = [];
+        section.input_modes.guided.forEach((question, questionIndex) => {
+          const answerKey = `${section.id}_guided_${questionIndex}`;
+          if (answers[answerKey]) {
+            guidedAnswers.push(`【${question}】\n${answers[answerKey]}`);
+          }
+        });
+        
+        if (guidedAnswers.length > 0) {
+          processedAnswers[section.id] = guidedAnswers.join('\n\n');
+        }
+      }
+    });
+    
+    return processedAnswers;
   };
 
   const handleSaveData = async () => {
@@ -566,7 +705,7 @@ function SubsidyApplicationSupport() {
         body: JSON.stringify({ 
           subsidy_id: subsidyId, 
           subsidy_name: subsidyName,
-          answers, 
+          answers: processGuidedAnswers(), 
           progress: getProgressPercentage()
         })
       });
@@ -599,7 +738,7 @@ function SubsidyApplicationSupport() {
       const response = await fetch(`${config.API_BASE_URL}/generate_application_advice`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subsidy_id: subsidyId, answers, input_mode: inputMode, target: target })
+        body: JSON.stringify({ subsidy_id: subsidyId, answers: processGuidedAnswers(), input_mode: inputMode, target: target })
       });
       if (!response.ok) {
         const errData = await response.json();
@@ -647,7 +786,7 @@ function SubsidyApplicationSupport() {
     let completedTasks = 0;
     
     sections.forEach(section => {
-      if (section.input_modes?.micro_tasks) {
+      if (inputMode === 'micro_tasks' && section.input_modes?.micro_tasks) {
         section.input_modes.micro_tasks.forEach(task => {
           // 条件付きタスクの表示状態をチェック
           let shouldCount = true;
@@ -677,6 +816,19 @@ function SubsidyApplicationSupport() {
                 completedTasks++;
               }
             }
+          }
+        });
+      } else if (inputMode === 'integrated' && section.input_modes?.integrated) {
+        totalTasks++;
+        if (answers[section.id] && answers[section.id].trim()) {
+          completedTasks++;
+        }
+      } else if (inputMode === 'guided' && section.input_modes?.guided) {
+        totalTasks += section.input_modes.guided.length;
+        section.input_modes.guided.forEach((question, questionIndex) => {
+          const answerKey = `${section.id}_guided_${questionIndex}`;
+          if (answers[answerKey] && answers[answerKey].trim()) {
+            completedTasks++;
           }
         });
       }
@@ -781,7 +933,7 @@ function SubsidyApplicationSupport() {
               <div className="mb-8">
                 <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">入力方式を選択</h3>
-                  <div className="grid gap-4 md:grid-cols-2">
+                  <div className="grid gap-4 md:grid-cols-3">
                     <button
                       type="button"
                       onClick={() => setInputMode('micro_tasks')}
@@ -815,6 +967,24 @@ function SubsidyApplicationSupport() {
                       </div>
                       <p className="text-sm text-gray-600">
                         まとめて入力で時短
+                      </p>
+                    </button>
+                    
+                    <button
+                      type="button"
+                      onClick={() => setInputMode('guided')}
+                      className={`p-4 rounded-lg border-2 text-left transition-all ${
+                        inputMode === 'guided' 
+                          ? 'border-blue-500 bg-blue-50' 
+                          : 'border-gray-200 hover:border-blue-300'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-2 mb-2">
+                        <span className="text-lg">📋</span>
+                        <h4 className="font-medium text-gray-900">ガイドモード</h4>
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        質問に沿って段階的入力
                       </p>
                     </button>
                   </div>

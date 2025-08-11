@@ -12,10 +12,10 @@ import json
 import yaml
 from typing import Dict, Any
 from fastapi.middleware.cors import CORSMiddleware
-from .middleware.security import SecurityMiddleware, ErrorHandlingMiddleware, RateLimitMiddleware
-from .models import DesireRequest, ApplicationAdviceRequest, TextbookRequest, BusinessPlanRequest
-from .secure_file_utils import get_secure_file_manager
-from .config import settings
+from middleware.security import SecurityMiddleware, ErrorHandlingMiddleware, RateLimitMiddleware
+from models import DesireRequest, ApplicationAdviceRequest, TextbookRequest, BusinessPlanRequest
+from secure_file_utils import get_secure_file_manager
+from config import settings
 import logging
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -87,7 +87,16 @@ async def get_application_questions(subsidy_id: str):
         raise HTTPException(status_code=404, detail="Subsidy not found")
 
     sections = subsidy.get("sections", [])
-    return {"sections": sections}
+    validation = subsidy.get("validation", {})
+    checklist = subsidy.get("checklist", [])
+    tasks = subsidy.get("tasks", {})
+    
+    return {
+        "sections": sections,
+        "validation": validation,
+        "checklist": checklist,
+        "tasks": tasks
+    }
 
 @app.post("/generate_application_advice")
 async def generate_application_advice(advice_request: ApplicationAdviceRequest):
