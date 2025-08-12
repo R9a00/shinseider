@@ -5,3 +5,4 @@ docxtpl
 pydantic[email]
 aiosmtplib
 python-multipart
+pyyaml
