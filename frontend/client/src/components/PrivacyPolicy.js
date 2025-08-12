@@ -21,7 +21,7 @@ function PrivacyPolicy() {
       {/* メインコンテンツ */}
       <section className="mx-auto max-w-4xl px-4 py-12">
         <div className="space-y-6 text-gray-700 text-sm leading-relaxed">
-          <p>シンセイダー アトツギ挑戦支援デスク（以下「当デスク」）は、原則として利用者の入力データをサーバーに保存しません。補助金申請準備機能や診断機能はすべてブラウザ内で処理されます。</p>
+          <p>シンセイダー（以下「当サイト」）は、原則として利用者の入力データをサーバーに保存しません。補助金申請準備機能や診断機能はすべてブラウザ内で処理されます。</p>
 
           <div>
             <h3 className="text-lg font-semibold mb-3 text-gray-900">1. 取得する情報</h3>

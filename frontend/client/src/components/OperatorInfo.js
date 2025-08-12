@@ -62,7 +62,7 @@ function OperatorInfo() {
           <div className="text-center mb-8">
             <h3 className="text-2xl font-bold mb-3">お気軽にご相談ください</h3>
             <p className="text-gray-300 leading-relaxed">
-              アトツギ甲子園申請に関するサポートは、羽生田大陸（シンセイダー運営者）が窓口となり各SNSのDMからお願いします。<br />
+              アトツギ甲子園申請に関するサポートは、羽生田大陸（当サイト運営者）が窓口となり各SNSのDMからお願いします。<br />
               過去の出場経験と地域アンバサダーとしての知見を活かし、みなさんの挑戦をサポートいたします。
             </p>
           </div>
