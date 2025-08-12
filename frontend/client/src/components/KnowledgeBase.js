@@ -379,37 +379,57 @@ function KnowledgeBase() {
                         <div className="space-y-6">
                           {/* New format: structured detailed content */}
                           {section.content?.detailed && (
-                            <Callout variant="expert" title="🎯 専門家向け（詳細分析）">
-                              <div className="space-y-6">
-                                <div className="prose max-w-none text-slate-700">
+                            <div style={{
+                              backgroundColor: '#e0f2fe', 
+                              border: '1px solid #0288d1', 
+                              borderRadius: '8px', 
+                              padding: '20px', 
+                              margin: '20px 0'
+                            }}>
+                              <h3 style={{fontSize: '20px', fontWeight: 'bold', color: '#01579b', marginBottom: '16px'}}>
+                                🎯 専門家向け（詳細分析）
+                              </h3>
+                              
+                              <div style={{marginBottom: '16px'}}>
+                                <div style={{color: '#424242', lineHeight: '1.6'}}>
                                   {section.content?.detailed?.abstract}
                                 </div>
-                                
-                                {section.content?.detailed?.comprehensive_analysis && (
-                                  <div className="space-y-4">
-                                    {Object.entries(section.content?.detailed?.comprehensive_analysis).map(([key, value]) => (
-                                      <div key={key} className="border-l-4 border-indigo-400 pl-4">
-                                        <h5 className="font-semibold text-indigo-900 mb-2 capitalize">
-                                          {key.replace(/_/g, ' ')}
-                                        </h5>
-                                        <div className="prose prose-sm max-w-none text-indigo-800">
-                                          {value}
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
                               </div>
-                            </Callout>
+                              
+                              {section.content?.detailed?.comprehensive_analysis && (
+                                <div>
+                                  {Object.entries(section.content?.detailed?.comprehensive_analysis).map(([key, value]) => (
+                                    <div key={key} style={{
+                                      borderLeft: '4px solid #0288d1', 
+                                      paddingLeft: '16px', 
+                                      marginBottom: '16px'
+                                    }}>
+                                      <h5 style={{fontWeight: 'bold', color: '#01579b', marginBottom: '8px'}}>
+                                        {key.replace(/_/g, ' ').toUpperCase()}
+                                      </h5>
+                                      <div style={{color: '#424242', lineHeight: '1.6', whiteSpace: 'pre-line'}}>
+                                        {value}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
                           )}
                           
                           {/* Old format: show all available detailed information */}
                           {!section.content?.detailed && section.key_points && (
-                            <div className="space-y-4">
-                              <h4 className="text-lg font-semibold text-emerald-800 mb-4">📋 詳細情報</h4>
+                            <div style={{
+                              backgroundColor: '#f3f4f6', 
+                              border: '1px solid #d1d5db', 
+                              borderRadius: '8px', 
+                              padding: '20px', 
+                              margin: '20px 0'
+                            }}>
+                              <h4 style={{fontSize: '18px', fontWeight: 'bold', color: '#059669', marginBottom: '16px'}}>📋 詳細情報</h4>
                               {Array.isArray(section.key_points) ? 
                                 section.key_points.map((point, idx) => {
-                                  const mainContent = point.definition || point.characteristics || point.types || point;
+                                  const mainContent = point.definition || point.characteristics || point.types || point.national_budget || point.tax_sources || point.local_budget || point;
                                   const title = mainContent.title || point.title || '詳細項目';
                                   const content = mainContent.content || point.content || point.explanation;
                                   const examples = mainContent.examples || point.examples;
@@ -417,10 +437,16 @@ function KnowledgeBase() {
                                   const classifications = mainContent.classifications || point.classifications;
                                   
                                   return (
-                                    <div key={idx} className="bg-emerald-50 rounded-lg p-6 border border-emerald-200">
-                                      <h5 className="text-lg font-semibold text-emerald-800 mb-3">{title}</h5>
-                                      <div className="space-y-4">
-                                        {content && <p className="text-emerald-700">{content}</p>}
+                                    <div key={idx} style={{
+                                      backgroundColor: '#dcfce7', 
+                                      border: '1px solid #16a34a', 
+                                      borderRadius: '8px', 
+                                      padding: '16px', 
+                                      marginBottom: '12px'
+                                    }}>
+                                      <h5 style={{fontSize: '16px', fontWeight: 'bold', color: '#166534', marginBottom: '12px'}}>{title}</h5>
+                                      <div>
+                                        {content && <p style={{color: '#15803d', marginBottom: '12px'}}>{content}</p>}
                                         
                                         {details && (
                                           <div>
