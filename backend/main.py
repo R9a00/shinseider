@@ -14,6 +14,7 @@ from typing import Dict, Any
 from fastapi.middleware.cors import CORSMiddleware
 from middleware.security import SecurityMiddleware, ErrorHandlingMiddleware, RateLimitMiddleware
 from models import DesireRequest, ApplicationAdviceRequest, TextbookRequest, BusinessPlanRequest, ContactRequest
+from typing import Optional
 from secure_file_utils import get_secure_file_manager
 from config import settings
 import logging
@@ -49,12 +50,12 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
 # セキュリティミドルウェア（REQ-SEC-001, REQ-SEC-006, REQ-SEC-010）
-app.add_middleware(SecurityMiddleware, max_request_size=1024*1024)  # 1MB制限
+app.add_middleware(SecurityMiddleware, max_request_size=10*1024*1024)  # 10MB制限（ファイル添付のため増加）
 
 # エラーハンドリングミドルウェア（REQ-SEC-004）
 is_production = os.getenv("ENVIRONMENT") == "production"
