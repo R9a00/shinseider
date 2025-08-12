@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getCurrentVersion, getAllVersions } from '../data/privacyPolicyHistory';
 
 function PrivacyPolicy() {
+  const [showHistory, setShowHistory] = useState(false);
+  const currentVersion = getCurrentVersion();
+  const allVersions = getAllVersions();
+
   return (
     <div className="min-h-screen bg-white">
       {/* ヘッダー部分 */}
@@ -54,6 +59,50 @@ function PrivacyPolicy() {
           <div>
             <h3 className="text-lg font-semibold mb-3 text-gray-900">5. 改定</h3>
             <p>必要に応じて本ポリシーを改定する場合があります。最新の内容は本ページでご確認ください。</p>
+            
+            <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-sm text-gray-600">
+                  現在のバージョン: <span className="font-semibold">v{currentVersion.version}</span>
+                  <span className="ml-2">（{currentVersion.date}）</span>
+                </div>
+                <button
+                  onClick={() => setShowHistory(!showHistory)}
+                  className="text-sm text-blue-600 hover:text-blue-800 underline"
+                >
+                  {showHistory ? '改定履歴を閉じる' : '改定履歴を見る'}
+                </button>
+              </div>
+              
+              {showHistory && (
+                <div className="mt-4 border-t border-gray-200 pt-4">
+                  <h4 className="text-sm font-semibold text-gray-900 mb-3">改定履歴</h4>
+                  <div className="space-y-4">
+                    {allVersions.map((version, index) => (
+                      <div key={version.version} className="border-l-4 border-gray-300 pl-4">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-semibold text-sm">v{version.version}</span>
+                          <span className="text-xs text-gray-500">{version.date}</span>
+                          {index === 0 && (
+                            <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                              現在
+                            </span>
+                          )}
+                        </div>
+                        <ul className="text-xs text-gray-600 space-y-1">
+                          {version.changes.map((change, changeIndex) => (
+                            <li key={changeIndex} className="flex items-start gap-2">
+                              <span className="text-gray-400 mt-1">•</span>
+                              <span>{change}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
