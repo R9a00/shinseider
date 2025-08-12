@@ -344,51 +344,47 @@ function Home() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-              {/* 完成済み */}
+              {/* 利用可能 */}
               <div className="bg-green-50 border border-green-200 rounded-lg p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span className="font-semibold text-green-800">完成済み</span>
+                  <span className="font-semibold text-green-800">利用可能</span>
                 </div>
                 <ul className="space-y-1 text-green-700">
-                  <li>• 30秒診断機能</li>
-                  <li>• アトツギ甲子園申請</li>
-                  <li>• 基本的な申請書作成</li>
-                  <li>• Word文書出力</li>
+                  <li>• 30秒診断（基本版）</li>
+                  <li>• アトツギ甲子園申請サポート</li>
+                  <li>• 申請書下書き作成</li>
+                  <li>• Word文書ダウンロード</li>
                   <li>• お問い合わせフォーム</li>
-                  <li>• バージョン管理システム</li>
                 </ul>
               </div>
 
-              {/* 開発中 */}
+              {/* 改善中 */}
               <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
-                  <span className="font-semibold text-orange-800">開発中</span>
+                  <span className="font-semibold text-orange-800">改善中</span>
                 </div>
                 <ul className="space-y-1 text-orange-700">
-                  <li>• 他の補助金対応拡充</li>
-                  <li>• ものづくり補助金詳細</li>
-                  <li>• 事業承継・M&A補助金</li>
-                  <li>• Go-tech事業サポート</li>
-                  <li>• 申請書精度向上</li>
-                  <li>• UI/UX改善</li>
+                  <li>• 補助金情報の最新化</li>
+                  <li>• 申請書テンプレート精度向上</li>
+                  <li>• 診断ロジックの改善</li>
+                  <li>• UI操作性の向上</li>
+                  <li>• チェックリスト内容充実</li>
                 </ul>
               </div>
 
-              {/* 計画中 */}
+              {/* 検討中 */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                  <span className="font-semibold text-blue-800">計画中</span>
+                  <span className="font-semibold text-blue-800">検討中</span>
                 </div>
                 <ul className="space-y-1 text-blue-700">
-                  <li>• AI申請書チェック機能</li>
-                  <li>• 申請進捗管理</li>
-                  <li>• 過去申請データ管理</li>
-                  <li>• モバイルアプリ化</li>
-                  <li>• 専門家マッチング</li>
-                  <li>• 申請成功率分析</li>
+                  <li>• 申請書フォーマット更新対応</li>
+                  <li>• 補助金制度変更への追従</li>
+                  <li>• より詳細な入力支援</li>
+                  <li>• 申請前チェック機能強化</li>
                 </ul>
               </div>
             </div>
