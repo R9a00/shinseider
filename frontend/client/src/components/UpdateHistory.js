@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import config from '../config';
 
 function UpdateHistory() {
   const [versionData, setVersionData] = useState(null);
@@ -12,7 +13,7 @@ function UpdateHistory() {
 
   const fetchVersionHistory = async () => {
     try {
-      const response = await fetch('http://localhost:8888/version-history');
+      const response = await fetch(`${config.API_BASE_URL}/version-history`);
       if (!response.ok) {
         throw new Error('バージョン履歴の取得に失敗しました');
       }
