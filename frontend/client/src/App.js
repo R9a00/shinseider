@@ -51,21 +51,24 @@ function Home() {
 >
   <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 md:py-3 lg:px-6">
     {/* ロゴ + タグライン */}
-    <Link to="/" className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3" aria-label="シンセイダー - 補助金申請のハードルを下げる。">
-      <div className="flex items-center gap-3">
+    <Link to="/" className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3" aria-label="シンセイダー - 補助金申請のハードルを下げる。">
+      <div className="flex items-center justify-center sm:justify-start gap-3">
         <img
-          src="/shinseider_logo.png"
+          src={`/shinseider_logo.png?t=${Date.now()}`}
           alt="シンセイダー"
-          className={`h-32 w-auto ${scrolled ? 'h-28' : 'h-32'} md:h-32 md:${scrolled ? 'h-24' : 'h-32'}`}
+          className={`h-20 w-auto ${scrolled ? 'h-16' : 'h-20'} md:h-24 md:${scrolled ? 'h-20' : 'h-24'} object-contain object-center`}
+          style={{objectPosition: 'center'}}
         />
         <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
           β
         </span>
       </div>
       <span className="hidden sm:inline-block h-4 w-px bg-slate-300"></span>
-      <span className="text-xs sm:text-sm leading-relaxed text-slate-600 tracking-tight opacity-90">
-        補助金申請の<br className="sm:hidden" />ハードルを下げる。
-      </span>
+      <div className="flex justify-center sm:justify-start">
+        <span className="text-sm font-semibold text-slate-800 tracking-tight leading-tight">
+          補助金申請のハードルを下げる。
+        </span>
+      </div>
     </Link>
 
     {/* ナビ（デスクトップ） */}
@@ -148,9 +151,6 @@ function Home() {
               <div className="space-y-8">
                 {/* ヘッドライン */}
                 <div className="space-y-5">
-                  <div className="inline-flex items-center rounded-full bg-orange-100 px-3 py-1 text-sm font-medium text-orange-800 mb-4">
-                    🚧 一部機能作成中
-                  </div>
                   <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl leading-[1.2]">
                     補助金申請の準備を支え、<br />
                     <span className="text-red-600">かける時間を最小化する。</span>
@@ -374,7 +374,7 @@ function Home() {
         <div className="mx-auto max-w-7xl px-4 py-10 text-sm text-gray-600 lg:px-6">
           <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
             <div className="flex items-center gap-2">
-              <img src="/shinseider_logo.png" alt="Shinseider" className="h-12 w-auto" />
+              <img src={`/shinseider_logo.png?t=${Date.now()}`} alt="Shinseider" className="h-12 w-auto" />
             </div>
             <nav className="flex flex-wrap items-center gap-x-6 gap-y-2" aria-label="フッターナビ">
               <Link to="/knowledge-base" className="hover:text-gray-900 flex items-center gap-1">
