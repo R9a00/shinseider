@@ -49,11 +49,16 @@ function Home() {
   <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 md:py-3 lg:px-6">
     {/* ロゴ + タグライン */}
     <Link to="/" className="flex items-center gap-3" aria-label="シンセイダー - 補助金申請のハードルを下げる。">
-      <img
-        src="/shinseider_logo.png"
-        alt="シンセイダー"
-        className={`h-40 w-auto ${scrolled ? 'h-32' : 'h-40'} md:h-32 md:${scrolled ? 'h-24' : 'h-32'}`}
-      />
+      <div className="relative">
+        <img
+          src="/shinseider_logo.png"
+          alt="シンセイダー"
+          className={`h-40 w-auto ${scrolled ? 'h-32' : 'h-40'} md:h-32 md:${scrolled ? 'h-24' : 'h-32'}`}
+        />
+        <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded-full font-semibold">
+          β
+        </span>
+      </div>
       <span className="hidden sm:inline-block h-4 w-px bg-slate-300"></span>
       <span className="hidden sm:inline-block text-xs sm:text-sm leading-none text-slate-600 tracking-tight">
         補助金申請の<br className="sm:hidden" />ハードルを下げる。
@@ -330,7 +335,13 @@ function Home() {
               <Link to="/contact" className="hover:text-gray-900">お問い合わせ</Link>
             </nav>
           </div>
-          <p className="mt-6 text-xs text-gray-400">© {new Date().getFullYear()} Shinseider. All rights reserved.</p>
+          <div className="mt-6 flex items-center justify-between text-xs text-gray-400">
+            <p>© {new Date().getFullYear()} Shinseider. All rights reserved.</p>
+            <div className="flex items-center gap-2">
+              <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full font-medium">ベータ版</span>
+              <span>機能開発中</span>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
