@@ -704,6 +704,56 @@ async def send_contact(
         security_logger.error(f"Failed to send contact email: {e}")
         raise HTTPException(status_code=500, detail="メール送信に失敗しました")
 
+@app.get("/news")
+async def get_news():
+    """ニュース・お知らせを取得"""
+    try:
+        news_path = os.path.join(BASE_DIR, "news_content.yaml")
+        with open(news_path, 'r', encoding='utf-8') as file:
+            news_data = yaml.safe_load(file)
+        return news_data
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="ニュースファイルが見つかりません")
+    except Exception as e:
+        security_logger.error(f"Failed to load news: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"ニュースデータの取得に失敗しました: {str(e)}")
+
+@app.get("/knowledge-base")
+async def get_knowledge_base():
+    """補助金基礎知識を取得"""
+    try:
+        knowledge_path = os.path.join(BASE_DIR, "knowledge_base.yaml")
+        with open(knowledge_path, 'r', encoding='utf-8') as file:
+            knowledge_data = yaml.safe_load(file)
+        return knowledge_data
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="基礎知識ファイルが見つかりません")
+    except Exception as e:
+        security_logger.error(f"Failed to load knowledge base: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"基礎知識データの取得に失敗しました: {str(e)}")
+
+@app.get("/knowledge-base/{section_id}")
+async def get_knowledge_section(section_id: str):
+    """特定の基礎知識セクションを取得"""
+    try:
+        knowledge_path = os.path.join(BASE_DIR, "knowledge_base.yaml")
+        with open(knowledge_path, 'r', encoding='utf-8') as file:
+            knowledge_data = yaml.safe_load(file)
+        
+        if section_id not in knowledge_data.get('content', {}):
+            raise HTTPException(status_code=404, detail=f"セクション '{section_id}' が見つかりません")
+        
+        return {
+            'section_id': section_id,
+            'data': knowledge_data['content'][section_id],
+            'metadata': knowledge_data.get('metadata', {})
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        security_logger.error(f"Failed to load knowledge section: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"基礎知識データの取得に失敗しました: {str(e)}")
+
 if __name__ == "__main__":
     import uvicorn
     import os

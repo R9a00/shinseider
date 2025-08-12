@@ -167,21 +167,21 @@
       input_modes:
         micro_tasks:
           - task_id: "MINI_020_PAINS"
-            label: "顧客が困っていること（最大3つ）"
+            label: "お客様が困っていること"
             type: "text_array"
-            max_items: 3
             max_length_per_item: 80
             placeholder: "小ロットの試作が高くて遅い"
             required: true
-          - task_id: "MINI_021_COMPETITORS"
-            label: "競合他社（あれば1-3社）"
+          - task_id: "MINI_021_SOCIAL"
+            label: "取り組む社会課題"
             type: "text_array"
-            max_items: 3
-          - task_id: "MINI_022_DIFFERENTIATION"
-            label: "競合との違い（最大3つ）"
-            type: "text_array"
-            max_items: 3
             max_length_per_item: 80
+            placeholder: "地方製造業の人手不足、環境負荷の軽減など"
+          - task_id: "MINI_022_DIFFERENTIATION"
+            label: "他社との違い・自社の強み"
+            type: "text_array"
+            max_length_per_item: 80
+            placeholder: "特殊技術を持つ、地域密着、価格競争力など"
         integrated:
           - task_name: "T3: 課題→競合→差別化"
             description: "顧客の困りごと、競合状況、差別化ポイントをまとめて入力"
@@ -230,26 +230,26 @@
       title: 収益モデル
       min: 80
       max: 600
-      hint: "収益の取り方を選んで、必要な数値を入力してください"
+      hint: "どのようにして売上を得るかを具体的に記述してください。価格設定や販売方法についても含めてください。"
       input_modes:
         micro_tasks:
           # 収益パターン選択（複数可）
           - task_id: "REV_PATTERNS"
-            label: "収益の取り方を選択（複数可）"
+            label: "収益を得る方法を選択してください（複数選択可能）"
             type: "multi_select"
             options: ["単発販売（物販/受託）","サブスク（定額/従量）","従量課金（API/利用回数）","手数料（取次/MP）","ライセンス/ロイヤリティ","サービス（コンサル/保守）","ハイブリッド（ハード+サービス）"]
             required: true
           
           # 共通質問
           - task_id: "REV_TARGET"
-            label: "誰に売る？"
+            label: "主な販売先・顧客層"
             type: "select"
-            options: ["既存B2B","新規B2B","B2C","自治体","海外"]
+            options: ["既存の法人顧客","新規の法人顧客","個人のお客様","自治体・公的機関","海外市場"]
             required: true
           - task_id: "REV_CHANNEL"
-            label: "販売チャネル（複数可）"
+            label: "販売方法（複数選択可能）"
             type: "multi_select"
-            options: ["直販","代理店","EC/MP","OEM","紹介"]
+            options: ["直接販売","代理店経由","ネット販売","OEM提供","紹介・口コミ"]
             required: true
             
           # 動的展開用（選択に応じてフロントエンドで表示制御）
@@ -434,52 +434,57 @@
       hint: "技術面・体制面・資金面での実現可能性を評価してください"
       input_modes:
         micro_tasks:
-          # 技術成熟度
-          - task_id: "TRL"
-            label: "技術成熟度（TRL 1-9 / 該当なし可）"
+          # 技術の準備状況
+          - task_id: "TECH_READINESS"
+            label: "技術の準備状況"
             type: "select"
-            options: ["N/A","1","2","3","4","5","6","7","8","9"]
+            options: ["アイデア段階","基礎研究中","試作品完成","実証実験中","製品化済み","該当なし"]
             required: true
           
-          # 体制充足
-          - task_id: "TEAM"
-            label: "体制充足（役割カバー率）"
+          # チーム体制
+          - task_id: "TEAM_ROLES"
+            label: "現在のチーム体制（複数選択可）"
             type: "multi_select"
-            options: ["営業","開発/製造","品質/法務","財務","CS/運用"]
+            options: ["営業・販売","開発・製造","品質管理","経理・財務","顧客サポート"]
             required: true
             
-          # 資金関連
-          - task_id: "CAPEX"
-            label: "初期投資（CAPEX, 円）"
+          # 資金計画
+          - task_id: "INITIAL_INVESTMENT"
+            label: "初期に必要な投資額（円）"
             type: "number"
+            placeholder: "設備購入、システム開発などの初期費用"
             required: false
-          - task_id: "OPEX"
-            label: "月次運営費（OPEX, 円/月）"
+          - task_id: "MONTHLY_COST"
+            label: "月々の運営費（円/月）"
             type: "number"
+            placeholder: "人件費、家賃、材料費などの毎月の費用"
             required: false
             
           # 許認可
           - task_id: "PERMITS"
-            label: "許認可の要否"
+            label: "許可や認証の必要性"
             type: "select"
-            options: ["不要","要（取得済）","要（申請中）","要（未着手）"]
+            options: ["特に必要なし","必要で既に取得済み","必要で申請中","必要だが未着手"]
+            placeholder: "食品なら保健所許可、製造業なら各種認証など"
             required: false
             
-          # サプライチェーン
+          # 仕入れ・外注
           - task_id: "SUPPLY"
-            label: "供給/外注の確実性"
+            label: "材料調達や外注の準備状況"
             type: "select"
-            options: ["社内完結","主要サプライヤ契約済","見積取得済","未定"]
+            options: ["すべて自社でできる","主要な仕入先と契約済み","見積もりは取得済み","これから検討"]
             required: false
             
           # リスクと対策
           - task_id: "RISKS"
-            label: "主要リスク（最大3つ）"
+            label: "想定される課題・リスク"
             type: "textarea"
+            placeholder: "例：競合の参入、原材料価格の上昇、人材確保の困難など"
             required: false
           - task_id: "MITIGATIONS"
-            label: "対策（上記リスクへの具体策）"
+            label: "課題への対応策"
             type: "textarea"
+            placeholder: "上記のリスクに対してどう対応するかの具体策"
             required: false
             
           # マイルストーン（構造化配列として維持）

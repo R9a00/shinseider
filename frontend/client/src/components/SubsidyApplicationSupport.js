@@ -18,6 +18,7 @@ function SubsidyApplicationSupport() {
   const [checklist, setChecklist] = useState([]);
   const [tasks, setTasks] = useState({});
   const [diagnosisData, setDiagnosisData] = useState(null);
+  const [diagnosisApplied, setDiagnosisApplied] = useState(false);
   const [attachments, setAttachments] = useState([]);
 
   // Pre-fill form fields based on diagnosis data
@@ -54,7 +55,11 @@ function SubsidyApplicationSupport() {
       }
     }
     
-    setAnswers(prev => ({ ...prev, ...prefilledAnswers }));
+    // Update answers with prefilled data and mark as applied if any data was set
+    if (Object.keys(prefilledAnswers).length > 0) {
+      setAnswers(prev => ({ ...prev, ...prefilledAnswers }));
+      setDiagnosisApplied(true);
+    }
   }, [subsidyId]);
 
   // Load diagnosis data from 30-second diagnosis
@@ -350,30 +355,45 @@ function SubsidyApplicationSupport() {
         }
       })();
       
-      // 条件を満たさない場合は薄く表示（完全非表示にしない）
+      // 条件を満たさない場合は非表示
       if (!shouldShow) {
-        return (
-          <div key={task.task_id} className="border-b border-gray-100 last:border-b-0 p-4 opacity-50">
-            <div className="flex items-start space-x-3">
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-xs font-medium text-gray-400">
-                {taskIndex + 1}
-              </span>
-              <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-400 mb-2">
-                  {task.label} <span className="text-xs">(条件待ち: {task.conditional_on} = {task.conditional_value})</span>
-                </label>
-                <p className="text-xs text-gray-400">この項目は「{task.conditional_on}」で「{task.conditional_value}」を選択すると入力可能になります。</p>
-              </div>
-            </div>
-          </div>
-        );
+        return null;
       }
     }
     
-    return (
-      <div key={task.task_id} className="border-b border-gray-100 last:border-b-0 p-4">
+    const isConditional = task.conditional_on && task.conditional_value;
+    
+    const isFirstConditionalItem = task.task_id === "ONE_PRICE";
+    
+    // 最初の条件付き項目に上マージンを追加
+    const marginClass = isFirstConditionalItem ? "mt-6 pt-4" : "";
+    const numberBgClass = isConditional ? "bg-orange-100 text-orange-800" : "bg-blue-100 text-blue-800";
+    
+    // デバッグ用
+    if (task.task_id === "REV_CHANNEL") {
+      console.log("REV_CHANNEL item - marginClass:", marginClass);
+    }
+    
+    // REV_CHANNELの後にスペーサーを追加
+    if (task.task_id === "REV_CHANNEL") {
+      // 条件付き項目が表示されているかチェック
+      const hasVisibleConditionalItems = section.input_modes.micro_tasks?.some(t => {
+        if (t.conditional_on && t.conditional_value) {
+          const conditionValue = answers[section.id]?.[t.conditional_on];
+          if (Array.isArray(conditionValue)) {
+            return conditionValue && conditionValue.includes(t.conditional_value);
+          } else {
+            return conditionValue === t.conditional_value;
+          }
+        }
+        return false;
+      });
+
+      return (
+        <React.Fragment key={task.task_id}>
+          <div className={`border-b border-gray-100 last:border-b-0 p-4 ${marginClass}`}>
         <div className="flex items-start space-x-3">
-          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-xs font-medium text-blue-800">
+          <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${numberBgClass}`}>
             {taskIndex + 1}
           </span>
           <div className="flex-1">
@@ -763,6 +783,392 @@ function SubsidyApplicationSupport() {
             )}
             
             {(task.type === 'textarea' && task.max_length) && (
+              <p className="text-xs text-gray-500 mt-1">
+                {currentValue.length}/{task.max_length}文字
+              </p>
+            )}
+            
+            {/* 注意書き表示 */}
+            {task.note && (
+              <p className="text-xs text-blue-600 mt-1">
+                ※ {task.note}
+              </p>
+            )}
+          </div>
+        </div>
+          </div>
+          {/* 条件付き項目が表示されていない場合のみスペーサーを表示 */}
+          {!hasVisibleConditionalItems && (
+            <div key={`${task.task_id}-spacer`} className="border-b-2 border-dashed border-orange-200 mx-4 my-3">
+              <div className="text-center py-2">
+                <span className="text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded">
+                  選択内容に応じて詳細項目が表示されます
+                </span>
+              </div>
+            </div>
+          )}
+        </React.Fragment>
+      );
+    }
+
+    return (
+      <div key={task.task_id} className={`border-b border-gray-100 last:border-b-0 p-4 ${marginClass}`}>
+        <div className="flex items-start space-x-3">
+          <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${numberBgClass}`}>
+            {taskIndex + 1}
+          </span>
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-gray-900 mb-2">
+              {task.label}
+              {task.required && <span className="text-red-500 ml-1">*</span>}
+            </label>
+            
+            {task.type === 'text' && (
+              <input
+                type="text"
+                value={currentValue}
+                onChange={(e) => handleAnswerChange(section.id, e.target.value, task.task_id)}
+                placeholder={task.placeholder || ''}
+                maxLength={task.max_length}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            )}
+            
+            {task.type === 'number' && (
+              <input
+                type="number"
+                value={currentValue}
+                onChange={(e) => handleAnswerChange(section.id, e.target.value, task.task_id)}
+                onFocus={(e) => {
+                  // フォーカス時に値が空でプレースホルダーがある場合は設定
+                  if (!currentValue && task.placeholder) {
+                    handleAnswerChange(section.id, task.placeholder, task.task_id);
+                  }
+                }}
+                placeholder={task.placeholder || ''}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            )}
+            
+            {task.type === 'select' && (
+              <select
+                value={currentValue}
+                onChange={(e) => handleAnswerChange(section.id, e.target.value, task.task_id)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">選択してください</option>
+                {task.options?.map((option, idx) => (
+                  <option key={idx} value={option}>{option}</option>
+                ))}
+                <option value="完全にわからない">完全にわからない</option>
+              </select>
+            )}
+            
+            {task.type === 'multi_select' && (
+              <div className="space-y-2">
+                {task.options?.map((option, idx) => {
+                  const selectedValues = Array.isArray(currentValue) ? currentValue : [];
+                  const isSelected = selectedValues.includes(option);
+                  
+                  return (
+                    <label key={idx} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={(e) => {
+                          const newValues = e.target.checked 
+                            ? [...selectedValues, option]
+                            : selectedValues.filter(v => v !== option);
+                          
+                          // max_selections制限をチェック
+                          if (task.max_selections && newValues.length > task.max_selections) {
+                            return;
+                          }
+                          
+                          handleAnswerChange(section.id, newValues, task.task_id);
+                        }}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">{option}</span>
+                    </label>
+                  );
+                })}
+                <label className="flex items-center border-t border-gray-200 pt-2 mt-2">
+                  <input
+                    type="checkbox"
+                    checked={(Array.isArray(currentValue) ? currentValue : []).includes("わからない・要相談")}
+                    onChange={(e) => {
+                      const selectedValues = Array.isArray(currentValue) ? currentValue : [];
+                      const questionOption = "わからない・要相談";
+                      const newValues = e.target.checked 
+                        ? [...selectedValues.filter(v => v !== "わからない・要相談"), questionOption]
+                        : selectedValues.filter(v => v !== questionOption);
+                      handleAnswerChange(section.id, newValues, task.task_id);
+                    }}
+                    className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                  />
+                  <span className="ml-2 text-sm text-orange-700 font-medium">完全にわからない</span>
+                </label>
+                {task.max_selections && (
+                  <p className="text-xs text-gray-500">最大{task.max_selections}個まで選択可能</p>
+                )}
+              </div>
+            )}
+            
+            {task.type === 'text_array' && (
+              <div className="space-y-2">
+                {Array.from({ length: task.max_items || 3 }, (_, idx) => {
+                  const arrayValues = Array.isArray(currentValue) ? currentValue : [];
+                  return (
+                    <input
+                      key={idx}
+                      type="text"
+                      value={arrayValues[idx] || ''}
+                      onChange={(e) => {
+                        const newArray = [...arrayValues];
+                        newArray[idx] = e.target.value;
+                        // 空の末尾要素を削除
+                        while (newArray.length > 0 && newArray[newArray.length - 1] === '') {
+                          newArray.pop();
+                        }
+                        handleAnswerChange(section.id, newArray, task.task_id);
+                      }}
+                      placeholder={task.placeholder || `項目${idx + 1}`}
+                      maxLength={task.max_length_per_item}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  );
+                })}
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleAnswerChange(section.id, ["わからない・要相談"], task.task_id);
+                  }}
+                  className="text-sm text-orange-600 hover:text-orange-700 font-medium border border-orange-200 hover:border-orange-300 px-3 py-1 rounded-md bg-orange-50 hover:bg-orange-100 transition-colors"
+                >
+                  💬 わからない・要相談
+                </button>
+              </div>
+            )}
+            
+            {task.type === 'textarea' && (
+              <div className="space-y-3">
+                <textarea
+                  value={currentValue}
+                  onChange={(e) => handleAnswerChange(section.id, e.target.value, task.task_id)}
+                  placeholder={task.placeholder || ''}
+                  rows="4"
+                  maxLength={task.max_length}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
+                />
+                
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                  <h4 className="text-xs font-medium text-orange-800 mb-2">
+                    🟠 お好みで選択（該当するものがあればチェック）
+                  </h4>
+                  <div className="space-y-1">
+                    {[
+                      "まだ考えがまとまっていない",
+                      "詳細は後で決める予定",
+                      "専門家と相談して決めたい",
+                      "情報収集が必要",
+                      "時間をかけて検討したい"
+                    ].map((option, idx) => (
+                      <label key={idx} className="flex items-center text-xs">
+                        <input
+                          type="checkbox"
+                          checked={currentValue.includes(`[※${option}]`)}
+                          onChange={(e) => {
+                            const tag = `[※${option}]`;
+                            let newValue = currentValue;
+                            if (e.target.checked) {
+                              // タグを追加（既存テキストがある場合は改行して追加）
+                              newValue = currentValue ? `${currentValue}\n${tag}` : tag;
+                            } else {
+                              // タグを削除
+                              newValue = currentValue.replace(new RegExp(`\\n?\\[※${option.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\]`, 'g'), '');
+                            }
+                            handleAnswerChange(section.id, newValue, task.task_id);
+                          }}
+                          className="h-3 w-3 text-orange-600 focus:ring-orange-500 border-gray-300 rounded mr-2"
+                        />
+                        <span className="text-orange-700">{option}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* その他のタスク専用タイプ */}
+            {task.type === 'milestones' && (
+              <div className="space-y-3">
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                  <h4 className="text-xs font-medium text-yellow-800 mb-2">
+                    📅 事業マイルストーン設定
+                  </h4>
+                  <p className="text-xs text-yellow-700">
+                    事業を進める上での重要な節目（試作完成、サービス開始、売上目標達成など）を時系列で入力してください
+                  </p>
+                </div>
+{(() => {
+                  const arrayValues = Array.isArray(currentValue) ? currentValue : [];
+                  const displayCount = Math.max(2, arrayValues.length + 1);
+                  
+                  return Array.from({ length: Math.min(displayCount, task.max_items || 5) }, (_, idx) => {
+                    const itemValue = arrayValues[idx] || {};
+                    
+                    return (
+                      <div key={idx} className="border border-yellow-300 rounded-lg p-4 bg-white relative">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="text-sm text-yellow-700 font-medium">マイルストーン {idx + 1}</div>
+                          <div className="flex items-center space-x-2">
+                            {Object.values(itemValue).some(v => v && v.trim() !== '') && (
+                              <div className="text-xs text-green-600">✓</div>
+                            )}
+                            {idx > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const newArray = arrayValues.filter((_, i) => i !== idx);
+                                  handleAnswerChange(section.id, newArray, task.task_id);
+                                }}
+                                className="text-red-500 hover:text-red-700 text-xs"
+                              >
+                                削除
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        <div className="space-y-3">
+                          <div className="grid grid-cols-3 gap-3">
+                            <div className="col-span-1">
+                              <label className="block text-xs text-gray-600 mb-1 font-medium">時期</label>
+                              <input
+                                type="month"
+                                value={itemValue.ym || ''}
+                                onChange={(e) => {
+                                  const newArray = [...arrayValues];
+                                  newArray[idx] = { ...itemValue, ym: e.target.value };
+                                  handleAnswerChange(section.id, newArray, task.task_id);
+                                }}
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                              />
+                            </div>
+                            <div className="col-span-2">
+                              <label className="block text-xs text-gray-600 mb-1 font-medium">達成内容</label>
+                              <input
+                                type="text"
+                                value={itemValue.note || ''}
+                                onChange={(e) => {
+                                  const newArray = [...arrayValues];
+                                  newArray[idx] = { ...itemValue, note: e.target.value };
+                                  handleAnswerChange(section.id, newArray, task.task_id);
+                                }}
+                                placeholder="例：試作品完成、β版リリース、売上目標達成"
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-xs text-gray-600 mb-1 font-medium">詳細・備考（任意）</label>
+                            <input
+                              type="text"
+                              value={itemValue.owner || ''}
+                              onChange={(e) => {
+                                const newArray = [...arrayValues];
+                                newArray[idx] = { ...itemValue, owner: e.target.value };
+                                handleAnswerChange(section.id, newArray, task.task_id);
+                              }}
+                              placeholder="例：予算100万円、テストユーザー10社、月間売上50万円目標"
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-gray-50"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
+                
+                {/* 追加ボタン */}
+                {(() => {
+                  const arrayValues = Array.isArray(currentValue) ? currentValue : [];
+                  const canAdd = arrayValues.length < (task.max_items || 5);
+                  
+                  return canAdd && (
+                    <div className="text-center">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newArray = [...arrayValues];
+                          newArray.push({ ym: '', note: '', owner: '' });
+                          handleAnswerChange(section.id, newArray, task.task_id);
+                        }}
+                        className="inline-flex items-center px-4 py-2 border border-yellow-300 rounded-lg text-sm text-yellow-700 bg-yellow-50 hover:bg-yellow-100 transition-colors"
+                      >
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                        マイルストーンを追加
+                      </button>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+            
+            {task.type === 'structured_array' && (
+              <div className="space-y-2">
+                {Array.from({ length: task.max_items || 3 }, (_, idx) => {
+                  const arrayValues = Array.isArray(currentValue) ? currentValue : [];
+                  const itemValue = arrayValues[idx] || {};
+                  
+                  return (
+                    <div key={idx} className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                      <div className="grid grid-cols-2 gap-3">
+                        {task.fields?.map((field) => (
+                          <input
+                            key={field}
+                            type="text"
+                            value={itemValue[field] || ''}
+                            onChange={(e) => {
+                              const newArray = [...arrayValues];
+                              newArray[idx] = { ...itemValue, [field]: e.target.value };
+                              while (newArray.length > 0 && 
+                                Object.values(newArray[newArray.length - 1] || {}).every(v => !v || v.trim() === '')) {
+                                newArray.pop();
+                              }
+                              handleAnswerChange(section.id, newArray, task.task_id);
+                            }}
+                            placeholder={`${field}を入力`}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+                
+                <button
+                  type="button"
+                  onClick={() => {
+                    const blankItem = {};
+                    if (task.fields) {
+                      task.fields.forEach(field => {
+                        blankItem[field] = "わからない・要相談";
+                      });
+                    }
+                    handleAnswerChange(section.id, [blankItem], task.task_id);
+                  }}
+                  className="text-sm text-orange-600 hover:text-orange-700 font-medium border border-orange-200 hover:border-orange-300 px-3 py-1 rounded-md bg-orange-50 hover:bg-orange-100 transition-colors"
+                >
+                  💬 わからない・要相談
+                </button>
+              </div>
+            )}
+            
+            {/* 文字数表示 */}
+            {task.max_length && task.type !== 'milestones' && (
               <p className="text-xs text-gray-500 mt-1">
                 {currentValue.length}/{task.max_length}文字
               </p>
@@ -1245,7 +1651,7 @@ function SubsidyApplicationSupport() {
 
       <div className="mx-auto max-w-4xl px-4 py-8">
         {/* 診断データからの事前入力通知 */}
-        {diagnosisData && (
+        {diagnosisData && diagnosisApplied && (
           <div className="mb-6 rounded-lg bg-blue-50 border border-blue-200 p-4">
             <div className="flex items-start">
               <div className="flex-shrink-0">

@@ -89,3 +89,7 @@ DRAFT_*
 local_*
 dev_*
 experiment_*
+
+# Data input files (raw data for processing)
+data_input/
+!data_input/.gitkeep

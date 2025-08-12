@@ -7,6 +7,8 @@ import OperatorInfo from './components/OperatorInfo';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import UpdateHistory from './components/UpdateHistory';
 import Contact from './components/Contact';
+import News, { NewsDetail } from './components/News';
+import KnowledgeBase from './components/KnowledgeBase';
 
 
 // ──────────────────────────────────────────────────────────────
@@ -49,17 +51,19 @@ function Home() {
 >
   <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 md:py-3 lg:px-6">
     {/* ロゴ + タグライン */}
-    <Link to="/" className="flex items-center gap-3" aria-label="シンセイダー - 補助金申請のハードルを下げる。">
-      <img
-        src="/shinseider_logo.png"
-        alt="シンセイダー"
-        className={`h-40 w-auto ${scrolled ? 'h-32' : 'h-40'} md:h-32 md:${scrolled ? 'h-24' : 'h-32'}`}
-      />
-      <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
-        β
-      </span>
+    <Link to="/" className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3" aria-label="シンセイダー - 補助金申請のハードルを下げる。">
+      <div className="flex items-center gap-3">
+        <img
+          src="/shinseider_logo.png"
+          alt="シンセイダー"
+          className={`h-40 w-auto ${scrolled ? 'h-32' : 'h-40'} md:h-32 md:${scrolled ? 'h-24' : 'h-32'}`}
+        />
+        <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
+          β
+        </span>
+      </div>
       <span className="hidden sm:inline-block h-4 w-px bg-slate-300"></span>
-      <span className="hidden sm:inline-block text-xs sm:text-sm leading-none text-slate-600 tracking-tight">
+      <span className="text-xs sm:text-sm leading-none text-slate-600 tracking-tight">
         補助金申請の<br className="sm:hidden" />ハードルを下げる。
       </span>
     </Link>
@@ -144,6 +148,9 @@ function Home() {
               <div className="space-y-8">
                 {/* ヘッドライン */}
                 <div className="space-y-5">
+                  <div className="inline-flex items-center rounded-full bg-orange-100 px-3 py-1 text-sm font-medium text-orange-800 mb-4">
+                    🚧 一部機能作成中
+                  </div>
                   <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl leading-[1.2]">
                     補助金申請の準備を支え、<br />
                     <span className="text-red-600">かける時間を最小化する。</span>
@@ -370,6 +377,10 @@ function Home() {
               <img src="/shinseider_logo.png" alt="Shinseider" className="h-12 w-auto" />
             </div>
             <nav className="flex flex-wrap items-center gap-x-6 gap-y-2" aria-label="フッターナビ">
+              <Link to="/news" className="hover:text-gray-900">ニュース</Link>
+              <Link to="/knowledge-base" className="hover:text-gray-900 flex items-center gap-1">
+                基礎知識 <span className="text-xs bg-orange-100 text-orange-800 px-1.5 py-0.5 rounded">作成中</span>
+              </Link>
               <Link to="/operator-info" className="hover:text-gray-900">運営者情報</Link>
               <Link to="/update-history" className="hover:text-gray-900">情報更新履歴・参照元</Link>
               <Link to="/privacy-policy" className="hover:text-gray-900">プライバシーポリシー</Link>
@@ -484,6 +495,9 @@ export default function App() {
           <Route path="/phase1" element={<Phase1 />} />
           <Route path="/subsidy-selection" element={<SubsidySelection />} />
           <Route path="/subsidy-application-support/:subsidyId" element={<SubsidyApplicationSupport />} />
+          <Route path="/news" element={<News />} />
+          <Route path="/news/:id" element={<NewsDetail />} />
+          <Route path="/knowledge-base" element={<KnowledgeBase />} />
           <Route path="/operator-info" element={<OperatorInfo />} />
           <Route path="/update-history" element={<UpdateHistory />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
