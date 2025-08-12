@@ -12,8 +12,6 @@ services:
         value: "https://shinseider.onrender.com"
       - key: GMAIL_USER
         value: "shinseider@gmail.com"
-      - key: GMAIL_APP_PASSWORD
-        value: "tuto rudl jimx xghb"
 
   - type: web
     name: shinseider
