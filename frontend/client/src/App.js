@@ -49,16 +49,14 @@ function Home() {
   <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 md:py-3 lg:px-6">
     {/* ロゴ + タグライン */}
     <Link to="/" className="flex items-center gap-3" aria-label="シンセイダー - 補助金申請のハードルを下げる。">
-      <div className="relative">
-        <img
-          src="/shinseider_logo.png"
-          alt="シンセイダー"
-          className={`h-40 w-auto ${scrolled ? 'h-32' : 'h-40'} md:h-32 md:${scrolled ? 'h-24' : 'h-32'}`}
-        />
-        <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded-full font-semibold">
-          β
-        </span>
-      </div>
+      <img
+        src="/shinseider_logo.png"
+        alt="シンセイダー"
+        className={`h-40 w-auto ${scrolled ? 'h-32' : 'h-40'} md:h-32 md:${scrolled ? 'h-24' : 'h-32'}`}
+      />
+      <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
+        β
+      </span>
       <span className="hidden sm:inline-block h-4 w-px bg-slate-300"></span>
       <span className="hidden sm:inline-block text-xs sm:text-sm leading-none text-slate-600 tracking-tight">
         補助金申請の<br className="sm:hidden" />ハードルを下げる。
