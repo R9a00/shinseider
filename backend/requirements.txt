@@ -4,3 +4,4 @@ reportlab
 docxtpl
 pydantic[email]
 aiosmtplib
+python-multipart
