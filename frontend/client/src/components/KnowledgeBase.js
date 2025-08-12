@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import config from '../config';
 
 // UI Components
 import Callout from './ui/Callout';
@@ -49,7 +50,7 @@ function KnowledgeBase() {
 
   const fetchKnowledgeData = async () => {
     try {
-      const response = await fetch('http://localhost:8888/knowledge-base');
+      const response = await fetch(`${config.API_BASE_URL}/knowledge-base`);
       if (!response.ok) {
         throw new Error('基礎知識データの取得に失敗しました');
       }

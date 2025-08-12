@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import config from '../config';
 
 function News() {
   const [newsData, setNewsData] = useState(null);
@@ -20,7 +21,7 @@ function News() {
 
   const fetchNewsData = async () => {
     try {
-      const response = await fetch('http://localhost:8888/news');
+      const response = await fetch(`${config.API_BASE_URL}/news`);
       if (!response.ok) {
         throw new Error('ニュースデータの取得に失敗しました');
       }
