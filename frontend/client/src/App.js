@@ -149,6 +149,19 @@ function Home() {
           <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-4 pt-8 pb-16 lg:grid-cols-2 lg:gap-16 lg:pt-12 lg:pb-24">
             <div className="w-full max-w-xl mx-auto lg:mx-0">
               <div className="space-y-8">
+                {/* オープンベータ版バッジ */}
+                <div className="inline-flex items-center gap-2 mb-4">
+                  <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm px-3 py-2 rounded-full font-semibold shadow-sm flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    当サイトはオープンベータ版です
+                  </div>
+                  <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
+                    フィードバック募集中
+                  </span>
+                </div>
+
                 {/* ヘッドライン */}
                 <div className="space-y-5">
                   <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl leading-[1.2]">
@@ -408,6 +421,7 @@ function Home() {
                   <li>• アトツギ甲子園申請サポート</li>
                   <li>• 申請書下書き作成</li>
                   <li>• Word文書ダウンロード</li>
+                  <li>• 補助金基礎知識ベース</li>
                   <li>• お問い合わせフォーム</li>
                 </ul>
               </div>
@@ -419,7 +433,7 @@ function Home() {
                   <span className="font-semibold text-orange-800">改善中</span>
                 </div>
                 <ul className="space-y-1 text-orange-700">
-                  <li>• 補助金情報の最新化</li>
+                  <li>• 基礎知識コンテンツの拡充</li>
                   <li>• 申請書テンプレート精度向上</li>
                   <li>• 診断ロジックの改善</li>
                   <li>• UI操作性の向上</li>
@@ -434,8 +448,8 @@ function Home() {
                   <span className="font-semibold text-blue-800">検討中</span>
                 </div>
                 <ul className="space-y-1 text-blue-700">
+                  <li>• 補助金ニュース機能の追加</li>
                   <li>• 申請書フォーマット更新対応</li>
-                  <li>• 補助金制度変更への追従</li>
                   <li>• より詳細な入力支援</li>
                   <li>• 申請前チェック機能強化</li>
                 </ul>
