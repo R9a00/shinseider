@@ -732,6 +732,29 @@ async def get_knowledge_base():
         security_logger.error(f"Failed to load knowledge base: {str(e)}")
         raise HTTPException(status_code=500, detail=f"基礎知識データの取得に失敗しました: {str(e)}")
 
+@app.get("/subsidy-selection")
+async def get_subsidy_selection():
+    """補助金選択画面用のデータを取得"""
+    try:
+        subsidies_data = load_subsidy_data()
+        # 補助金一覧を整理して返す
+        subsidies_list = []
+        for subsidy in subsidies_data:
+            subsidies_list.append({
+                "id": subsidy.get("id"),
+                "name": subsidy.get("name"),
+                "category": subsidy.get("category", "一般"),
+                "description": subsidy.get("description", ""),
+                "max_amount": subsidy.get("max_amount", ""),
+                "subsidy_rate": subsidy.get("subsidy_rate", ""),
+                "difficulty": subsidy.get("difficulty", "普通"),
+                "suitable_for": subsidy.get("suitable_for", [])
+            })
+        return {"subsidies": subsidies_list}
+    except Exception as e:
+        security_logger.error(f"Failed to load subsidy selection: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"補助金選択データの取得に失敗しました: {str(e)}")
+
 @app.get("/knowledge-base/{section_id}")
 async def get_knowledge_section(section_id: str):
     """特定の基礎知識セクションを取得"""

@@ -10,9 +10,10 @@ class Settings:
     DEBUG: bool = os.getenv("DEBUG", "false").lower() == "true"
     
     # CORS Configuration
-    CORS_ORIGINS: List[str] = [
-        os.getenv("CORS_ORIGIN", "http://localhost:3333"),
-    ]
+    CORS_ORIGINS: List[str] = (
+        os.getenv("CORS_ORIGINS", "http://localhost:3333").split(",") if os.getenv("CORS_ORIGINS") 
+        else [os.getenv("CORS_ORIGIN", "http://localhost:3333")]
+    )
     
     # Security
     SECRET_KEY: str = os.getenv("SECRET_KEY", "dev-secret-key-change-in-production")

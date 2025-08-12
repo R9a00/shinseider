@@ -1,8 +1,10 @@
-fastapi
-uvicorn[standard]
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
 reportlab
 docxtpl
-pydantic[email]
+python-docx
+pydantic[email]>=2.0.0
 aiosmtplib
 python-multipart
 pyyaml
+gunicorn
