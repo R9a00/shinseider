@@ -7,7 +7,7 @@ import OperatorInfo from './components/OperatorInfo';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import UpdateHistory from './components/UpdateHistory';
 import Contact from './components/Contact';
-import News, { NewsDetail } from './components/News';
+import News from './components/News';
 import KnowledgeBase from './components/KnowledgeBase';
 
 
@@ -377,7 +377,6 @@ function Home() {
               <img src="/shinseider_logo.png" alt="Shinseider" className="h-12 w-auto" />
             </div>
             <nav className="flex flex-wrap items-center gap-x-6 gap-y-2" aria-label="フッターナビ">
-              <Link to="/news" className="hover:text-gray-900">ニュース</Link>
               <Link to="/knowledge-base" className="hover:text-gray-900 flex items-center gap-1">
                 基礎知識 <span className="text-xs bg-orange-100 text-orange-800 px-1.5 py-0.5 rounded">作成中</span>
               </Link>
@@ -495,8 +494,6 @@ export default function App() {
           <Route path="/phase1" element={<Phase1 />} />
           <Route path="/subsidy-selection" element={<SubsidySelection />} />
           <Route path="/subsidy-application-support/:subsidyId" element={<SubsidyApplicationSupport />} />
-          <Route path="/news" element={<News />} />
-          <Route path="/news/:id" element={<NewsDetail />} />
           <Route path="/knowledge-base" element={<KnowledgeBase />} />
           <Route path="/operator-info" element={<OperatorInfo />} />
           <Route path="/update-history" element={<UpdateHistory />} />
