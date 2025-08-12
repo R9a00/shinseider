@@ -7,7 +7,7 @@ function SubsidyApplicationSupport() {
   const [sections, setSections] = useState([]);
   const [subsidyName, setSubsidyName] = useState('');
   const [answers, setAnswers] = useState({});
-  const [inputMode, setInputMode] = useState('micro_tasks'); // micro_tasks, integrated, or guided
+  const [inputMode, setInputMode] = useState('micro_tasks'); // micro_tasks or integrated
   const [output, setOutput] = useState('');
   const [outputTitle, setOutputTitle] = useState('');
   const [loading, setLoading] = useState(true);
@@ -684,7 +684,7 @@ function SubsidyApplicationSupport() {
 
   const renderSection = (section, sectionIndex) => {
     // アトツギ甲子園の場合はミニタスクモードを使用
-    const hasInputModes = section.input_modes && (section.input_modes.micro_tasks || section.input_modes.integrated || section.input_modes.guided);
+    const hasInputModes = section.input_modes && (section.input_modes.micro_tasks || section.input_modes.integrated);
     
     if (subsidyId === 'atotsugi' && hasInputModes) {
       return (
@@ -731,24 +731,6 @@ function SubsidyApplicationSupport() {
               </div>
             )}
             
-            {inputMode === 'guided' && section.input_modes.guided && (
-              <div className="p-4 space-y-4">
-                {section.input_modes.guided.map((question, questionIndex) => (
-                  <div key={questionIndex} className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <label className="block text-sm font-medium text-blue-900 mb-2">
-                      {question}
-                    </label>
-                    <textarea
-                      value={answers[`${section.id}_guided_${questionIndex}`] || ''}
-                      onChange={(e) => handleAnswerChange(`${section.id}_guided_${questionIndex}`, e.target.value)}
-                      rows="4"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="こちらの質問に対する回答を詳しくご記入ください..."
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         </div>
       );
@@ -822,16 +804,6 @@ function SubsidyApplicationSupport() {
           }
         } else if (inputMode === 'integrated' && !answers[sectionId]) {
           errors.push(`${section.title}セクションが入力されていません`);
-        } else if (inputMode === 'guided' && section.input_modes?.guided) {
-          let hasGuidedAnswers = false;
-          section.input_modes.guided.forEach((_, questionIndex) => {
-            if (answers[`${sectionId}_guided_${questionIndex}`]) {
-              hasGuidedAnswers = true;
-            }
-          });
-          if (!hasGuidedAnswers) {
-            errors.push(`${section.title}セクションに必須項目が入力されていません`);
-          }
         }
       });
     }
@@ -872,32 +844,6 @@ function SubsidyApplicationSupport() {
     return errors;
   };
 
-  const processGuidedAnswers = () => {
-    if (inputMode !== 'guided') {
-      return answers;
-    }
-
-    const processedAnswers = { ...answers };
-    
-    // Combine guided answers into section-level answers
-    sections.forEach(section => {
-      if (section.input_modes?.guided) {
-        const guidedAnswers = [];
-        section.input_modes.guided.forEach((question, questionIndex) => {
-          const answerKey = `${section.id}_guided_${questionIndex}`;
-          if (answers[answerKey]) {
-            guidedAnswers.push(`【${question}】\n${answers[answerKey]}`);
-          }
-        });
-        
-        if (guidedAnswers.length > 0) {
-          processedAnswers[section.id] = guidedAnswers.join('\n\n');
-        }
-      }
-    });
-    
-    return processedAnswers;
-  };
 
   const handleSaveData = async () => {
     try {
@@ -907,7 +853,7 @@ function SubsidyApplicationSupport() {
         body: JSON.stringify({ 
           subsidy_id: subsidyId, 
           subsidy_name: subsidyName,
-          answers: processGuidedAnswers(), 
+          answers: answers, 
           progress: getProgressPercentage(),
           checklist: checklist,
           tasks: tasks,
@@ -944,7 +890,7 @@ function SubsidyApplicationSupport() {
       const response = await fetch(`${config.API_BASE_URL}/generate_application_advice`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subsidy_id: subsidyId, answers: processGuidedAnswers(), input_mode: inputMode, target: target })
+        body: JSON.stringify({ subsidy_id: subsidyId, answers: answers, input_mode: inputMode, target: target })
       });
       if (!response.ok) {
         const errData = await response.json();
@@ -1029,14 +975,6 @@ function SubsidyApplicationSupport() {
         if (answers[section.id] && answers[section.id].trim()) {
           completedTasks++;
         }
-      } else if (inputMode === 'guided' && section.input_modes?.guided) {
-        totalTasks += section.input_modes.guided.length;
-        section.input_modes.guided.forEach((question, questionIndex) => {
-          const answerKey = `${section.id}_guided_${questionIndex}`;
-          if (answers[answerKey] && answers[answerKey].trim()) {
-            completedTasks++;
-          }
-        });
       }
     });
     
@@ -1084,52 +1022,81 @@ function SubsidyApplicationSupport() {
   return (
     <div className="min-h-screen bg-white">
       {/* ヘッダー部分 */}
-      <div className={`bg-gradient-to-r from-${headerColor}-50 to-${headerColor}-100 border-b border-${headerColor}-200`}>
-        <div className="mx-auto max-w-4xl px-4 py-12">
+      <div className={`bg-gradient-to-br from-${headerColor}-50 via-white to-${headerColor}-100 border-b border-${headerColor}-200 relative overflow-hidden`}>
+        {/* 背景装飾 */}
+        <div className="absolute inset-0 bg-gradient-to-r from-yellow-100/20 to-orange-100/20"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-yellow-200/10 to-transparent rounded-full transform translate-x-48 -translate-y-48"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-orange-200/10 to-transparent rounded-full transform -translate-x-32 translate-y-32"></div>
+        
+        <div className="mx-auto max-w-4xl px-4 py-8 relative z-10">
           <div className="text-center">
             {isAtotsugi && (
-              <div className="mb-4">
-                <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
-                  🏆 アトツギ甲子園申請支援システム
+              <div className="mb-6">
+                <span className="inline-flex items-center px-6 py-3 rounded-full text-sm font-bold bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg transform hover:scale-105 transition-all duration-300">
+                  <span className="mr-2 text-lg">🏆</span>
+                  アトツギ甲子園申請支援システム
+                  <span className="ml-2 bg-white/20 px-2 py-1 rounded-full text-xs">β</span>
                 </span>
               </div>
             )}
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              シンセイ準備: {subsidyName}
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl mb-2">
+              <span className="bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
+                {subsidyName}
+              </span>
             </h1>
-            <p className="mt-4 text-lg leading-8 text-gray-600">
-              {isAtotsugi ? (
-                <>
-                  42のミニタスクで簡単申請書作成！<br />
-                  1タスク=1設問で迷わず入力できます。
-                </>
-              ) : (
-                <>
-                  補助金申請に必要な情報を入力してください。<br />
-                  入力内容をもとに、最適なアウトプットを生成します。
-                </>
-              )}
-            </p>
+            <div className="mt-4 p-3 bg-white/60 backdrop-blur-sm rounded-xl shadow-md border border-white/20 inline-block">
+              <p className="text-base leading-relaxed text-gray-700 font-medium">
+                {isAtotsugi ? (
+                  <>
+                    <span className="flex items-center justify-center mb-2">
+                      <span className="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-bold mr-2">42</span>
+                      のミニタスクで簡単申請書作成！
+                    </span>
+                    <span className="text-sm text-gray-600">
+                      1タスク=1設問で迷わず入力できます。
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    補助金申請に必要な情報を入力してください。<br />
+                    入力内容をもとに、最適なアウトプットを生成します。
+                  </>
+                )}
+              </p>
+            </div>
             
-            {isAtotsugi && (
-              <div className="mt-6">
-                <div className="flex items-center justify-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm font-medium text-gray-700">進捗:</span>
-                    <div className="w-32 bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-yellow-600 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${getProgressPercentage()}%` }}
-                      ></div>
-                    </div>
-                    <span className="text-sm font-medium text-gray-700">{getProgressPercentage()}%</span>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
+
+      {/* 固定進捗バー */}
+      {isAtotsugi && (
+        <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+          <div className="mx-auto max-w-4xl px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <span className="text-sm font-semibold text-gray-800">進捗</span>
+                <div className="w-32 bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-gradient-to-r from-yellow-500 to-orange-500 h-2 rounded-full transition-all duration-500"
+                    style={{ width: `${getProgressPercentage()}%` }}
+                  ></div>
+                </div>
+                <span className="text-sm font-bold text-gray-800 min-w-10">
+                  {getProgressPercentage()}%
+                </span>
+              </div>
+              <div className="text-xs text-gray-500">
+                {getProgressPercentage() === 100 ? (
+                  <span className="text-green-600 font-medium">🎉 完了</span>
+                ) : (
+                  <span>残り{42 - Math.round((getProgressPercentage() / 100) * 42)}タスク</span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="mx-auto max-w-4xl px-4 py-8">
         {/* 診断データからの事前入力通知 */}
@@ -1196,23 +1163,6 @@ function SubsidyApplicationSupport() {
                       </p>
                     </button>
                     
-                    <button
-                      type="button"
-                      onClick={() => setInputMode('guided')}
-                      className={`p-4 rounded-lg border-2 text-left transition-all ${
-                        inputMode === 'guided' 
-                          ? 'border-blue-500 bg-blue-50' 
-                          : 'border-gray-200 hover:border-blue-300'
-                      }`}
-                    >
-                      <div className="flex items-center space-x-2 mb-2">
-                        <span className="text-lg">📋</span>
-                        <h4 className="font-medium text-gray-900">ガイドモード</h4>
-                      </div>
-                      <p className="text-sm text-gray-600">
-                        質問に沿って段階的入力
-                      </p>
-                    </button>
                   </div>
                 </div>
               </div>

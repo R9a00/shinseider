@@ -65,9 +65,6 @@ function Home() {
 
     {/* ナビ（デスクトップ） */}
     <nav className="hidden items-center gap-4 md:flex" aria-label="メインナビゲーション">
-      <Link to="/subsidy-selection" className="text-sm font-medium text-gray-800 hover:text-gray-900">
-        シンセイ準備
-      </Link>
       <Link to="/phase1" className="text-sm font-medium text-gray-800 hover:text-gray-900">
         30秒診断
       </Link>
