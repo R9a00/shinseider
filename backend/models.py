@@ -119,6 +119,7 @@ class ContactRequest(BaseModel):
     email: EmailStr = Field(..., description="メールアドレス")
     subject: str = Field(..., max_length=200, description="件名")
     message: str = Field(..., max_length=2000, description="メッセージ")
+    attachment_info: Optional[str] = Field(None, max_length=500, description="添付ファイル情報")
     
     @validator('name', 'subject', 'message')
     def validate_content(cls, v):

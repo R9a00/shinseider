@@ -4,7 +4,7 @@ import os
 # プロジェクトルートをパスに追加
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from fastapi import FastAPI, Request, HTTPException, Depends
+from fastapi import FastAPI, Request, HTTPException, Depends, File, UploadFile, Form
 from fastapi.responses import FileResponse, JSONResponse
 # from word_generator import generate_word
 import os
@@ -546,48 +546,108 @@ async def generate_business_plan(business_plan_request: BusinessPlanRequest):
         raise HTTPException(status_code=500, detail="Failed to generate business plan")
 
 @app.post("/send_contact")
-async def send_contact(contact_request: ContactRequest):
-    """お問い合わせメールを送信"""
+async def send_contact(
+    name: str = Form(...),
+    email: str = Form(...),
+    subject: str = Form(...),
+    message: str = Form(...),
+    attachment: Optional[UploadFile] = File(None)
+):
+    """お問い合わせメールを送信（ファイル添付対応）"""
     try:
         import aiosmtplib
         from email.message import EmailMessage
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.text import MIMEText
+        from email.mime.base import MIMEBase
+        from email import encoders
         import os
+        import tempfile
         
         security_logger.info("Contact form submission received")
+        
+        # 入力値検証
+        dangerous_chars = ['<', '>', '"', "'", '&', 'script', 'javascript']
+        for field_value in [name, subject, message]:
+            for char in dangerous_chars:
+                if char.lower() in field_value.lower():
+                    raise HTTPException(status_code=400, detail="不正な文字が含まれています")
         
         # Gmail SMTP設定
         SMTP_HOST = "smtp.gmail.com"
         SMTP_PORT = 587
-        SMTP_USER = os.getenv("GMAIL_USER")  # Gmailアドレス
-        SMTP_PASS = os.getenv("GMAIL_APP_PASSWORD")  # アプリパスワード
-        TO_EMAIL = SMTP_USER  # 自分宛に送信
+        SMTP_USER = os.getenv("GMAIL_USER")
+        SMTP_PASS = os.getenv("GMAIL_APP_PASSWORD")
+        TO_EMAIL = SMTP_USER
         
         if not SMTP_USER or not SMTP_PASS:
             raise HTTPException(status_code=500, detail="Mail configuration not found")
         
-        # メール内容作成
-        message = EmailMessage()
-        message["From"] = SMTP_USER
-        message["To"] = TO_EMAIL
-        message["Subject"] = f"【シンセイダー】{contact_request.subject}"
+        # メール作成
+        msg = MIMEMultipart()
+        msg["From"] = SMTP_USER
+        msg["To"] = TO_EMAIL
+        msg["Subject"] = f"【シンセイダー】{subject}"
         
-        body = f"""シンセイダーからのお問い合わせです。
+        # メール本文
+        body_text = f"""シンセイダーからのお問い合わせです。
 
-お名前: {contact_request.name}
-メールアドレス: {contact_request.email}
-件名: {contact_request.subject}
+お名前: {name}
+メールアドレス: {email}
+件名: {subject}
 
 メッセージ:
-{contact_request.message}
+{message}
 
 ---
 送信日時: {__import__('datetime').datetime.now().strftime('%Y年%m月%d日 %H:%M:%S')}
 """
-        message.set_content(body)
+        msg.attach(MIMEText(body_text, 'plain', 'utf-8'))
+        
+        # ファイル添付処理
+        if attachment and attachment.filename:
+            # セキュリティチェック
+            allowed_extensions = {'.pdf', '.doc', '.docx', '.xls', '.xlsx', '.jpg', '.jpeg', '.png', '.gif'}
+            file_ext = os.path.splitext(attachment.filename.lower())[1]
+            
+            if file_ext not in allowed_extensions:
+                raise HTTPException(status_code=400, detail="許可されていないファイル形式です")
+            
+            if attachment.size and attachment.size > 5 * 1024 * 1024:  # 5MB制限
+                raise HTTPException(status_code=400, detail="ファイルサイズが大きすぎます（5MB以下にしてください）")
+            
+            # ファイル内容読み込み
+            file_content = await attachment.read()
+            
+            # 基本的なセキュリティチェック（マジックナンバー確認）
+            magic_numbers = {
+                b'\x25\x50\x44\x46': '.pdf',
+                b'\xd0\xcf\x11\xe0': '.doc/.xls',
+                b'\x50\x4b\x03\x04': '.docx/.xlsx',
+                b'\xff\xd8\xff': '.jpg',
+                b'\x89\x50\x4e\x47': '.png',
+                b'\x47\x49\x46': '.gif'
+            }
+            
+            is_valid = any(file_content.startswith(magic) for magic in magic_numbers.keys())
+            if not is_valid:
+                raise HTTPException(status_code=400, detail="ファイルの形式が正しくありません")
+            
+            # 添付ファイル追加
+            part = MIMEBase('application', 'octet-stream')
+            part.set_payload(file_content)
+            encoders.encode_base64(part)
+            part.add_header(
+                'Content-Disposition',
+                f'attachment; filename="{attachment.filename}"'
+            )
+            msg.attach(part)
+            
+            security_logger.info(f"File attached: {attachment.filename} ({len(file_content)} bytes)")
         
         # メール送信
         await aiosmtplib.send(
-            message,
+            msg,
             hostname=SMTP_HOST,
             port=SMTP_PORT,
             start_tls=True,
@@ -595,9 +655,11 @@ async def send_contact(contact_request: ContactRequest):
             password=SMTP_PASS
         )
         
-        security_logger.info(f"Contact email sent successfully from {contact_request.email}")
+        security_logger.info(f"Contact email sent successfully from {email}")
         return {"message": "お問い合わせを送信しました", "success": True}
         
+    except HTTPException:
+        raise
     except Exception as e:
         security_logger.error(f"Failed to send contact email: {e}")
         raise HTTPException(status_code=500, detail="メール送信に失敗しました")
