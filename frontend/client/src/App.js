@@ -278,7 +278,13 @@ function Home() {
                   </p>
                   
                   <div className="space-y-2 text-sm">
-                    {['省力化投資補助金', 'ものづくり補助金', '事業承継・M&A補助金', 'Go-Tech事業'].map((item, idx) => (
+                    {[
+                      '中小企業省力化投資補助金一般型',
+                      'ものづくり・商業・サービス生産性向上促進補助金',
+                      '事業承継・M&A補助金',
+                      'Go-tech事業（成長型中小企業等研究開発支援事業）',
+                      '中小企業新事業進出補助金'
+                    ].map((item, idx) => (
                       <div key={idx} className="flex items-center space-x-2">
                         <div className="w-1.5 h-1.5 bg-yellow-400 rounded-full"></div>
                         <span className="text-gray-200">{item}</span>
@@ -454,6 +460,16 @@ function Home() {
                   <li>• 申請前チェック機能強化</li>
                 </ul>
               </div>
+            </div>
+          </div>
+
+          {/* 免責事項 */}
+          <div className="mt-8 pt-6 border-t border-gray-200">
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+              <h4 className="font-semibold text-gray-800 mb-2 text-sm">免責</h4>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                当サイトはベータ版であり、機能は改善途上のものです。現段階でも、ある程度使える形にはなっていると思いますが、網羅性・完全性を保証するものではありません。実際の申請に際しては、公式ページの情報を確認してください。
+              </p>
             </div>
           </div>
 
