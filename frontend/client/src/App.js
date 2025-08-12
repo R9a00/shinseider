@@ -9,6 +9,7 @@ import UpdateHistory from './components/UpdateHistory';
 import Contact from './components/Contact';
 import News from './components/News';
 import KnowledgeBase from './components/KnowledgeBase';
+import Disclaimer from './components/Disclaimer';
 
 
 // ──────────────────────────────────────────────────────────────
@@ -402,6 +403,7 @@ function Home() {
               <Link to="/operator-info" className="hover:text-gray-900">運営者情報</Link>
               <Link to="/update-history" className="hover:text-gray-900">情報更新履歴・参照元</Link>
               <Link to="/privacy-policy" className="hover:text-gray-900">プライバシーポリシー</Link>
+              <Link to="/disclaimer" className="hover:text-gray-900">免責事項</Link>
               <Link to="/contact" className="hover:text-gray-900">お問い合わせ</Link>
             </nav>
           </div>
@@ -463,16 +465,6 @@ function Home() {
             </div>
           </div>
 
-          {/* 免責事項 */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-              <h4 className="font-semibold text-gray-800 mb-2 text-sm">免責</h4>
-              <p className="text-xs text-gray-600 leading-relaxed">
-                当サイトはベータ版であり、機能は改善途上のものです。現段階でも、ある程度使える形にはなっていると思いますが、網羅性・完全性を保証するものではありません。実際の申請に際しては、公式ページの情報を確認してください。
-              </p>
-            </div>
-          </div>
-
           <div className="mt-6 flex items-center justify-center text-xs text-gray-400">
             <p>© {new Date().getFullYear()} Shinseider. All rights reserved.</p>
           </div>
@@ -528,6 +520,7 @@ export default function App() {
           <Route path="/operator-info" element={<OperatorInfo />} />
           <Route path="/update-history" element={<UpdateHistory />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>
       </div>
