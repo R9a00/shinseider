@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: shinseider-api-v1
+    name: shinseider-api
     env: python
     plan: free
     buildCommand: "cd backend && pip install -r requirements.txt"
@@ -9,15 +9,15 @@ services:
       - key: PYTHON_VERSION
         value: "3.9.19"
       - key: CORS_ORIGIN
-        value: "https://shinseider-web-v1.onrender.com"
+        value: "https://shinseider.onrender.com"
       - key: GMAIL_USER
         value: "shinseider@gmail.com"
 
   - type: web
-    name: shinseider-web-v1
+    name: shinseider
     env: static
     buildCommand: "cd frontend/client && npm install && npm run build"
     staticPublishPath: "./frontend/client/build"
     envVars:
       - key: REACT_APP_API_BASE_URL
-        value: "https://shinseider-api-v1.onrender.com"
+        value: "https://shinseider-api.onrender.com"
