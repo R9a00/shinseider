@@ -638,9 +638,16 @@ async def send_contact(
             part = MIMEBase('application', 'octet-stream')
             part.set_payload(file_content)
             encoders.encode_base64(part)
+            
+            # ファイル名の適切なエンコーディング
+            from email.utils import formataddr
+            import urllib.parse
+            
+            # ファイル名をRFC2047形式でエンコード
+            encoded_filename = urllib.parse.quote(attachment.filename.encode('utf-8'))
             part.add_header(
                 'Content-Disposition',
-                f'attachment; filename="{attachment.filename}"'
+                f'attachment; filename*=UTF-8\'\'{encoded_filename}'
             )
             msg.attach(part)
             
