@@ -166,6 +166,28 @@ async def generate_application_advice(advice_request: ApplicationAdviceRequest):
         if not prompt_template:
             raise HTTPException(status_code=500, detail="Prompt template for this subsidy is not configured.")
 
+        # 「わからない」状態を質問文に変換する関数
+        def convert_unknown_to_question(value, task_label, section_title):
+            if isinstance(value, str) and "わからない・要相談" in value:
+                return f"【質問】{task_label or section_title}について、何を書けばよいか具体的に教えてください。書き方のポイントや例があれば教えてください。"
+            elif isinstance(value, list):
+                converted = []
+                for item in value:
+                    if isinstance(item, str) and "わからない・要相談" in item:
+                        converted.append(f"【質問】{task_label or section_title}について、どのような内容を入力すればよいか具体例とともに教えてください。")
+                    elif isinstance(item, dict):
+                        converted_item = {}
+                        for k, v in item.items():
+                            if isinstance(v, str) and "わからない・要相談" in v:
+                                converted_item[k] = f"【質問】{task_label or section_title}の{k}について、どのような内容を設定すればよいか、具体的な例を交えて教えてください。"
+                            else:
+                                converted_item[k] = v
+                        converted.append(converted_item)
+                    else:
+                        converted.append(item)
+                return converted
+            return value
+
         # ユーザーの回答を整形（出場資格情報を除外）
         def format_answers(answers, sections, exclude_eligibility=False):
             formatted = ""
@@ -186,7 +208,15 @@ async def generate_application_advice(advice_request: ApplicationAdviceRequest):
                             if exclude_eligibility and task_id in eligibility_tasks:
                                 continue  # 出場資格情報をスキップ
                             if task_value:
-                                filtered_tasks.append((task_id, task_value))
+                                # 「わからない・要相談」を質問文に変換
+                                task_label = task_id
+                                if section.get("input_modes", {}).get("micro_tasks"):
+                                    for task in section["input_modes"]["micro_tasks"]:
+                                        if task.get("task_id") == task_id:
+                                            task_label = task.get("label", task_id)
+                                            break
+                                converted_value = convert_unknown_to_question(task_value, task_label, title)
+                                filtered_tasks.append((task_id, converted_value))
                         
                         if filtered_tasks:  # 有効なタスクがある場合のみセクションを追加
                             formatted += f"▼ {title}\n"
@@ -211,8 +241,10 @@ async def generate_application_advice(advice_request: ApplicationAdviceRequest):
                     else:
                         # 通常の文字列データの場合
                         if section_data:
+                            # 「わからない・要相談」を質問文に変換
+                            converted_data = convert_unknown_to_question(section_data, None, title)
                             formatted += f"▼ {title}\n"
-                            formatted += f"A: {section_data}\n\n"
+                            formatted += f"A: {converted_data}\n\n"
             return formatted
 
         # targetに応じて異なる出力を生成
@@ -245,11 +277,11 @@ async def generate_application_advice(advice_request: ApplicationAdviceRequest):
 
 4. 収益予測について、業界水準や市場実態と比較してのご意見をお聞かせください。
 
-5. 初期投資や運転資金の調達で、アトツギという立場を活かせる方法があれば教えてください。
+5. 初期投資や運転資金の調達で、効果的な方法があれば教えてください。
 
-6. 8枚のスライドで最も効果的にアピールする構成順序を教えてください。
+6. 申請書類で最も効果的にアピールする構成や表現方法を教えてください。
 
-7. アトツギ甲子園の審査で特に重視されるポイントがあれば教えてください。"""
+7. この補助金の審査で特に重視されるポイントがあれば教えてください。"""
             
             security_logger.info(f"Human consultation summary generated for subsidy: {advice_request.subsidy_id}")
             return {"output": expert_consultation, "type": "summary"}
@@ -671,3 +703,9 @@ async def send_contact(
     except Exception as e:
         security_logger.error(f"Failed to send contact email: {e}")
         raise HTTPException(status_code=500, detail="メール送信に失敗しました")
+
+if __name__ == "__main__":
+    import uvicorn
+    import os
+    port = int(os.environ.get("PORT", 8888))
+    uvicorn.run(app, host="0.0.0.0", port=port)

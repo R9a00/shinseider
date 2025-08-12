@@ -419,6 +419,7 @@ function SubsidyApplicationSupport() {
                 {task.options?.map((option, idx) => (
                   <option key={idx} value={option}>{option}</option>
                 ))}
+                <option value="完全にわからない">完全にわからない</option>
               </select>
             )}
             
@@ -451,6 +452,22 @@ function SubsidyApplicationSupport() {
                     </label>
                   );
                 })}
+                <label className="flex items-center border-t border-gray-200 pt-2 mt-2">
+                  <input
+                    type="checkbox"
+                    checked={(Array.isArray(currentValue) ? currentValue : []).includes("わからない・要相談")}
+                    onChange={(e) => {
+                      const selectedValues = Array.isArray(currentValue) ? currentValue : [];
+                      const questionOption = "わからない・要相談";
+                      const newValues = e.target.checked 
+                        ? [...selectedValues.filter(v => v !== "わからない・要相談"), questionOption]
+                        : selectedValues.filter(v => v !== questionOption);
+                      handleAnswerChange(section.id, newValues, task.task_id);
+                    }}
+                    className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                  />
+                  <span className="ml-2 text-sm text-orange-700 font-medium">完全にわからない</span>
+                </label>
                 {task.max_selections && (
                   <p className="text-xs text-gray-500">最大{task.max_selections}個まで選択可能</p>
                 )}
@@ -481,18 +498,71 @@ function SubsidyApplicationSupport() {
                     />
                   );
                 })}
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleAnswerChange(section.id, ["わからない・要相談"], task.task_id);
+                  }}
+                  className="text-sm text-orange-600 hover:text-orange-700 font-medium border border-orange-200 hover:border-orange-300 px-3 py-1 rounded-md bg-orange-50 hover:bg-orange-100 transition-colors"
+                >
+                  💬 わからない・要相談
+                </button>
               </div>
             )}
             
             {task.type === 'textarea' && (
-              <textarea
-                value={currentValue}
-                onChange={(e) => handleAnswerChange(section.id, e.target.value, task.task_id)}
-                placeholder={task.placeholder || ''}
-                rows="4"
-                maxLength={task.max_length}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
-              />
+              <div className="space-y-3">
+                <textarea
+                  value={currentValue}
+                  onChange={(e) => handleAnswerChange(section.id, e.target.value, task.task_id)}
+                  placeholder={task.placeholder || ''}
+                  rows="4"
+                  maxLength={task.max_length}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
+                />
+                
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                  <h4 className="text-xs font-medium text-orange-800 mb-2">
+                    📝 書ける範囲で入力したあと、お好みで下の選択肢を選択してください
+                  </h4>
+                  <div className="space-y-1">
+                    {[
+                      'この内容に自信がない・要補強',
+                      '情報不足・調査が必要',
+                      '書き方がわからない',
+                      '完全にわからない'
+                    ].map((option, idx) => {
+                      const tagPattern = `[※${option}]`;
+                      const isSelected = currentValue && currentValue.includes(tagPattern);
+                      
+                      return (
+                        <label key={idx} className="flex items-start space-x-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={(e) => {
+                              const currentText = currentValue || '';
+                              let newText;
+                              
+                              if (e.target.checked) {
+                                // タグを追加
+                                newText = currentText.trim() + (currentText.trim() ? '\n' : '') + tagPattern;
+                              } else {
+                                // タグを削除
+                                newText = currentText.replace(new RegExp(`\\n?\\[※${option.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\]`, 'g'), '').trim();
+                              }
+                              
+                              handleAnswerChange(section.id, newText, task.task_id);
+                            }}
+                            className="h-3 w-3 text-orange-600 focus:ring-orange-500 border-gray-300 rounded mt-0.5"
+                          />
+                          <span className="text-xs text-gray-700">{option}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
             )}
             
             {task.type === 'structured_array' && (
@@ -612,6 +682,17 @@ function SubsidyApplicationSupport() {
                     <div className="mt-2 text-xs text-yellow-700">
                       💡 例：「2025-11, 試作完了, 予算100万円」「2026-01, β版リリース, テストユーザー10社」「2026-04, 本格サービス開始, 売上月50万円目標」
                     </div>
+                    <div className="mt-3 pt-3 border-t border-yellow-200">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleAnswerChange(section.id, [{ ym: '', note: 'わからない・要相談', owner: '' }], task.task_id);
+                        }}
+                        className="text-sm text-orange-600 hover:text-orange-700 font-medium border border-orange-200 hover:border-orange-300 px-3 py-1 rounded-md bg-orange-50 hover:bg-orange-100 transition-colors"
+                      >
+                        💬 わからない・要相談
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   // 他の構造化配列の場合は従来通り
@@ -652,6 +733,23 @@ function SubsidyApplicationSupport() {
                     {task.placeholder && (
                       <p className="text-xs text-gray-500 mt-1">{task.placeholder}</p>
                     )}
+                    <div className="mt-3 pt-3 border-t border-gray-200">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const blankItem = {};
+                          if (task.fields) {
+                            task.fields.forEach(field => {
+                              blankItem[field] = field === task.fields[0] ? 'わからない・要相談' : '';
+                            });
+                          }
+                          handleAnswerChange(section.id, [blankItem], task.task_id);
+                        }}
+                        className="text-sm text-orange-600 hover:text-orange-700 font-medium border border-orange-200 hover:border-orange-300 px-3 py-1 rounded-md bg-orange-50 hover:bg-orange-100 transition-colors"
+                      >
+                        💬 わからない・要相談
+                      </button>
+                    </div>
                   </>
                 )}
               </div>
@@ -759,13 +857,60 @@ function SubsidyApplicationSupport() {
             )}
           </div>
         </div>
-        <textarea
-          value={answers[section.id] || ''}
-          onChange={(e) => handleAnswerChange(section.id, e.target.value)}
-          rows="6"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none"
-          placeholder="ここに回答を入力してください..."
-        />
+        <div className="space-y-4">
+          <textarea
+            value={answers[section.id] || ''}
+            onChange={(e) => handleAnswerChange(section.id, e.target.value)}
+            rows="6"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none"
+            placeholder="ここに回答を入力してください..."
+          />
+          
+          <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+            <h4 className="text-sm font-medium text-orange-800 mb-3">
+              📝 書ける範囲で入力したあと、お好みで下の選択肢を選択してください
+            </h4>
+            <div className="space-y-2">
+              {[
+                'この内容に自信がない・要補強',
+                '情報不足・調査が必要',
+                '書き方がわからない',
+                'もっと詳しく書きたいが方法がわからない',
+                '競合との比較ができていない',
+                '完全にわからない'
+              ].map((option, idx) => {
+                const currentValue = answers[section.id] || '';
+                const tagPattern = `[※${option}]`;
+                const isSelected = currentValue.includes(tagPattern);
+                
+                return (
+                  <label key={idx} className="flex items-start space-x-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={(e) => {
+                        const currentText = answers[section.id] || '';
+                        let newText;
+                        
+                        if (e.target.checked) {
+                          // タグを追加
+                          newText = currentText.trim() + (currentText.trim() ? '\n' : '') + tagPattern;
+                        } else {
+                          // タグを削除
+                          newText = currentText.replace(new RegExp(`\\n?\\[※${option.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\]`, 'g'), '').trim();
+                        }
+                        
+                        handleAnswerChange(section.id, newText);
+                      }}
+                      className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded mt-0.5"
+                    />
+                    <span className="text-sm text-gray-700">{option}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </div>
     );
   };

@@ -29,6 +29,8 @@
 ### 📝 Guided Application Support
 - **段階的入力支援**: 複雑な申請書を分かりやすいステップで作成
 - **複数入力モード**: シンプル・ガイド付き・統合入力から選択
+- **状態タグシステム**: 「自信がない」「調査が必要」等の状態を追記可能
+- **お好みで選択エリア**: 入力内容を保持しつつ追加情報を選択
 - **リアルタイム保存**: ブラウザ内自動保存で安心
 - **30秒診断連携**: 診断結果を申請フォームに自動事前入力
 
@@ -53,6 +55,7 @@
 - **お問い合わせフォーム**: Gmail SMTP統合によるメール送信
 - **スパム保護**: 入力検証とセキュリティ対策
 - **レスポンシブデザイン**: モバイル・デスクトップ対応
+- **ハンバーガーメニュー**: スマートフォン表示での直感的ナビゲーション
 
 ## 🎬 Demo
 
@@ -137,7 +140,7 @@ cd frontend/client && npm start
 ```
 </details>
 
-🌐 **Access the application**: [http://localhost:3000](http://localhost:3000)
+🌐 **Access the application**: [http://localhost:3333](http://localhost:3333)
 
 ## 🚀 Usage
 
@@ -285,9 +288,9 @@ you may not use this file except in compliance with the License.
 ---
 
 <p align="center">
-  <strong>Made with ❤️ for Japanese SMEs and Business Successors</strong>
+  <strong>Supporting Japanese SMEs and Business Succession</strong>
 </p>
 
 <p align="center">
-  <a href="#top">Back to top ⬆️</a>
+  <a href="#top">Back to top</a>
 </p>

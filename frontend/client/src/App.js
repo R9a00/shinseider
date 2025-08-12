@@ -35,6 +35,7 @@ function useScrolled(threshold = 24) {
 
 function Home() {
   const scrolled = useScrolled(24);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
@@ -80,7 +81,52 @@ function Home() {
         シンセイ準備をはじめる
       </Link>
     </nav>
+
+    {/* ハンバーガーメニュー（モバイル） */}
+    <button
+      className="md:hidden rounded-md p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+      onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+      aria-expanded={isMobileMenuOpen}
+      aria-label="メニュー"
+    >
+      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+        {isMobileMenuOpen ? (
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+        ) : (
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+        )}
+      </svg>
+    </button>
   </div>
+
+  {/* モバイルメニュー */}
+  {isMobileMenuOpen && (
+    <div className="md:hidden border-t border-gray-200 bg-white">
+      <div className="space-y-1 px-4 py-3">
+        <Link
+          to="/phase1"
+          className="block rounded-md px-3 py-2 text-base font-medium text-gray-800 hover:bg-gray-100 hover:text-gray-900"
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
+          30秒診断
+        </Link>
+        <a
+          href="#atotsugi"
+          className="block rounded-md px-3 py-2 text-base font-medium text-gray-800 hover:bg-gray-100 hover:text-gray-900"
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
+          アトツギの方へ
+        </a>
+        <Link
+          to="/subsidy-selection"
+          className="block rounded-xl bg-red-600 px-5 py-3.5 text-base font-semibold text-white text-center mt-4 hover:bg-red-700"
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
+          シンセイ準備をはじめる
+        </Link>
+      </div>
+    </div>
+  )}
 </header>
 
       {/* ヒーロー */}
