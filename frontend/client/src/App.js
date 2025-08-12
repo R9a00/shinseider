@@ -333,12 +333,69 @@ function Home() {
               <Link to="/contact" className="hover:text-gray-900">お問い合わせ</Link>
             </nav>
           </div>
-          <div className="mt-6 flex items-center justify-between text-xs text-gray-400">
-            <p>© {new Date().getFullYear()} Shinseider. All rights reserved.</p>
-            <div className="flex items-center gap-2">
-              <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full font-medium">ベータ版</span>
-              <span>機能開発中</span>
+          {/* 開発ロードマップ */}
+          <div className="mt-8 pt-6 border-t border-gray-200">
+            <div className="mb-4">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full font-medium text-sm">ベータ版</span>
+                <h3 className="font-semibold text-gray-800">開発ロードマップ</h3>
+              </div>
+              <p className="text-xs text-gray-600 mb-4">シンセイダーの機能開発状況をお知らせします</p>
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+              {/* 完成済み */}
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <span className="font-semibold text-green-800">完成済み</span>
+                </div>
+                <ul className="space-y-1 text-green-700">
+                  <li>• 30秒診断機能</li>
+                  <li>• アトツギ甲子園申請</li>
+                  <li>• 基本的な申請書作成</li>
+                  <li>• Word文書出力</li>
+                  <li>• お問い合わせフォーム</li>
+                  <li>• バージョン管理システム</li>
+                </ul>
+              </div>
+
+              {/* 開発中 */}
+              <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
+                  <span className="font-semibold text-orange-800">開発中</span>
+                </div>
+                <ul className="space-y-1 text-orange-700">
+                  <li>• 他の補助金対応拡充</li>
+                  <li>• ものづくり補助金詳細</li>
+                  <li>• 事業承継・M&A補助金</li>
+                  <li>• Go-tech事業サポート</li>
+                  <li>• 申請書精度向上</li>
+                  <li>• UI/UX改善</li>
+                </ul>
+              </div>
+
+              {/* 計画中 */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                  <span className="font-semibold text-blue-800">計画中</span>
+                </div>
+                <ul className="space-y-1 text-blue-700">
+                  <li>• AI申請書チェック機能</li>
+                  <li>• 申請進捗管理</li>
+                  <li>• 過去申請データ管理</li>
+                  <li>• モバイルアプリ化</li>
+                  <li>• 専門家マッチング</li>
+                  <li>• 申請成功率分析</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 flex items-center justify-center text-xs text-gray-400">
+            <p>© {new Date().getFullYear()} Shinseider. All rights reserved.</p>
           </div>
         </div>
       </footer>
