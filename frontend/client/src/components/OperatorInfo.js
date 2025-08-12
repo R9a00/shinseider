@@ -92,8 +92,8 @@ function OperatorInfo() {
               FacebookでDM
             </a>
             
-            <a 
-              href="mailto:info@hanyuda.co.jp?subject=シンセイダー経由のお問い合わせ&body=アトツギ甲子園申請または補助金申請に関するご相談について、以下にご記入ください。%0D%0A%0D%0A【お名前】%0D%0A%0D%0A【会社名/組織名】%0D%0A%0D%0A【相談内容】%0D%0A%0D%0A【連絡先電話番号】%0D%0A%0D%0A"
+            <Link 
+              to="/contact"
               className="inline-flex items-center px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
             >
               <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
