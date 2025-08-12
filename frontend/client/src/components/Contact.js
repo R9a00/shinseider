@@ -144,15 +144,6 @@ const Contact = () => {
             </button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <div className="text-center">
-              <p className="text-sm text-gray-600 mb-2">その他のお問い合わせ方法</p>
-              <div className="space-y-1 text-sm text-gray-700">
-                <p>電話: <span className="font-medium">046-244-2171</span></p>
-                <p>受付時間: 平日 9:00-17:00</p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
