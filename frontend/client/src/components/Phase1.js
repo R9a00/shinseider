@@ -5,20 +5,14 @@ const questions = [
   {
     question: 'あなたの会社の業界を教えてください',
     type: 'choice',
-    options: ['製造業', '建設業', '情報通信業', '小売業', '卸売業', 'サービス業', '飲食業', '医療・介護', '教育', '運輸業', 'その他'],
+    options: ['製造業', '建設業', '情報通信業', '小売業', '卸売業', 'サービス業', '飲食業', 'その他'],
     key: 'industry'
   },
   {
     question: 'あなたの年齢を教えてください',
     type: 'choice',
-    options: ['20代', '30代', '40代', '50代', '60代以上'],
+    options: ['20代', '30代', '40代', '50代以上'],
     key: 'age'
-  },
-  {
-    question: '従業員数を教えてください',
-    type: 'choice',
-    options: ['5人未満', '5人〜20人', '21人〜50人', '51人〜100人', '101人〜300人', '301人以上'],
-    key: 'employees'
   },
   {
     question: '現在検討している取り組みをすべて選んでください（複数選択可）',
@@ -37,18 +31,6 @@ const questions = [
     type: 'choice',
     options: ['100万円未満', '100万円〜500万円', '500万円〜1,000万円', '1,000万円〜3,000万円', '3,000万円〜1億円', '1億円以上', 'まだ未定'],
     key: 'investment_scale'
-  },
-  {
-    question: '補助金申請の経験はありますか？',
-    type: 'choice',
-    options: ['初めて', '以前に1回申請したことがある', '複数回申請経験がある', '現在も他の補助金を受給中'],
-    key: 'subsidy_experience'
-  },
-  {
-    question: 'いつ頃から取り組みを開始したいですか？',
-    type: 'choice',
-    options: ['すぐに開始したい', '3か月以内', '6か月以内', '1年以内', '1年以上先', 'まだ未定'],
-    key: 'timeline'
   },
   {
     question: '最も重要視している点を教えてください',
@@ -258,9 +240,9 @@ function Phase1() {
       }
     }
     
-    // 省力化投資補助金の適用判定
+    // 省力化投資補助金の適用判定（重複チェック強化）
     if ((initiatives.includes('設備投資・機械導入') || initiatives.includes('工場・店舗の自動化')) && 
-        !recommendations.some(r => r.name.includes('中小企業省力化'))) {
+        !recommendations.some(r => r.name.includes('省力化'))) {
       const score = (['製造業', '建設業', '小売業', '卸売業'].includes(industry)) ? 90 : 75;
       recommendations.push({
         name: '中小企業省力化投資補助金',
@@ -271,8 +253,7 @@ function Phase1() {
     
     // アトツギ甲子園特別推奨（後継者かつ年齢条件を満たす場合）
     if (responses.is_successor === 'はい、事業承継予定者です' && 
-        (responses.age === '20代' || responses.age === '30代' || 
-         (responses.age === '40代' && new Date().getFullYear() - 1980 <= 40))) { // 簡略的な40歳以下判定
+        (responses.age === '20代' || responses.age === '30代' || responses.age === '40代')) { // 39歳以下の条件
       recommendations.unshift({
         name: 'アトツギ甲子園申請サポート',
         reason: '事業承継者向け特別プログラム。地方予選進出で各種補助金に加点測定。',
@@ -505,7 +486,7 @@ function Phase1() {
               30秒診断
             </h1>
             <p className="mt-4 text-lg leading-8 text-gray-600">
-              5つの簡単な質問にお答えください。<br />
+              6つの簡単な質問にお答えください。<br />
               あなたの会社に最適な補助金をレコメンドします。
             </p>
           </div>
