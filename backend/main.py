@@ -41,6 +41,7 @@ app = FastAPI()
 
 origins = settings.CORS_ORIGINS + [
     "http://localhost:3000",  # Development fallback
+    "http://localhost:3333",  # Regular dev server
     "http://127.0.0.1:3333",
     "http://127.0.0.1:3000"
 ]

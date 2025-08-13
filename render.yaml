@@ -21,7 +21,7 @@ services:
   - type: web
     name: shinseider
     env: static
-    buildCommand: "cd frontend/client && npm install && npm run build"
+    buildCommand: "cd frontend/client && npm install && npm run build && cp public/_redirects build/_redirects"
     staticPublishPath: "./frontend/client/build"
     envVars:
       - key: REACT_APP_API_BASE_URL
