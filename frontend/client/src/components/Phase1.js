@@ -199,6 +199,7 @@ function Phase1() {
     });
     
     const recommendations = [];
+    const debugLog = []; // デバッグ用ログ
     const initiatives = responses.initiatives || [];
     const industry = responses.industry;
     const investment = responses.investment_scale;
@@ -206,7 +207,9 @@ function Phase1() {
     
     // 製造業特化推奨
     if (industry === '製造業') {
+      debugLog.push(`[製造業チェック] 業界: ${industry}`);
       if (initiatives.includes('ITシステム導入') || initiatives.includes('工場・店舗の自動化') || initiatives.includes('新製品・サービスの開発')) {
+        debugLog.push(`[製造業→ものづくり] 該当取り組み: ${initiatives.filter(i => ['ITシステム導入', '工場・店舗の自動化', '新製品・サービスの開発'].includes(i)).join(', ')}`);
         recommendations.push({
           name: 'ものづくり・商業・サービス生産性向上促進補助金',
           reason: '製造業での新製品開発・IT導入・生産性向上に最適です。補助率最大1/2。',
@@ -214,6 +217,7 @@ function Phase1() {
         });
       }
       if (initiatives.includes('設備投資・機械導入') || initiatives.includes('工場・店舗の自動化')) {
+        debugLog.push(`[製造業→省力化] 該当取り組み: ${initiatives.filter(i => ['設備投資・機械導入', '工場・店舗の自動化'].includes(i)).join(', ')}`);
         recommendations.push({
           name: '中小企業省力化投資補助金',
           reason: '製造業の自動化・省力化設備導入を支援。補助率最大1/2。',
@@ -252,8 +256,10 @@ function Phase1() {
     }
     
     // アトツギ甲子園特別推奨（後継者かつ年齢条件を満たす場合）
+    debugLog.push(`[アトツギ甲子園チェック] 事業承継: ${responses.is_successor}, 年齢: ${responses.age}`);
     if (responses.is_successor === 'はい、事業承継予定者です' && 
         (responses.age === '20代' || responses.age === '30代' || responses.age === '40代')) { // 39歳以下の条件
+      debugLog.push(`[アトツギ甲子園] 条件満たすため特別推奨追加`);
       recommendations.unshift({
         name: 'アトツギ甲子園申請サポート',
         reason: '事業承継者向け特別プログラム。地方予選進出で各種補助金に加点測定。',
@@ -357,6 +363,16 @@ function Phase1() {
       return acc;
     }, []);
     
+    // デバッグモードの場合、ログをconsoleに出力
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('debug') === 'true') {
+      console.log('=== 診断デバッグログ ===');
+      console.log('回答:', responses);
+      debugLog.forEach(log => console.log(log));
+      console.log('推奨結果:', recommendations);
+      console.log('重複除去後:', uniqueRecommendations);
+    }
+    
     return uniqueRecommendations.sort((a, b) => (b.match_score || 0) - (a.match_score || 0)).slice(0, 4);
   };
 
@@ -398,6 +414,32 @@ function Phase1() {
         <div className="mx-auto max-w-4xl px-4 py-12">
           <div className="text-center space-y-6">
             <div className="space-y-8">
+              {(() => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const isDebugMode = urlParams.get('debug') === 'true';
+                
+                if (isDebugMode) {
+                  const diagnosisResults = JSON.parse(localStorage.getItem('diagnosis_results') || '[]');
+                  return (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-6">
+                      <h3 className="text-lg font-semibold text-yellow-800 mb-4">🐛 デバッグ情報</h3>
+                      <div className="space-y-3">
+                        <div>
+                          <h4 className="font-medium text-yellow-700">回答内容:</h4>
+                          <pre className="text-xs bg-yellow-100 p-2 rounded mt-1 overflow-x-auto">
+                            {JSON.stringify(diagnosisResults, null, 2)}
+                          </pre>
+                        </div>
+                        <p className="text-sm text-yellow-700">
+                          詳細な推奨ロジックはブラウザのコンソール（F12）をご確認ください。
+                        </p>
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
+              
               <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">おすすめの補助金</h2>
                 <div className="space-y-6">
