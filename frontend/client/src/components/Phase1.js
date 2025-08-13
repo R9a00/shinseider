@@ -60,8 +60,13 @@ function Phase1() {
     if (savedAnswers) {
       try {
         const parsedAnswers = JSON.parse(savedAnswers);
-        setAnswers(parsedAnswers);
-        console.log('保存されたデータを復元しました');
+        // 質問数の変更に対応するため、現在の質問数に合わせて調整
+        const adjustedAnswers = Array(questions.length).fill('');
+        for (let i = 0; i < Math.min(parsedAnswers.length, questions.length); i++) {
+          adjustedAnswers[i] = parsedAnswers[i];
+        }
+        setAnswers(adjustedAnswers);
+        console.log('保存されたデータを復元しました（質問数調整済み）');
       } catch (error) {
         console.error('保存データの復元に失敗しました:', error);
       }
@@ -150,8 +155,8 @@ function Phase1() {
   };
 
   const saveDiagnosis = async (data) => {
-    // 診断結果をローカルストレージに保存
-    const diagnosisResults = data.map((answer, index) => ({
+    // 診断結果をローカルストレージに保存（質問数と回答数を一致させる）
+    const diagnosisResults = data.slice(0, questions.length).map((answer, index) => ({
       question: questions[index].question,
       answer: answer,
       key: questions[index].key
