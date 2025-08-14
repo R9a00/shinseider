@@ -84,7 +84,7 @@ async def get_operational_status():
             {"endpoint": "/system-integrity-status", "method": "GET"},
         ]
         
-        base_url = "http://localhost:8888"
+        base_url = os.getenv("API_BASE_URL", "http://localhost:8888")
         endpoints_status = []
         
         for endpoint_info in test_endpoints:

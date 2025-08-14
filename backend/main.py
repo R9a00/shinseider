@@ -30,7 +30,7 @@ app = FastAPI(
 # CORS設定
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3333", "https://shinseider.onrender.com"],
+    allow_origins=os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:3333,https://shinseider.onrender.com").split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

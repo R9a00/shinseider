@@ -20,7 +20,7 @@ function SubsidySelection() {
           throw new Error('補助金リストの取得に失敗しました。');
         }
         const data = await response.json();
-        setSubsidies(data.subsidies);
+        setSubsidies(Array.isArray(data) ? data : data.subsidies || []);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -112,7 +112,7 @@ function SubsidySelection() {
 
       {/* メインコンテンツ */}
       <div className="mx-auto max-w-7xl px-4 py-16">
-        {subsidies.length > 0 ? (
+        {subsidies && subsidies.length > 0 ? (
           <div className="space-y-12">
             {focusSubsidy === 'atotsugi' && (
               <div className="relative rounded-2xl border border-yellow-200 bg-gradient-to-r from-yellow-50 to-orange-50 p-8 shadow-lg">
@@ -177,12 +177,12 @@ function SubsidySelection() {
                 利用可能な補助金
               </h2>
               <p className="text-base text-gray-600">
-                {subsidies.filter(s => s.id !== 'atotsugi').length}件の補助金申請をサポートしています
+                {subsidies ? subsidies.filter(s => s.id !== 'atotsugi').length : 0}件の補助金申請をサポートしています
               </p>
             </div>
             
             <div className="grid gap-8 sm:grid-cols-1 lg:grid-cols-2 mb-16">
-              {subsidies.filter(s => s.id !== 'atotsugi').map((subsidy) => (
+              {subsidies && subsidies.filter(s => s.id !== 'atotsugi').map((subsidy) => (
                 <Link
                   key={subsidy.id}
                   to={`/subsidy-application-support/${subsidy.id}`}
@@ -221,7 +221,7 @@ function SubsidySelection() {
             </div>
 
             {/* 優遇策セクション（下部に小さく） */}
-            {subsidies.some(s => s.id === 'atotsugi') && (
+            {subsidies && subsidies.some(s => s.id === 'atotsugi') && (
               <div id="yuguusaku" className="pt-8 border-t border-gray-200">
                 <div className="text-center mb-6">
                   <h3 className="text-lg font-semibold text-gray-700 mb-2">
@@ -233,7 +233,7 @@ function SubsidySelection() {
                 </div>
                 
                 <div className="max-w-2xl mx-auto">
-                  {subsidies.filter(s => s.id === 'atotsugi').map((subsidy) => {
+                  {subsidies && subsidies.filter(s => s.id === 'atotsugi').map((subsidy) => {
                     const isAtotsugiAndFocused = subsidy.id === 'atotsugi' && focusSubsidy === 'atotsugi';
                     return (
                     <Link
