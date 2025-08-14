@@ -1283,6 +1283,33 @@ subsidies:
           type: textarea
           placeholder: 上記のリスクに対してどう対応するかの具体策
           required: false
+        - task_id: MILESTONES
+          label: マイルストーン計画（階層構造）
+          type: hierarchical_milestone
+          required: true
+          help_text: 事業を進める上での重要な節目を大項目ごとに整理して、時系列で入力してください
+          example:
+            企画・設計:
+              - date: "2025-11"
+                item: "市場調査完了"
+                note: "競合3社の詳細分析"
+              - date: "2025-12"
+                item: "基本企画書作成"
+                note: "役員承認取得"
+            開発・製造:
+              - date: "2026-01"
+                item: "試作品完成"
+                note: "3パターンで検証"
+              - date: "2026-03"
+                item: "量産準備完了"
+                note: "設備導入・人員配置"
+            販売・展開:
+              - date: "2026-04"
+                item: "β版リリース"
+                note: "限定顧客向け"
+              - date: "2026-06"
+                item: "正式販売開始"
+                note: "全国展開"
         integrated:
         - task_name: 'T5: 実現性まとめて入力'
           description: 例）TRL6。営業/開発/品質は社内でカバー。CAPEXは300万円、OPEXは月50万円。許認可は不要。主要外注はA社と基本合意。マイルストーン：2025-11
@@ -1303,6 +1330,7 @@ subsidies:
       - REV_PATTERNS
       - TECH_READINESS
       - TEAM_ROLES
+      - MILESTONES
       age_limit:
         field: MINI_001_AGE
         max: 39

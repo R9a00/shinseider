@@ -46,8 +46,19 @@ app.include_router(applications.router)
 
 @app.get("/")
 async def read_root():
-    """ルートエンドポイント"""
-    return {"message": "補助金申請支援システム API", "version": "1.4.0", "status": "running"}
+    """ルートエンドポイント（ヘルスチェック機能付き）"""
+    return {
+        "message": "補助金申請支援システム API", 
+        "version": "1.4.0", 
+        "status": "running",
+        "health": "healthy",
+        "timestamp": datetime.now().isoformat()
+    }
+
+@app.get("/health")
+async def health_check():
+    """ヘルスチェックエンドポイント（UptimeRobot監視用）"""
+    return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
 # 後方互換性のための旧エンドポイント
 @app.get("/subsidies")

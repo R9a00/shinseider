@@ -28,11 +28,12 @@
 
 ### 📝 Guided Application Support
 - **段階的入力支援**: 複雑な申請書を分かりやすいステップで作成
-- **複数入力モード**: シンプル・ガイド付き・統合入力から選択
-- **状態タグシステム**: 「自信がない」「調査が必要」等の状態を追記可能
-- **お好みで選択エリア**: 入力内容を保持しつつ追加情報を選択
+- **複数入力モード**: マイクロタスク・統合入力から選択
+- **階層型マイルストーン**: フェーズ別タイムライン管理（日付・内容・備考）
+- **状態タグシステム**: 「わからない・要相談」等の状態を追記可能
 - **リアルタイム保存**: ブラウザ内自動保存で安心
 - **30秒診断連携**: 診断結果を申請フォームに自動事前入力
+- **入力体験改善**: フェーズ名編集・ボタン動作の最適化
 
 ### 🔒 Privacy-First Design
 - **ゼロサーバーストレージ**: すべての処理がクライアント側で完結
@@ -41,9 +42,11 @@
 
 ### 📄 Professional Output Generation
 - **Word文書出力**: 申請に適した形式で自動生成
+- **申請準備完全パッケージ**: 統合TXTファイルでの一括出力
+- **AI相談プロンプト生成**: ChatGPT等で使えるカスタムプロンプト作成
 - **統合チェックリスト**: 申請前の最終確認ツール
 - **タスクスケジュール**: 申請プロセス管理ツール
-- **書類一覧**: 必要書類のチェックリスト
+- **プロンプト自動同期**: バックエンドからの動的プロンプト取得
 
 ### 🔄 Version & Research Management
 - **バージョン管理**: 補助金情報の更新履歴とソース管理
@@ -92,8 +95,11 @@
 **Architecture**
 - 🏗️ RESTful API Design
 - 🌐 SPA (Single Page Application)
-- 📱 Responsive UI/UX
+- 📱 Responsive UI/UX (Mobile-First)
 - 🔄 Real-time State Management
+- 🎯 Centralized Prompt Generation
+- 📋 Hierarchical Data Structures
+- 🔄 Dynamic Content Synchronization
 
 ## 📦 Installation
 
@@ -183,10 +189,12 @@ Home → 30秒診断 → 質問回答 → 補助金推薦 → 申請開始
 
 ### Subsidy Configuration
 
-Edit `backend/subsidies.yaml` to customize:
+Edit `backend/subsidy_master.yaml` to customize:
 - 補助金情報 (Subsidy information)
 - 質問項目 (Question items)  
 - 入力フィールド (Input fields)
+- 階層型マイルストーン設定 (Hierarchical milestone configuration)
+- AI相談プロンプトテンプレート (AI consultation prompt templates)
 - メタデータ (Metadata)
 
 ### Version Management
@@ -273,6 +281,10 @@ git push origin feature/amazing-feature
 - [x] **プライバシー設計**: クライアントサイド処理・ゼロサーバーストレージ
 - [x] **UI/UXデザイン**: レスポンシブ・アクセシブル・直感的操作
 - [x] **基本的補助金対応**: 6つの主要補助金制度サポート
+- [x] **階層型マイルストーン**: フェーズ別タイムライン管理システム
+- [x] **AI相談プロンプト統合**: バックエンド一元化によるプロンプト自動同期
+- [x] **申請準備完全パッケージ**: 統合TXTファイル出力機能
+- [x] **入力体験最適化**: フェーズ名編集・ボタン動作改善
 
 ### Phase 2: Knowledge Enhancement 🚧 (In Progress - 2025 Q1)
 - [x] **構造的理解フレームワーク**: 補助金制度の本質的理解システム
@@ -324,6 +336,13 @@ git push origin feature/amazing-feature
   - 2階層コンテンツ（初心者5分・専門家詳細）システム構築
   - 洗練されたタグ構造による体系的分類システム
   - 全補助金制度に応用可能な抽象化概念ツール
+
+- **2025-01-14**: UI/UX・機能統合の完成
+  - 階層型マイルストーン機能（フェーズ別タイムライン管理）
+  - AI相談プロンプトのバックエンド一元化・自動同期システム
+  - 申請準備完全パッケージ（統合TXTファイル出力）
+  - 入力体験最適化（フェーズ名編集改善・ボタン動作修正）
+  - モバイル対応強化・レスポンシブデザイン最適化
 
 > **Vision**: 日本の中小企業・事業承継者が補助金を活用して持続的成長を実現できるエコシステムの構築
 
