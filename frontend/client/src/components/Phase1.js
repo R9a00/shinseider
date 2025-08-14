@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import config from '../config';
 
 const questions = [
   {
@@ -114,6 +115,24 @@ function Phase1() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [answers]);
 
+  // 診断完了時に推奨結果を取得
+  useEffect(() => {
+    if (completed) {
+      const loadRecommendations = async () => {
+        try {
+          const result = await getRecommendations();
+          setRecommendations(result.subsidies);
+          setAtotsugiRecommendation(result.atotsugi);
+        } catch (error) {
+          console.error('推奨結果の取得に失敗しました:', error);
+          setRecommendations([]);
+          setAtotsugiRecommendation(null);
+        }
+      };
+      loadRecommendations();
+    }
+  }, [completed]);
+
   const handleAnswer = (e) => {
     const newAnswers = [...answers];
     if (questions[currentQuestion].type === 'multiple') {
@@ -192,7 +211,46 @@ function Phase1() {
     }
   };
 
-  const getRecommendations = () => {
+  const getSubsidyId = (subsidyName) => {
+    // 補助金名からsubsidyIdを取得
+    if (subsidyName.includes('アトツギ甲子園')) {
+      return 'atotsugi';
+    } else if (subsidyName.includes('ものづくり')) {
+      return 'monodukuri_r7_21th';
+    } else if (subsidyName.includes('省力化')) {
+      return 'shoukuritsuka_ippan';
+    } else if (subsidyName.includes('Go-tech') || subsidyName.includes('Go-Tech')) {
+      return 'gotech_rd_support';
+    } else if (subsidyName.includes('事業承継')) {
+      return 'jigyou_shoukei_ma';
+    } else if (subsidyName.includes('海外展開') || subsidyName.includes('新事業進出')) {
+      return 'shinjigyo_shinshutsu';
+    }
+    return null;
+  };
+
+  const [expenseExamples, setExpenseExamples] = useState({});
+  const [recommendations, setRecommendations] = useState([]);
+  const [atotsugiRecommendation, setAtotsugiRecommendation] = useState(null);
+
+  const fetchExpenseExamples = async (subsidyName, initiatives) => {
+    const subsidyId = getSubsidyId(subsidyName);
+    if (!subsidyId) return null;
+
+    try {
+      const initiativeParams = Array.isArray(initiatives) ? initiatives.join(',') : '';
+      const response = await fetch(`${config.API_BASE_URL}/subsidies/${subsidyId}/expense-examples?initiatives=${encodeURIComponent(initiativeParams)}`);
+      if (response.ok) {
+        const data = await response.json();
+        return data.expense_examples;
+      }
+    } catch (error) {
+      console.error('支出対象例の取得に失敗しました:', error);
+    }
+    return null;
+  };
+
+  const getRecommendations = async () => {
     const diagnosisResults = JSON.parse(localStorage.getItem('diagnosis_results') || '[]');
     const responses = {};
     diagnosisResults.forEach(item => {
@@ -260,25 +318,38 @@ function Phase1() {
       });
     }
     
-    // アトツギ甲子園特別推奨（後継者かつ年齢条件を満たす場合）
+    // アトツギ甲子園特別推奨（補助金とは別枠で表示）
+    let atotsugiRecommendation = null;
     debugLog.push(`[アトツギ甲子園チェック] 事業承継: ${responses.is_successor}, 年齢: ${responses.age}`);
-    if (responses.is_successor === 'はい、事業承継予定者です' && 
-        (responses.age === '20代' || responses.age === '30代' || responses.age === '40代')) { // 39歳以下の条件
+    // 事業承継に関心がある場合（本人・親族・検討中・情報収集すべて含む）
+    if ((responses.is_successor === 'はい、事業承継予定者です' || 
+         responses.is_successor === 'はい、検討中です' || 
+         responses.is_successor === 'はい、情報収集段階です') && 
+        (responses.age === '20代' || responses.age === '30代' || responses.age === '40代')) {
       debugLog.push(`[アトツギ甲子園] 条件満たすため特別推奨追加`);
-      recommendations.unshift({
-        name: 'アトツギ甲子園申請サポート',
-        reason: '事業承継者向け特別プログラム。地方予選進出で各種補助金に加点測定。',
+      atotsugiRecommendation = {
+        name: 'アトツギ甲子園',
+        reason: '事業承継者向け特別プログラム。地方予選進出であなたにマッチする補助金に加点措置があります。親族承継・第三者承継も対象。',
         match_score: 100,
-        is_special: true
-      });
+        is_special: true,
+        is_atotsugi: true
+      };
     }
     
-    // 事業承継関連
-    if (initiatives.includes('事業承継')) {
+    // 事業承継関連（取り組み選択 OR 事業承継興味あり）
+    const isInterestedInSuccession = (
+      initiatives.includes('事業承継') ||
+      responses.is_successor === 'はい、事業承継予定者です' ||
+      responses.is_successor === 'はい、検討中です' ||
+      responses.is_successor === 'はい、情報収集段階です'
+    );
+    
+    if (isInterestedInSuccession) {
       if (!recommendations.some(r => r.name.includes('事業承継'))) {
+        debugLog.push(`[事業承継・M&A補助金] 推奨条件満たすため追加`);
         recommendations.push({
           name: '事業承継・M&A補助金',
-          reason: '事業承継時の設備投資や経営革新を支援。',
+          reason: '事業承継時の設備投資や経営革新を支援。親族承継・第三者承継・M&Aすべて対象。',
           match_score: 95
         });
       }
@@ -348,12 +419,12 @@ function Phase1() {
       recommendations.push({
         name: '中小企業省力化投資補助金',
         reason: '幅広い業種で利用可能で採択率が高い一般的な補助金です。',
-        match_score: 70
+        match_score: 75
       });
       recommendations.push({
         name: 'ものづくり・商業・サービス生産性向上促進補助金',
         reason: '新製品開発や生産性向上に幅広く対応。補助率が高い。',
-        match_score: 75
+        match_score: 80
       });
     }
     
@@ -378,7 +449,22 @@ function Phase1() {
       console.log('重複除去後:', uniqueRecommendations);
     }
     
-    return uniqueRecommendations.sort((a, b) => (b.match_score || 0) - (a.match_score || 0)).slice(0, 4);
+    const sortedRecommendations = uniqueRecommendations.sort((a, b) => (b.match_score || 0) - (a.match_score || 0)).slice(0, 4);
+    
+    // 支出対象例を順次取得（レート制限を回避）
+    for (const rec of sortedRecommendations) {
+      const examples = await fetchExpenseExamples(rec.name, initiatives);
+      if (examples) {
+        setExpenseExamples(prev => ({
+          ...prev,
+          [rec.name]: examples
+        }));
+      }
+      // 少し待機してレート制限を回避
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    
+    return { subsidies: sortedRecommendations, atotsugi: atotsugiRecommendation };
   };
 
   if (isLoading) {
@@ -444,11 +530,51 @@ function Phase1() {
                 }
                 return null;
               })()}
+
+              {/* アトツギ甲子園専用セクション */}
+              {atotsugiRecommendation && (
+                <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8 mb-8">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                    <span className="bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
+                      ✨ 特別優遇策
+                    </span>
+                  </h2>
+                  <div className="border-2 border-yellow-300 bg-yellow-50 rounded-lg p-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <h3 className="text-lg font-semibold text-gray-900">{atotsugiRecommendation.name}</h3>
+                      <div className="flex space-x-2">
+                        <span className="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">
+                          <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21L12 17.77L5.82 21L7 14L2 9L8.91 8.26L12 2Z" />
+                          </svg>
+                          優遇策
+                        </span>
+                        <span className="inline-flex items-center rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-medium text-orange-800">
+                          補助金加点効果
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-gray-700 text-sm mb-4">{atotsugiRecommendation.reason}</p>
+                    
+                    <div className="flex justify-end">
+                      <Link
+                        to={getSubsidyLink(atotsugiRecommendation.name)}
+                        className="inline-flex items-center font-medium text-yellow-700 hover:text-yellow-800"
+                      >
+                        アトツギ甲子園申請を始める
+                        <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
               
               <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">おすすめの補助金</h2>
                 <div className="space-y-6">
-                  {getRecommendations().map((rec, index) => {
+                  {recommendations.map((rec, index) => {
                     const isSpecial = rec.is_special;
                     const isFirst = index === 0;
                     
@@ -481,13 +607,34 @@ function Phase1() {
                           </div>
                         </div>
                         <p className="text-gray-600 mb-4">{rec.reason}</p>
+                        
+                        {/* 支出対象例の表示 */}
+                        {expenseExamples[rec.name] && Object.keys(expenseExamples[rec.name]).length > 0 && (
+                          <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                            <h4 className="text-sm font-semibold text-blue-800 mb-2">💰 あなたの取り組みで使える支出例</h4>
+                            {Object.entries(expenseExamples[rec.name]).map(([category, examples]) => (
+                              <div key={category} className="mb-2">
+                                <p className="text-xs font-medium text-blue-700 mb-1">【{category}】</p>
+                                <ul className="text-xs text-blue-600 space-y-1">
+                                  {examples.slice(0, 3).map((example, idx) => (
+                                    <li key={idx} className="flex items-start">
+                                      <span className="text-blue-400 mr-1">•</span>
+                                      <span>{example}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        
                         <Link
                           to={getSubsidyLink(rec.name)}
                           className={`inline-flex items-center font-medium ${
                             isSpecial ? 'text-yellow-700 hover:text-yellow-800' : 'text-red-600 hover:text-red-700'
                           }`}
                         >
-                          {rec.name.includes('アトツギ甲子園') ? 'アトツギ甲子園申請を始める' : '申請サポートを始める'}
+                          申請サポートを始める
                           <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
@@ -552,13 +699,26 @@ function Phase1() {
               </div>
               <div className="ml-3 flex-1">
                 <h3 className="text-sm font-medium text-green-800">
-                  データが自動保存されています
+                  前回のデータから始める
                 </h3>
                 <p className="mt-1 text-sm text-green-700">
                   最終保存: {lastSaved.toLocaleString()}
                 </p>
               </div>
-              <div className="ml-4 flex-shrink-0">
+              <div className="ml-4 flex-shrink-0 space-x-2 flex">
+                {/* 前回の診断が完了済みの場合、結果を見るボタンを表示 */}
+                {(() => {
+                  const diagnosisResults = JSON.parse(localStorage.getItem('diagnosis_results') || '[]');
+                  const isCompleted = diagnosisResults.length >= questions.length;
+                  return isCompleted ? (
+                    <button 
+                      onClick={() => setCompleted(true)}
+                      className="rounded-md bg-blue-600 px-3 py-2 text-xs font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    >
+                      結果を見る
+                    </button>
+                  ) : null;
+                })()}
                 <button 
                   onClick={clearSavedData}
                   className="rounded-md bg-red-600 px-3 py-2 text-xs font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"

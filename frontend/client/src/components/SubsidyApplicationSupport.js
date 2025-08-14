@@ -20,6 +20,66 @@ function SubsidyApplicationSupport() {
   const [diagnosisData, setDiagnosisData] = useState(null);
   const [diagnosisApplied, setDiagnosisApplied] = useState(false);
   const [attachments, setAttachments] = useState([]);
+  const [subsidyInfo, setSubsidyInfo] = useState(null);
+  const [lastSaved, setLastSaved] = useState(null);
+  const [autoSaveStatus, setAutoSaveStatus] = useState(''); // 'saving', 'saved', 'error'
+
+  // 申請書作成データに基づくサポートガイダンス機能
+  const getSupportGuidance = (item) => {
+    // 申請書作成で入力されたデータを活用
+    const getContextualGuidance = (baseGuidance) => {
+      let guidance = baseGuidance;
+      
+      // 業界情報があれば具体的な例を追加
+      if (diagnosisData?.industry) {
+        const industryExamples = {
+          '製造業': '製造ライン効率化、品質管理システム導入',
+          'IT・情報通信業': 'システム開発効率化、セキュリティ強化',
+          '建設業': '施工管理システム、安全管理設備',
+          '小売業': 'POS システム、在庫管理システム',
+          'サービス業': '顧客管理システム、業務効率化ツール'
+        };
+        
+        if (industryExamples[diagnosisData.industry]) {
+          guidance += `\n   🏭 ${diagnosisData.industry}での例: ${industryExamples[diagnosisData.industry]}`;
+        }
+      }
+      
+      // 投資規模に応じたアドバイス
+      if (diagnosisData?.investment_scale) {
+        const scaleAdvice = {
+          '100万円未満': '小規模投資での効果的な活用方法を検討',
+          '100万円～500万円': '中規模投資での段階的導入を計画',
+          '500万円～1000万円': '本格的なシステム導入の準備が重要',
+          '1000万円以上': '大規模投資のリスク管理と効果測定を重視'
+        };
+        
+        if (scaleAdvice[diagnosisData.investment_scale]) {
+          guidance += `\n   💰 投資規模(${diagnosisData.investment_scale}): ${scaleAdvice[diagnosisData.investment_scale]}`;
+        }
+      }
+      
+      return guidance;
+    };
+    
+    const baseGuidance = {
+      '賃金引上げ計画の誓約書を提出できる': `💡 今すぐできること：\n▸ 現在の平均給与を給与台帳から調査\n▸ 3年間の給与増加計画(年率1.5%以上)を策定\n▸ 最低賃金+30円以上の設定`,
+      
+      '従業員21名以上の場合、次世代法に基づく行動計画を公表済み': `💡 今すぐできること：\n▸ 男女別雇用状況の整理\n▸ 女性活躍・育児支援目標の設定\n▸ 厚労省サイトでの公表手続き`,
+      
+      '事業完了後3年で給与支給総額を年率平均1.5%以上増加させる計画がある': `💡 今すぐできること：\n▸ 現在の総人件費の正確な算出\n▸ 生産性向上計画との連動\n▸ 年次実施スケジュールの作成`,
+      
+      '事業完了後3年で事業場内最低賃金を地域別最低賃金+30円以上とする計画がある': `💡 今すぐできること：\n▸ 地域別最低賃金の確認(厚労省サイト)\n▸ 時給ベース改善計画の策定\n▸ 全従業員の賃金体系見直し`
+    };
+    
+    const guidance = baseGuidance[item];
+    
+    if (guidance) {
+      return getContextualGuidance(guidance);
+    }
+    
+    return `💡 申請要件を確認中...`;
+  };
 
   // Pre-fill form fields based on diagnosis data
   const prefillFromDiagnosis = useCallback((diagnosis) => {
@@ -132,7 +192,9 @@ function SubsidyApplicationSupport() {
     content += `※専門知識が必要な項目です\n`;
     content += `-------------------------------------------\n`;
     classifiedItems.filter(c => c.category === 'support').forEach(c => {
-      content += `🆘 ${c.item}\n   → 社労士や専門家にご相談ください\n\n`;
+      // 具体的なサポート内容を提供
+      const supportGuidance = getSupportGuidance(c.item);
+      content += `🆘 ${c.item}\n${supportGuidance}\n\n`;
     });
     
     content += `\n【相談・検討が必要な項目】\n`;
@@ -195,7 +257,8 @@ function SubsidyApplicationSupport() {
     if (tasks.milestones) {
       tasks.milestones.forEach(milestone => {
         const deadline = `申請${milestone.lead.replace('P-', '').replace('d', '')}日前`;
-        csvContent += `"${milestone.name}","${deadline}","${milestone.id}"\n`;
+        const description = milestone.description || milestone.name;
+        csvContent += `"${milestone.name}","${deadline}","${description}"\n`;
       });
     }
     
@@ -206,6 +269,110 @@ function SubsidyApplicationSupport() {
     a.download = `${subsidyName}_タスクスケジュール_${today.replace(/\//g, '')}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  // バリデーション関数
+  const getValidationErrors = () => {
+    const errors = [];
+    const requiredTasks = validation.micro_tasks_required || [];
+    
+    sections.forEach(section => {
+      if (inputMode === 'micro_tasks' && section.input_modes?.micro_tasks) {
+        section.input_modes.micro_tasks.forEach(task => {
+          if (requiredTasks.includes(task.task_id)) {
+            const value = answers[section.id]?.[task.task_id];
+            
+            // 条件付きタスクの表示状態をチェック
+            let shouldValidate = true;
+            if (task.conditional_on && task.conditional_value) {
+              const conditionValue = answers[section.id]?.[task.conditional_on];
+              if (Array.isArray(conditionValue)) {
+                shouldValidate = conditionValue.includes(task.conditional_value);
+              } else {
+                shouldValidate = conditionValue === task.conditional_value;
+              }
+            }
+            
+            if (shouldValidate && (!value || value === '' || value === null || 
+                (Array.isArray(value) && value.length === 0))) {
+              errors.push({
+                sectionId: section.id,
+                taskId: task.task_id,
+                label: task.label || task.task_id,
+                sectionTitle: section.title
+              });
+            }
+          }
+        });
+      }
+    });
+    
+    return errors;
+  };
+
+  // エラー項目にスクロール
+  const scrollToError = (sectionId, taskId) => {
+    const element = document.getElementById(`${sectionId}-${taskId}`);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center',
+        inline: 'nearest'
+      });
+      // フォーカスを当てる
+      const input = element.querySelector('input, textarea, select');
+      if (input) {
+        setTimeout(() => input.focus(), 500);
+      }
+    }
+  };
+
+  // 自動保存機能
+  const saveDataToLocalStorage = useCallback(() => {
+    try {
+      setAutoSaveStatus('saving');
+      const saveData = {
+        answers,
+        inputMode,
+        timestamp: new Date().toISOString(),
+        subsidyId
+      };
+      localStorage.setItem(`shinseider_draft_${subsidyId}`, JSON.stringify(saveData));
+      setLastSaved(new Date());
+      setAutoSaveStatus('saved');
+      setTimeout(() => setAutoSaveStatus(''), 2000);
+    } catch (error) {
+      console.error('自動保存エラー:', error);
+      setAutoSaveStatus('error');
+      setTimeout(() => setAutoSaveStatus(''), 3000);
+    }
+  }, [answers, inputMode, subsidyId]);
+
+  // データの復元
+  const loadDataFromLocalStorage = useCallback(() => {
+    try {
+      const savedData = localStorage.getItem(`shinseider_draft_${subsidyId}`);
+      if (savedData) {
+        const parsed = JSON.parse(savedData);
+        setAnswers(parsed.answers || {});
+        setInputMode(parsed.inputMode || 'micro_tasks');
+        setLastSaved(new Date(parsed.timestamp));
+        return true;
+      }
+    } catch (error) {
+      console.error('データ復元エラー:', error);
+    }
+    return false;
+  }, [subsidyId]);
+
+  // 保存データの削除
+  const clearSavedData = () => {
+    if (window.confirm('保存されたデータを削除しますか？この操作は取り消せません。')) {
+      localStorage.removeItem(`shinseider_draft_${subsidyId}`);
+      setLastSaved(null);
+      setAnswers({});
+      alert('保存されたデータを削除しました');
+    }
   };
 
   useEffect(() => {
@@ -227,11 +394,15 @@ function SubsidyApplicationSupport() {
 
         // Load diagnosis data from localStorage if available
         loadDiagnosisData();
+        
+        // Load saved draft data
+        loadDataFromLocalStorage();
 
         const metadataResponse = await fetch(`${config.API_BASE_URL}/subsidies/${subsidyId}/metadata`);
         if (metadataResponse.ok) {
           const metadataData = await metadataResponse.json();
           setSubsidyName(metadataData.name);
+          setSubsidyInfo(metadataData); // 募集期間情報を含む全体のメタデータを保存
         }
       } catch (err) {
         setError(err.message);
@@ -245,6 +416,15 @@ function SubsidyApplicationSupport() {
     }
   }, [subsidyId, loadDiagnosisData]);
 
+  // 自動保存のuseEffect
+  useEffect(() => {
+    if (Object.keys(answers).length > 0) {
+      const timeoutId = setTimeout(() => {
+        saveDataToLocalStorage();
+      }, 3000); // 3秒後に自動保存
+      return () => clearTimeout(timeoutId);
+    }
+  }, [answers, saveDataToLocalStorage]);
 
   const handleAnswerChange = (sectionId, value, taskId = null) => {
     if (taskId) {
@@ -391,7 +571,7 @@ function SubsidyApplicationSupport() {
 
       return (
         <React.Fragment key={task.task_id}>
-          <div className={`border-b border-gray-100 last:border-b-0 p-4 ${marginClass}`}>
+          <div id={`${section.id}-${task.task_id}`} className={`border-b border-gray-100 last:border-b-0 p-4 ${marginClass}`}>
         <div className="flex items-start space-x-3">
           <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${numberBgClass}`}>
             {taskIndex + 1}
@@ -439,7 +619,6 @@ function SubsidyApplicationSupport() {
                 {task.options?.map((option, idx) => (
                   <option key={idx} value={option}>{option}</option>
                 ))}
-                <option value="完全にわからない">完全にわからない</option>
               </select>
             )}
             
@@ -459,10 +638,6 @@ function SubsidyApplicationSupport() {
                             ? [...selectedValues, option]
                             : selectedValues.filter(v => v !== option);
                           
-                          // max_selections制限をチェック
-                          if (task.max_selections && newValues.length > task.max_selections) {
-                            return;
-                          }
                           
                           handleAnswerChange(section.id, newValues, task.task_id);
                         }}
@@ -486,11 +661,8 @@ function SubsidyApplicationSupport() {
                     }}
                     className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
                   />
-                  <span className="ml-2 text-sm text-orange-700 font-medium">完全にわからない</span>
+                  <span className="ml-2 text-sm text-orange-700 font-medium">わからない・要相談</span>
                 </label>
-                {task.max_selections && (
-                  <p className="text-xs text-gray-500">最大{task.max_selections}個まで選択可能</p>
-                )}
               </div>
             )}
             
@@ -550,7 +722,7 @@ function SubsidyApplicationSupport() {
                       'この内容に自信がない・要補強',
                       '情報不足・調査が必要',
                       '書き方がわからない',
-                      '完全にわからない'
+                      '調査が必要'
                     ].map((option, idx) => {
                       const tagPattern = `[※${option}]`;
                       const isSelected = currentValue && currentValue.includes(tagPattern);
@@ -812,7 +984,7 @@ function SubsidyApplicationSupport() {
     }
 
     return (
-      <div key={task.task_id} className={`border-b border-gray-100 last:border-b-0 p-4 ${marginClass}`}>
+      <div key={task.task_id} id={`${section.id}-${task.task_id}`} className={`border-b border-gray-100 last:border-b-0 p-4 ${marginClass}`}>
         <div className="flex items-start space-x-3">
           <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${numberBgClass}`}>
             {taskIndex + 1}
@@ -860,7 +1032,6 @@ function SubsidyApplicationSupport() {
                 {task.options?.map((option, idx) => (
                   <option key={idx} value={option}>{option}</option>
                 ))}
-                <option value="完全にわからない">完全にわからない</option>
               </select>
             )}
             
@@ -880,10 +1051,6 @@ function SubsidyApplicationSupport() {
                             ? [...selectedValues, option]
                             : selectedValues.filter(v => v !== option);
                           
-                          // max_selections制限をチェック
-                          if (task.max_selections && newValues.length > task.max_selections) {
-                            return;
-                          }
                           
                           handleAnswerChange(section.id, newValues, task.task_id);
                         }}
@@ -907,11 +1074,8 @@ function SubsidyApplicationSupport() {
                     }}
                     className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
                   />
-                  <span className="ml-2 text-sm text-orange-700 font-medium">完全にわからない</span>
+                  <span className="ml-2 text-sm text-orange-700 font-medium">わからない・要相談</span>
                 </label>
-                {task.max_selections && (
-                  <p className="text-xs text-gray-500">最大{task.max_selections}個まで選択可能</p>
-                )}
               </div>
             )}
             
@@ -1283,7 +1447,7 @@ function SubsidyApplicationSupport() {
                 '書き方がわからない',
                 'もっと詳しく書きたいが方法がわからない',
                 '競合との比較ができていない',
-                '完全にわからない'
+                '調査が必要'
               ].map((option, idx) => {
                 const currentValue = answers[section.id] || '';
                 const tagPattern = `[※${option}]`;
@@ -1324,11 +1488,20 @@ function SubsidyApplicationSupport() {
   const handleInitialSubmit = (e) => {
     e.preventDefault();
     
-    // Run validation
+    // Run validation - 警告表示のみ、生成は継続
     const validationErrors = validateAnswers();
-    if (validationErrors.length > 0) {
-      alert('入力内容に不備があります:\n\n' + validationErrors.join('\n'));
-      return;
+    const validationWarnings = getValidationErrors();
+    
+    if (validationErrors.length > 0 || validationWarnings.length > 0) {
+      const proceed = window.confirm(
+        `未入力の項目がありますが、入力済みの内容でアウトプットを生成しますか？\n\n` +
+        `未入力項目: ${validationWarnings.length}件\n` +
+        `生成後に追加入力して再生成することも可能です。\n\n` +
+        `「OK」で生成を続行、「キャンセル」で入力を続ける`
+      );
+      if (!proceed) {
+        return;
+      }
     }
     
     setShowOutputOptions(true);
@@ -1359,7 +1532,8 @@ function SubsidyApplicationSupport() {
       });
     }
     
-    // Micro tasks required validation
+    // Micro tasks required validation - 警告のみ、生成は継続
+    const missingRequired = [];
     if (validation.micro_tasks_required && inputMode === 'micro_tasks') {
       validation.micro_tasks_required.forEach(taskId => {
         let found = false;
@@ -1373,7 +1547,7 @@ function SubsidyApplicationSupport() {
           }
         });
         if (!found) {
-          errors.push(`必須項目 "${taskId}" が入力されていません`);
+          missingRequired.push(taskId);
         }
       });
     }
@@ -1388,7 +1562,8 @@ function SubsidyApplicationSupport() {
         }
       });
       if (age && age > validation.age_limit.max) {
-        errors.push(`年齢は${validation.age_limit.max}歳以下である必要があります`);
+        // 年齢制限は警告のみ（生成は継続）
+        console.warn(`年齢制限: ${validation.age_limit.max}歳以下が推奨されています`);
       }
     }
     
@@ -1396,42 +1571,117 @@ function SubsidyApplicationSupport() {
   };
 
 
-  const handleSaveData = async () => {
-    try {
-      const response = await fetch(`${config.API_BASE_URL}/save_application_data`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          subsidy_id: subsidyId, 
-          subsidy_name: subsidyName,
-          answers: answers, 
-          progress: getProgressPercentage(),
-          checklist: checklist,
-          tasks: tasks,
-          attachments: attachments,
-          diagnosis_data: diagnosisData
-        })
-      });
-      if (!response.ok) {
-        throw new Error('データの保存に失敗しました。');
+  // 統合版TXTファイルダウンロード機能
+  const downloadCompletePackage = () => {
+    const today = new Date().toLocaleDateString('ja-JP');
+    let content = `${subsidyName} - 申請準備完全パッケージ\n`;
+    content += `作成日: ${today}\n`;
+    content += `=${'='.repeat(50)}\n\n`;
+    
+    // 1. 申請書データ
+    content += `【1. 申請書入力データ】\n`;
+    content += `${'='.repeat(30)}\n`;
+    sections.forEach(section => {
+      content += `\n■ ${section.title}\n`;
+      if (inputMode === 'micro_tasks' && section.input_modes?.micro_tasks) {
+        section.input_modes.micro_tasks.forEach(task => {
+          const value = answers[section.id]?.[task.task_id];
+          if (value !== undefined && value !== '' && value !== null) {
+            content += `▸ ${task.task}: ${Array.isArray(value) ? value.join('、') : value}\n`;
+          }
+        });
+      } else {
+        const value = answers[section.id];
+        if (value !== undefined && value !== '' && value !== null) {
+          content += `${value}\n`;
+        }
       }
+    });
+    
+    // 2. 提出前チェックリスト
+    if (checklist.length > 0) {
+      content += `\n\n【2. 提出前チェックリスト】\n`;
+      content += `${'='.repeat(30)}\n`;
+      const classifiedItems = classifyChecklistItems();
       
-      // ファイルをダウンロード
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = url;
-      a.download = `申請準備書_${subsidyName}_${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.docx`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
+      content += `\n【今すぐできること】\n`;
+      content += `${'~'.repeat(20)}\n`;
+      classifiedItems.filter(c => c.category === 'support').forEach(c => {
+        const supportGuidance = getSupportGuidance(c.item);
+        content += `📝 ${c.item}\n${supportGuidance}\n\n`;
+      });
       
-      alert('Word文書として保存しました。印刷や編集が可能です。');
-    } catch (err) {
-      alert('保存に失敗しました: ' + err.message);
+      content += `\n【事業内容で決まること】\n`;
+      content += `${'~'.repeat(20)}\n`;
+      classifiedItems.filter(c => c.category === 'discussion').forEach(c => {
+        content += `💼 ${c.item}\n  → あなたの事業内容に合わせて具体的に記載\n\n`;
+      });
+      
+      content += `\n【確認済み】\n`;
+      content += `${'~'.repeat(20)}\n`;
+      classifiedItems.filter(c => c.category === 'auto').forEach(c => {
+        content += `✅ ${c.item}\n`;
+      });
+      
+      content += `\n【要確認】\n`;
+      content += `${'~'.repeat(20)}\n`;
+      classifiedItems.filter(c => c.category === 'manual').forEach(c => {
+        content += `🔍 ${c.item}\n  → 詳細を確認してください\n\n`;
+      });
     }
+    
+    // 3. タスクスケジュール
+    if (tasks.milestones) {
+      content += `\n\n【3. 申請準備タスク・スケジュール】\n`;
+      content += `${'='.repeat(30)}\n`;
+      tasks.milestones.forEach(milestone => {
+        const deadline = `申請${milestone.lead.replace('P-', '').replace('d', '')}日前`;
+        const description = milestone.description || milestone.name;
+        content += `📅 ${milestone.name} (${deadline})\n    ${description}\n\n`;
+      });
+    }
+    
+    // 4. AI相談用プロンプト
+    content += `\n\n【4. AI相談用プロンプト】\n`;
+    content += `${'='.repeat(30)}\n`;
+    content += `以下の内容でChatGPTなどのAIに相談する際にご活用ください：\n\n`;
+    content += `「私は${subsidyName}への申請を検討しています。\n`;
+    
+    // 申請書データをプロンプト用に整理
+    content += `\n【事業概要】\n`;
+    sections.forEach(section => {
+      if (inputMode === 'micro_tasks' && section.input_modes?.micro_tasks) {
+        section.input_modes.micro_tasks.forEach(task => {
+          const value = answers[section.id]?.[task.task_id];
+          if (value !== undefined && value !== '' && value !== null) {
+            content += `- ${task.task}: ${Array.isArray(value) ? value.join('、') : value}\n`;
+          }
+        });
+      } else {
+        const value = answers[section.id];
+        if (value !== undefined && value !== '' && value !== null) {
+          content += `- ${section.title}: ${value}\n`;
+        }
+      }
+    });
+    
+    content += `\nこの内容について、以下の点でアドバイスをお願いします：\n`;
+    content += `1. 申請書類作成のポイント\n`;
+    content += `2. 審査で重視される要素\n`;
+    content += `3. 採択確率を高めるための改善提案\n`;
+    content += `4. 事業計画のブラッシュアップ方法\n`;
+    content += `5. 想定される質問と回答例」\n\n`;
+    
+    content += `このプロンプトをコピーしてAIツールで相談してください。`;
+    
+    // ファイルダウンロード
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${subsidyName.replace(/\s+/g, '_')}_申請準備完全パッケージ_${today.replace(/\//g, '')}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const handleGenerateOutput = async (target) => {
@@ -1505,19 +1755,23 @@ function SubsidyApplicationSupport() {
           if (shouldCount) {
             totalTasks++;
             const value = answers[section.id]?.[task.task_id];
-            if (value !== undefined && value !== '' && value !== null) {
-              if (Array.isArray(value)) {
-                if (value.length > 0 && value.some(v => {
+            // より柔軟な値チェック：「わからない・要相談」なども有効な入力として扱う
+            const isValidValue = (val) => {
+              if (val === undefined || val === null) return false;
+              if (typeof val === 'string') return val.trim() !== '';
+              if (Array.isArray(val)) {
+                return val.length > 0 && val.some(v => {
                   if (typeof v === 'object' && v !== null) {
                     return Object.values(v).some(subV => subV && subV.toString().trim() !== '');
                   }
                   return v && v.toString().trim() !== '';
-                })) {
-                  completedTasks++;
-                }
-              } else {
-                completedTasks++;
+                });
               }
+              return true; // その他の値タイプは有効とみなす
+            };
+            
+            if (isValidValue(value)) {
+              completedTasks++;
             }
           }
         });
@@ -1595,6 +1849,69 @@ function SubsidyApplicationSupport() {
                 {subsidyName}
               </span>
             </h1>
+            
+            {/* 募集期間情報 */}
+            {subsidyInfo?.application_period && (
+              <div className={`mb-6 p-4 backdrop-blur-sm border rounded-lg shadow-sm ${
+                new Date() > new Date(subsidyInfo.application_period.end_date) 
+                  ? 'bg-red-50/80 border-red-200' 
+                  : 'bg-white/80 border-gray-200'
+              }`}>
+                <div className="flex items-center space-x-4 text-sm">
+                  <div className="flex items-center">
+                    <svg className="h-4 w-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span className="font-medium">募集期間:</span>
+                    <span className={`ml-1 ${
+                      new Date() > new Date(subsidyInfo.application_period.end_date) 
+                        ? 'text-red-600 font-medium' 
+                        : 'text-gray-700'
+                    }`}>
+                      {subsidyInfo.application_period.start_date} 〜 {subsidyInfo.application_period.end_date}
+                      {new Date() > new Date(subsidyInfo.application_period.end_date) && (
+                        <span className="ml-2 bg-red-100 text-red-800 px-2 py-0.5 rounded text-xs font-bold">
+                          募集終了
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <svg className="h-4 w-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="font-medium">情報基準日:</span>
+                    <span className="ml-1 text-gray-700">{subsidyInfo.application_period.information_date}</span>
+                  </div>
+                  {subsidyInfo.application_period.current_round && (
+                    <div className="flex items-center">
+                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
+                        {subsidyInfo.application_period.current_round}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                {subsidyInfo.application_period.notes && (
+                  <div className="mt-2 text-xs text-gray-600">
+                    ※ {subsidyInfo.application_period.notes}
+                  </div>
+                )}
+                {new Date() > new Date(subsidyInfo.application_period.end_date) && (
+                  <div className="mt-3 p-3 bg-red-100 border border-red-200 rounded">
+                    <div className="flex items-start">
+                      <svg className="h-4 w-4 text-red-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.498 0L4.316 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                      </svg>
+                      <div className="text-sm text-red-700">
+                        <div className="font-medium">この募集回は終了しています</div>
+                        <div className="mt-1">次回募集の情報は公式サイトでご確認ください。情報基準日が古い可能性があります。</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            
             <div className="mt-4 p-3 bg-white/60 backdrop-blur-sm rounded-xl shadow-md border border-white/20 inline-block">
               <p className="text-base leading-relaxed text-gray-700 font-medium">
                 {isAtotsugi ? (
@@ -1610,7 +1927,7 @@ function SubsidyApplicationSupport() {
                 ) : (
                   <>
                     補助金申請に必要な情報を入力してください。<br />
-                    入力内容をもとに、最適なアウトプットを生成します。
+                    入力済みの内容をもとに、アウトプットを生成します。全項目入力しなくても生成可能です。
                   </>
                 )}
               </p>
@@ -1637,12 +1954,60 @@ function SubsidyApplicationSupport() {
                   {getProgressPercentage()}%
                 </span>
               </div>
-              <div className="text-xs text-gray-500">
-                {getProgressPercentage() === 100 ? (
-                  <span className="text-green-600 font-medium">🎉 完了</span>
-                ) : (
-                  <span>残り{42 - Math.round((getProgressPercentage() / 100) * 42)}タスク</span>
-                )}
+              <div className="flex items-center space-x-4">
+                {/* 進捗表示 */}
+                <div className="text-xs text-gray-500">
+                  {getProgressPercentage() === 100 ? (
+                    <span className="text-green-600 font-medium">🎉 全項目完了</span>
+                  ) : (
+                    <span>残り{42 - Math.round((getProgressPercentage() / 100) * 42)}タスク（部分入力でも生成OK）</span>
+                  )}
+                </div>
+                
+                {/* 自動保存ステータス */}
+                <div className="flex items-center space-x-2 text-xs">
+                  {autoSaveStatus === 'saving' && (
+                    <span className="text-blue-600 flex items-center">
+                      <svg className="animate-spin h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      保存中
+                    </span>
+                  )}
+                  {autoSaveStatus === 'saved' && (
+                    <span className="text-green-600 flex items-center">
+                      <svg className="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      保存済み
+                    </span>
+                  )}
+                  {autoSaveStatus === 'error' && (
+                    <span className="text-red-600 flex items-center">
+                      <svg className="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      保存失敗
+                    </span>
+                  )}
+                  {lastSaved && autoSaveStatus === '' && (
+                    <span className="text-gray-500">
+                      最終保存: {lastSaved.toLocaleTimeString()}
+                    </span>
+                  )}
+                  
+                  {/* 保存データ管理ボタン */}
+                  {lastSaved && (
+                    <button
+                      onClick={clearSavedData}
+                      className="text-red-500 hover:text-red-700 font-medium"
+                      title="保存データを削除"
+                    >
+                      削除
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -1651,6 +2016,7 @@ function SubsidyApplicationSupport() {
 
       <div className="mx-auto max-w-4xl px-4 py-8">
         {/* 診断データからの事前入力通知 */}
+        {/* 30秒診断反映メッセージを非表示
         {diagnosisData && diagnosisApplied && (
           <div className="mb-6 rounded-lg bg-blue-50 border border-blue-200 p-4">
             <div className="flex items-start">
@@ -1670,6 +2036,7 @@ function SubsidyApplicationSupport() {
             </div>
           </div>
         )}
+        */}
         {!showOutputOptions ? (
           <div>
             {/* アトツギ甲子園の場合の入力モード切り替え */}
@@ -1735,6 +2102,7 @@ function SubsidyApplicationSupport() {
                       提出前チェックリスト
                     </h3>
                     <button
+                      type="button"
                       onClick={downloadChecklist}
                       className="inline-flex items-center px-3 py-2 border border-yellow-300 rounded-md shadow-sm text-sm font-medium text-yellow-800 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                     >
@@ -1819,6 +2187,7 @@ function SubsidyApplicationSupport() {
                       申請準備タスク・スケジュール
                     </h3>
                     <button
+                      type="button"
                       onClick={downloadTaskSchedule}
                       className="inline-flex items-center px-3 py-2 border border-blue-300 rounded-md shadow-sm text-sm font-medium text-blue-800 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
@@ -1859,13 +2228,13 @@ function SubsidyApplicationSupport() {
               <div className="flex justify-center gap-4 pt-8">
                 <button 
                   type="button"
-                  onClick={handleSaveData}
+                  onClick={downloadCompletePackage}
                   className="inline-flex items-center rounded-xl bg-gray-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200"
                 >
                   <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-Word文書で保存
+申請準備完全パッケージ(TXT)で保存
                 </button>
                 
                 <button 
@@ -1875,7 +2244,7 @@ Word文書で保存
                   <svg className="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
-                  {isAtotsugi ? 'アドバイス・ヒントを生成' : '分析・生成する'}
+                  {isAtotsugi ? 'アドバイス・ヒントを生成（部分入力OK）' : '分析・生成する（部分入力OK）'}
                 </button>
               </div>
             </form>
@@ -1887,7 +2256,7 @@ Word文書で保存
                 アウトプットを選択してください
               </h2>
               <p className="text-gray-600 mb-8">
-                入力いただいた内容をもとに、目的に応じたアウトプットを生成します。
+                入力済みの内容をもとに、目的に応じたアウトプットを生成します。後から追加入力して再生成も可能です。
               </p>
             </div>
 
@@ -1924,10 +2293,10 @@ Word文書で保存
                     </svg>
                   </div>
                   <h3 className="mt-4 text-lg font-semibold text-gray-900 group-hover:text-green-700">
-                    専門家に相談
+                    専門家などに相談
                   </h3>
                   <p className="mt-2 text-sm text-gray-600 group-hover:text-green-600">
-                    補助金の専門家に相談するためのサマリーを生成します
+                    補助金の専門家などに相談するためのサマリーを生成します
                   </p>
                 </div>
               </button>
@@ -2005,6 +2374,42 @@ Word文書で保存
           </div>
         )}
       </div>
+
+      {/* エラー項目一覧 - ページ下部に表示 */}
+      {isAtotsugi && getValidationErrors().length > 0 && (
+        <div className="mx-auto max-w-4xl px-4 py-4">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3 flex-1">
+                <h3 className="text-sm font-medium text-red-800 mb-2">
+                  未入力の必須項目があります ({getValidationErrors().length}件)
+                </h3>
+                <div className="space-y-1">
+                  {getValidationErrors().slice(0, 5).map((error, index) => (
+                    <button
+                      key={`${error.sectionId}-${error.taskId}`}
+                      onClick={() => scrollToError(error.sectionId, error.taskId)}
+                      className="block text-left text-sm text-red-700 hover:text-red-900 hover:underline"
+                    >
+                      → {error.sectionTitle}: {error.label}
+                    </button>
+                  ))}
+                  {getValidationErrors().length > 5 && (
+                    <p className="text-xs text-red-600 mt-2">
+                      他 {getValidationErrors().length - 5} 件
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
