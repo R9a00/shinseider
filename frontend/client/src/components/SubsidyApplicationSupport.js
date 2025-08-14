@@ -23,6 +23,7 @@ function SubsidyApplicationSupport() {
   const [subsidyInfo, setSubsidyInfo] = useState(null);
   const [lastSaved, setLastSaved] = useState(null);
   const [autoSaveStatus, setAutoSaveStatus] = useState(''); // 'saving', 'saved', 'error'
+  const [phaseNameInputs, setPhaseNameInputs] = useState({}); // 一時的なフェーズ名入力状態
 
   // 申請書作成データに基づくサポートガイダンス機能
   const getSupportGuidance = (item) => {
@@ -518,7 +519,16 @@ function SubsidyApplicationSupport() {
   };
 
   const renderMicroTask = (section, task, sectionIndex, taskIndex) => {
-    const currentValue = answers[section.id]?.[task.task_id] || (task.type === 'milestone_input' ? [] : '');
+    let currentValue = answers[section.id]?.[task.task_id];
+    if (!currentValue) {
+      if (task.type === 'milestone_input') {
+        currentValue = [];
+      } else if (task.type === 'hierarchical_milestone') {
+        currentValue = {};
+      } else {
+        currentValue = '';
+      }
+    }
     
     // 条件付きレンダリングのチェック
     if (task.conditional_on && task.conditional_value) {
@@ -1504,6 +1514,195 @@ function SubsidyApplicationSupport() {
                 </button>
               </div>
             )}
+
+            {task.type === 'hierarchical_milestone' && (
+              <div className="space-y-4">
+                {/* 簡潔な説明 */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <p className="text-sm text-blue-800">
+                    💡 <strong>例:</strong> 企画フェーズ → 2025-11 市場調査完了 (競合3社分析) | 開発フェーズ → 2026-01 試作完了 (3パターン)
+                  </p>
+                </div>
+
+                {/* 実際の入力フォーム */}
+                <div className="space-y-4">
+                  
+                  {/* 大項目のリスト */}
+                  {Object.entries(currentValue).length > 0 ? (
+                    <div className="space-y-4">
+                      {Object.entries(currentValue).map(([phaseKey, phaseItems], phaseIndex) => (
+                        <div key={phaseKey} className="border border-gray-200 rounded-lg bg-white shadow-sm">
+                          {/* 大項目ヘッダー */}
+                          <div className="flex items-center justify-between p-3 border-b border-gray-200 bg-gray-50">
+                            <div className="flex items-center space-x-3">
+                              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-xs font-medium text-blue-800">
+                                {phaseIndex + 1}
+                              </span>
+                              <input
+                                type="text"
+                                value={phaseNameInputs[phaseKey] !== undefined ? phaseNameInputs[phaseKey] : (phaseKey.startsWith('phase_') ? '' : phaseKey)}
+                                onChange={(e) => {
+                                  // 一時的な入力状態を更新
+                                  setPhaseNameInputs(prev => ({
+                                    ...prev,
+                                    [phaseKey]: e.target.value
+                                  }));
+                                }}
+                                onBlur={(e) => {
+                                  // フォーカスを失った時のみ実際のデータを更新
+                                  const newName = e.target.value.trim();
+                                  if (newName && newName !== phaseKey) {
+                                    const newValue = { ...currentValue };
+                                    const items = newValue[phaseKey];
+                                    delete newValue[phaseKey];
+                                    newValue[newName] = items;
+                                    handleAnswerChange(section.id, newValue, task.task_id);
+                                    // 一時的な入力状態をクリア
+                                    setPhaseNameInputs(prev => {
+                                      const newInputs = { ...prev };
+                                      delete newInputs[phaseKey];
+                                      return newInputs;
+                                    });
+                                  } else {
+                                    // 変更がない場合は一時的な入力状態をクリア
+                                    setPhaseNameInputs(prev => {
+                                      const newInputs = { ...prev };
+                                      delete newInputs[phaseKey];
+                                      return newInputs;
+                                    });
+                                  }
+                                }}
+                                placeholder="フェーズ名（例：企画・設計）"
+                                className="text-base font-medium bg-white border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              />
+                            </div>
+                            <button
+                              onClick={() => {
+                                const newValue = { ...currentValue };
+                                delete newValue[phaseKey];
+                                handleAnswerChange(section.id, newValue, task.task_id);
+                              }}
+                              className="text-red-500 hover:text-red-700 p-2"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </div>
+
+                          {/* サブ項目のリスト */}
+                          <div className="p-3">
+                            <div className="space-y-2">
+                              {Array.isArray(phaseItems) ? phaseItems.map((item, itemIndex) => (
+                                <div key={itemIndex} className="grid grid-cols-12 gap-2 items-center p-2 bg-gray-50 rounded">
+                                  <div className="col-span-2">
+                                    <input
+                                      type="month"
+                                      value={item.date || ''}
+                                      onChange={(e) => {
+                                        const newValue = { ...currentValue };
+                                        const currentItems = Array.isArray(newValue[phaseKey]) ? newValue[phaseKey] : [];
+                                        const newItems = [...currentItems];
+                                        newItems[itemIndex] = { ...item, date: e.target.value };
+                                        newValue[phaseKey] = newItems;
+                                        handleAnswerChange(section.id, newValue, task.task_id);
+                                      }}
+                                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                  </div>
+                                  <div className="col-span-5">
+                                    <input
+                                      type="text"
+                                      value={item.item || ''}
+                                      onChange={(e) => {
+                                        const newValue = { ...currentValue };
+                                        const currentItems = Array.isArray(newValue[phaseKey]) ? newValue[phaseKey] : [];
+                                        const newItems = [...currentItems];
+                                        newItems[itemIndex] = { ...item, item: e.target.value };
+                                        newValue[phaseKey] = newItems;
+                                        handleAnswerChange(section.id, newValue, task.task_id);
+                                      }}
+                                      placeholder="達成内容"
+                                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                  </div>
+                                  <div className="col-span-4">
+                                    <input
+                                      type="text"
+                                      value={item.note || ''}
+                                      onChange={(e) => {
+                                        const newValue = { ...currentValue };
+                                        const currentItems = Array.isArray(newValue[phaseKey]) ? newValue[phaseKey] : [];
+                                        const newItems = [...currentItems];
+                                        newItems[itemIndex] = { ...item, note: e.target.value };
+                                        newValue[phaseKey] = newItems;
+                                        handleAnswerChange(section.id, newValue, task.task_id);
+                                      }}
+                                      placeholder="備考"
+                                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                  </div>
+                                  <div className="col-span-1">
+                                    <button
+                                      onClick={() => {
+                                        const newValue = { ...currentValue };
+                                        const currentItems = Array.isArray(newValue[phaseKey]) ? newValue[phaseKey] : [];
+                                        const newItems = [...currentItems];
+                                        newItems.splice(itemIndex, 1);
+                                        newValue[phaseKey] = newItems;
+                                        handleAnswerChange(section.id, newValue, task.task_id);
+                                      }}
+                                      className="text-red-500 hover:text-red-700 p-1"
+                                    >
+                                      ×
+                                    </button>
+                                  </div>
+                                </div>
+                              )) : null}
+                              
+                              {/* サブ項目追加ボタン */}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const newValue = { ...currentValue };
+                                  if (!Array.isArray(newValue[phaseKey])) {
+                                    newValue[phaseKey] = [];
+                                  }
+                                  newValue[phaseKey].push({ date: '', item: '', note: '' });
+                                  handleAnswerChange(section.id, newValue, task.task_id);
+                                }}
+                                className="w-full py-2 border border-dashed border-gray-300 rounded text-sm text-gray-600 hover:border-blue-400 hover:text-blue-600 transition-colors"
+                              >
+                                + 項目を追加
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-4 text-gray-500 border-2 border-dashed border-gray-300 rounded-lg">
+                      <p className="text-sm">まずは大項目（フェーズ）を追加してください</p>
+                    </div>
+                  )}
+
+                  {/* 大項目追加ボタン */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const timestamp = Date.now();
+                      const newPhase = `phase_${timestamp}`;
+                      const newValue = { ...currentValue };
+                      newValue[newPhase] = [{ date: '', item: '', note: '' }];
+                      handleAnswerChange(section.id, newValue, task.task_id);
+                    }}
+                    className="w-full py-3 border-2 border-dashed border-blue-300 rounded-lg text-blue-600 hover:border-blue-400 hover:bg-blue-50 transition-colors font-medium"
+                  >
+                    📋 大項目を追加
+                  </button>
+                </div>
+              </div>
+            )}
             
             {/* 文字数表示 */}
             {task.max_length && task.type !== 'milestones' && (
@@ -1746,7 +1945,7 @@ function SubsidyApplicationSupport() {
 
 
   // 統合版TXTファイルダウンロード機能
-  const downloadCompletePackage = () => {
+  const downloadCompletePackage = async () => {
     const today = new Date().toLocaleDateString('ja-JP');
     let content = `${subsidyName} - 申請準備完全パッケージ\n`;
     content += `作成日: ${today}\n`;
@@ -1761,13 +1960,50 @@ function SubsidyApplicationSupport() {
         section.input_modes.micro_tasks.forEach(task => {
           const value = answers[section.id]?.[task.task_id];
           if (value !== undefined && value !== '' && value !== null) {
-            content += `▸ ${task.task}: ${Array.isArray(value) ? value.join('、') : value}\n`;
+            // hierarchical_milestone タイプの場合の特別処理
+            if (task.type === 'hierarchical_milestone' && typeof value === 'object') {
+              content += `▸ ${task.task}:\n`;
+              Object.entries(value).forEach(([phaseKey, phaseItems]) => {
+                if (phaseKey.startsWith('phase_')) return; // 空のフェーズはスキップ
+                content += `  【${phaseKey}】\n`;
+                if (Array.isArray(phaseItems)) {
+                  phaseItems.forEach((item, idx) => {
+                    if (item.date || item.item || item.note) {
+                      content += `    ${idx + 1}. ${item.date || '未定'} - ${item.item || '未記入'}`;
+                      if (item.note) content += ` (${item.note})`;
+                      content += `\n`;
+                    }
+                  });
+                }
+              });
+            } else {
+              // 通常のタスクの処理
+              const displayValue = Array.isArray(value) ? value.join('、') : value;
+              content += `▸ ${task.task}: ${displayValue}\n`;
+            }
           }
         });
       } else {
         const value = answers[section.id];
         if (value !== undefined && value !== '' && value !== null) {
-          content += `${value}\n`;
+          // 統合モードでのhierarchical_milestoneの処理
+          if (typeof value === 'object' && !Array.isArray(value)) {
+            Object.entries(value).forEach(([phaseKey, phaseItems]) => {
+              if (phaseKey.startsWith('phase_')) return;
+              content += `【${phaseKey}】\n`;
+              if (Array.isArray(phaseItems)) {
+                phaseItems.forEach((item, idx) => {
+                  if (item.date || item.item || item.note) {
+                    content += `  ${idx + 1}. ${item.date || '未定'} - ${item.item || '未記入'}`;
+                    if (item.note) content += ` (${item.note})`;
+                    content += `\n`;
+                  }
+                });
+              }
+            });
+          } else {
+            content += `${value}\n`;
+          }
         }
       }
     });
@@ -1818,35 +2054,34 @@ function SubsidyApplicationSupport() {
     // 4. AI相談用プロンプト
     content += `\n\n【4. AI相談用プロンプト】\n`;
     content += `${'='.repeat(30)}\n`;
-    content += `以下の内容でChatGPTなどのAIに相談する際にご活用ください：\n\n`;
-    content += `「私は${subsidyName}への申請を検討しています。\n`;
+    content += `以下のプロンプトをChatGPTなどのAIツールにコピー＆ペーストして相談してください：\n\n`;
     
-    // 申請書データをプロンプト用に整理
-    content += `\n【事業概要】\n`;
-    sections.forEach(section => {
-      if (inputMode === 'micro_tasks' && section.input_modes?.micro_tasks) {
-        section.input_modes.micro_tasks.forEach(task => {
-          const value = answers[section.id]?.[task.task_id];
-          if (value !== undefined && value !== '' && value !== null) {
-            content += `- ${task.task}: ${Array.isArray(value) ? value.join('、') : value}\n`;
-          }
-        });
+    // バックエンドからプロンプトを取得
+    try {
+      const response = await fetch(`${config.API_BASE_URL}/api/applications/generate-advice`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          subsidy_id: subsidyId, 
+          answers: answers, 
+          input_mode: inputMode, 
+          target: 'ai' 
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        content += data.output;
       } else {
-        const value = answers[section.id];
-        if (value !== undefined && value !== '' && value !== null) {
-          content += `- ${section.title}: ${value}\n`;
-        }
+        // エラー時はフォールバック用の簡単なプロンプトを使用
+        content += `AI相談プロンプトの取得に失敗しました。\n`;
+        content += `手動でAIに相談する場合は、「AIに相談」ボタンを使用してください。`;
       }
-    });
-    
-    content += `\nこの内容について、以下の点でアドバイスをお願いします：\n`;
-    content += `1. 申請書類作成のポイント\n`;
-    content += `2. 審査で重視される要素\n`;
-    content += `3. 採択確率を高めるための改善提案\n`;
-    content += `4. 事業計画のブラッシュアップ方法\n`;
-    content += `5. 想定される質問と回答例」\n\n`;
-    
-    content += `このプロンプトをコピーしてAIツールで相談してください。`;
+    } catch (error) {
+      // ネットワークエラー時のフォールバック
+      content += `AI相談プロンプトの取得に失敗しました。\n`;
+      content += `手動でAIに相談する場合は、「AIに相談」ボタンを使用してください。`;
+    }
     
     // ファイルダウンロード
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -1951,8 +2186,15 @@ function SubsidyApplicationSupport() {
         });
       } else if (inputMode === 'integrated' && section.input_modes?.integrated) {
         totalTasks++;
-        if (answers[section.id] && answers[section.id].trim()) {
-          completedTasks++;
+        const sectionAnswer = answers[section.id];
+        if (sectionAnswer) {
+          // 文字列の場合は trim() を使用、オブジェクトの場合は存在チェック
+          const hasValidAnswer = typeof sectionAnswer === 'string' 
+            ? sectionAnswer.trim() 
+            : (typeof sectionAnswer === 'object' && Object.keys(sectionAnswer).length > 0);
+          if (hasValidAnswer) {
+            completedTasks++;
+          }
         }
       }
     });
@@ -2399,26 +2641,26 @@ function SubsidyApplicationSupport() {
                 </div>
               )}
               
-              <div className="flex justify-center gap-4 pt-8">
+              <div className="flex flex-col sm:flex-row justify-center gap-4 pt-8">
                 <button 
                   type="button"
                   onClick={downloadCompletePackage}
-                  className="inline-flex items-center rounded-xl bg-gray-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200"
+                  className="inline-flex items-center justify-center rounded-xl bg-gray-600 px-6 py-4 text-base font-semibold text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 min-h-[56px] touch-manipulation"
                 >
                   <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-申請準備完全パッケージ(TXT)で保存
+                  <span>申請準備完全パッケージ(TXT)で保存</span>
                 </button>
                 
                 <button 
                   type="submit"
-                  className={`inline-flex items-center rounded-xl bg-${headerColor}-600 px-8 py-4 text-lg font-semibold text-white shadow-sm hover:bg-${headerColor}-700 focus:outline-none focus:ring-2 focus:ring-${headerColor}-500 focus:ring-offset-2 transition-all duration-200`}
+                  className={`inline-flex items-center justify-center rounded-xl bg-${headerColor}-600 px-8 py-4 text-lg font-semibold text-white shadow-sm hover:bg-${headerColor}-700 focus:outline-none focus:ring-2 focus:ring-${headerColor}-500 focus:ring-offset-2 transition-all duration-200 min-h-[56px] touch-manipulation`}
                 >
                   <svg className="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
-                  {isAtotsugi ? 'アドバイス・ヒントを生成（部分入力OK）' : '分析・生成する（部分入力OK）'}
+                  <span>{isAtotsugi ? 'アドバイス・ヒントを生成（部分入力OK）' : '分析・生成する（部分入力OK）'}</span>
                 </button>
               </div>
             </form>

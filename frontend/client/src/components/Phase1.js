@@ -318,23 +318,8 @@ function Phase1() {
       });
     }
     
-    // アトツギ甲子園特別推奨（補助金とは別枠で表示）
+    // アトツギ甲子園特別推奨（補助金リストが確定した後に処理するため、後で定義する）
     let atotsugiRecommendation = null;
-    debugLog.push(`[アトツギ甲子園チェック] 事業承継: ${responses.is_successor}, 年齢: ${responses.age}`);
-    // 事業承継に関心がある場合（本人・親族・検討中・情報収集すべて含む）
-    if ((responses.is_successor === 'はい、事業承継予定者です' || 
-         responses.is_successor === 'はい、検討中です' || 
-         responses.is_successor === 'はい、情報収集段階です') && 
-        (responses.age === '20代' || responses.age === '30代' || responses.age === '40代')) {
-      debugLog.push(`[アトツギ甲子園] 条件満たすため特別推奨追加`);
-      atotsugiRecommendation = {
-        name: 'アトツギ甲子園',
-        reason: '事業承継者向け特別プログラム。地方予選進出であなたにマッチする補助金に加点措置があります。親族承継・第三者承継も対象。',
-        match_score: 100,
-        is_special: true,
-        is_atotsugi: true
-      };
-    }
     
     // 事業承継関連（取り組み選択 OR 事業承継興味あり）
     const isInterestedInSuccession = (
@@ -451,6 +436,36 @@ function Phase1() {
     
     const sortedRecommendations = uniqueRecommendations.sort((a, b) => (b.match_score || 0) - (a.match_score || 0)).slice(0, 4);
     
+    // アトツギ甲子園特別推奨の生成（sortedRecommendations確定後）
+    debugLog.push(`[アトツギ甲子園チェック] 事業承継: ${responses.is_successor}, 年齢: ${responses.age}`);
+    if ((responses.is_successor === 'はい、事業承継予定者です' || 
+         responses.is_successor === 'はい、検討中です' || 
+         responses.is_successor === 'はい、情報収集段階です') && 
+        (responses.age === '20代' || responses.age === '30代' || responses.age === '40代')) {
+      debugLog.push(`[アトツギ甲子園] 条件満たすため特別推奨追加`);
+      
+      // 推薦された補助金リストから加点対象補助金名を生成
+      let reasonText = '事業承継者向け特別プログラム。地方予選進出で';
+      let subsidyNamesArray = [];
+      if (sortedRecommendations.length > 0) {
+        subsidyNamesArray = sortedRecommendations.map(rec => rec.name);
+        const subsidyNames = subsidyNamesArray.join('と');
+        reasonText += `${subsidyNames}で加点措置があります。`;
+      } else {
+        reasonText += 'あなたにマッチする補助金で加点措置があります。';
+      }
+      reasonText += '親族承継・第三者承継も対象。';
+      
+      atotsugiRecommendation = {
+        name: 'アトツギ甲子園',
+        reason: reasonText,
+        subsidyNames: subsidyNamesArray, // 補助金名配列を追加
+        match_score: 100,
+        is_special: true,
+        is_atotsugi: true
+      };
+    }
+    
     // 支出対象例を順次取得（レート制限を回避）
     for (const rec of sortedRecommendations) {
       const examples = await fetchExpenseExamples(rec.name, initiatives);
@@ -554,7 +569,32 @@ function Phase1() {
                         </span>
                       </div>
                     </div>
-                    <p className="text-gray-700 text-sm mb-4">{atotsugiRecommendation.reason}</p>
+                    <div className="text-gray-700 text-sm mb-4">
+                      {(() => {
+                        // 補助金名をハイライト表示する関数
+                        const renderHighlightedReason = () => {
+                          if (atotsugiRecommendation.subsidyNames && atotsugiRecommendation.subsidyNames.length > 0) {
+                            return (
+                              <>
+                                事業承継者向け特別プログラム。地方予選進出で
+                                {atotsugiRecommendation.subsidyNames.map((name, index) => (
+                                  <React.Fragment key={name}>
+                                    {index > 0 && 'と'}
+                                    <span className="font-bold text-yellow-800 bg-yellow-100 px-1.5 py-0.5 rounded-md mx-0.5">
+                                      {name}
+                                    </span>
+                                  </React.Fragment>
+                                ))}
+                                で加点措置があります。親族承継・第三者承継も対象。
+                              </>
+                            );
+                          }
+                          return atotsugiRecommendation.reason;
+                        };
+                        
+                        return renderHighlightedReason();
+                      })()}
+                    </div>
                     
                     <div className="flex justify-end">
                       <Link
