@@ -93,3 +93,8 @@ experiment_*
 # Data input files (raw data for processing)
 data_input/
 !data_input/.gitkeep
+
+# Deep dive analysis feature (WIP - exclude from production)
+frontend/client/src/components/DeepDiveAnalysis.js
+frontend/client/src/components/deepdive/
+backend/routers/deepdive.py

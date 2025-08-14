@@ -387,7 +387,7 @@ function KnowledgeBase() {
                               margin: '20px 0'
                             }}>
                               <h3 style={{fontSize: '20px', fontWeight: 'bold', color: '#01579b', marginBottom: '16px'}}>
-                                🎯 専門家向け（詳細分析）
+                                🎯 詳細分析
                               </h3>
                               
                               <div style={{marginBottom: '16px'}}>

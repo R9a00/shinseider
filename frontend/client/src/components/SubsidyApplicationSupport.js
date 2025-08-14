@@ -1409,7 +1409,7 @@ function SubsidyApplicationSupport() {
                     {[
                       "まだ考えがまとまっていない",
                       "詳細は後で決める予定",
-                      "専門家と相談して決めたい",
+                      "相談して決めたい",
                       "情報収集が必要",
                       "時間をかけて検討したい"
                     ].map((option, idx) => (
@@ -2348,7 +2348,7 @@ function SubsidyApplicationSupport() {
       if (data.type === 'prompt') {
         setOutputTitle('AI相談用プロンプト');
       } else if (data.type === 'summary') {
-        setOutputTitle('専門家への相談サマリー');
+        setOutputTitle('相談用サマリー');
       } else if (data.type === 'reflection') {
         setOutputTitle('自己評価用の問いかけリスト');
       }
@@ -2969,10 +2969,10 @@ function SubsidyApplicationSupport() {
                     </svg>
                   </div>
                   <h3 className="mt-4 text-lg font-semibold text-gray-900 group-hover:text-green-700">
-                    専門家などに相談
+                    相談する
                   </h3>
                   <p className="mt-2 text-sm text-gray-600 group-hover:text-green-600">
-                    補助金の専門家などに相談するためのサマリーを生成します
+                    相談するためのサマリーを生成します
                   </p>
                 </div>
               </button>

@@ -72,12 +72,19 @@ const Contact = () => {
         formDataToSend.append('attachment', selectedFile);
       }
 
+      console.log('Sending request to:', `${config.API_BASE_URL}/send_contact`);
+      
       const response = await fetch(`${config.API_BASE_URL}/send_contact`, {
         method: 'POST',
         body: formDataToSend
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+
       if (response.ok) {
+        const responseData = await response.json();
+        console.log('Success response:', responseData);
         setSubmitStatus({ type: 'success', message: 'お問い合わせを送信しました。ありがとうございます。' });
         setFormData({ name: '', email: '', subject: '', message: '' });
         setSelectedFile(null);
@@ -85,8 +92,15 @@ const Contact = () => {
         const fileInput = document.querySelector('input[type="file"]');
         if (fileInput) fileInput.value = '';
       } else {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || '送信に失敗しました');
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          errorData = { detail: errorText || '送信に失敗しました' };
+        }
+        throw new Error(errorData.detail || errorData.message || '送信に失敗しました');
       }
     } catch (error) {
       setSubmitStatus({ type: 'error', message: error.message || 'エラーが発生しました。しばらくしてから再度お試しください。' });
