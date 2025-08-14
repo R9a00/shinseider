@@ -25,6 +25,7 @@ function SubsidyApplicationSupport() {
   const [autoSaveStatus, setAutoSaveStatus] = useState(''); // 'saving', 'saved', 'error'
   const [phaseNameInputs, setPhaseNameInputs] = useState({}); // 一時的なフェーズ名入力状態
 
+
   // 申請書作成データに基づくサポートガイダンス機能
   const getSupportGuidance = (item) => {
     // 申請書作成で入力されたデータを活用
@@ -531,6 +532,19 @@ function SubsidyApplicationSupport() {
       } else {
         currentValue = '';
       }
+    } else if (task.type === 'hierarchical_milestone' && typeof currentValue === 'object') {
+      // 既存のhierarchical_milestoneデータの正規化（旧フィールド名を新フィールド名に統一）
+      const normalizedValue = {};
+      Object.entries(currentValue).forEach(([phaseKey, phaseItems]) => {
+        if (Array.isArray(phaseItems)) {
+          normalizedValue[phaseKey] = phaseItems.map(item => ({
+            date: item.date || '',
+            content: item.content || item.item || '',
+            notes: item.notes || item.note || ''
+          }));
+        }
+      });
+      currentValue = normalizedValue;
     }
     
     // 条件付きレンダリングのチェック
@@ -1558,17 +1572,18 @@ function SubsidyApplicationSupport() {
                         type="button"
                         onClick={() => {
                           const newValue = { ...currentValue };
+                          
                           if (!newValue[phaseName]) {
+                            // 新しいフェーズの場合、追加
                             newValue[phaseName] = [{ date: '', content: '', notes: '' }];
+                            handleAnswerChange(section.id, newValue, task.task_id);
+                          } else {
+                            // 既存フェーズの場合、先頭に新しい項目を追加
+                            newValue[phaseName] = [{ date: '', content: '', notes: '' }, ...newValue[phaseName]];
                             handleAnswerChange(section.id, newValue, task.task_id);
                           }
                         }}
-                        disabled={currentValue[phaseName]}
-                        className={`px-3 py-1 text-xs rounded-full border transition-all ${
-                          currentValue[phaseName] 
-                            ? 'bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed' 
-                            : 'bg-white text-gray-700 border-gray-300 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700'
-                        }`}
+                        className="px-3 py-1 text-xs rounded-full border bg-white text-gray-700 border-gray-300 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-all"
                       >
                         + {phaseName}
                       </button>
@@ -1609,27 +1624,52 @@ function SubsidyApplicationSupport() {
                                 }}
                                 onBlur={(e) => {
                                   // フォーカスを失った時のみ実際のデータを更新
-                                  const newName = e.target.value.trim();
-                                  if (newName && newName !== phaseKey) {
-                                    const newValue = { ...currentValue };
-                                    const items = newValue[phaseKey];
-                                    delete newValue[phaseKey];
-                                    newValue[newName] = items;
+                                  let newName = e.target.value;
+                                  
+                                  if (newName !== phaseKey) {
+                                    // フェーズ名を変更する場合
+                                    if (currentValue[newName]) {
+                                      // 重複する名前の場合（空文字含む）
+                                      if (newName === '') {
+                                        // 空文字が重複する場合、ユニークなキーを生成
+                                        let counter = 1;
+                                        let uniqueKey = `phase_${counter}`;
+                                        while (currentValue[uniqueKey]) {
+                                          counter++;
+                                          uniqueKey = `phase_${counter}`;
+                                        }
+                                        newName = uniqueKey;
+                                      } else {
+                                        // 通常の重複の場合は変更しない
+                                        console.warn(`フェーズ名「${newName}」は既に存在します`);
+                                        // 早期リターン
+                                        setPhaseNameInputs(prev => {
+                                          const newInputs = { ...prev };
+                                          delete newInputs[phaseKey];
+                                          return newInputs;
+                                        });
+                                        return;
+                                      }
+                                    }
+                                    
+                                    // 順序を保持して名前を変更
+                                    const newValue = {};
+                                    Object.keys(currentValue).forEach(key => {
+                                      if (key === phaseKey) {
+                                        newValue[newName] = currentValue[key];
+                                      } else {
+                                        newValue[key] = currentValue[key];
+                                      }
+                                    });
                                     handleAnswerChange(section.id, newValue, task.task_id);
-                                    // 一時的な入力状態をクリア
-                                    setPhaseNameInputs(prev => {
-                                      const newInputs = { ...prev };
-                                      delete newInputs[phaseKey];
-                                      return newInputs;
-                                    });
-                                  } else {
-                                    // 変更がない場合は一時的な入力状態をクリア
-                                    setPhaseNameInputs(prev => {
-                                      const newInputs = { ...prev };
-                                      delete newInputs[phaseKey];
-                                      return newInputs;
-                                    });
                                   }
+                                  
+                                  // 常に一時的な入力状態をクリア
+                                  setPhaseNameInputs(prev => {
+                                    const newInputs = { ...prev };
+                                    delete newInputs[phaseKey];
+                                    return newInputs;
+                                  });
                                 }}
                                 placeholder="フェーズ名（例：企画・設計）"
                                 className="text-base font-medium bg-white border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -1672,12 +1712,12 @@ function SubsidyApplicationSupport() {
                                   <div className="col-span-5">
                                     <input
                                       type="text"
-                                      value={item.item || ''}
+                                      value={item.content || ''}
                                       onChange={(e) => {
                                         const newValue = { ...currentValue };
                                         const currentItems = Array.isArray(newValue[phaseKey]) ? newValue[phaseKey] : [];
                                         const newItems = [...currentItems];
-                                        newItems[itemIndex] = { ...item, item: e.target.value };
+                                        newItems[itemIndex] = { ...item, content: e.target.value };
                                         newValue[phaseKey] = newItems;
                                         handleAnswerChange(section.id, newValue, task.task_id);
                                       }}
@@ -1688,12 +1728,12 @@ function SubsidyApplicationSupport() {
                                   <div className="col-span-4">
                                     <input
                                       type="text"
-                                      value={item.note || ''}
+                                      value={item.notes || ''}
                                       onChange={(e) => {
                                         const newValue = { ...currentValue };
                                         const currentItems = Array.isArray(newValue[phaseKey]) ? newValue[phaseKey] : [];
                                         const newItems = [...currentItems];
-                                        newItems[itemIndex] = { ...item, note: e.target.value };
+                                        newItems[itemIndex] = { ...item, notes: e.target.value };
                                         newValue[phaseKey] = newItems;
                                         handleAnswerChange(section.id, newValue, task.task_id);
                                       }}
@@ -2027,9 +2067,12 @@ function SubsidyApplicationSupport() {
                 content += `  【${phaseKey}】\n`;
                 if (Array.isArray(phaseItems)) {
                   phaseItems.forEach((item, idx) => {
-                    if (item.date || item.item || item.note) {
-                      content += `    ${idx + 1}. ${item.date || '未定'} - ${item.item || '未記入'}`;
-                      if (item.note) content += ` (${item.note})`;
+                    // 新旧フィールド名対応
+                    const itemContent = item.content || item.item || '';
+                    const itemNotes = item.notes || item.note || '';
+                    if (item.date || itemContent || itemNotes) {
+                      content += `    ${idx + 1}. ${item.date || '未定'} - ${itemContent || '未記入'}`;
+                      if (itemNotes) content += ` (${itemNotes})`;
                       content += `\n`;
                     }
                   });
@@ -2052,9 +2095,12 @@ function SubsidyApplicationSupport() {
               content += `【${phaseKey}】\n`;
               if (Array.isArray(phaseItems)) {
                 phaseItems.forEach((item, idx) => {
-                  if (item.date || item.item || item.note) {
-                    content += `  ${idx + 1}. ${item.date || '未定'} - ${item.item || '未記入'}`;
-                    if (item.note) content += ` (${item.note})`;
+                  // 新旧フィールド名対応
+                  const itemContent = item.content || item.item || '';
+                  const itemNotes = item.notes || item.note || '';
+                  if (item.date || itemContent || itemNotes) {
+                    content += `  ${idx + 1}. ${item.date || '未定'} - ${itemContent || '未記入'}`;
+                    if (itemNotes) content += ` (${itemNotes})`;
                     content += `\n`;
                   }
                 });
