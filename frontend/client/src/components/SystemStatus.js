@@ -7,7 +7,6 @@ function SystemStatus() {
   const [testResults, setTestResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [runningTests, setRunningTests] = useState(false);
 
   useEffect(() => {
     fetchSystemStatus();
@@ -36,27 +35,7 @@ function SystemStatus() {
     }
   };
 
-  const runTests = async () => {
-    setRunningTests(true);
-    try {
-      const response = await fetch(`${config.API_BASE_URL}/run-tests`, {
-        method: 'POST'
-      });
-      
-      if (response.ok) {
-        // テスト実行後、結果を再取得
-        setTimeout(() => {
-          fetchSystemStatus();
-          setRunningTests(false);
-        }, 2000);
-      } else {
-        setRunningTests(false);
-      }
-    } catch (err) {
-      setRunningTests(false);
-      setError('テスト実行に失敗しました');
-    }
-  };
+  // runTests関数は削除 - 管理者用機能として事前実行済みテスト結果のみ表示
 
   if (loading) {
     return (
@@ -160,31 +139,14 @@ function SystemStatus() {
                 </div>
               </div>
               
-              {/* テスト実行ボタン */}
+              {/* 管理者向け情報 */}
               <div className="mb-6 text-center">
-                <button
-                  onClick={runTests}
-                  disabled={runningTests}
-                  className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md ${
-                    runningTests 
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                      : 'bg-blue-600 text-white hover:bg-blue-700'
-                  }`}
-                >
-                  {runningTests ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      テスト実行中...
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      </svg>
-                      テスト実行
-                    </>
-                  )}
-                </button>
+                <div className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 text-sm rounded-md">
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  事前実行済みテスト結果 (管理者用機能)
+                </div>
               </div>
               
               {/* カテゴリ別テスト結果 */}

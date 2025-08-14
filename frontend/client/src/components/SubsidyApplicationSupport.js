@@ -621,6 +621,36 @@ function SubsidyApplicationSupport() {
                 ))}
               </select>
             )}
+
+            {task.type === 'select_with_custom' && (
+              <div className="space-y-3">
+                <select
+                  value={currentValue && task.options?.includes(currentValue) ? currentValue : 'その他'}
+                  onChange={(e) => {
+                    if (e.target.value !== 'その他') {
+                      handleAnswerChange(section.id, e.target.value, task.task_id);
+                    }
+                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">選択してください</option>
+                  {task.options?.filter(option => option !== 'その他').map((option, idx) => (
+                    <option key={idx} value={option}>{option}</option>
+                  ))}
+                  <option value="その他">その他（自由入力）</option>
+                </select>
+                
+                {(!currentValue || !task.options?.includes(currentValue) || currentValue === 'その他') && (
+                  <input
+                    type="text"
+                    value={currentValue && !task.options?.includes(currentValue) ? currentValue : ''}
+                    onChange={(e) => handleAnswerChange(section.id, e.target.value, task.task_id)}
+                    placeholder="具体的にお書きください"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                )}
+              </div>
+            )}
             
             {task.type === 'multi_select' && (
               <div className="space-y-2">
@@ -757,6 +787,125 @@ function SubsidyApplicationSupport() {
               </div>
             )}
             
+            {task.type === 'milestone_input' && (
+              <div className="space-y-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-start space-x-2 mb-3">
+                    <svg className="w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <h4 className="text-sm font-medium text-blue-900 mb-1">マイルストーン入力</h4>
+                      <p className="text-xs text-blue-700">
+                        {task.help_text || "事業を進める上での重要な節目を時系列で入力してください"}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {task.example && (
+                    <div className="mt-3 p-3 bg-white border border-blue-200 rounded">
+                      <p className="text-xs font-medium text-blue-800 mb-2">入力例：</p>
+                      {task.example.map((ex, idx) => (
+                        <div key={idx} className="text-xs text-blue-600 mb-1">
+                          {ex.date} → {ex.content} （担当：{ex.owner}）
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {(() => {
+                  const arrayValues = Array.isArray(currentValue) ? currentValue : [];
+                  const displayCount = Math.max(2, arrayValues.length);
+                  
+                  return Array.from({ length: displayCount }, (_, idx) => {
+                    const milestone = arrayValues[idx] || {};
+                    
+                    return (
+                      <div key={idx} className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm">
+                        <div className="flex items-center justify-between mb-3">
+                          <h5 className="text-sm font-medium text-gray-700">マイルストーン {idx + 1}</h5>
+                          {idx >= 2 && (arrayValues[idx] && (arrayValues[idx].date || arrayValues[idx].content || arrayValues[idx].owner)) && (
+                            <button
+                              onClick={() => {
+                                const newArray = arrayValues.filter((_, i) => i !== idx);
+                                handleAnswerChange(section.id, newArray, task.task_id);
+                              }}
+                              className="text-red-500 hover:text-red-700 text-xs"
+                            >
+                              削除
+                            </button>
+                          )}
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">時期</label>
+                            <input
+                              type="month"
+                              value={milestone.date || ''}
+                              onChange={(e) => {
+                                const newArray = [...arrayValues];
+                                newArray[idx] = { ...milestone, date: e.target.value };
+                                handleAnswerChange(section.id, newArray.filter(item => item.date || item.content || item.owner), task.task_id);
+                              }}
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              placeholder="2025-11"
+                            />
+                          </div>
+                          
+                          <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">内容</label>
+                            <input
+                              type="text"
+                              value={milestone.content || ''}
+                              onChange={(e) => {
+                                const newArray = [...arrayValues];
+                                newArray[idx] = { ...milestone, content: e.target.value };
+                                handleAnswerChange(section.id, newArray.filter(item => item.date || item.content || item.owner), task.task_id);
+                              }}
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              placeholder="試作完了"
+                            />
+                          </div>
+                          
+                          <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">責任者</label>
+                            <input
+                              type="text"
+                              value={milestone.owner || ''}
+                              onChange={(e) => {
+                                const newArray = [...arrayValues];
+                                newArray[idx] = { ...milestone, owner: e.target.value };
+                                handleAnswerChange(section.id, newArray.filter(item => item.date || item.content || item.owner), task.task_id);
+                              }}
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              placeholder="田中"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
+                
+                {(() => {
+                  const arrayValues = Array.isArray(currentValue) ? currentValue : [];
+                  return arrayValues.length < (task.max_items || 5) && (
+                    <button
+                      onClick={() => {
+                        const newArray = [...arrayValues, { date: '', content: '', owner: '' }];
+                        handleAnswerChange(section.id, newArray, task.task_id);
+                      }}
+                      className="w-full py-2 px-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-400 hover:text-blue-600 transition-colors duration-200"
+                    >
+                      + マイルストーンを追加
+                    </button>
+                  );
+                })()}
+              </div>
+            )}
+
             {task.type === 'structured_array' && (
               <div className="space-y-3">
                 {/* マイルストーン用の特別レイアウト */}
@@ -1033,6 +1182,36 @@ function SubsidyApplicationSupport() {
                   <option key={idx} value={option}>{option}</option>
                 ))}
               </select>
+            )}
+
+            {task.type === 'select_with_custom' && (
+              <div className="space-y-3">
+                <select
+                  value={currentValue && task.options?.includes(currentValue) ? currentValue : 'その他'}
+                  onChange={(e) => {
+                    if (e.target.value !== 'その他') {
+                      handleAnswerChange(section.id, e.target.value, task.task_id);
+                    }
+                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">選択してください</option>
+                  {task.options?.filter(option => option !== 'その他').map((option, idx) => (
+                    <option key={idx} value={option}>{option}</option>
+                  ))}
+                  <option value="その他">その他（自由入力）</option>
+                </select>
+                
+                {(!currentValue || !task.options?.includes(currentValue) || currentValue === 'その他') && (
+                  <input
+                    type="text"
+                    value={currentValue && !task.options?.includes(currentValue) ? currentValue : ''}
+                    onChange={(e) => handleAnswerChange(section.id, e.target.value, task.task_id)}
+                    placeholder="具体的にお書きください"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                )}
+              </div>
             )}
             
             {task.type === 'multi_select' && (
