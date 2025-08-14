@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Phase1 from './components/Phase1';
 import SubsidySelection from './components/SubsidySelection';
 import SubsidyApplicationSupport from './components/SubsidyApplicationSupport';
-import DeepDiveAnalysis from './components/DeepDiveAnalysis';
 import OperatorInfo from './components/OperatorInfo';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import UpdateHistory from './components/UpdateHistory';
@@ -345,18 +344,11 @@ function Home() {
                     ))}
                   </div>
                   
-                  <Link to="/subsidy-application-support/atotsugi" className="inline-flex items-center justify-center w-full rounded-xl bg-red-600 px-6 py-3 text-base font-semibold text-white shadow-lg hover:bg-red-700 transition-all duration-200 mb-3">
+                  <Link to="/subsidy-application-support/atotsugi" className="inline-flex items-center justify-center w-full rounded-xl bg-red-600 px-6 py-3 text-base font-semibold text-white shadow-lg hover:bg-red-700 transition-all duration-200">
                     <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                     シンセイを準備する
-                  </Link>
-                  
-                  <Link to="/deep-dive-analysis" className="inline-flex items-center justify-center w-full rounded-xl bg-purple-600 px-6 py-3 text-base font-semibold text-white shadow-lg hover:bg-purple-700 transition-all duration-200">
-                    <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    徹底的に深掘りする
                   </Link>
                 </div>
               </div>
@@ -540,7 +532,6 @@ export default function App() {
           <Route path="/phase1" element={<Phase1 />} />
           <Route path="/subsidy-selection" element={<SubsidySelection />} />
           <Route path="/subsidy-application-support/:subsidyId" element={<SubsidyApplicationSupport />} />
-          <Route path="/deep-dive-analysis" element={<DeepDiveAnalysis />} />
           <Route path="/knowledge-base" element={<KnowledgeBase />} />
           <Route path="/operator-info" element={<OperatorInfo />} />
           <Route path="/update-history" element={<UpdateHistory />} />
