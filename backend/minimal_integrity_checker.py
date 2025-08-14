@@ -19,6 +19,11 @@ class MinimalIntegrityChecker:
     
     def __init__(self, base_path: str = '/Users/r9a/exp/attg/backend'):
         self.base_path = base_path
+        
+        # ログ設定（最初に初期化）
+        logging.basicConfig(level=logging.INFO)
+        self.logger = logging.getLogger(__name__)
+        
         self.framework = self._load_framework()
         self.results = {
             'check_timestamp': datetime.now().isoformat(),
@@ -27,10 +32,6 @@ class MinimalIntegrityChecker:
             'violations': [],
             'recommendations': []
         }
-        
-        # ログ設定
-        logging.basicConfig(level=logging.INFO)
-        self.logger = logging.getLogger(__name__)
     
     def _load_framework(self) -> Dict[str, Any]:
         """フレームワーク定義を読み込み"""
@@ -39,8 +40,8 @@ class MinimalIntegrityChecker:
             with open(framework_path, 'r', encoding='utf-8') as f:
                 return yaml.safe_load(f)
         except FileNotFoundError:
-            self.logger.error("フレームワーク定義ファイルが見つかりません")
-            return {}
+            self.logger.warning(f"フレームワーク定義ファイルが見つかりません: {framework_path}")
+            return {'integrity_dimensions': {}}  # 最低限の構造を返す
     
     def run_complete_check(self) -> Dict[str, Any]:
         """完全チェックを実行"""
@@ -322,8 +323,29 @@ class MinimalIntegrityChecker:
                                         'type': 'temporal_accuracy',
                                         'subsidy_id': subsidy_id,
                                         'issue': f"古い情報日付（90日以上前）: {date_value}",
-                                        'severity': 'low'
+                                        'severity': 'high'
                                     })
+                                    temporal_issues += 1
+                                elif (current_date - parsed_date).days > 30:
+                                    violations.append({
+                                        'type': 'temporal_accuracy',
+                                        'subsidy_id': subsidy_id,
+                                        'issue': f"やや古い情報日付（30日以上前）: {date_value}",
+                                        'severity': 'medium'
+                                    })
+                                    temporal_issues += 1
+                            
+                            # 終了日過ぎチェック（情報として記録、違反ではない）
+                            elif date_field == 'end_date':
+                                if parsed_date < current_date:
+                                    days_past = (current_date - parsed_date).days
+                                    violations.append({
+                                        'type': 'information',
+                                        'subsidy_id': subsidy_id,
+                                        'issue': f"募集終了済み（{days_past}日前終了）: {date_value}",
+                                        'severity': 'info'
+                                    })
+                                    # temporal_issues += 1  # 違反としてカウントしない
                         
                         except ValueError:
                             violations.append({
@@ -425,13 +447,13 @@ class MinimalIntegrityChecker:
         if scores:
             self.results['overall_score'] = sum(scores.values()) / len(scores)
         
-        # 重要度による重み付け
+        # 重要度による重み付け（時間情報の正確性を最重要視）
         weights = {
+            'temporal_accuracy': 0.30,
             'information_source': 0.25,
             'reflection_logic': 0.25,
-            'temporal_accuracy': 0.20,
-            'ui_representation': 0.15,
-            'expression_method': 0.15
+            'ui_representation': 0.10,
+            'expression_method': 0.10
         }
         
         weighted_score = sum(scores.get(dim, 0) * weight for dim, weight in weights.items())
@@ -455,16 +477,25 @@ class MinimalIntegrityChecker:
             severity = violation.get('severity', 'unknown')
             violations_by_severity.setdefault(severity, []).append(violation)
         
-        if violations_by_severity:
+        # 問題と情報を分けて表示
+        problems = {k: v for k, v in violations_by_severity.items() if k in ['high', 'medium', 'low']}
+        info_items = violations_by_severity.get('info', [])
+        
+        if problems:
             print("検出された問題:")
             for severity in ['high', 'medium', 'low']:
-                if severity in violations_by_severity:
+                if severity in problems:
                     icon = "🔴" if severity == 'high' else "🟡" if severity == 'medium' else "🟢"
-                    print(f"  {icon} {severity.upper()}重要度: {len(violations_by_severity[severity])}件")
-                    for violation in violations_by_severity[severity][:3]:  # 最初の3件を表示
+                    print(f"  {icon} {severity.upper()}重要度: {len(problems[severity])}件")
+                    for violation in problems[severity][:3]:  # 最初の3件を表示
                         print(f"    - {violation.get('issue', 'Unknown issue')}")
         else:
             print("✅ 問題は検出されませんでした")
+        
+        if info_items:
+            print("\n補助金状況:")
+            for item in info_items:
+                print(f"  ℹ️ {item.get('issue', 'Unknown info')}")
     
     def _load_yaml(self, filename: str) -> Dict[str, Any]:
         """YAMLファイルを読み込み"""

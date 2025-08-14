@@ -31,8 +31,8 @@ def save_yaml_file(filepath, data):
         yaml.dump(data, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
 
 def update_subsidies_yaml(research_results):
-    """subsidies.yamlの application_period を更新"""
-    subsidies_data = load_yaml_file('/Users/r9a/exp/attg/backend/subsidies.yaml')
+    """subsidy_master.yamlの application_period を更新 (Single Source of Truth)"""
+    master_data = load_yaml_file('/Users/r9a/exp/attg/backend/subsidy_master.yaml')
     
     # IDマッピング（研究結果のIDと既存IDを対応）
     id_mapping = {
@@ -41,22 +41,33 @@ def update_subsidies_yaml(research_results):
         'chusho_jigyou': 'chusho_jigyou_jizokuka',
         'shinjigyo_shinshutsu': 'shinjigyo_shinshutsu',
         'atotsugi': 'atotsugi',
-        'jigyou_shoukei': 'jigyou_shoukei_ma'
+        'jigyou_shoukei': 'jigyou_shoukei_ma',
+        'gotech_rd_support': 'gotech_rd_support',
+        'shoukuritsuka_ippan': 'shoukuritsuka_ippan'
     }
     
     updates_made = []
     
     for research_id, subsidy_info in research_results.get('subsidies_update', {}).items():
-        mapped_id = id_mapping.get(research_id)
+        mapped_id = id_mapping.get(research_id, research_id)  # 直接IDマッチもサポート
         
-        if mapped_id and mapped_id in subsidies_data:
+        if mapped_id and mapped_id in master_data.get('subsidies', {}):
             # application_period情報を更新
             if 'application_period' in subsidy_info:
-                subsidies_data[mapped_id]['application_period'] = subsidy_info['application_period']
+                master_data['subsidies'][mapped_id]['application_period'] = subsidy_info['application_period']
+                
+                # last_updatedも更新
+                current_date = datetime.now().strftime('%Y-%m-%d')
+                master_data['subsidies'][mapped_id]['last_updated'] = current_date
+                
                 updates_made.append(f"{subsidy_info['name']}: 募集期間更新")
     
-    # ファイルを保存
-    save_yaml_file('/Users/r9a/exp/attg/backend/subsidies.yaml', subsidies_data)
+    # マスターデータベースを保存
+    save_yaml_file('/Users/r9a/exp/attg/backend/subsidy_master.yaml', master_data)
+    
+    # メタデータも更新
+    current_date = datetime.now().strftime('%Y-%m-%d')
+    master_data['metadata']['last_updated'] = current_date
     
     return updates_made
 

@@ -173,3 +173,177 @@ executions:
     name: 最終完全性チェック
     status: success
     step: 6
+- errors: []
+  overall_status: running
+  start_time: '2025-08-14T11:43:14.776341'
+  steps:
+  - details:
+      output: "100.00%\n\U0001F4DD 4. 表現方法の正確性をチェック中...\n   表現方法正確性スコア: 100.00%\n\
+        ⏰ 5. 時間情報の正確性をチェック中...\n   時間情報正確性スコア: 83.33%\n\n\U0001F4CA システム完全性チェック結果\n\
+        ============================================================\n総合スコア: 94.52%\n\
+        \n各次元スコア:\n  ✅ information_source: 98.10%\n  ✅ reflection_logic: 100.00%\n\
+        \  ✅ ui_representation: 100.00%\n  ✅ expression_method: 100.00%\n  ⚠️ temporal_accuracy:\
+        \ 83.33%\n\n検出された問題:\n  \U0001F534 HIGH重要度: 1件\n    - 期限切れ補助金（35日前終了）: 2025-07-10\n\
+        \n\U0001F4BE チェック結果を保存: /Users/r9a/exp/attg/backend/integrity_check_results.yaml\n\
+        \n\U0001F389 システム完全性: 優秀\n"
+      overall_score: 0.9452380952380952
+      status: success
+      violation_count: 1
+    name: システム完全性チェック
+    status: success
+    step: 1
+  - details:
+      reason: 情報ソース品質良好
+      requires_update: false
+      source_score: 0.980952380952381
+    name: 更新必要性判定
+    status: completed
+    step: 2
+  - details:
+      output: "\U0001F504 補助金情報統合システム移行開始...\n\U0001F389 移行完了！単一の真理の源(Single Source\
+        \ of Truth)が確立されました\n\n\U0001F4CB 移行結果:\n  - subsidy_master.yaml: 統合マスターデータベース\n\
+        \  - subsidies.yaml: API互換形式（自動生成）\n  - version_history.yaml: バージョン履歴（自動生成）\n\
+        \  - バックアップファイル: 既存データ保護\n"
+      status: success
+    name: API出力ファイル再生成
+    status: success
+    step: 5
+  - details:
+      output: "100.00%\n\U0001F4DD 4. 表現方法の正確性をチェック中...\n   表現方法正確性スコア: 100.00%\n\
+        ⏰ 5. 時間情報の正確性をチェック中...\n   時間情報正確性スコア: 83.33%\n\n\U0001F4CA システム完全性チェック結果\n\
+        ============================================================\n総合スコア: 94.52%\n\
+        \n各次元スコア:\n  ✅ information_source: 98.10%\n  ✅ reflection_logic: 100.00%\n\
+        \  ✅ ui_representation: 100.00%\n  ✅ expression_method: 100.00%\n  ⚠️ temporal_accuracy:\
+        \ 83.33%\n\n検出された問題:\n  \U0001F534 HIGH重要度: 1件\n    - 期限切れ補助金（35日前終了）: 2025-07-10\n\
+        \n\U0001F4BE チェック結果を保存: /Users/r9a/exp/attg/backend/integrity_check_results.yaml\n\
+        \n\U0001F389 システム完全性: 優秀\n"
+      overall_score: 0.9452380952380952
+      status: success
+      violation_count: 1
+    name: 最終完全性チェック
+    status: success
+    step: 6
+- errors: []
+  overall_status: running
+  start_time: '2025-08-14T11:48:10.273694'
+  steps:
+  - details:
+      output: "100.00%\n\U0001F4DD 4. 表現方法の正確性をチェック中...\n   表現方法正確性スコア: 100.00%\n\
+        ⏰ 5. 時間情報の正確性をチェック中...\n   時間情報正確性スコア: 83.33%\n\n\U0001F4CA システム完全性チェック結果\n\
+        ============================================================\n総合スコア: 94.52%\n\
+        \n各次元スコア:\n  ✅ information_source: 98.10%\n  ✅ reflection_logic: 100.00%\n\
+        \  ✅ ui_representation: 100.00%\n  ✅ expression_method: 100.00%\n  ⚠️ temporal_accuracy:\
+        \ 83.33%\n\n検出された問題:\n  \U0001F534 HIGH重要度: 1件\n    - 期限切れ補助金（35日前終了）: 2025-07-10\n\
+        \n\U0001F4BE チェック結果を保存: /Users/r9a/exp/attg/backend/integrity_check_results.yaml\n\
+        \n\U0001F389 システム完全性: 優秀\n"
+      overall_score: 0.9452380952380952
+      status: success
+      violation_count: 1
+    name: システム完全性チェック
+    status: success
+    step: 1
+  - details:
+      reason: 情報ソース品質良好
+      requires_update: false
+      source_score: 0.980952380952381
+    name: 更新必要性判定
+    status: completed
+    step: 2
+  - details:
+      output: "\U0001F504 補助金情報統合システム移行開始...\n\U0001F389 移行完了！単一の真理の源(Single Source\
+        \ of Truth)が確立されました\n\n\U0001F4CB 移行結果:\n  - subsidy_master.yaml: 統合マスターデータベース\n\
+        \  - subsidies.yaml: API互換形式（自動生成）\n  - version_history.yaml: バージョン履歴（自動生成）\n\
+        \  - バックアップファイル: 既存データ保護\n"
+      status: success
+    name: API出力ファイル再生成
+    status: success
+    step: 5
+  - details:
+      error_summary: []
+      errors: 0
+      failure_summary:
+      - test_fresh_data_should_pass (test_integrity_checker.TestIntegrityChecker)
+      failures: 1
+      status: success
+      success_rate: 80.0
+      tests_run: 5
+    name: システムテスト実行
+    status: success
+    step: 6
+  - details:
+      output: "100.00%\n\U0001F4DD 4. 表現方法の正確性をチェック中...\n   表現方法正確性スコア: 100.00%\n\
+        ⏰ 5. 時間情報の正確性をチェック中...\n   時間情報正確性スコア: 83.33%\n\n\U0001F4CA システム完全性チェック結果\n\
+        ============================================================\n総合スコア: 94.52%\n\
+        \n各次元スコア:\n  ✅ information_source: 98.10%\n  ✅ reflection_logic: 100.00%\n\
+        \  ✅ ui_representation: 100.00%\n  ✅ expression_method: 100.00%\n  ⚠️ temporal_accuracy:\
+        \ 83.33%\n\n検出された問題:\n  \U0001F534 HIGH重要度: 1件\n    - 期限切れ補助金（35日前終了）: 2025-07-10\n\
+        \n\U0001F4BE チェック結果を保存: /Users/r9a/exp/attg/backend/integrity_check_results.yaml\n\
+        \n\U0001F389 システム完全性: 優秀\n"
+      overall_score: 0.9452380952380952
+      status: success
+      violation_count: 1
+    name: 最終完全性チェック
+    status: success
+    step: 7
+- errors: []
+  overall_status: running
+  start_time: '2025-08-14T11:50:50.117242'
+  steps:
+  - details:
+      output: "100.00%\n\U0001F4DD 4. 表現方法の正確性をチェック中...\n   表現方法正確性スコア: 100.00%\n\
+        ⏰ 5. 時間情報の正確性をチェック中...\n   時間情報正確性スコア: 83.33%\n\n\U0001F4CA システム完全性チェック結果\n\
+        ============================================================\n総合スコア: 94.52%\n\
+        \n各次元スコア:\n  ✅ information_source: 98.10%\n  ✅ reflection_logic: 100.00%\n\
+        \  ✅ ui_representation: 100.00%\n  ✅ expression_method: 100.00%\n  ⚠️ temporal_accuracy:\
+        \ 83.33%\n\n検出された問題:\n  \U0001F534 HIGH重要度: 1件\n    - 期限切れ補助金（35日前終了）: 2025-07-10\n\
+        \n\U0001F4BE チェック結果を保存: /Users/r9a/exp/attg/backend/integrity_check_results.yaml\n\
+        \n\U0001F389 システム完全性: 優秀\n"
+      overall_score: 0.9452380952380952
+      status: success
+      violation_count: 1
+    name: システム完全性チェック
+    status: success
+    step: 1
+  - details:
+      reason: 情報ソース品質良好
+      requires_update: false
+      source_score: 0.980952380952381
+    name: 更新必要性判定
+    status: completed
+    step: 2
+  - details:
+      output: "\U0001F504 補助金情報統合システム移行開始...\n\U0001F389 移行完了！単一の真理の源(Single Source\
+        \ of Truth)が確立されました\n\n\U0001F4CB 移行結果:\n  - subsidy_master.yaml: 統合マスターデータベース\n\
+        \  - subsidies.yaml: API互換形式（自動生成）\n  - version_history.yaml: バージョン履歴（自動生成）\n\
+        \  - バックアップファイル: 既存データ保護\n"
+      status: success
+    name: API出力ファイル再生成
+    status: success
+    step: 5
+  - details:
+      error_summary: []
+      errors: 0
+      failure_summary:
+      - test_fresh_data_should_pass (test_integrity_checker.TestIntegrityChecker)
+      failures: 1
+      status: success
+      success_rate: 80.0
+      tests_run: 5
+    name: システムテスト実行
+    status: success
+    step: 6
+  - details:
+      output: "100.00%\n\U0001F4DD 4. 表現方法の正確性をチェック中...\n   表現方法正確性スコア: 100.00%\n\
+        ⏰ 5. 時間情報の正確性をチェック中...\n   時間情報正確性スコア: 83.33%\n\n\U0001F4CA システム完全性チェック結果\n\
+        ============================================================\n総合スコア: 94.52%\n\
+        \n各次元スコア:\n  ✅ information_source: 98.10%\n  ✅ reflection_logic: 100.00%\n\
+        \  ✅ ui_representation: 100.00%\n  ✅ expression_method: 100.00%\n  ⚠️ temporal_accuracy:\
+        \ 83.33%\n\n検出された問題:\n  \U0001F534 HIGH重要度: 1件\n    - 期限切れ補助金（35日前終了）: 2025-07-10\n\
+        \n\U0001F4BE チェック結果を保存: /Users/r9a/exp/attg/backend/integrity_check_results.yaml\n\
+        \n\U0001F389 システム完全性: 優秀\n"
+      overall_score: 0.9452380952380952
+      status: success
+      violation_count: 1
+    name: 最終完全性チェック
+    status: success
+    step: 7

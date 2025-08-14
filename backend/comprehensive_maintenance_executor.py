@@ -100,17 +100,27 @@ class ComprehensiveMaintenanceExecutor:
                 'details': regenerate_result
             })
             
-            # Step 6: 最終完全性チェック
-            self.logger.info("✅ Step 6: 最終完全性チェック...")
-            final_check = self._execute_integrity_check()
+            # Step 6: テスト実行
+            self.logger.info("🧪 Step 6: システムテスト実行...")
+            test_result = self._execute_system_tests()
             results['steps'].append({
                 'step': 6,
+                'name': 'システムテスト実行',
+                'status': test_result['status'],
+                'details': test_result
+            })
+            
+            # Step 7: 最終完全性チェック
+            self.logger.info("✅ Step 7: 最終完全性チェック...")
+            final_check = self._execute_integrity_check()
+            results['steps'].append({
+                'step': 7,
                 'name': '最終完全性チェック',
                 'status': final_check['status'],
                 'details': final_check
             })
             
-            # Step 7: 実行ログ保存
+            # Step 8: 実行ログ保存
             self._save_execution_log(results)
             
             results['overall_status'] = 'completed'
@@ -334,6 +344,49 @@ class ComprehensiveMaintenanceExecutor:
             return {
                 'status': 'error',
                 'error': str(e)
+            }
+    
+    def _execute_system_tests(self) -> Dict[str, Any]:
+        """システムテストを実行"""
+        try:
+            import unittest
+            import tempfile
+            from test_integrity_checker import TestIntegrityChecker
+            
+            # テストスイート作成
+            suite = unittest.TestSuite()
+            test_cases = [
+                'test_fresh_data_should_pass',
+                'test_slightly_old_data_should_warn', 
+                'test_very_old_data_should_fail',
+                'test_expired_subsidy_should_fail',
+                'test_future_date_should_fail'
+            ]
+            
+            for test_case in test_cases:
+                suite.addTest(TestIntegrityChecker(test_case))
+            
+            # テスト実行
+            test_result = unittest.TestResult()
+            suite.run(test_result)
+            
+            success_rate = ((test_result.testsRun - len(test_result.failures) - len(test_result.errors)) / test_result.testsRun * 100) if test_result.testsRun > 0 else 0
+            
+            return {
+                'status': 'success' if success_rate >= 80 else 'warning' if success_rate >= 60 else 'error',
+                'tests_run': test_result.testsRun,
+                'failures': len(test_result.failures),
+                'errors': len(test_result.errors),
+                'success_rate': success_rate,
+                'failure_summary': [str(test) for test, _ in test_result.failures[:3]],  # 最初の3件
+                'error_summary': [str(test) for test, _ in test_result.errors[:3]]      # 最初の3件
+            }
+            
+        except Exception as e:
+            return {
+                'status': 'error',
+                'error': str(e),
+                'message': 'テスト実行中にエラーが発生しました'
             }
     
     def _save_execution_log(self, results: Dict[str, Any]):

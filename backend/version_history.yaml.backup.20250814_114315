@@ -3,7 +3,7 @@ metadata:
   last_updated: '2025-08-14'
   maintainer: 羽生田大陸（株式会社羽生田鉄工所）
   total_subsidies: 6
-  version: 1.4.0
+  version: 2.0.0
 subsidies:
   atotsugi:
     change_history:
@@ -183,7 +183,7 @@ update_policy:
   check_frequency: 不定期（制度変更時・ユーザー要望時）
   notification_required: true
   priority_subsidies:
-  - jigyou_shoukei_ma
+  - shoukuritsuka_ippan
   - monodukuri_r7_21th
-  - gotech_rd_support
+  - shinjigyo_shinshutsu
   update_trigger: 公募要領更新・制度変更・ユーザーフィードバック

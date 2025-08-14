@@ -1,10 +1,9 @@
 metadata:
   last_updated: '2025-08-14'
-  version: 2.0.0
+  version: 1.4.0
   maintainer: 羽生田大陸（株式会社羽生田鉄工所）
   total_subsidies: 6
-  data_source: integrated_master_system
-  system_type: unified_database
+  data_source: unified_from_distributed_files
 subsidies:
   jigyou_shoukei_ma:
     id: jigyou_shoukei_ma

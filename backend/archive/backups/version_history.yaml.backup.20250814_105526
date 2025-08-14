@@ -3,15 +3,10 @@ metadata:
   last_updated: '2025-08-14'
   maintainer: 羽生田大陸（株式会社羽生田鉄工所）
   total_subsidies: 6
-  version: 1.4.0
+  version: 2.0.0
 subsidies:
   atotsugi:
     change_history:
-    - author: claude_auto_update
-      changes: 'LLM調査による募集期間更新: 状況不明'
-      date: '2025-08-14'
-      reference_updated: true
-      version: 1.3.3
     - author: claude_auto_update
       changes: 情報鮮度向上のための参照日更新
       date: '2025-08-14'
@@ -52,7 +47,7 @@ subsidies:
       title: アトツギ甲子園エントリー要領
       url: https://atotsugi-koshien.go.jp/wp-content/uploads/2025/07/requirements_entry.pdf
       version: 第6回大会版（2025年度）
-    version: 1.3.3
+    version: 1.3.2
   gotech_rd_support:
     change_history:
     - author: シンセイダー運営チーム
@@ -79,11 +74,6 @@ subsidies:
     version: 1.0.2
   jigyou_shoukei_ma:
     change_history:
-    - author: claude_auto_update
-      changes: 'LLM調査による募集期間更新: 状況不明'
-      date: '2025-08-14'
-      reference_updated: true
-      version: 1.0.3
     - author: シンセイダー運営チーム
       changes: 初回システム構築・基本データ登録
       date: '2025-08-10'
@@ -105,14 +95,9 @@ subsidies:
       title: 事業承継・M&A補助金（専門家活用枠）公募要領
       url: https://shoukei-mahojokin.go.jp/
       version: 令和7年度版
-    version: 1.0.3
+    version: 1.0.2
   monodukuri_r7_21th:
     change_history:
-    - author: claude_auto_update
-      changes: 'LLM調査による募集期間更新: 状況不明'
-      date: '2025-08-14'
-      reference_updated: true
-      version: 1.0.3
     - author: シンセイダー運営チーム
       changes: 初回システム構築・基本データ登録
       date: '2025-08-10'
@@ -134,7 +119,7 @@ subsidies:
       title: ものづくり・商業・サービス生産性向上促進補助金公募要領
       url: https://portal.monodukuri-hojo.jp/
       version: 令和7年度第21次公募版
-    version: 1.0.3
+    version: 1.0.2
   shinjigyo_shinshutsu:
     change_history:
     - author: シンセイダー運営チーム
@@ -183,7 +168,7 @@ update_policy:
   check_frequency: 不定期（制度変更時・ユーザー要望時）
   notification_required: true
   priority_subsidies:
-  - jigyou_shoukei_ma
+  - atotsugi
   - monodukuri_r7_21th
   - gotech_rd_support
   update_trigger: 公募要領更新・制度変更・ユーザーフィードバック

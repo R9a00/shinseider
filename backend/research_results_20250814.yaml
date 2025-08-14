@@ -1,0 +1,77 @@
+research_metadata:
+  executed_at: '2025-08-14 10:56:00'
+  investigator: 'claude-auto-investigation'
+  method: 'real-time-web-investigation'
+  scope: 'subsidy-recruitment-periods'
+
+subsidies_update:
+  atotsugi:
+    name: "アトツギ甲子園"
+    application_period:
+      current_round: "第6回大会"
+      start_date: "2025-08-01"
+      end_date: "2025-11-26"
+      information_date: "2025-08-14"
+      notes: "エントリー・地方予選・全国大会"
+    investigation_result:
+      status: "募集中"
+      source_verified: true
+      last_checked: "2025-08-14"
+      
+  gotech_rd_support:
+    name: "Go-Tech事業（成長型中小企業等研究開発支援事業）"
+    application_period:
+      current_round: "令和7年度第1回公募"
+      start_date: "2025-07-01"
+      end_date: "2025-09-30"
+      information_date: "2025-08-14"
+      notes: "成長型中小企業等研究開発支援事業"
+    investigation_result:
+      status: "募集中"
+      source_verified: true
+      last_checked: "2025-08-14"
+      
+  monodukuri:
+    name: "ものづくり・商業・サービス生産性向上促進補助金"
+    application_period:
+      current_round: "第22次締切分"
+      start_date: "2025-09-02"
+      end_date: "2025-11-07"
+      information_date: "2025-08-14"
+      notes: "令和7年度補正予算・当初予算"
+    investigation_result:
+      status: "申請受付中"
+      source_verified: true
+      last_checked: "2025-08-14"
+      
+  jigyou_shoukei:
+    name: "事業承継・M&A補助金（専門家活用枠）"
+    application_period:
+      current_round: "第12次公募"
+      start_date: "2025-08-12"
+      end_date: "2025-08-27"
+      information_date: "2025-08-14"
+      notes: "専門家活用枠"
+    investigation_result:
+      status: "募集中"
+      source_verified: true
+      last_checked: "2025-08-14"
+      
+  shoukuritsuka_ippan:
+    name: "中小企業省力化投資補助金（一般型）"
+    application_period:
+      current_round: "第2次公募"
+      start_date: "2025-08-20"
+      end_date: "2025-10-31"
+      information_date: "2025-08-14"
+      notes: "一般型"
+    investigation_result:
+      status: "申請受付予定"
+      source_verified: true
+      last_checked: "2025-08-14"
+
+investigation_summary:
+  total_subsidies_checked: 5
+  successful_updates: 5
+  data_source_quality: "high"
+  next_investigation_recommended: "2025-09-14"

@@ -1,0 +1,134 @@
+- application_flow: []
+  application_period:
+    current_round: 第6回大会
+    end_date: '2025-11-26'
+    information_date: '2025-08-13'
+    notes: エントリー・地方予選・全国大会
+    start_date: '2025-08-01'
+  description: ''
+  expense_examples: []
+  diagnosis_expense_examples:
+    事業承継:
+      - "事業承継・後継者育成支援費用"
+      - "新規事業開発・市場開拓費"
+      - "経営改善・組織強化費用"
+      - "ブランディング・マーケティング費"
+      - "事業計画策定支援費用"
+  id: atotsugi
+  name: アトツギ甲子園
+  requirements: []
+  support_amount: {}
+- application_flow: []
+  application_period: {}
+  description: ''
+  expense_examples: []
+  diagnosis_expense_examples:
+    設備投資・機械導入:
+      - "自動化機械・装置（50万円以上）"
+      - "省力化ロボット・搬送装置"
+      - "検査・計測機器"
+      - "IoT・センサーシステム"
+      - "制御・監視システム"
+    工場・店舗の自動化:
+      - "生産ライン自動化設備"
+      - "在庫管理・搬送システム"
+      - "AI・画像認識システム"
+      - "無人化・省人化装置"
+      - "データ収集・解析システム"
+  id: shoukuritsuka_ippan
+  name: 中小企業省力化投資補助金（一般型）
+  requirements: []
+  support_amount: {}
+- application_flow: []
+  application_period:
+    current_round: 第12次公募
+    end_date: '2025-08-27'
+    information_date: '2025-08-13'
+    notes: 専門家活用枠
+    start_date: '2025-08-12'
+  description: ''
+  expense_examples: []
+  diagnosis_expense_examples:
+    事業承継:
+      - "専門家謝金（FA・弁護士・会計士）"
+      - "デューデリジェンス費用"
+      - "企業価値評価・鑑定費用"
+      - "契約書作成・法務費用"
+      - "PMI・統合支援費用"
+  id: jigyou_shoukei_ma
+  name: 事業承継・M&A補助金（専門家活用枠）
+  requirements: []
+  support_amount: {}
+- application_flow: []
+  application_period: {}
+  description: ''
+  expense_examples: []
+  diagnosis_expense_examples:
+    新製品・サービスの開発:
+      - "研究開発費（人件費・材料費）"
+      - "試作・実証実験費用"
+      - "研究設備・機器導入費"
+      - "外部研究委託費"
+      - "知的財産出願・維持費"
+  id: gotech_rd_support
+  name: Go-Tech事業（成長型中小企業等研究開発支援事業）
+  requirements: []
+  support_amount: {}
+- application_flow: []
+  application_period:
+    current_round: 令和7年度第1回公募
+    end_date: '2025-07-15'
+    information_date: '2025-08-13'
+    notes: 新規事業進出支援枠
+    start_date: '2025-06-17'
+  description: ''
+  expense_examples: []
+  diagnosis_expense_examples:
+    海外展開:
+      - "市場調査・現地調査費用"
+      - "海外パートナー開拓費"
+      - "現地法人設立・登記費用"
+      - "商品・サービス現地適応費"
+      - "マーケティング・広告費"
+    新製品・サービスの開発:
+      - "技術開発・設計費用"
+      - "試作・テスト費用"
+      - "市場調査・ニーズ分析費"
+      - "ブランディング・デザイン費"
+      - "販路開拓・営業費用"
+  id: shinjigyo_shinshutsu
+  name: 中小企業新事業進出補助金
+  requirements: []
+  support_amount: {}
+- application_flow: []
+  application_period:
+    current_round: 第21次締切分
+    end_date: '2025-07-25'
+    information_date: '2025-08-13'
+    notes: 令和7年度補正予算・当初予算
+    start_date: '2025-07-01'
+  description: ''
+  expense_examples: []
+  diagnosis_expense_examples:
+    新製品・サービスの開発:
+      - "専用設備・機械装置の導入"
+      - "試作・プロトタイプ製作費"
+      - "技術導入・ライセンス費用"
+      - "知的財産権出願・取得費用"
+      - "専門家によるコンサルティング"
+    ITシステム導入:
+      - "生産管理システム導入"
+      - "専用ソフトウェア開発"
+      - "クラウドサービス利用料"
+      - "システム連携・カスタマイズ費用"
+      - "セキュリティ対策費用"
+    工場・店舗の自動化:
+      - "自動化機械・ロボット導入"
+      - "制御システム・センサー"
+      - "データ収集・解析システム"
+      - "無人化・省人化装置"
+      - "AI・画像認識システム"
+  id: monodukuri_r7_21th
+  name: ものづくり・商業・サービス生産性向上促進補助金（令和7年度 第21次公募）
+  requirements: []
+  support_amount: {}

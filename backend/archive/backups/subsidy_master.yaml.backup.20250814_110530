@@ -1,0 +1,300 @@
+metadata:
+  last_updated: '2025-08-14'
+  version: 2.0.0
+  maintainer: 羽生田大陸（株式会社羽生田鉄工所）
+  total_subsidies: 6
+  data_source: unified_from_distributed_files
+subsidies:
+  shoukuritsuka_ippan:
+    id: shoukuritsuka_ippan
+    name: 中小企業省力化投資補助金（一般型）
+    description: ''
+    status: active
+    application_period:
+      current_round: 第2次公募
+      start_date: '2025-08-20'
+      end_date: '2025-10-31'
+      information_date: '2025-08-14'
+      notes: 一般型
+    version: 1.0.1
+    last_updated: '2025-08-14'
+    source_references:
+    - accessed_date: '2025-08-14'
+      title: 中小企業省力化投資補助金公募要領
+      url: https://shoryokuka.smrj.go.jp/ippan/
+      version: 一般型 第1次公募版
+    change_history:
+    - author: シンセイダー運営チーム
+      changes: 新規補助金追加・初回システム構築
+      date: '2025-08-12'
+      reference_updated: true
+      version: 1.0.0
+    - author: claude_auto_update
+      changes: システム完全性向上・参照日管理適正化
+      date: '2025-08-14'
+      reference_updated: true
+      version: 1.0.1
+    application_info:
+      support_amount: {}
+      requirements: []
+      application_flow: []
+      expense_examples: []
+    system_info:
+      created_at: '2025-08-14'
+      updated_at: '2025-08-14'
+      is_active: true
+      priority_level: 99
+  monodukuri_r7_21th:
+    id: monodukuri_r7_21th
+    name: ものづくり・商業・サービス生産性向上促進補助金（令和7年度 第21次公募）
+    description: ''
+    status: active
+    application_period:
+      current_round: 第22次締切分
+      start_date: '2025-09-02'
+      end_date: '2025-11-07'
+      information_date: '2025-08-14'
+      notes: 令和7年度補正予算・当初予算
+    version: 1.0.3
+    last_updated: '2025-08-14'
+    source_references:
+    - accessed_date: '2025-08-14'
+      title: ものづくり・商業・サービス生産性向上促進補助金公募要領
+      url: https://portal.monodukuri-hojo.jp/
+      version: 令和7年度第21次公募版
+    change_history:
+    - version: 1.0.3
+      date: '2025-08-14'
+      changes: 'LLM調査による募集期間更新: 状況不明'
+      author: claude_auto_update
+      reference_updated: true
+    - author: シンセイダー運営チーム
+      changes: 初回システム構築・基本データ登録
+      date: '2025-08-10'
+      reference_updated: true
+      version: 1.0.0
+    - author: claude_auto_update
+      changes: LLM調査システム統合・情報精度向上
+      date: '2025-08-13'
+      reference_updated: true
+      version: 1.0.1
+    - author: claude_auto_update
+      changes: システム完全性向上・参照日管理適正化
+      date: '2025-08-14'
+      reference_updated: true
+      version: 1.0.2
+    application_info:
+      support_amount: {}
+      requirements: []
+      application_flow: []
+      expense_examples: []
+    system_info:
+      created_at: '2025-08-14'
+      updated_at: '2025-08-14'
+      is_active: true
+      priority_level: 99
+  shinjigyo_shinshutsu:
+    id: shinjigyo_shinshutsu
+    name: 中小企業新事業進出補助金
+    description: ''
+    status: active
+    application_period:
+      current_round: 令和7年度第1期
+      end_date: '2025-03-31'
+      information_date: '2025-01-13'
+      notes: 新規事業進出支援枠
+      start_date: '2025-01-20'
+    version: 1.0.2
+    last_updated: '2025-08-14'
+    source_references:
+    - accessed_date: '2025-08-14'
+      title: 中小企業新事業進出補助金公募要領
+      url: https://shinjigyou-shinshutsu.smrj.go.jp/
+      version: 令和7年度版
+    change_history:
+    - author: シンセイダー運営チーム
+      changes: 初回システム構築・基本データ登録
+      date: '2025-08-10'
+      reference_updated: true
+      version: 1.0.0
+    - author: claude_auto_update
+      changes: LLM調査システム統合・情報精度向上
+      date: '2025-08-13'
+      reference_updated: true
+      version: 1.0.1
+    - author: claude_auto_update
+      changes: システム完全性向上・参照日管理適正化
+      date: '2025-08-14'
+      reference_updated: true
+      version: 1.0.2
+    application_info:
+      support_amount: {}
+      requirements: []
+      application_flow: []
+      expense_examples: []
+    system_info:
+      created_at: '2025-08-14'
+      updated_at: '2025-08-14'
+      is_active: true
+      priority_level: 99
+  atotsugi:
+    id: atotsugi
+    name: アトツギ甲子園
+    description: ''
+    status: active
+    application_period:
+      current_round: 第6回大会
+      start_date: '2025-08-01'
+      end_date: '2025-11-26'
+      information_date: '2025-08-14'
+      notes: エントリー・地方予選・全国大会
+    version: 1.3.3
+    last_updated: '2025-08-14'
+    source_references:
+    - accessed_date: '2025-08-14'
+      title: アトツギ甲子園公式サイト
+      url: https://atotsugi-koshien.go.jp/
+      version: 最新版
+    - accessed_date: '2025-08-14'
+      title: アトツギ甲子園エントリー要領
+      url: https://atotsugi-koshien.go.jp/wp-content/uploads/2025/07/requirements_entry.pdf
+      version: 第6回大会版（2025年度）
+    change_history:
+    - version: 1.3.3
+      date: '2025-08-14'
+      changes: 'LLM調査による募集期間更新: 状況不明'
+      author: claude_auto_update
+      reference_updated: true
+    - author: claude_auto_update
+      changes: 情報鮮度向上のための参照日更新
+      date: '2025-08-14'
+      reference_updated: true
+      version: 1.3.2
+    - author: シンセイダー運営チーム
+      changes: 初回システム構築・基本機能実装
+      date: '2025-08-10'
+      reference_updated: true
+      version: 1.0.0
+    - author: シンセイダー運営チーム
+      changes: バリデーションルール追加、フォーム機能強化
+      date: '2025-08-11'
+      reference_updated: false
+      version: 1.1.0
+    - author: 羽生田大陸
+      changes: 状態タグシステム実装、UI改善、micro_tasks充実化
+      date: '2025-08-12'
+      reference_updated: false
+      version: 1.2.0
+    - author: claude_auto_update
+      changes: LLM調査システム統合、完全性チェック機構実装
+      date: '2025-08-13'
+      reference_updated: true
+      version: 1.3.0
+    - author: claude_auto_update
+      changes: システム完全性向上、参照日管理適正化
+      date: '2025-08-14'
+      reference_updated: true
+      version: 1.3.1
+    application_info:
+      support_amount: {}
+      requirements: []
+      application_flow: []
+      expense_examples: []
+    system_info:
+      created_at: '2025-08-14'
+      updated_at: '2025-08-14'
+      is_active: true
+      priority_level: 99
+  jigyou_shoukei_ma:
+    id: jigyou_shoukei_ma
+    name: 事業承継・M&A補助金（専門家活用枠）
+    description: ''
+    status: active
+    application_period:
+      current_round: 第12次公募
+      start_date: '2025-08-12'
+      end_date: '2025-08-27'
+      information_date: '2025-08-14'
+      notes: 専門家活用枠
+    version: 1.0.3
+    last_updated: '2025-08-14'
+    source_references:
+    - accessed_date: '2025-08-14'
+      title: 事業承継・M&A補助金（専門家活用枠）公募要領
+      url: https://shoukei-mahojokin.go.jp/
+      version: 令和7年度版
+    change_history:
+    - version: 1.0.3
+      date: '2025-08-14'
+      changes: 'LLM調査による募集期間更新: 状況不明'
+      author: claude_auto_update
+      reference_updated: true
+    - author: シンセイダー運営チーム
+      changes: 初回システム構築・基本データ登録
+      date: '2025-08-10'
+      reference_updated: true
+      version: 1.0.0
+    - author: claude_auto_update
+      changes: LLM調査システム統合・情報精度向上
+      date: '2025-08-13'
+      reference_updated: true
+      version: 1.0.1
+    - author: claude_auto_update
+      changes: システム完全性向上・参照日管理適正化
+      date: '2025-08-14'
+      reference_updated: true
+      version: 1.0.2
+    application_info:
+      support_amount: {}
+      requirements: []
+      application_flow: []
+      expense_examples: []
+    system_info:
+      created_at: '2025-08-14'
+      updated_at: '2025-08-14'
+      is_active: true
+      priority_level: 99
+  gotech_rd_support:
+    id: gotech_rd_support
+    name: Go-Tech事業（成長型中小企業等研究開発支援事業）
+    description: ''
+    status: active
+    application_period:
+      current_round: 令和7年度第1回公募
+      start_date: '2025-07-01'
+      end_date: '2025-09-30'
+      information_date: '2025-08-14'
+      notes: 成長型中小企業等研究開発支援事業
+    version: 1.0.2
+    last_updated: '2025-08-14'
+    source_references:
+    - accessed_date: '2025-08-14'
+      title: Go-Tech事業公募要領
+      url: https://www.chusho.meti.go.jp/support/innovation/2025/250217kobo.html
+      version: 令和6年度版
+    change_history:
+    - author: シンセイダー運営チーム
+      changes: 初回システム構築・基本データ登録
+      date: '2025-08-10'
+      reference_updated: true
+      version: 1.0.0
+    - author: claude_auto_update
+      changes: LLM調査システム統合・情報精度向上
+      date: '2025-08-13'
+      reference_updated: true
+      version: 1.0.1
+    - author: claude_auto_update
+      changes: システム完全性向上・参照日管理適正化
+      date: '2025-08-14'
+      reference_updated: true
+      version: 1.0.2
+    application_info:
+      support_amount: {}
+      requirements: []
+      application_flow: []
+      expense_examples: []
+    system_info:
+      created_at: '2025-08-14'
+      updated_at: '2025-08-14'
+      is_active: true
+      priority_level: 99

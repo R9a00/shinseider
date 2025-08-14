@@ -1,0 +1,49 @@
+{
+  "execution_date": "2025-08-14 10:54:55",
+  "phases": {
+    "Phase1_システム状態確認": {
+      "status": "error",
+      "details": [
+        "❌ フロントエンドサーバー接続失敗: HTTPConnectionPool(host='localhost', port=3000): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1071af6a0>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+        "❌ バックエンドAPI接続失敗: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /docs (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x107210220>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+        "✅ 最新バックアップ確認: subsidy_master.yaml.backup.20250814_104943"
+      ]
+    },
+    "Phase3_動作検証": {
+      "status": "error",
+      "details": [
+        "❌ shinjigyo_shinshutsu API: 接続失敗 HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /subsidies/shinjigyo_shinshutsu/metadata (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x107210e20>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+        "❌ atotsugi API: 接続失敗 HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /subsidies/atotsugi/metadata (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x107218820>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+        "❌ monodukuri_r7_21th API: 接続失敗 HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /subsidies/monodukuri_r7_21th/metadata (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x107221280>: Failed to establish a new connection: [Errno 61] Connection refused'))"
+      ]
+    },
+    "Phase4_ログ履歴確認": {
+      "status": "success",
+      "details": [
+        "✅ version_history.yaml確認: 最終更新 2025-08-14",
+        "✅ 管理中補助金数: 6件"
+      ]
+    },
+    "Phase5_次回準備": {
+      "status": "success",
+      "details": [
+        "✅ 次回更新予定日記録: 2025-08-28"
+      ]
+    }
+  },
+  "errors": [
+    "Phase1_システム状態確認: フロントエンドサーバー接続失敗: HTTPConnectionPool(host='localhost', port=3000): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1071af6a0>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+    "Phase1_システム状態確認: バックエンドAPI接続失敗: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /docs (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x107210220>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+    "Phase3_動作検証: shinjigyo_shinshutsu API: 接続失敗 HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /subsidies/shinjigyo_shinshutsu/metadata (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x107210e20>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+    "Phase3_動作検証: atotsugi API: 接続失敗 HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /subsidies/atotsugi/metadata (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x107218820>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+    "Phase3_動作検証: monodukuri_r7_21th API: 接続失敗 HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /subsidies/monodukuri_r7_21th/metadata (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x107221280>: Failed to establish a new connection: [Errno 61] Connection refused'))"
+  ],
+  "warnings": [],
+  "summary": {
+    "total_phases": 4,
+    "success_phases": 2,
+    "error_phases": 2,
+    "warning_phases": 0,
+    "overall_status": "ERROR"
+  }
+}
