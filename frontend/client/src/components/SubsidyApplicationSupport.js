@@ -520,11 +520,10 @@ function SubsidyApplicationSupport() {
   const renderMicroTask = (section, task, sectionIndex, taskIndex) => {
     const currentValue = answers[section.id]?.[task.task_id] || (task.type === 'milestone_input' ? [] : '');
     
-    // 条件付きレンダリングのチェック（開発モードでは全て表示）
+    // 条件付きレンダリングのチェック
     if (task.conditional_on && task.conditional_value) {
       const conditionValue = answers[section.id]?.[task.conditional_on];
       
-      // 開発・デバッグ用：条件を満たさない場合でも薄く表示
       const shouldShow = (() => {
         if (Array.isArray(conditionValue)) {
           // multi_selectの場合
@@ -549,10 +548,6 @@ function SubsidyApplicationSupport() {
     const marginClass = isFirstConditionalItem ? "mt-6 pt-4" : "";
     const numberBgClass = isConditional ? "bg-orange-100 text-orange-800" : "bg-blue-100 text-blue-800";
     
-    // デバッグ用
-    if (task.task_id === "REV_CHANNEL") {
-      console.log("REV_CHANNEL item - marginClass:", marginClass);
-    }
     
     // REV_CHANNELの後にスペーサーを追加
     if (task.task_id === "REV_CHANNEL") {

@@ -1283,19 +1283,6 @@ subsidies:
           type: textarea
           placeholder: 上記のリスクに対してどう対応するかの具体策
           required: false
-        - task_id: MILESTONES
-          label: マイルストーン（年月+内容+責任者）
-          type: milestone_input
-          max_items: 5
-          required: true
-          help_text: 事業を進める上での重要な節目を時系列で入力してください
-          example:
-            - date: "2025-11"
-              content: "試作完了"
-              owner: "田中"
-            - date: "2026-01"
-              content: "β版提供開始"
-              owner: "佐藤"
         integrated:
         - task_name: 'T5: 実現性まとめて入力'
           description: 例）TRL6。営業/開発/品質は社内でカバー。CAPEXは300万円、OPEXは月50万円。許認可は不要。主要外注はA社と基本合意。マイルストーン：2025-11
@@ -1316,7 +1303,6 @@ subsidies:
       - REV_PATTERNS
       - TECH_READINESS
       - TEAM_ROLES
-      - MILESTONES
       age_limit:
         field: MINI_001_AGE
         max: 39
