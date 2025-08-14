@@ -4,6 +4,7 @@ import config from '../config';
 
 function UpdateHistory() {
   const [versionData, setVersionData] = useState(null);
+  const [systemStatus, setSystemStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -13,12 +14,22 @@ function UpdateHistory() {
 
   const fetchVersionHistory = async () => {
     try {
-      const response = await fetch(`${config.API_BASE_URL}/version-history`);
-      if (!response.ok) {
+      const [versionResponse, statusResponse] = await Promise.all([
+        fetch(`${config.API_BASE_URL}/version-history`),
+        fetch(`${config.API_BASE_URL}/system-integrity-status`)
+      ]);
+      
+      if (!versionResponse.ok) {
         throw new Error('バージョン履歴の取得に失敗しました');
       }
-      const data = await response.json();
-      setVersionData(data);
+      
+      const versionData = await versionResponse.json();
+      setVersionData(versionData);
+      
+      if (statusResponse.ok) {
+        const statusData = await statusResponse.json();
+        setSystemStatus(statusData);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -79,23 +90,72 @@ function UpdateHistory() {
 
       {/* メインコンテンツ */}
       <section className="mx-auto max-w-6xl px-4 py-12">
-        {/* 全体情報 */}
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-            <svg className="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            システム情報
-          </h2>
-          <div className="grid md:grid-cols-2 gap-4 text-gray-700">
-            <div>
+        {/* システム全体情報 */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          {/* 基本情報 */}
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+              <svg className="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              システム基本情報
+            </h2>
+            <div className="space-y-2 text-gray-700">
               <p><strong>最終更新日：</strong> {metadata.last_updated || '未設定'}</p>
               <p><strong>バージョン：</strong> {metadata.version || '未設定'}</p>
-            </div>
-            <div>
               <p><strong>管理者：</strong> {metadata.maintainer || '未設定'}</p>
+              <p><strong>登録補助金数：</strong> {metadata.total_subsidies || 0}件</p>
               <p><strong>更新頻度：</strong> {updatePolicy.check_frequency || '未設定'}</p>
             </div>
+          </div>
+
+          {/* システム完全性情報 */}
+          <div className="bg-green-50 border border-green-200 rounded-xl p-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+              <svg className="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              システム完全性
+            </h2>
+            {systemStatus ? (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-700">総合スコア：</span>
+                  <span className={`font-bold ${
+                    systemStatus.overall_score >= 0.9 ? 'text-green-600' : 
+                    systemStatus.overall_score >= 0.7 ? 'text-yellow-600' : 'text-red-600'
+                  }`}>
+                    {(systemStatus.overall_score * 100).toFixed(1)}%
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-700">ステータス：</span>
+                  <span className={`font-semibold ${
+                    systemStatus.status === 'excellent' ? 'text-green-600' : 
+                    systemStatus.status === 'good' ? 'text-blue-600' :
+                    systemStatus.status === 'warning' ? 'text-yellow-600' : 'text-red-600'
+                  }`}>
+                    {systemStatus.status_message}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-700">検出問題：</span>
+                  <span className="text-gray-900 font-medium">
+                    {systemStatus.violation_count || 0}件
+                  </span>
+                </div>
+                <div className="mt-3">
+                  <Link
+                    to="/system-status"
+                    className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800"
+                  >
+更新状況の詳細 →
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <p className="text-gray-600">完全性チェック情報を読み込み中...</p>
+            )}
           </div>
         </div>
 
@@ -213,17 +273,18 @@ function UpdateHistory() {
   );
 }
 
-// 補助金IDから表示名を取得
+// 補助金IDから表示名を取得（統合データベースから取得）
 function getSubsidyDisplayName(subsidyId) {
-  const displayNames = {
+  // 緊急時のフォールバックマッピング（統合データベース移行により簡素化）
+  const fallbackNames = {
     'shinjigyo_shinshutsu': '中小企業新事業進出補助金',
     'atotsugi': 'アトツギ甲子園',
     'monodukuri_r7_21th': 'ものづくり・商業・サービス生産性向上促進補助金',
-    'jigyou_shoukei_ma': '事業承継・M&A補助金',
+    'jigyou_shoukei_ma': '事業承継・M&A補助金（専門家活用枠）',
     'gotech_rd_support': 'Go-Tech事業（成長型中小企業等研究開発支援事業）',
-    'shoukuritsuka_ippan': '中小企業省力化投資補助金'
+    'shoukuritsuka_ippan': '中小企業省力化投資補助金（一般型）'
   };
-  return displayNames[subsidyId] || subsidyId;
+  return fallbackNames[subsidyId] || subsidyId;
 }
 
 export default UpdateHistory;

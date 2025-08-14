@@ -6,6 +6,7 @@ import SubsidyApplicationSupport from './components/SubsidyApplicationSupport';
 import OperatorInfo from './components/OperatorInfo';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import UpdateHistory from './components/UpdateHistory';
+import SystemStatus from './components/SystemStatus';
 import Contact from './components/Contact';
 import News from './components/News';
 import KnowledgeBase from './components/KnowledgeBase';
@@ -534,6 +535,7 @@ export default function App() {
           <Route path="/knowledge-base" element={<KnowledgeBase />} />
           <Route path="/operator-info" element={<OperatorInfo />} />
           <Route path="/update-history" element={<UpdateHistory />} />
+          <Route path="/system-status" element={<SystemStatus />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/contact" element={<Contact />} />

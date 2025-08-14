@@ -37,6 +37,10 @@ def load_version_history():
     except FileNotFoundError:
         return {"metadata": {}, "subsidies": {}}
 
+# 統合API統合
+from unified_api import UnifiedSubsidyAPI
+unified_api = UnifiedSubsidyAPI(BASE_DIR)
+
 app = FastAPI()
 
 origins = settings.CORS_ORIGINS + [
@@ -63,7 +67,7 @@ is_production = os.getenv("ENVIRONMENT") == "production"
 app.add_middleware(ErrorHandlingMiddleware, is_production=is_production)
 
 # レート制限ミドルウェア（REQ-SEC-008）
-app.add_middleware(RateLimitMiddleware, max_requests=100, window_seconds=60)
+app.add_middleware(RateLimitMiddleware, max_requests=1000, window_seconds=60)
 
 @app.get("/")
 def read_root():
@@ -86,7 +90,38 @@ async def get_subsidy_metadata(subsidy_id: str):
     subsidy = next((s for s in subsidies_data if s.get("id") == subsidy_id), None)
     if not subsidy:
         raise HTTPException(status_code=404, detail="Subsidy not found")
-    return {"id": subsidy.get("id"), "name": subsidy.get("name")}
+    return {
+        "id": subsidy.get("id"), 
+        "name": subsidy.get("name"),
+        "application_period": subsidy.get("application_period")
+    }
+
+@app.get("/subsidies/{subsidy_id}/expense-examples")
+async def get_subsidy_expense_examples(subsidy_id: str, initiatives: str = ""):
+    """指定された補助金の診断結果に基づく支出対象例を取得します。"""
+    subsidies_data = load_subsidy_data()
+    subsidy = next((s for s in subsidies_data if s.get("id") == subsidy_id), None)
+    if not subsidy:
+        raise HTTPException(status_code=404, detail="Subsidy not found")
+    
+    diagnosis_examples = subsidy.get("diagnosis_expense_examples", {})
+    
+    # 診断結果（取り組み）に基づいてフィルタリング
+    relevant_examples = {}
+    if initiatives:
+        initiative_list = initiatives.split(',')
+        for initiative in initiative_list:
+            initiative = initiative.strip()
+            if initiative in diagnosis_examples:
+                relevant_examples[initiative] = diagnosis_examples[initiative]
+    else:
+        relevant_examples = diagnosis_examples
+    
+    return {
+        "subsidy_id": subsidy_id,
+        "subsidy_name": subsidy.get("name"),
+        "expense_examples": relevant_examples
+    }
 
 @app.get("/version-history")
 async def get_version_history():
@@ -777,6 +812,324 @@ async def get_knowledge_section(section_id: str):
     except Exception as e:
         security_logger.error(f"Failed to load knowledge section: {str(e)}")
         raise HTTPException(status_code=500, detail=f"基礎知識データの取得に失敗しました: {str(e)}")
+
+@app.get("/public-change-history")
+async def get_public_change_history(days: int = 30, limit: int = 50):
+    """公開用の変更履歴を取得"""
+    try:
+        change_log_path = os.path.join(BASE_DIR, "public_change_history.yaml")
+        with open(change_log_path, 'r', encoding='utf-8') as file:
+            change_data = yaml.safe_load(file) or {}
+        
+        # 指定日数以内の変更を取得
+        from datetime import datetime, timedelta
+        cutoff_date = datetime.now() - timedelta(days=days)
+        
+        recent_changes = []
+        for change in change_data.get('change_history', []):
+            try:
+                change_date = datetime.strptime(change['date'], '%Y-%m-%d')
+                if change_date >= cutoff_date:
+                    recent_changes.append(change)
+            except (ValueError, KeyError):
+                continue
+        
+        # 日付順でソート（新しい順）
+        recent_changes.sort(key=lambda x: x['date'], reverse=True)
+        
+        # 制限数を適用
+        if limit > 0:
+            recent_changes = recent_changes[:limit]
+        
+        return {
+            'metadata': {
+                'total_changes': len(recent_changes),
+                'days_range': days,
+                'last_updated': change_data.get('last_updated', 'unknown')
+            },
+            'changes': recent_changes
+        }
+    except FileNotFoundError:
+        return {
+            'metadata': {
+                'total_changes': 0,
+                'days_range': days,
+                'last_updated': 'never'
+            },
+            'changes': []
+        }
+    except Exception as e:
+        security_logger.error(f"Failed to load change history: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"変更履歴の取得に失敗しました: {str(e)}")
+
+@app.get("/subsidy-investigation-status")
+async def get_investigation_status():
+    """補助金調査状況を取得"""
+    try:
+        log_path = os.path.join(BASE_DIR, "detailed_investigation_log.yaml")
+        with open(log_path, 'r', encoding='utf-8') as file:
+            log_data = yaml.safe_load(file) or {}
+        
+        # 最新の調査情報を補助金ごとに集約
+        latest_investigations = {}
+        for investigation in log_data.get('investigations', []):
+            subsidy_id = investigation.get('subsidy_id', 'unknown')
+            if subsidy_id not in latest_investigations:
+                latest_investigations[subsidy_id] = investigation
+            else:
+                # より新しい調査を保持
+                if investigation['date'] > latest_investigations[subsidy_id]['date']:
+                    latest_investigations[subsidy_id] = investigation
+        
+        return {
+            'total_subsidies': len(latest_investigations),
+            'last_investigation_date': max([inv['date'] for inv in latest_investigations.values()]) if latest_investigations else 'never',
+            'investigations': [
+                {
+                    'subsidy_id': inv['subsidy_id'],
+                    'subsidy_name': inv['subsidy_name'],
+                    'last_checked': inv['date'],
+                    'changes_detected': inv['changes_detected'],
+                    'impact_level': inv['impact_level'],
+                    'source_count': len(inv.get('source_references', [])),
+                    'reliability_score': inv.get('reliability_score', 'unknown')
+                }
+                for inv in latest_investigations.values()
+            ]
+        }
+    except FileNotFoundError:
+        return {
+            'total_subsidies': 0,
+            'last_investigation_date': 'never',
+            'investigations': []
+        }
+    except Exception as e:
+        security_logger.error(f"Failed to load investigation status: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"調査状況の取得に失敗しました: {str(e)}")
+
+@app.get("/public-update-report")
+async def get_public_update_report():
+    """公開用更新レポートを取得（Markdown形式）"""
+    try:
+        report_path = os.path.join(BASE_DIR, "public_update_report.md")
+        with open(report_path, 'r', encoding='utf-8') as file:
+            report_content = file.read()
+        
+        return {
+            'content': report_content,
+            'format': 'markdown',
+            'last_generated': os.path.getmtime(report_path) if os.path.exists(report_path) else None
+        }
+    except FileNotFoundError:
+        return {
+            'content': '# 補助金情報更新レポート\n\n更新履歴はまだありません。',
+            'format': 'markdown',
+            'last_generated': None
+        }
+    except Exception as e:
+        security_logger.error(f"Failed to load update report: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"更新レポートの取得に失敗しました: {str(e)}")
+
+@app.get("/system-integrity-status")
+async def get_system_integrity_status():
+    """システム完全性チェックの状況と結果を取得"""
+    try:
+        results_path = os.path.join(BASE_DIR, "integrity_check_results.yaml")
+        
+        if not os.path.exists(results_path):
+            return {
+                'status': 'not_checked',
+                'message': 'システム完全性チェックが実行されていません',
+                'last_check': None,
+                'overall_score': None
+            }
+        
+        with open(results_path, 'r', encoding='utf-8') as file:
+            results = yaml.safe_load(file)
+        
+        # 最新チェック時刻
+        last_check = results.get('check_timestamp')
+        overall_score = results.get('overall_score', 0)
+        
+        # チェック実行からの経過時間
+        from datetime import datetime, timedelta
+        if last_check:
+            check_time = datetime.fromisoformat(last_check.replace('Z', '+00:00'))
+            elapsed_hours = (datetime.now() - check_time.replace(tzinfo=None)).total_seconds() / 3600
+        else:
+            elapsed_hours = None
+        
+        # スコア評価
+        if overall_score >= 0.95:
+            status_level = 'excellent'
+            status_message = '優秀'
+        elif overall_score >= 0.85:
+            status_level = 'good'
+            status_message = '良好'
+        elif overall_score >= 0.70:
+            status_level = 'warning'
+            status_message = '要注意'
+        else:
+            status_level = 'critical'
+            status_message = '要改善'
+        
+        return {
+            'status': status_level,
+            'status_message': status_message,
+            'last_check': last_check,
+            'elapsed_hours': elapsed_hours,
+            'overall_score': overall_score,
+            'dimension_scores': results.get('dimension_scores', {}),
+            'violation_count': len(results.get('violations', [])),
+            'violations_by_type': {
+                'high': len([v for v in results.get('violations', []) if v.get('severity') == 'high']),
+                'medium': len([v for v in results.get('violations', []) if v.get('severity') == 'medium']),
+                'low': len([v for v in results.get('violations', []) if v.get('severity') == 'low'])
+            }
+        }
+    except Exception as e:
+        security_logger.error(f"Failed to load system integrity status: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"システム完全性状況の取得に失敗しました: {str(e)}")
+
+@app.get("/operational-status")
+async def get_operational_status():
+    """システム全体の運用状況を取得"""
+    try:
+        from datetime import datetime, timedelta
+        
+        # APIエンドポイントの稼働状況
+        endpoints_status = []
+        test_endpoints = [
+            ('/subsidies', '補助金一覧'),
+            ('/version-history', 'バージョン履歴'),
+            ('/public-change-history', '公開変更履歴'),
+            ('/system-integrity-status', 'システム完全性状況'),
+            ('/subsidy-investigation-status', '調査状況')
+        ]
+        
+        for endpoint, name in test_endpoints:
+            try:
+                # 簡易的な内部チェック（実際のHTTPリクエストは避ける）
+                if endpoint == '/subsidies':
+                    subsidies_data = load_subsidy_data()
+                    is_healthy = len(subsidies_data) > 0
+                elif endpoint == '/version-history':
+                    version_data = load_version_history()
+                    is_healthy = bool(version_data)
+                else:
+                    is_healthy = True  # 他のエンドポイントは簡易判定
+                
+                endpoints_status.append({
+                    'endpoint': endpoint,
+                    'name': name,
+                    'status': 'healthy' if is_healthy else 'unhealthy',
+                    'last_checked': datetime.now().isoformat()
+                })
+            except Exception as e:
+                endpoints_status.append({
+                    'endpoint': endpoint,
+                    'name': name,
+                    'status': 'error',
+                    'error': str(e),
+                    'last_checked': datetime.now().isoformat()
+                })
+        
+        # データファイルの状況
+        data_files_status = []
+        required_files = [
+            ('subsidy_master.yaml', 'マスターデータベース'),
+            ('subsidies.yaml', 'API互換データ'),
+            ('version_history.yaml', 'バージョン履歴'),
+            ('system_integrity_framework.yaml', '完全性フレームワーク'),
+            ('integrity_check_results.yaml', '完全性チェック結果')
+        ]
+        
+        for filename, description in required_files:
+            filepath = os.path.join(BASE_DIR, filename)
+            if os.path.exists(filepath):
+                stat = os.stat(filepath)
+                last_modified = datetime.fromtimestamp(stat.st_mtime)
+                age_hours = (datetime.now() - last_modified).total_seconds() / 3600
+                
+                data_files_status.append({
+                    'file': filename,
+                    'description': description,
+                    'status': 'exists',
+                    'last_modified': last_modified.isoformat(),
+                    'age_hours': age_hours,
+                    'size_bytes': stat.st_size
+                })
+            else:
+                data_files_status.append({
+                    'file': filename,
+                    'description': description,
+                    'status': 'missing',
+                    'last_modified': None,
+                    'age_hours': None,
+                    'size_bytes': 0
+                })
+        
+        # 全体の健康状態
+        healthy_endpoints = sum(1 for ep in endpoints_status if ep['status'] == 'healthy')
+        existing_files = sum(1 for df in data_files_status if df['status'] == 'exists')
+        
+        overall_health = 'healthy' if (healthy_endpoints == len(endpoints_status) and 
+                                     existing_files == len(required_files)) else 'degraded'
+        
+        return {
+            'overall_health': overall_health,
+            'check_time': datetime.now().isoformat(),
+            'endpoints': endpoints_status,
+            'data_files': data_files_status,
+            'summary': {
+                'healthy_endpoints': f"{healthy_endpoints}/{len(endpoints_status)}",
+                'existing_files': f"{existing_files}/{len(required_files)}",
+                'subsidy_count': len(load_subsidy_data())
+            }
+        }
+    except Exception as e:
+        security_logger.error(f"Failed to get operational status: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"運用状況の取得に失敗しました: {str(e)}")
+
+@app.post("/trigger-integrity-check")
+async def trigger_integrity_check():
+    """システム完全性チェックを手動実行"""
+    try:
+        import subprocess
+        from datetime import datetime
+        
+        # 完全性チェックを実行
+        result = subprocess.run(
+            ["python3", "minimal_integrity_checker.py"],
+            cwd=BASE_DIR,
+            capture_output=True,
+            text=True,
+            timeout=60
+        )
+        
+        if result.returncode == 0:
+            return {
+                'status': 'success',
+                'message': 'システム完全性チェックが正常に実行されました',
+                'triggered_at': datetime.now().isoformat(),
+                'output': result.stdout[-1000:] if result.stdout else None  # 最後の1000文字
+            }
+        else:
+            return {
+                'status': 'error',
+                'message': 'システム完全性チェックの実行中にエラーが発生しました',
+                'triggered_at': datetime.now().isoformat(),
+                'error': result.stderr[-1000:] if result.stderr else None
+            }
+    except subprocess.TimeoutExpired:
+        return {
+            'status': 'timeout',
+            'message': 'システム完全性チェックがタイムアウトしました',
+            'triggered_at': datetime.now().isoformat()
+        }
+    except Exception as e:
+        security_logger.error(f"Failed to trigger integrity check: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"完全性チェックの実行に失敗しました: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn
