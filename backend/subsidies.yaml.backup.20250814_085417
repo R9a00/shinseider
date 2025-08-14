@@ -1,0 +1,1439 @@
+- id: shinjigyo_shinshutsu
+  name: 中小企業新事業進出補助金
+  application_period:
+    current_round: 令和7年度第1回公募
+    start_date: '2025-06-17'
+    end_date: '2025-07-15'
+    information_date: '2025-08-13'
+    notes: 新規事業進出支援枠
+  sections:
+  - id: overview
+    title: 事業概要
+    min: 120
+    max: 600
+    hint: 誰に・何を・なぜ今（3行要約→詳細）
+  - id: new_market_potential
+    title: 新市場性・高付加価値性
+    min: 120
+    max: 800
+    hint: 取り組む事業の新規性や革新性、そして高い付加価値について、具体的なデータや比較を交えて説明してください。
+    input_modes:
+      guided:
+      - Q1. あなたの製品・サービスが「新しい」と言える具体的な技術的特徴、ビジネスモデル、またはターゲット顧客層の新規性について、詳細に記述してください。既存の製品・サービスとの明確な違いを数値や具体例を挙げて説明してください。
+      - Q2. あなたの製品・サービスが顧客に提供する「高い価値」とは何ですか？顧客が現在抱えている課題をどのように解決し、どのようなメリット（コスト削減、効率向上、新たな体験など）をもたらすのか、具体的な事例や顧客の声を交えて説明してください。
+      - Q3. その「新しさ」や「価値」を裏付ける客観的なデータや事実（市場調査データ、競合分析、特許情報、学術論文、実証実験の結果、顧客アンケート結果など）を具体的に提示してください。データがない場合は、その根拠となる仮説と検証計画を記述してください。
+  - id: business_viability
+    title: 新規事業の有望度
+    min: 120
+    max: 800
+    hint: 事業のターゲット市場、競合との差別化、自社の強みを活かした戦略について具体的に説明してください。
+    input_modes:
+      guided:
+      - Q1. あなたの事業がターゲットとする顧客層を具体的に定義し、その市場の規模（潜在顧客数、市場規模の数値）、成長性（過去の成長率、将来予測）、および顧客ニーズ（具体的な課題、不満、要望）について、データや調査結果を基に詳細に説明してください。
+      - Q2. 主要な競合相手（具体的な企業名やサービス名）を特定し、それぞれの強みと弱みを分析してください。その上で、あなたの事業が競合と比較してどのような点で優位性を持つのか、具体的な差別化戦略（価格、品質、サービス、技術、ブランドなど）を記述してください。
+      - Q3. この事業を成功させる上で、自社の最も大きな「強み」（例：独自の技術、既存顧客基盤、特定の専門知識、強力なパートナーシップなど）は何ですか？その強みをどのように事業戦略に組み込み、競合優位性を確立・維持していくのか、具体的に説明してください。
+  - id: feasibility
+    title: 事業の実現可能性
+    min: 120
+    max: 800
+    hint: 事業を実現するための具体的な体制、スケジュール、資金計画について説明してください。
+    input_modes:
+      guided:
+      - Q1. この事業を推進するチームメンバー（社内・社外）の具体的な役割分担、それぞれの専門性、経験、および事業への貢献度を詳細に記述してください。不足するスキルやリソースがある場合、どのように補完する計画ですか？
+      - Q2. 事業開始から収益化までの主要なマイルストーンと、それぞれのタスク、担当者、および具体的なスケジュール（ガントチャートやロードマップを想定）を詳細に記述してください。予期せぬ遅延が発生した場合の対応策も記述してください。
+      - Q3. この事業に必要な資金総額（設備投資、運転資金、人件費など）を詳細に算出し、その調達方法（自己資金、融資、補助金、投資家からの出資など）と、それぞれの資金使途を具体的に記述してください。資金計画の妥当性を示す根拠も提示してください。
+  validation:
+    required:
+    - overview
+    - new_market_potential
+    - business_viability
+    - feasibility
+    numeric:
+    - field: feasibility
+      pattern: '%|％|▲|▼|→|→'
+  checklist:
+  - 申請者情報（名称/所在地/従業員数）を最新に更新した
+  - 事業計画の各項目に具体的な数値目標が含まれている
+  - 資金計画と調達方法の裏付け資料を準備した
+  - 体制（責任者/担当）と連絡先を明記した
+  - スケジュールに具体的なマイルストーンが設定されている
+  tasks:
+    milestones:
+    - id: m1
+      name: 事業アイデアの具体化
+      lead: P-30d
+    - id: m2
+      name: 市場・競合調査
+      lead: P-25d
+    - id: m3
+      name: 事業計画ドラフト作成
+      lead: P-20d
+    - id: m4
+      name: 資金計画の策定
+      lead: P-15d
+    - id: m5
+      name: 内部レビューと修正
+      lead: P-10d
+    - id: m6
+      name: 証憑・添付書類の準備
+      lead: P-7d
+    - id: m7
+      name: 最終チェックと提出
+      lead: P-3d
+  docxtemplate:
+    project:
+      title: '{overview}'
+      applicant: '{applicant_name}'
+      contact: '{contact}'
+      summary: '{new_market_potential}'
+      viability: '{business_viability}'
+      feasibility: '{feasibility}'
+  llm_prompt_template: "あなたは「中小企業新事業進出補助金」の申請支援AIアドバイザーです。ユーザーの回答に基づき、申請計画書をブラッシュアップする具体的なアドバイスを日本語で提供してください。\n\
+    ユーザーの回答（{input_mode}モード）: \n{user_answers}\n\n審査で重要な以下の観点について、ユーザー回答内容を評価し改善提案を行ってください:\n\
+    1. 新規性・革新性: 計画書でどのように強調すべきか(競合との差別化、独自の強み、客観的データの活用等)。\n2. 市場性・成長性: 市場調査データの活用、ニーズの明確化、売上計画の妥当性強化等。\n\
+    3. 実現可能性: リソース体制、資金計画、スケジュール、リスク対策の改善点。\n\n出力フォーマット: 箇条書きや短い段落で、具体的な改善アドバイスを箇条書きで示すこと。ユーザーを勇気づける前向きな口調で、問題点と改善策をセットで示してください。\n"
+  diagnosis_expense_examples:
+    海外展開:
+    - 市場調査・現地調査費用
+    - 海外パートナー開拓費
+    - 現地法人設立・登記費用
+    - 商品・サービス現地適応費
+    - マーケティング・広告費
+    新製品・サービスの開発:
+    - 技術開発・設計費用
+    - 試作・テスト費用
+    - 市場調査・ニーズ分析費
+    - ブランディング・デザイン費
+    - 販路開拓・営業費用
+- id: atotsugi
+  name: アトツギ甲子園
+  sections:
+  - id: basic_info
+    title: 基本情報
+    min: 20
+    max: 200
+    hint: 氏名・会社名・年齢・承継予定など基本的な情報を入力してください
+    input_modes:
+      micro_tasks:
+      - task_id: MINI_001_AGE
+        label: 年齢（39歳以下）
+        type: number
+        placeholder: '34'
+        required: true
+      - task_id: MINI_005_NAME
+        label: 氏名
+        type: text
+        required: true
+      - task_id: MINI_006_COMPANY
+        label: 会社名
+        type: text
+        required: true
+      - task_id: MINI_007_PREFECTURE
+        label: 所在地（都道府県）
+        type: select
+        options:
+        - 北海道
+        - 青森県
+        - 岩手県
+        - 宮城県
+        - 秋田県
+        - 山形県
+        - 福島県
+        - 茨城県
+        - 栃木県
+        - 群馬県
+        - 埼玉県
+        - 千葉県
+        - 東京都
+        - 神奈川県
+        - 新潟県
+        - 富山県
+        - 石川県
+        - 福井県
+        - 山梨県
+        - 長野県
+        - 岐阜県
+        - 静岡県
+        - 愛知県
+        - 三重県
+        - 滋賀県
+        - 京都府
+        - 大阪府
+        - 兵庫県
+        - 奈良県
+        - 和歌山県
+        - 鳥取県
+        - 島根県
+        - 岡山県
+        - 広島県
+        - 山口県
+        - 徳島県
+        - 香川県
+        - 愛媛県
+        - 高知県
+        - 福岡県
+        - 佐賀県
+        - 長崎県
+        - 熊本県
+        - 大分県
+        - 宮崎県
+        - 鹿児島県
+        - 沖縄県
+        required: true
+      - task_id: MINI_002_SUCCESSION_PLAN
+        label: 承継予定の有無
+        type: select
+        options:
+        - あり
+        - なし
+        - 検討中
+        required: true
+      integrated:
+      - task_name: 'T1: 基本情報一括入力'
+        description: まとめて1分で入力
+  - id: current_business
+    title: 現在の事業・強み
+    min: 50
+    max: 400
+    hint: 今の会社の事業内容と強みを具体的に入力してください
+    input_modes:
+      micro_tasks:
+      - task_id: MINI_008_INDUSTRY
+        label: 主業種
+        type: select
+        options:
+        - 製造
+        - 小売
+        - サービス
+        - IT
+        - 建設
+        - 農業
+        - その他
+        required: true
+      - task_id: MINI_011_MAIN_SERVICE
+        label: 主力製品・サービス（20字以内）
+        type: text
+        max_length: 20
+        placeholder: アルミ部品の短納期加工
+        required: true
+      - task_id: MINI_014_STRENGTHS
+        label: 強み（複数選択可）
+        type: multi_select
+        options:
+        - 設備
+        - 技術
+        - 品質
+        - 納期
+        - 価格
+        - デザイン
+        - 営業
+        - ブランド
+        - その他
+        required: true
+      - task_id: MINI_015_ISSUES
+        label: 現在の課題（複数選択可）
+        type: multi_select
+        options:
+        - 人手不足
+        - 資金
+        - 販路拡大
+        - 原価削減
+        - 品質向上
+        - 法規対応
+        - その他
+      integrated:
+      - task_name: 'T2: 事業の強みと課題'
+        description: 選択式で1分
+  - id: customer_problem
+    title: 顧客の困りごと・社会課題
+    min: 80
+    max: 600
+    hint: お客様や社会が抱える課題を具体的に記述してください
+    input_modes:
+      micro_tasks:
+      - task_id: MINI_020_PAINS
+        label: お客様が困っていること
+        type: text_array
+        max_length_per_item: 80
+        placeholder: 小ロットの試作が高くて遅い
+        required: true
+      - task_id: MINI_021_SOCIAL
+        label: 取り組む社会課題
+        type: text_array
+        max_length_per_item: 80
+        placeholder: 地方製造業の人手不足、環境負荷の軽減など
+      - task_id: MINI_022_DIFFERENTIATION
+        label: 他社との違い・自社の強み
+        type: text_array
+        max_length_per_item: 80
+        placeholder: 特殊技術を持つ、地域密着、価格競争力など
+      integrated:
+      - task_name: 'T3: 課題→競合→差別化'
+        description: 顧客の困りごと、競合状況、差別化ポイントをまとめて入力
+  - id: solution_idea
+    title: 新しい事業アイデア
+    min: 100
+    max: 800
+    hint: どのような解決策で、誰を、どう幸せにするか具体的に記述してください
+    input_modes:
+      micro_tasks:
+      - task_id: MINI_023_CATCH
+        label: 一言キャッチ（20字以内）
+        type: text
+        max_length: 20
+        placeholder: 3日で届く小ロット試作
+        required: true
+      - task_id: MINI_024_WHO
+        label: 誰に提供するか
+        type: select
+        options:
+        - 既存顧客
+        - 新規B2B
+        - 一般消費者
+        - 海外
+        - 地域社会
+        required: true
+      - task_id: MINI_025_WHAT
+        label: 何を提供するか
+        type: text
+        min_length: 20
+        max_length: 40
+        required: true
+      - task_id: MINI_026_HOW
+        label: どうやって実現するか
+        type: text
+        min_length: 20
+        max_length: 40
+        required: true
+      - task_id: MINI_027_VALUE
+        label: 提供価値（複数選択可）
+        type: multi_select
+        options:
+        - 速い
+        - 安い
+        - 高品質
+        - 新体験
+        - 環境に良い
+        - 安全
+        - 便利
+        - その他
+        required: true
+      integrated:
+      - task_name: 'T3: 課題→解決→価値'
+        description: 一連の流れを2分で入力
+  - id: revenue_model
+    title: 収益モデル
+    min: 80
+    max: 600
+    hint: どのようにして売上を得るかを具体的に記述してください。価格設定や販売方法についても含めてください。
+    input_modes:
+      micro_tasks:
+      - task_id: REV_PATTERNS
+        label: 収益を得る方法を選択してください（複数選択可能）
+        type: multi_select
+        options:
+        - 単発販売（物販/受託）
+        - サブスク（定額/従量）
+        - 従量課金（API/利用回数）
+        - 手数料（取次/MP）
+        - ライセンス/ロイヤリティ
+        - サービス（コンサル/保守）
+        - ハイブリッド（ハード+サービス）
+        required: true
+      - task_id: REV_TARGET
+        label: 主な販売先・顧客層
+        type: select
+        options:
+        - 既存の法人顧客
+        - 新規の法人顧客
+        - 個人のお客様
+        - 自治体・公的機関
+        - 海外市場
+        required: true
+      - task_id: REV_CHANNEL
+        label: 販売方法（複数選択可能）
+        type: multi_select
+        options:
+        - 直接販売
+        - 代理店経由
+        - ネット販売
+        - OEM提供
+        - 紹介・口コミ
+        required: true
+      - task_id: ONE_PRICE
+        label: 単価（円/件）
+        type: number
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: 単発販売（物販/受託）
+      - task_id: ONE_QTY_M
+        label: 月あたり件数（件）
+        type: number
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: 単発販売（物販/受託）
+      - task_id: ONE_COGS_UNIT
+        label: 単位あたり原価（円/件）
+        type: number
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: 単発販売（物販/受託）
+      - task_id: SUB_PLAN_NAME
+        label: プラン名
+        type: text
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: サブスク（定額/従量）
+      - task_id: SUB_ARPU
+        label: 月額単価（円/契約）
+        type: number
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: サブスク（定額/従量）
+      - task_id: SUB_CONTRACTS
+        label: 契約数（初月見込）
+        type: number
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: サブスク（定額/従量）
+      - task_id: USG_METRIC
+        label: '課金指標（例: APIコール数）'
+        type: text
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: 従量課金（API/利用回数）
+      - task_id: USG_RATE
+        label: 単価（円/指標1）
+        type: number
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: 従量課金（API/利用回数）
+      - task_id: USG_VOLUME_M
+        label: 月あたり利用量（指標）
+        type: number
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: 従量課金（API/利用回数）
+      - task_id: COM_RATE
+        label: 手数料率（%）
+        type: number
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: 手数料（取次/MP）
+      - task_id: COM_GMV_M
+        label: 月間流通総額GMV（円）
+        type: number
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: 手数料（取次/MP）
+      - task_id: LIC_BASE
+        label: ベース料（円/月または年）
+        type: number
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: ライセンス/ロイヤリティ
+      - task_id: LIC_ROYALTY
+        label: ロイヤリティ率（%/売上）
+        type: number
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: ライセンス/ロイヤリティ
+      - task_id: SVC_RATE
+        label: 時間単価（円/時間）
+        type: number
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: サービス（コンサル/保守）
+      - task_id: SVC_HOURS_M
+        label: 月間稼働時間（時間）
+        type: number
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: サービス（コンサル/保守）
+      - task_id: HY_HW_PRICE
+        label: ハード単価（円/台）
+        type: number
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: ハイブリッド（ハード+サービス）
+      - task_id: HY_HW_COGS
+        label: ハード原価（円/台）
+        type: number
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: ハイブリッド（ハード+サービス）
+      - task_id: HY_SVC_FEE
+        label: サービス料（円/月）
+        type: number
+        required: false
+        conditional_on: REV_PATTERNS
+        conditional_value: ハイブリッド（ハード+サービス）
+      - task_id: UE_FIXED_COST_M
+        label: 固定費（円/月）
+        type: number
+        required: false
+      - task_id: MINI_033_STAGE
+        label: 現在の検証状況
+        type: select
+        options:
+        - アイデア段階
+        - 試作済み
+        - テスト販売済み
+        - 本格販売中
+      - task_id: MINI_035_VOICES
+        label: お客様の声（あれば1-2件）
+        type: text_array
+        max_items: 2
+        max_length_per_item: 80
+      integrated:
+      - task_name: 'T4: 収益モデル一括入力'
+        description: '例）サブスク: 月額3万円×30社、解約2%/月。サポート原価は月20万円。'
+  - id: personal_story
+    title: 個人的な想い・継ぐ理由
+    min: 100
+    max: 800
+    hint: なぜあなたがこの事業をやりたいのか、承継への想いを記述してください
+    input_modes:
+      micro_tasks:
+      - task_id: STORY_WHY_ME
+        label: なぜあなたがやるのか
+        type: text
+        min_length: 50
+        max_length: 200
+        placeholder: 父の背中を見て育ち、この技術を次世代に繋げたい
+        required: true
+      - task_id: STORY_SUCCESSION_FEELING
+        label: 事業承継への想い
+        type: text
+        min_length: 50
+        max_length: 200
+        placeholder: 家業を守るだけでなく、新しい価値を生み出したい
+        required: true
+      - task_id: STORY_FUTURE_VISION
+        label: 実現したい未来
+        type: text
+        min_length: 50
+        max_length: 200
+        placeholder: 地域の雇用を守り、業界全体を活性化したい
+        required: true
+      integrated:
+      - task_name: 'T6: 想い・承継理由・未来像'
+        description: 個人的な動機、承継への想い、実現したい未来をまとめて記述
+  - id: feasibility_assessment
+    title: 実現性評価
+    min: 80
+    max: 600
+    hint: 技術面・体制面・資金面での実現可能性を評価してください
+    input_modes:
+      micro_tasks:
+      - task_id: TECH_READINESS
+        label: 技術の準備状況
+        type: select
+        options:
+        - アイデア段階
+        - 基礎研究中
+        - 試作品完成
+        - 実証実験中
+        - 製品化済み
+        - 該当なし
+        required: true
+      - task_id: TEAM_ROLES
+        label: 現在のチーム体制（複数選択可）
+        type: multi_select
+        options:
+        - 営業・販売
+        - 開発・製造
+        - 品質管理
+        - 経理・財務
+        - 顧客サポート
+        required: true
+      - task_id: INITIAL_INVESTMENT
+        label: 初期に必要な投資額（円）
+        type: number
+        placeholder: 設備購入、システム開発などの初期費用
+        required: false
+      - task_id: MONTHLY_COST
+        label: 月々の運営費（円/月）
+        type: number
+        placeholder: 人件費、家賃、材料費などの毎月の費用
+        required: false
+      - task_id: PERMITS
+        label: 許可や認証の必要性
+        type: select
+        options:
+        - 特に必要なし
+        - 必要で既に取得済み
+        - 必要で申請中
+        - 必要だが未着手
+        placeholder: 食品なら保健所許可、製造業なら各種認証など
+        required: false
+      - task_id: SUPPLY
+        label: 材料調達や外注の準備状況
+        type: select
+        options:
+        - すべて自社でできる
+        - 主要な仕入先と契約済み
+        - 見積もりは取得済み
+        - これから検討
+        required: false
+      - task_id: RISKS
+        label: 想定される課題・リスク
+        type: textarea
+        placeholder: 例：競合の参入、原材料価格の上昇、人材確保の困難など
+        required: false
+      - task_id: MITIGATIONS
+        label: 課題への対応策
+        type: textarea
+        placeholder: 上記のリスクに対してどう対応するかの具体策
+        required: false
+      - task_id: MILESTONES
+        label: マイルストーン（年月+内容+責任者）
+        type: structured_array
+        fields:
+        - ym
+        - note
+        - owner
+        max_items: 5
+        required: true
+        placeholder: '例: 2025-11, 試作完了, 田中'
+      integrated:
+      - task_name: 'T5: 実現性まとめて入力'
+        description: 例）TRL6。営業/開発/品質は社内でカバー。CAPEXは300万円、OPEXは月50万円。許認可は不要。主要外注はA社と基本合意。マイルストーン：2025-11
+          試作完了、2026-01 β提供、2026-04 ローンチ。
+  validation:
+    required:
+    - basic_info
+    - solution_idea
+    - personal_story
+    - feasibility_assessment
+    micro_tasks_required:
+    - MINI_001_AGE
+    - MINI_005_NAME
+    - MINI_006_COMPANY
+    - MINI_023_CATCH
+    - STORY_WHY_ME
+    - STORY_SUCCESSION_FEELING
+    - REV_PATTERNS
+    - TECH_READINESS
+    - TEAM_ROLES
+    - MILESTONES
+    age_limit:
+      field: MINI_001_AGE
+      max: 39
+  checklist:
+  - 年齢が39歳以下であることを確認した
+  - 承継予定について明確に回答した
+  - 事業アイデアのキャッチフレーズを20字以内で作成した
+  - 個人的な想いを具体的に記述した
+  - 実現可能な計画を立てた
+  - 8ページのスライド形式で整理できる内容になっている
+  tasks:
+    milestones:
+    - id: m1
+      name: 基本情報・現状整理
+      lead: P-21d
+    - id: m2
+      name: アイデア具体化・検証
+      lead: P-14d
+    - id: m3
+      name: ストーリー作成・数値計算
+      lead: P-10d
+    - id: m4
+      name: 8ページスライド作成
+      lead: P-5d
+    - id: m5
+      name: 最終チェック・提出
+      lead: P-1d
+  docxtemplate:
+    project:
+      title: '{overview}'
+      applicant: '{applicant_name}'
+      social_issue: '{social_issue}'
+      motivation: '{motivation}'
+      resources: '{resources}'
+  llm_prompt_template: "# アトツギ甲子園申請書レビューと改善提案\n\nあなたは「アトツギ甲子園」申請支援の専門アドバイザーです。ユーザーの回答に基づき、採択率を高める具体的な改善提案を日本語で提供してください。\n\
+    \n## \U0001F4CB ユーザーの入力内容（{input_mode}モード）\n\n{user_answers}\n\n## \U0001F3AF\
+    \ 専門家への相談ポイント（30分目安）\n\n### 事業計画書の改善について\n1. **新規性の強化**：上記のアイデアの新しさをもっと明確にアピールするには、どのような表現や根拠を追加すべきでしょうか？\n\
+    \n2. **市場性の説明**：ターゲット顧客に向けた事業の市場規模や成長性を示すデータはどこで入手できますか？\n\n3. **実現性の裏付け**：事業実現に必要な具体的な準備や体制について、見落としている点はありませんか？\n\
+    \n### 数値計画の妥当性について（20分目安）\n4. **収益予測の根拠**：収益予測の数値根拠を強化するために、どのような調査や検証を行うべきでしょうか？\n\
+    \n5. **投資回収計画**：この事業に必要な初期投資額と回収期間について、業界の一般的な水準と比較してアドバイスをください。\n\n## \U0001F4A1\
+    \ 自己点検のヒント\n\n### アイデアの独自性チェック（10分）\n- 【確認】競合他社で似たサービスはないか？違いを3つ挙げられますか？\n- 【改善】独自性を表現する具体的なキーワードや数値を3つ追加してください\n\
+    \n### 実現可能性チェック（15分）\n- 【確認】事業実行に必要な人・モノ・カネは具体的に何ですか？\n- 【改善】不足している経営資源があれば、どうやって調達するか計画を立ててください\n\
+    \n### 顧客価値チェック（10分）  \n- 【確認】ターゲット顧客が抱える困りごとを具体的に3つ説明できますか？\n- 【改善】あなたの解決策で顧客がどれだけ得するか、数値で示してください\n\
+    \n## \U0001F4DD コピペ用：専門家への質問テンプレート\n\n**アトツギ甲子園申請についてご相談したいことがあります**\n\n【基本情報】\n\
+    上記の入力内容をご確認ください。\n\n【具体的な質問】\n1. この事業アイデアの新規性をより強くアピールするには、どのような点を強調すべきでしょうか？\n\
+    2. 市場性を示すデータはどこで入手できますか？\n3. 収益予測の妥当性と改善点について教えてください。\n4. 8枚のスライドでの効果的な構成順序を教えてください。\n\
+    \n30分程度でご相談させていただけますでしょうか。\n\n## \U0001F680 次のステップ（採択率向上のポイント）\n\n### 新規性・革新性の強化\n\
+    - 既存サービスとの具体的な違いを数値で示す\n- 技術的優位性や独自のビジネスモデルを明確化\n- 特許・知財の有無や取得予定を記載\n\n### 実現可能性の向上\n\
+    - 具体的なマイルストーンとスケジュールを設定\n- チーム体制と各メンバーの役割を明確化\n- リスク要因と対応策を事前に検討\n\n### 事業性・収益性の根拠強化\n\
+    - 市場調査データや顧客インタビュー結果を活用\n- 競合分析と差別化戦略の明確化\n- 3年間の売上・利益計画の詳細化\n\n\U0001F4AA **応援メッセージ**\n\
+    入力いただいた内容から、素晴らしい事業アイデアと強い想いを感じます。一歩ずつ着実に準備を進めて、審査員の心に響くプレゼンテーションにしていきましょう！\n"
+  application_period:
+    current_round: 第6回大会
+    start_date: '2025-08-01'
+    end_date: '2025-11-26'
+    information_date: '2025-08-13'
+    notes: エントリー・地方予選・全国大会
+- id: monodukuri_r7_21th
+  name: ものづくり・商業・サービス生産性向上促進補助金（令和7年度 第21次公募）
+  sections:
+  - id: business_overview
+    title: 補助事業の具体的取組内容
+    min: 200
+    max: 1500
+    hint: 革新的な製品・サービス開発または生産プロセス・サービス提供方法の改善に関する事業内容を具体的に記述してください。
+    input_modes:
+      guided:
+      - Q1. 革新的な製品・サービス開発、または生産プロセス・サービス提供方法の改善について、具体的にどのような取り組みを行うのか詳細に記述してください。既存の製品・サービス・プロセスとの違いを明確にしてください。
+      - Q2. この取り組みが「革新的」と言える理由は何ですか？技術的新規性、市場への新たな価値提供、業界の課題解決などの観点から説明してください。
+      - Q3. 本事業で導入予定の設備・機器・システムの具体名と、それらがどのように事業内容の実現に寄与するのかを詳細に説明してください。
+  - id: innovation_points
+    title: 製品・サービス等の差別化要因・革新性
+    min: 200
+    max: 1500
+    hint: 競合他社との差別化ポイントや技術的優位性について、客観的根拠とともに説明してください。
+    input_modes:
+      guided:
+      - Q1. 競合他社と比較した際の、あなたの製品・サービス・プロセスの独自性や技術的優位性は何ですか？具体的な競合企業名を挙げて比較してください。
+      - Q2. その差別化要因を裏付ける客観的な根拠（特許、技術データ、実証実験結果、顧客からの評価など）があれば具体的に示してください。
+      - Q3. 同様の技術・サービスが既に存在する場合、それらとの明確な違いと改善点を詳細に説明してください。
+  - id: market_analysis
+    title: 想定する市場及びその拡大性
+    min: 200
+    max: 1500
+    hint: ターゲット市場の規模、成長性、顧客ニーズについて具体的なデータと分析結果を記述してください。
+    input_modes:
+      guided:
+      - Q1. あなたの製品・サービスが対象とする市場の規模（金額ベース）と成長率について、公的統計や業界レポートなどの客観的データを基に記述してください。
+      - Q2. ターゲット顧客層を具体的に定義し、その顧客層が抱える課題や不満、あなたの製品・サービスへのニーズについて説明してください。
+      - Q3. 市場拡大の根拠となる社会的背景（高齢化、DX推進、環境意識の高まりなど）や政策動向について説明してください。
+  - id: implementation_plan
+    title: 補助事業の実施体制・スケジュール
+    min: 200
+    max: 1500
+    hint: 事業実施に必要な人員配置、外部連携、具体的なスケジュールを詳細に記述してください。
+    input_modes:
+      guided:
+      - Q1. 補助事業を実施するための社内体制（プロジェクトリーダー、担当部署、責任者など）と、それぞれの役割・専門性を具体的に記述してください。
+      - Q2. 外部の協力会社、技術パートナー、研究機関などとの連携がある場合、その役割分担と協力内容を詳細に説明してください。
+      - Q3. 事業開始から完了までの具体的なスケジュール（月単位で主要な活動内容を明記）を作成してください。
+  - id: revenue_plan
+    title: 事業化計画・収益性の見通し
+    min: 200
+    max: 1500
+    hint: 事業化後の売上計画、収益性、投資回収期間について具体的な数値とともに説明してください。
+    input_modes:
+      guided:
+      - Q1. 補助事業終了後の売上計画を、年度別に具体的な数値で示してください。その根拠（想定販売単価、販売数量、市場シェア想定など）も記述してください。
+      - Q2. 初期投資額（補助対象経費＋自己負担分）に対する投資回収期間と、その計算根拠を詳細に説明してください。
+      - Q3. 競合参入リスク、市場変化リスクなどを考慮した上で、どのように収益性を確保・維持していく計画かを説明してください。
+  validation:
+    required:
+    - business_overview
+    - innovation_points
+    - market_analysis
+    - implementation_plan
+    - revenue_plan
+    expense_validation:
+      eligible:
+      - 機械装置・システム構築費
+      - 技術導入費
+      - 知的財産権等関連経費
+      - 外注費
+      - 専門家経費
+      - 運搬費
+      - クラウドサービス利用費
+      ineligible:
+      - 汎用性の高い機器・ソフト購入費
+      - 中古品購入費
+      - 自社人件費・自社社員の労務費
+      - 関連会社への支払い
+      - 消費税
+      - 収入印紙代
+  diagnosis_expense_examples:
+    新製品・サービスの開発:
+    - 専用設備・機械装置の導入
+    - 試作・プロトタイプ製作費
+    - 技術導入・ライセンス費用
+    - 知的財産権出願・取得費用
+    - 専門家によるコンサルティング
+    ITシステム導入:
+    - 生産管理システム導入
+    - 専用ソフトウェア開発
+    - クラウドサービス利用料
+    - システム連携・カスタマイズ費用
+    - セキュリティ対策費用
+    工場・店舗の自動化:
+    - 自動化機械・ロボット導入
+    - 制御システム・センサー
+    - 省人化装置・搬送システム
+    - AI・IoT技術導入
+    - 自動化設計・プログラム開発
+    環境対応・省エネ:
+    - 省エネ設備・機器導入
+    - 環境計測・モニタリングシステム
+    - 廃棄物処理装置
+    - 再生可能エネルギー設備
+    - 環境認証取得費用
+    employee_limits:
+    - range: 5人以下
+      max_subsidy: 7500000
+    - range: 6-20人
+      max_subsidy: 15000000
+    - range: 21人以上
+      max_subsidy: 25000000
+    subsidy_rates:
+      regular: 0.5
+      small_scale: 0.667
+    eligibility:
+    - id: e-01-sme-definition
+      desc: 中小企業基本法による中小企業者等に該当
+      type: boolean
+      field: applicant.sme_class_ok
+      severity: block
+      source_id: monodukuri-guideline
+    - id: e-02-gbizid
+      desc: GビズID（プライム）を取得済み
+      type: boolean
+      field: applicant.gbizid_ready
+      severity: block
+      source_id: monodukuri-guideline
+    - id: e-03-domestic-location
+      desc: 日本国内に本社及び補助事業実施場所を有する
+      type: boolean
+      field: applicant.domestic_location
+      severity: block
+      source_id: monodukuri-guideline
+    scope:
+    - id: s-01-innovation-purpose
+      desc: 革新的な製品・サービス開発または生産プロセス改善
+      type: enum_in
+      field: plan.purpose
+      params:
+        allowed:
+        - 革新的製品開発
+        - 革新的サービス開発
+        - 生産プロセス改善
+      severity: block
+      source_id: monodukuri-guideline
+    - id: s-02-subsidy-range
+      desc: 補助対象経費が100万円以上
+      type: number_range
+      field: budget.total_cost_yen
+      params:
+        min: 1000000
+        max: null
+      severity: block
+      source_id: monodukuri-guideline
+    - id: s-03-employee-count-check
+      desc: 従業員数による補助上限額の確認
+      type: number_range
+      field: applicant.employee_count
+      params:
+        min: 0
+        max: 999
+      severity: warn
+      source_id: monodukuri-guideline
+    attachments:
+    - id: a-01-application-form
+      desc: 補助金申請書（電子申請システム）
+      type: file_required
+      field: files.application_form
+      severity: block
+      source_id: monodukuri-guideline
+    - id: a-02-project-plan
+      desc: 補助事業計画書
+      type: compound_required
+      fields:
+      - files.business_plan
+      - content.business_overview
+      - content.innovation_points
+      severity: block
+      source_id: monodukuri-guideline
+    - id: a-03-wage-increase-plan
+      desc: 賃金引上げ計画の表明書（全事業者必須）
+      type: file_required
+      field: files.wage_increase_plan
+      severity: block
+      source_id: monodukuri-guideline
+    - id: a-04-business-summary
+      desc: 直近年度の事業概況説明書
+      type: file_or_form
+      field: files.business_summary
+      severity: block
+      source_id: monodukuri-guideline
+    - id: a-05-quotes
+      desc: 設備・機器等の見積書（3社以上推奨）
+      type: file_required
+      field: files.equipment_quotes
+      severity: block
+      source_id: monodukuri-guideline
+  checklist:
+  - 中小企業基本法による中小企業の定義に適合している
+  - 賃金引上げ計画の誓約書を提出できる
+  - 従業員21名以上の場合、次世代法に基づく行動計画を公表済み
+  - 補助対象経費が100万円以上である
+  - 補助事業実施場所が日本国内である
+  - 機械装置等の導入により生産性向上が期待できる
+  - 革新的な製品・サービス開発または生産プロセス改善である
+  - 事業完了後3年で給与支給総額を年率平均1.5%以上増加させる計画がある
+  - 事業完了後3年で事業場内最低賃金を地域別最低賃金+30円以上とする計画がある
+  - 申請時に虚偽の内容が含まれていない
+  tasks:
+    milestones:
+    - id: m1
+      name: 事業計画の具体化と市場調査
+      lead: P-45d
+    - id: m2
+      name: 技術・設備の選定と見積取得
+      lead: P-35d
+    - id: m3
+      name: 実施体制の確定と外部連携先の決定
+      lead: P-30d
+    - id: m4
+      name: 事業計画書ドラフト作成
+      lead: P-25d
+    - id: m5
+      name: 収益計画・投資回収計算の精緻化
+      lead: P-20d
+    - id: m6
+      name: 必要書類の準備と添付資料の整備
+      lead: P-15d
+    - id: m7
+      name: 社内承認と最終レビュー
+      lead: P-10d
+    - id: m8
+      name: 申請書の最終確認と電子申請
+      lead: P-3d
+  docxtemplate:
+    project:
+      title: '{business_overview}'
+      applicant: '{applicant_name}'
+      innovation: '{innovation_points}'
+      market: '{market_analysis}'
+      implementation: '{implementation_plan}'
+      revenue: '{revenue_plan}'
+  llm_prompt_template: "あなたは「ものづくり・商業・サービス生産性向上促進補助金」の申請支援専門アドバイザーです。ユーザーの回答に基づき、採択率を高めるための具体的な改善提案を日本語で提供してください。\n\
+    ユーザーの回答（{input_mode}モード）: \n{user_answers}\n\n審査で重要な以下の評価項目について、ユーザー回答を分析し改善提案を行ってください:\n\
+    \n【技術面の評価】\n1. 技術的優位性・革新性: 競合との差別化、独自技術の強調、客観的根拠の提示方法\n2. 技術的実現可能性: 導入予定設備の妥当性、実施体制の実現可能性、リスク対策\n\
+    \n【事業化面の評価】  \n3. 市場ニーズの的確性: ターゲット市場の明確化、顧客ニーズの具体化、市場データの活用\n4. 事業化の確実性: 売上計画の根拠、投資回収の妥当性、継続的成長の戦略\n\
+    \n【政策面の評価】\n5. 地域経済への波及効果: 雇用創出、地域産業への貢献、サプライチェーン強化\n6. 生産性向上への寄与度: 具体的な生産性指標、改善効果の定量化\n\
+    \n出力形式: \n- 各評価項目について、現在の内容の良い点と改善すべき点を指摘\n- 具体的な改善アクション（追加すべきデータ、強調すべきポイントなど）を提案\n\
+    - 採択確率を高める戦略的なアドバイスを含める\n- 前向きで建設的な口調で、申請者を励ましながら改善提案を行う\n"
+  application_period:
+    current_round: 第21次締切分
+    start_date: '2025-07-01'
+    end_date: '2025-07-25'
+    information_date: '2025-08-13'
+    notes: 令和7年度補正予算・当初予算
+- id: jigyou_shoukei_ma
+  name: 事業承継・M&A補助金（専門家活用枠）
+  sections:
+  - id: business_overview
+    title: 事業概要
+    min: 200
+    max: 1500
+    hint: 承継/M&Aの背景、相手先の概要、事業の狙い（地域・雇用維持や成長）を端的に。取引スキームと主要マイルストーンも記載。
+    input_modes:
+      guided:
+      - Q1. 承継/M&Aの目的と期待する効果は？（売上/利益/雇用）
+      - Q2. 相手先の事業・財務の概要と選定理由は？
+      - Q3. 契約・クロージングまでの工程と体制は？
+  - id: synergy_plan
+    title: 統合・シナジー計画
+    min: 200
+    max: 1500
+    hint: 製品・顧客・人材・設備の統合で生まれる具体的な付加価値、KPI（売上成長率、粗利率、原価低減等）を数値で。
+    input_modes:
+      guided:
+      - Q1. 取得資源をどう活用し収益化する？
+      - Q2. 3年後までの数値目標（売上/粗利/付加価値）は？
+      - Q3. リスク（人材流出/品質/BCP）と対策は？
+  - id: experts_usage
+    title: 専門家活用計画
+    min: 200
+    max: 1200
+    hint: FAや弁護士/会計士等の役割、選定根拠、見積と成果物、相見積取得方針。DD/契約/PMIの支援範囲を明確化。
+    input_modes:
+      guided:
+      - Q1. どの分野の専門家を、どの範囲で活用する？
+      - Q2. 成果物と費用の妥当性をどう担保する？
+      - Q3. 代替案や相見積の取得状況は？
+  - id: implementation
+    title: 実施体制・スケジュール
+    min: 150
+    max: 900
+    hint: 体制図（責任者/担当/外部専門家）、主要タスク（DD→最終契約→クロージング→PMI）と期限。
+    input_modes:
+      guided:
+      - Q1. ガバナンス（稟議/決裁/利益相反管理）は？
+      - Q2. 主要タスクの工程表（週次）を示してください。
+      - Q3. 成果モニタリング（KPI/会議体）は？
+  - id: budget
+    title: 費用計画・資金調達
+    min: 150
+    max: 900
+    hint: 補助対象経費（専門家謝金・外注・旅費等）の内訳、補助金申請額と自己負担、資金調達方法・支払計画。
+    input_modes:
+      guided:
+      - Q1. 申請する補助対象経費の内訳（見積根拠）は？
+      - Q2. 補助金申請額と自己負担額はいくら？
+      - Q3. 資金調達（自己資金/融資等）の裏付けは？
+  validation:
+    eligibility:
+    - id: e-01-sme-definition
+      desc: 中小企業者等の定義に該当
+      type: boolean
+      field: applicant.sme_class_ok
+      severity: block
+      source_id: guideline
+      quote: 補助対象者は、日本国内に拠点又は居住地を置き、日本国内で事業を営む者であること。
+    scope:
+    - id: s-01-type
+      desc: 支援類型の選択（買い手/売り手）
+      type: enum_in
+      field: plan.type
+      params:
+        allowed:
+        - 買い手支援型(I型)
+        - 売り手支援型(II型)
+      severity: block
+      source_id: guideline
+      quote: 本補助事業は「買い手支援類型（Ⅰ型）」「売り手支援類型（Ⅱ型）」を対象とする。
+    - id: s-02-min-max
+      desc: 補助金申請額が下限50万円〜上限600万円の範囲
+      type: number_range
+      field: plan.subsidy_request_yen
+      params:
+        min: 500000
+        max: 6000000
+      severity: block
+      source_id: guideline
+      quote: 補助下限額 50万円／補助上限額 600万円
+    attachments:
+    - id: a-01-application
+      desc: 申請書（jGrants提出様式）
+      type: file_required
+      field: files.application_form
+      severity: block
+      source_id: guideline
+      quote: 補助金申請書（jGrants 上の申請フォーム）を jGrants にて提出すること。
+    - id: a-02-financials
+      desc: 直近3期分の決算書（または確定申告書一式）
+      type: file_required
+      field: files.financials_3yrs
+      severity: block
+      source_id: guideline
+      quote: 直近３期分の決算書（貸借対照表、損益計算書）を提出する。
+    - id: a-03-labor_notice
+      desc: 常時使用する従業員1名の労働条件通知書
+      type: file_required
+      field: files.labor_condition_notice
+      severity: warn
+      source_id: guideline
+      quote: 常時使用する従業員１名の労働条件通知書（注２）（注３）。
+  diagnosis_expense_examples:
+    事業承継:
+    - 専門家謝金（FA・弁護士・会計士）
+    - デューデリジェンス費用
+    - 企業価値評価・鑑定費用
+    - 契約書作成・法務費用
+    - PMI・統合支援費用
+  checklist:
+  - 買い手/売り手の類型を正しく選択した
+  - 専門家の役割・成果物・見積根拠が明確
+  - DDと契約・PMIの工程と体制を定義
+  - 相見積・利益相反を確認し証跡を保管
+  - 補助対象外経費を申請に含めていない
+  tasks:
+    milestones:
+    - id: m1
+      name: 相手先探索・基本合意（LOI）
+      lead: P-60d
+    - id: m2
+      name: 専門家選定・相見積取得
+      lead: P-50d
+    - id: m3
+      name: 事業計画・申請書ドラフト
+      lead: P-40d
+    - id: m4
+      name: DD実施・最終条件交渉
+      lead: P-30d
+    - id: m5
+      name: 内部稟議・最終版提出
+      lead: P-10d
+    - id: m6
+      name: 採択後：交付申請
+      lead: P+10d
+    - id: m7
+      name: クロージング・PMI開始
+      lead: P+60d
+  llm_prompt_template: 'あなたは「事業承継・M&A補助金（専門家活用枠）」の申請支援アドバイザーです。ユーザーの回答に基づき、採択率を高める改善提案を日本語で提示してください。
+
+
+    ユーザーの回答（{input_mode}モード）:
+
+    {user_answers}
+
+
+    【重点評価項目】
+
+    1. 承継の目的と統合シナジー：取得資源の活用、KPI、統合計画の実効性
+
+    2. 実施体制とリスク管理：DD・契約・PMIを通じたガバナンスと体制の妥当性
+
+    3. 事業性・収益性：3年の売上/付加価値目標、根拠データと資金計画
+
+
+    出力形式:
+
+    - 各評価項目について良い点/改善点を指摘
+
+    - 追加すべきデータや強調ポイントを提案
+
+    - 採択確率を高める戦略的アドバイスを含める
+
+    - 前向きで建設的な口調で助言する'
+  application_period:
+    current_round: 第12次公募
+    start_date: '2025-08-12'
+    end_date: '2025-08-27'
+    information_date: '2025-08-13'
+    notes: 専門家活用枠
+- id: gotech_rd_support
+  name: Go-Tech事業（成長型中小企業等研究開発支援事業）
+  sections:
+  - id: rd_overview
+    title: 研究開発計画の概要
+    min: 200
+    max: 1500
+    hint: 研究目的・解決する社会/産業課題・期待される成果（試作/評価/事業化までの道筋）を明確に。
+    input_modes:
+      guided:
+      - Q1. 研究目的と想定ユーザー価値は？
+      - Q2. 現状の技術水準と超えるべき指標は？
+      - Q3. 3年間のマイルストーンと成果物は？
+  - id: innovation
+    title: 技術的課題と革新性
+    min: 200
+    max: 1500
+    hint: 先行技術・代替技術との比較、到達すべき仕様/性能、実証方法、失敗時の代替案を記載。
+    input_modes:
+      guided:
+      - Q1. 中核技術の新規性・優位性は？
+      - Q2. 実証で検証するKPIと達成基準は？
+      - Q3. 想定リスクと技術的リカバリー案は？
+  - id: org_plan
+    title: 実施体制・連携先
+    min: 150
+    max: 1000
+    hint: 事業管理機関・研究等実施機関の役割分担、PM/研究代表・知財/倫理・外部アドバイザーの体制図。
+    input_modes:
+      guided:
+      - Q1. 主たる研究等実施機関と主要人員の役割は？
+      - Q2. 研究データ管理・知財帰属のルールは？
+      - Q3. 外部連携・サプライヤ/顧客の関与は？
+  - id: commercialization
+    title: 事業化・市場性
+    min: 200
+    max: 1200
+    hint: ターゲット市場規模・参入経路・パートナー・収益モデル・規制/認証ロードマップ。
+    input_modes:
+      guided:
+      - Q1. 初期顧客と採用の意思表示は？
+      - Q2. 価格/コスト構造と収益化時期は？
+      - Q3. 規制・認証・標準化の対応は？
+  - id: budget_plan
+    title: 予算計画・資金の裏付け
+    min: 150
+    max: 900
+    hint: 年度別の補助金申請額と自己負担、費目（人件費/設備/外注/クラウド/間接経費）の内訳と根拠。
+    input_modes:
+      guided:
+      - Q1. 年度別の申請額と費目配分（根拠）は？
+      - Q2. 研究資金・人員の確保状況は？
+      - Q3. 間接経費・管理費の計上根拠は？
+  validation:
+    eligibility:
+    - id: e-01-sme
+      desc: 中小企業者等の定義に該当
+      type: boolean
+      field: applicant.sme_class_ok
+      severity: block
+      source_id: guideline
+      quote: 中小企業者等の定義（別表１）を満たすこと。
+    - id: e-02-org
+      desc: 事業管理機関と主たる研究等実施機関を構成
+      type: compound_required
+      fields:
+      - org.project_manager
+      - org.lead_research_org
+      severity: block
+      source_id: guideline
+      quote: 研究等実施機関（間接補助事業者）（必須）／事業管理機関（補助事業者）（必須）
+    scope:
+    - id: s-01-category
+      desc: 申請区分（通常枠/出資獲得枠）
+      type: enum_in
+      field: plan.category
+      params:
+        allowed:
+        - 通常枠
+        - 出資獲得枠
+      severity: block
+      source_id: guideline
+      quote: 補助事業期間と補助金額等：通常枠、出資獲得枠の２区分。
+    - id: s-02-cap-y1
+      desc: 初年度の申請額上限（通常枠4,500万円）
+      type: number_range
+      field: budget.year1_request_yen
+      params:
+        min: 0
+        max: 45000000
+      severity: block
+      source_id: guideline
+      quote: 単年度4,500万円、2年度合計7,500万円、3年度合計9,750万円。
+    attachments:
+    - id: a-01-erad
+      desc: e-Radでの申請書様式一式
+      type: file_required
+      field: files.erad_application
+      severity: block
+      source_id: guideline
+      quote: 申請書類の提出は e‑Rad（府省共通研究開発管理システム）上でのみ受け付けることとしており
+    - id: a-02-structure
+      desc: 実施体制図（役割分担の明記）
+      type: file_required
+      field: files.org_chart
+      severity: warn
+      source_id: guideline
+      quote: 共同体の構成イメージ：事業管理機関・研究等実施機関・アドバイザー。
+  diagnosis_expense_examples:
+    新製品・サービスの開発:
+    - 研究開発費（人件費・材料費）
+    - 試作・実証実験費用
+    - 研究設備・機器導入費
+    - 外部研究委託費
+    - 知的財産出願・維持費
+  checklist:
+  - 研究開発のKPIと到達基準を定義した
+  - 体制（事業管理機関/研究等実施機関/アドバイザー）を明確化
+  - 年度別の申請額と費目配分の根拠を作成
+  - 知財・データ管理と公開方針を整備
+  - e‑Radでの手続・登録を完了した
+  tasks:
+    milestones:
+    - id: m1
+      name: e‑Rad登録・体制合意
+      lead: P-30d
+    - id: m2
+      name: 研究計画ドラフト・KPI設計
+      lead: P-25d
+    - id: m3
+      name: 見積・連携先の確定
+      lead: P-18d
+    - id: m4
+      name: 申請書様式完成・内部審査
+      lead: P-10d
+    - id: m5
+      name: e‑Rad提出
+      lead: P-3d
+    - id: m6
+      name: 採択後：交付申請・契約
+      lead: P+14d
+    - id: m7
+      name: 中間/最終評価準備
+      lead: P+180d
+  llm_prompt_template: 'あなたは「Go-Tech事業（成長型中小企業等研究開発支援事業）」の申請支援アドバイザーです。ユーザーの回答に基づき、採択率を高める改善提案を日本語で提示してください。
+
+
+    ユーザーの回答（{input_mode}モード）:
+
+    {user_answers}
+
+
+    【重点評価項目】
+
+    1. 技術的革新性：先行技術との差、到達性能と検証計画
+
+    2. 実施体制：事業管理機関/研究等実施機関の役割とPM体制の妥当性
+
+    3. 事業化可能性：ターゲット市場、初期顧客、知財・規制対応の整合性
+
+
+    出力形式:
+
+    - 各評価項目の良い点/改善点を指摘
+
+    - 追加データ・強調ポイントを提案
+
+    - 採択確率を高める戦略的アドバイスを含める
+
+    - 前向きで建設的な口調で助言する'
+- id: shoukuritsuka_ippan
+  name: 中小企業省力化投資補助金（一般型）
+  sections:
+  - id: current_state
+    title: 現状分析・経営課題
+    min: 200
+    max: 1200
+    hint: 人手不足や工程のボトルネック、品質・安全の課題、導入対象工程の業務量・工数を数値で。
+    input_modes:
+      guided:
+      - Q1. 省力化が必要な工程と現状の工数・歩留まりは？
+      - Q2. 課題の発生要因と影響（金額/時間/品質）は？
+      - Q3. 既存の改善策と限界は？
+  - id: investment
+    title: 省力化投資の内容
+    min: 200
+    max: 1200
+    hint: 機械装置・システムの仕様、導入レイアウト、既存ラインとの接続、外注・クラウドの活用、見積根拠。
+    input_modes:
+      guided:
+      - Q1. 導入機器（50万円以上）の名称・数量・取得価額は？
+      - Q2. 設置場所と導入後の工程フロー/安全対策は？
+      - Q3. 技術導入費・知財費・外注費等の構成と根拠は？
+  - id: effects
+    title: 省力化効果と付加価値
+    min: 200
+    max: 1000
+    hint: 削減工数・代替人員・生産性/付加価値向上の試算、1人当たり給与支給額の年平均成長率目標。
+    input_modes:
+      guided:
+      - Q1. 年間で削減できる作業時間・人員は？
+      - Q2. 付加価値・労働生産性の向上幅と根拠は？
+      - Q3. 賃上げ・最低賃金引上げへの取組は？
+  - id: schedule_org
+    title: 実施体制・スケジュール
+    min: 150
+    max: 900
+    hint: 責任者/担当・外部事業者の役割、契約/発注/設置/検収/稼働の工程。交付決定から18〜20か月内に完了。
+    input_modes:
+      guided:
+      - Q1. 内部体制（責任者/品質/安全）と外部事業者の役割は？
+      - Q2. 工程とマイルストーン（契約→納品→据付→検収→稼働）は？
+      - Q3. リスク（納期/設置許可/電源容量等）と対策は？
+  - id: finance
+    title: 資金計画・返還リスク
+    min: 150
+    max: 900
+    hint: 申請額と自己負担、資金調達、未達時の返還額算定（付加価値額/給与総額の進捗）に関する備え。
+    input_modes:
+      guided:
+      - Q1. 申請額と自己負担、資金調達の裏付けは？
+      - Q2. 進捗モニタリング方法と報告体制は？
+      - Q3. 返還リスクに対する代替策は？
+  validation:
+    eligibility:
+    - id: e-01-sme
+      desc: 補助対象者（中小企業等）の定義に該当
+      type: boolean
+      field: applicant.sme_class_ok
+      severity: block
+      source_id: guideline
+      quote: 対象事業者 生産・業務プロセス、サービス提供方法の省力化を行う者
+    scope:
+    - id: s-01-asset-unit
+      desc: 機械装置等は単価50万円（税抜）以上
+      type: number_range
+      field: budget.min_asset_unit_price_yen
+      params:
+        min: 500000
+        max: null
+      severity: block
+      source_id: guideline
+      quote: 設備投資は、必ず単価 50 万円（税抜き）以上の機械装置等を取得して
+    - id: s-02-amount-cap
+      desc: 従業員規模別の上限内で申請
+      type: enum_in
+      field: applicant.employee_band
+      params:
+        allowed:
+        - 5人以下
+        - 6〜20人
+        - 21〜50人
+        - 51〜100人
+        - 101人以上
+      severity: warn
+      source_id: guideline
+      quote: 従業員数に応じて上限：5人以下750万円、6〜20人1,500万円、…101人以上8,000万円。
+    attachments:
+    - id: a-01-plan
+      desc: 事業計画書（指定様式 その1/その2/その3）
+      type: file_required
+      field: files.plan_forms
+      severity: block
+      source_id: guideline
+      quote: 事業計画書の記載事項（その1・その2・その3）に沿って作成
+    - id: a-02-quotes
+      desc: 見積書（単価50万円以上の機器は仕様が明確な見積）
+      type: file_required
+      field: files.quotes
+      severity: block
+      source_id: guideline
+      quote: 見積書に加え仕様書等の価格妥当性を検証できる書類の提出を求めることがあります。
+  diagnosis_expense_examples:
+    設備投資・機械導入:
+    - 自動化機械・装置（50万円以上）
+    - 省力化ロボット・搬送装置
+    - 検査・計測機器
+    - IoT・センサーシステム
+    - 制御・監視システム
+    工場・店舗の自動化:
+    - 生産ライン自動化設備
+    - 在庫管理・搬送システム
+    - AI・画像認識システム
+    - 無人化・省人化装置
+    - データ収集・解析システム
+  checklist:
+  - 従業員規模に応じた上限と補助率の適用を確認
+  - 単価50万円以上の機器の仕様・見積根拠を明確化
+  - 省力化効果/付加価値向上のKPIと算定根拠を提示
+  - スケジュールは交付決定から18〜20か月内に完了
+  - 返還リスク（未達時）を理解し管理計画を作成
+  tasks:
+    milestones:
+    - id: m1
+      name: 要件確認・対象設備の選定
+      lead: P-30d
+    - id: m2
+      name: 見積取得・仕様確定
+      lead: P-24d
+    - id: m3
+      name: 事業計画作成・内部レビュー
+      lead: P-14d
+    - id: m4
+      name: 電子申請・提出
+      lead: P-3d
+    - id: m5
+      name: 採択後：交付申請・契約/発注
+      lead: P+21d
+    - id: m6
+      name: 据付・稼働・実績報告
+      lead: P+180d
+  llm_prompt_template: 'あなたは「中小企業省力化投資補助金（一般型）」の申請支援アドバイザーです。ユーザーの回答に基づき、採択率を高める改善提案を日本語で提示してください。
+
+
+    ユーザーの回答（{input_mode}モード）:
+
+    {user_answers}
+
+
+    【重点評価項目】
+
+    1. 省力化効果：工数削減、人員代替、付加価値向上の根拠
+
+    2. 投資の妥当性：仕様・見積の合理性、50万円以上の要件充足
+
+    3. 実施可能性：体制・工程・リスク管理、18〜20か月内の完了見込み
+
+
+    出力形式:
+
+    - 各評価項目の良い点/改善点を指摘
+
+    - 追加データ・強調ポイントを提案
+
+    - 採択確率を高める戦略的アドバイスを含める
+
+    - 前向きで建設的な口調で助言する'

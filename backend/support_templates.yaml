@@ -1,0 +1,228 @@
+# 補助金申請サポートテンプレート集
+# 各項目について具体的なガイダンスとテンプレートを提供
+
+wage_increase_plan:
+  title: "賃金引上げ計画の誓約書"
+  description: "従業員の給与向上を約束する計画書の作成支援"
+  support_level: "guided_template"
+  sections:
+    - id: "current_situation"
+      title: "現在の賃金状況"
+      template: |
+        【現在の賃金体系】
+        ・従業員数: {employee_count}名
+        ・平均年収: {average_salary}万円
+        ・最低賃金: {current_min_wage}円/時
+        ・昇給実績: 過去3年で{past_raise_rate}%の昇給実施
+      guidance: |
+        まずは現在の賃金状況を正確に把握しましょう。
+        人事台帳や給与計算ソフトから以下の情報を収集してください：
+        1. 正社員・非正社員別の人数
+        2. 職種別の平均給与額
+        3. 過去3年間の昇給率
+    
+    - id: "increase_plan"
+      title: "賃金引上げ計画"
+      template: |
+        【3年間の賃金引上げ計画】
+        
+        年度 | 給与支給総額 | 増加率 | 事業場内最低賃金
+        ---- | ------------ | ------ | ------------------
+        2025年 | {year1_total}万円 | - | {year1_min_wage}円
+        2026年 | {year2_total}万円 | +{year2_rate}% | {year2_min_wage}円  
+        2027年 | {year3_total}万円 | +{year3_rate}% | {year3_min_wage}円
+        
+        【実現の根拠】
+        ・売上増加計画: {revenue_plan}
+        ・生産性向上効果: {productivity_improvement}
+        ・市場拡大見込み: {market_expansion}
+      guidance: |
+        賃金引上げ計画の作成手順：
+        1. 事業完了後3年で給与支給総額を年率平均1.5%以上増加
+        2. 事業場内最低賃金を地域別最低賃金+30円以上に設定
+        3. 売上・生産性向上による原資確保の根拠を示す
+      
+      calculations:
+        min_increase_rate: 1.5  # 年率最低増加率(%)
+        min_wage_premium: 30    # 地域最低賃金への上乗せ額(円)
+        
+    - id: "implementation_method"
+      title: "実施方法・体制"
+      template: |
+        【実施体制】
+        ・責任者: {responsible_person}（役職: {position}）
+        ・人事担当: {hr_person}
+        ・労務管理: {labor_management}
+        
+        【実施スケジュール】
+        ・{year1}年4月: 第1回昇給実施（平均{year1_raise}円/月）
+        ・{year2}年4月: 第2回昇給実施（平均{year2_raise}円/月）
+        ・{year3}年4月: 第3回昇給実施（平均{year3_raise}円/月）
+        
+        【モニタリング方法】
+        ・四半期ごとの給与支給総額チェック
+        ・年次での目標達成率評価
+        ・従業員満足度調査の実施
+      guidance: |
+        実施体制の整備ポイント：
+        1. 責任者を明確に設定（通常は代表者または人事責任者）
+        2. 四半期ごとの進捗管理体制を構築
+        3. 労働組合がある場合は事前協議を実施
+
+next_generation_action_plan:
+  title: "次世代法に基づく行動計画"
+  description: "従業員21名以上の企業向け行動計画策定支援"
+  support_level: "guided_template"
+  applicability:
+    condition: "employee_count >= 21"
+    description: "常時雇用する労働者が21人以上の事業主に義務付け"
+  
+  sections:
+    - id: "plan_period"
+      title: "計画期間の設定"
+      template: |
+        【行動計画期間】
+        計画期間: {start_date}から{end_date}まで（{duration}年間）
+        策定日: {planning_date}
+        公表日: {publication_date}
+        
+        【計画の目標】
+        {plan_objectives}
+      guidance: |
+        行動計画期間の設定方法：
+        1. 計画期間は2年以上5年以下で設定
+        2. 策定から公表まで1ヶ月以内に実施
+        3. 具体的で測定可能な目標を設定
+
+    - id: "current_situation_analysis"
+      title: "現状分析"
+      template: |
+        【現在の雇用状況】
+        
+        区分 | 男性 | 女性 | 合計
+        ---- | ---- | ---- | ----
+        管理職 | {male_managers}名 | {female_managers}名 | {total_managers}名
+        正社員 | {male_regular}名 | {female_regular}名 | {total_regular}名
+        非正規 | {male_irregular}名 | {female_irregular}名 | {total_irregular}名
+        
+        【女性活躍の現状】
+        ・女性管理職比率: {female_manager_ratio}%
+        ・育児休業取得率（女性）: {female_childcare_rate}%
+        ・育児休業取得率（男性）: {male_childcare_rate}%
+        ・平均勤続年数（女性）: {female_tenure}年
+      guidance: |
+        現状分析で把握すべき項目：
+        1. 男女別の雇用状況
+        2. 管理職における女性の割合
+        3. 育児休業等の取得状況
+        4. 労働時間の状況
+
+productivity_improvement_metrics:
+  title: "生産性向上の測定・評価"
+  description: "補助事業による生産性向上効果の測定方法"
+  support_level: "calculation_support"
+  
+  sections:
+    - id: "baseline_measurement"
+      title: "現状ベースラインの測定"
+      template: |
+        【現在の生産性指標】
+        
+        項目 | 現在値 | 測定方法 | データ取得元
+        ---- | ------ | -------- | -------------
+        労働生産性 | {current_productivity}円/時間 | 付加価値額÷総労働時間 | {data_source_1}
+        設備稼働率 | {current_utilization}% | 稼働時間÷総可能時間 | {data_source_2}
+        品質指標 | 不良率{current_defect_rate}% | 不良品数÷総生産数 | {data_source_3}
+        
+        【測定期間】
+        ベースライン期間: {baseline_start} 〜 {baseline_end}
+        測定頻度: {measurement_frequency}
+      guidance: |
+        生産性測定のポイント：
+        1. 補助事業実施前の正確なベースライン測定
+        2. 定量的で客観的な指標の選定
+        3. 継続的な測定が可能な仕組みの構築
+
+    - id: "improvement_targets"
+      title: "改善目標の設定"
+      template: |
+        【3年後の目標値】
+        
+        項目 | 目標値 | 改善率 | 根拠・算出方法
+        ---- | ------ | ------ | --------------
+        労働生産性 | {target_productivity}円/時間 | +{productivity_improvement}% | {productivity_basis}
+        設備稼働率 | {target_utilization}% | +{utilization_improvement}% | {utilization_basis}
+        品質指標 | 不良率{target_defect_rate}% | -{defect_improvement}% | {quality_basis}
+        
+        【年次マイルストーン】
+        1年目: {year1_milestone}
+        2年目: {year2_milestone}  
+        3年目: {year3_milestone}
+      calculations:
+        min_productivity_improvement: 3  # 最低改善率(%)
+        recommended_improvement: 5       # 推奨改善率(%)
+
+employee_welfare_systems:
+  title: "従業員福利厚生制度の整備"
+  description: "従業員満足度向上のための制度設計支援"
+  support_level: "guided_template"
+  
+  categories:
+    work_life_balance:
+      title: "ワークライフバランス支援"
+      items:
+        - title: "フレックスタイム制度"
+          template: |
+            【制度概要】
+            コアタイム: {core_time_start}時〜{core_time_end}時
+            フレキシブルタイム: {flexible_start}時〜{flexible_end}時
+            対象者: {target_employees}
+            
+            【導入効果】
+            ・通勤ラッシュ回避による疲労軽減
+            ・育児・介護との両立支援
+            ・個人の生産性最大化
+          
+        - title: "在宅勤務制度"
+          template: |
+            【制度内容】
+            対象業務: {eligible_tasks}
+            実施頻度: 週{wfh_days}日まで
+            勤務時間: {wfh_hours}
+            連絡体制: {communication_method}
+            
+            【環境整備支援】
+            ・PC・周辺機器の貸与: {equipment_support}
+            ・通信費補助: 月額{communication_allowance}円
+            ・光熱費補助: 月額{utility_allowance}円
+
+# 探索用プロンプト生成機能
+search_prompts:
+  wage_increase_requirements:
+    query: |
+      ものづくり補助金 賃金引上げ計画 誓約書 要件 テンプレート 
+      給与支給総額 年率1.5%増加 事業場内最低賃金 地域別最低賃金+30円
+    expected_sources:
+      - "中小企業庁 ものづくり補助金 公募要領"
+      - "補助金申請ガイドライン 賃金引上げ計画"
+      - "労働基準法 最低賃金 関連規定"
+  
+  next_generation_law_requirements:
+    query: |
+      次世代育成支援対策推進法 行動計画 策定 公表 義務 
+      従業員21名以上 女性活躍推進 育児支援 
+      厚生労働省 ガイドライン テンプレート
+    expected_sources:
+      - "厚生労働省 次世代育成支援対策推進法 行動計画策定指針"
+      - "女性活躍推進法 一般事業主行動計画"
+      - "行動計画策定・届出システム 使用方法"
+
+  productivity_measurement:
+    query: |
+      生産性向上 測定方法 KPI 指標 製造業 サービス業
+      労働生産性 計算式 付加価値額 総労働時間
+      設備稼働率 品質指標 ベンチマーク
+    expected_sources:
+      - "経済産業省 生産性向上 ガイドライン"
+      - "中小企業庁 経営力向上計画 生産性指標"
+      - "産業別 生産性統計 業界平均値"

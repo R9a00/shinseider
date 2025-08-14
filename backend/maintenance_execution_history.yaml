@@ -1,0 +1,175 @@
+executions:
+- errors: []
+  overall_status: running
+  start_time: '2025-08-14T09:12:02.864515'
+  steps:
+  - details:
+      output: " 100.00%\n\U0001F5A5️ 3. UI表現の正確性をチェック中...\n   UI表現正確性スコア: 100.00%\n\
+        \U0001F4DD 4. 表現方法の正確性をチェック中...\n   表現方法正確性スコア: 100.00%\n⏰ 5. 時間情報の正確性をチェック中...\n\
+        \   時間情報正確性スコア: 100.00%\n\n\U0001F4CA システム完全性チェック結果\n============================================================\n\
+        総合スコア: 94.52%\n\n各次元スコア:\n  ⚠️ information_source: 78.10%\n  ✅ reflection_logic:\
+        \ 100.00%\n  ✅ ui_representation: 100.00%\n  ✅ expression_method: 100.00%\n\
+        \  ✅ temporal_accuracy: 100.00%\n\n検出された問題:\n\n\U0001F4BE チェック結果を保存: /Users/r9a/exp/attg/backend/integrity_check_results.yaml\n\
+        \n\U0001F389 システム完全性: 優秀\n"
+      overall_score: 0.9452380952380952
+      status: success
+      violation_count: 6
+    name: システム完全性チェック
+    status: success
+    step: 1
+  - details:
+      reason: 情報ソース品質問題 6件検出
+      requires_update: true
+      source_violations:
+      - details:
+          authority_score: 1.0
+          consistency_score: 1.0
+          freshness_score: 0.3
+          url: https://shoukei-mahojokin.go.jp/
+        issue: '情報ソース品質低下: 事業承継・M&A補助金（専門家活用枠）公募要領'
+        score: 0.7666666666666666
+        subsidy_id: jigyou_shoukei_ma
+        type: information_source
+      - details:
+          authority_score: 1.0
+          consistency_score: 1.0
+          freshness_score: 0.3
+          url: https://shinjigyou-shinshutsu.smrj.go.jp/
+        issue: '情報ソース品質低下: 中小企業新事業進出補助金公募要領'
+        score: 0.7666666666666666
+        subsidy_id: shinjigyo_shinshutsu
+        type: information_source
+      - details:
+          authority_score: 1.0
+          consistency_score: 1.0
+          freshness_score: 0.3
+          url: https://www.chusho.meti.go.jp/support/innovation/2025/250217kobo.html
+        issue: '情報ソース品質低下: Go-Tech事業公募要領'
+        score: 0.7666666666666666
+        subsidy_id: gotech_rd_support
+        type: information_source
+      - details:
+          authority_score: 1.0
+          consistency_score: 1.0
+          freshness_score: 0.3
+          url: https://atotsugi-koshien.go.jp/
+        issue: '情報ソース品質低下: アトツギ甲子園公式サイト'
+        score: 0.7666666666666666
+        subsidy_id: atotsugi
+        type: information_source
+      - details:
+          authority_score: 1.0
+          consistency_score: 1.0
+          freshness_score: 0.3
+          url: https://atotsugi-koshien.go.jp/wp-content/uploads/2025/07/requirements_entry.pdf
+        issue: '情報ソース品質低下: アトツギ甲子園エントリー要領'
+        score: 0.7666666666666666
+        subsidy_id: atotsugi
+        type: information_source
+      - details:
+          authority_score: 0.6
+          consistency_score: 1.0
+          freshness_score: 0.3
+          url: https://portal.monodukuri-hojo.jp/
+        issue: '情報ソース品質低下: ものづくり・商業・サービス生産性向上促進補助金公募要領'
+        score: 0.6333333333333333
+        subsidy_id: monodukuri_r7_21th
+        type: information_source
+    name: 更新必要性判定
+    status: completed
+    step: 2
+  - details:
+      results:
+        atotsugi:
+          investigated: true
+          needs_update: true
+          source_count: 2
+          sources:
+          - accessed_date: '2025-01-11'
+            title: アトツギ甲子園公式サイト
+            url: https://atotsugi-koshien.go.jp/
+            version: 最新版
+          - accessed_date: '2025-01-11'
+            title: アトツギ甲子園エントリー要領
+            url: https://atotsugi-koshien.go.jp/wp-content/uploads/2025/07/requirements_entry.pdf
+            version: 第6回大会版（2025年度）
+        gotech_rd_support:
+          investigated: true
+          needs_update: true
+          source_count: 1
+          sources:
+          - accessed_date: '2025-01-11'
+            title: Go-Tech事業公募要領
+            url: https://www.chusho.meti.go.jp/support/innovation/2025/250217kobo.html
+            version: 令和6年度版
+        jigyou_shoukei_ma:
+          investigated: true
+          needs_update: true
+          source_count: 1
+          sources:
+          - accessed_date: '2025-01-11'
+            title: 事業承継・M&A補助金（専門家活用枠）公募要領
+            url: https://shoukei-mahojokin.go.jp/
+            version: 令和7年度版
+        monodukuri_r7_21th:
+          investigated: true
+          needs_update: true
+          source_count: 1
+          sources:
+          - accessed_date: '2025-01-11'
+            title: ものづくり・商業・サービス生産性向上促進補助金公募要領
+            url: https://portal.monodukuri-hojo.jp/
+            version: 令和7年度第21次公募版
+        shinjigyo_shinshutsu:
+          investigated: true
+          needs_update: true
+          source_count: 1
+          sources:
+          - accessed_date: '2025-01-11'
+            title: 中小企業新事業進出補助金公募要領
+            url: https://shinjigyou-shinshutsu.smrj.go.jp/
+            version: 令和7年度版
+        shoukuritsuka_ippan:
+          investigated: true
+          needs_update: false
+          source_count: 1
+          sources:
+          - accessed_date: '2025-08-12'
+            title: 中小企業省力化投資補助金公募要領
+            url: https://shoryokuka.smrj.go.jp/ippan/
+            version: 一般型 第1次公募版
+      status: success
+      subsidies_investigated: 6
+    name: 包括的調査
+    status: success
+    step: 3
+  - details:
+      status: success
+      update_date: '2025-08-14'
+      updated_subsidies: 5
+    name: データベース更新
+    status: success
+    step: 4
+  - details:
+      output: "\U0001F504 補助金情報統合システム移行開始...\n\U0001F389 移行完了！単一の真理の源(Single Source\
+        \ of Truth)が確立されました\n\n\U0001F4CB 移行結果:\n  - subsidy_master.yaml: 統合マスターデータベース\n\
+        \  - subsidies.yaml: API互換形式（自動生成）\n  - version_history.yaml: バージョン履歴（自動生成）\n\
+        \  - バックアップファイル: 既存データ保護\n"
+      status: success
+    name: API出力ファイル再生成
+    status: success
+    step: 5
+  - details:
+      output: " 100.00%\n\U0001F5A5️ 3. UI表現の正確性をチェック中...\n   UI表現正確性スコア: 100.00%\n\
+        \U0001F4DD 4. 表現方法の正確性をチェック中...\n   表現方法正確性スコア: 100.00%\n⏰ 5. 時間情報の正確性をチェック中...\n\
+        \   時間情報正確性スコア: 100.00%\n\n\U0001F4CA システム完全性チェック結果\n============================================================\n\
+        総合スコア: 94.52%\n\n各次元スコア:\n  ⚠️ information_source: 78.10%\n  ✅ reflection_logic:\
+        \ 100.00%\n  ✅ ui_representation: 100.00%\n  ✅ expression_method: 100.00%\n\
+        \  ✅ temporal_accuracy: 100.00%\n\n検出された問題:\n\n\U0001F4BE チェック結果を保存: /Users/r9a/exp/attg/backend/integrity_check_results.yaml\n\
+        \n\U0001F389 システム完全性: 優秀\n"
+      overall_score: 0.9452380952380952
+      status: success
+      violation_count: 6
+    name: 最終完全性チェック
+    status: success
+    step: 6

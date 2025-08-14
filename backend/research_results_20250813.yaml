@@ -1,0 +1,82 @@
+# 調査実施日: 2025-08-13
+# 調査者: Claude AI Assistant
+
+subsidies_update:
+  monodukuri_r7_21th:
+    id: "monodukuri_r7_21th"
+    name: "ものづくり・商業・サービス生産性向上促進補助金"
+    application_period:
+      current_round: "第21次締切分"
+      start_date: "2025-07-01"
+      end_date: "2025-07-25"
+      information_date: "2025-08-13"
+      notes: "令和7年度補正予算・当初予算"
+    status: "募集終了"
+    changes: "第21次締切分は2025年7月25日で終了済み"
+    
+  it_dounyuu:
+    id: "it_dounyuu"
+    name: "IT導入補助金"
+    application_period:
+      current_round: "2025年度第4次公募"
+      start_date: "2025-04-01"
+      end_date: "2025-08-20"
+      information_date: "2025-08-13"
+      notes: "通常枠・インボイス枠・セキュリティ対策推進枠"
+    status: "募集中"
+    changes: "第1-3次募集は終了、現在第4次募集中（8月20日締切）"
+    
+  chusho_jigyou:
+    id: "chusho_jigyou"
+    name: "小規模事業者持続化補助金"
+    application_period:
+      current_round: "第17回公募"
+      start_date: "2025-03-04"
+      end_date: "2025-06-13"
+      information_date: "2025-08-13"
+      notes: "一般型・特別枠（賃金引上げ枠等）"
+    status: "募集終了"
+    changes: "第17回公募は終了、第18回公募は2025年10月3日開始予定"
+    
+  shinjigyo_shinshutsu:
+    id: "shinjigyo_shinshutsu"
+    name: "中小企業新事業進出補助金"
+    application_period:
+      current_round: "令和7年度第1回公募"
+      start_date: "2025-06-17"
+      end_date: "2025-07-15"
+      information_date: "2025-08-13"
+      notes: "新規事業進出支援枠"
+    status: "募集終了"
+    changes: "第1回公募は7月15日で終了済み"
+    
+  atotsugi:
+    id: "atotsugi"
+    name: "アトツギ甲子園"
+    application_period:
+      current_round: "第6回大会"
+      start_date: "2025-08-01"
+      end_date: "2025-11-26"
+      information_date: "2025-08-13"
+      notes: "エントリー・地方予選・全国大会"
+    status: "エントリー受付中"
+    changes: "新設賞「イノベーション・環境局長賞」を追加"
+    
+  jigyou_shoukei:
+    id: "jigyou_shoukei"
+    name: "事業承継・M&A補助金（専門家活用枠）"
+    application_period:
+      current_round: "第12次公募"
+      start_date: "2025-08-12"
+      end_date: "2025-08-27"
+      information_date: "2025-08-13"
+      notes: "専門家活用枠"
+    status: "募集中"
+    changes: "第12次公募が8月12日開始、27日締切"
+
+# 全体的な変更・注意事項
+general_updates:
+  - "IT導入補助金は7次公募まで計画されており、12月2日まで継続的に募集"
+  - "小規模事業者持続化補助金は第18回公募が2025年10月3日開始予定"
+  - "アトツギ甲子園は第6回大会が現在エントリー受付中（11月26日まで）"
+  - "多くの補助金で既に2025年度の第1回募集が終了している状況"
