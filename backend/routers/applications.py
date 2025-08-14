@@ -64,7 +64,18 @@ def generate_ai_prompt(subsidy, answers, input_mode):
     # 補助金固有のプロンプトテンプレートがある場合はそれを使用
     prompt_template = subsidy.get("llm_prompt_template")
     if prompt_template:
-        return prompt_template.format(user_answers=answers_text)
+        try:
+            return prompt_template.format(
+                user_answers=answers_text,
+                input_mode=input_mode,
+                subsidy_name=subsidy_name
+            )
+        except KeyError as e:
+            # テンプレートに必要なパラメータが不足している場合はデフォルトを使用
+            security_logger.warning(f"Template parameter missing: {e}, using default template")
+        except Exception as e:
+            # その他のフォーマットエラーの場合もデフォルトを使用
+            security_logger.error(f"Template format error: {e}, using default template")
     
     # デフォルトのプロンプト（後方互換性のため）
     prompt = f"""あなたは{subsidy_name}申請の専門アドバイザーです。以下の申請内容を分析し、採択率を高めるための具体的で実行可能な改善提案を提供してください。
