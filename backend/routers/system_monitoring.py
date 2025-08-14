@@ -13,6 +13,26 @@ security_logger = logging.getLogger("security")
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+def _categorize_test(test_description):
+    """テスト説明からカテゴリを分類"""
+    description_lower = test_description.lower()
+    
+    # データ完全性テスト: データの整合性、データベース整合性、データ品質
+    if ('データ' in description_lower and ('完全性' in description_lower or '整合性' in description_lower)) or \
+       'データベース' in description_lower or \
+       'データ品質' in description_lower or \
+       'データ検証' in description_lower or \
+       'integrity' in description_lower:
+        return 'integrity'
+    # システム機能テスト: UI、API、フィールド、エラーハンドリング等
+    elif 'ui' in description_lower or 'フィールド' in description_lower or \
+         'api' in description_lower or 'エラーハンドリング' in description_lower or \
+         'エッジケース' in description_lower or 'ai' in description_lower or \
+         'プロンプト' in description_lower:
+        return 'functionality'
+    else:
+        return 'functionality'
+
 # テスト結果キャッシュ（5分間有効）
 _test_results_cache = None
 _test_results_cache_time = None
@@ -157,15 +177,68 @@ async def trigger_integrity_check():
 
 @router.get("/test-results")
 async def get_detailed_test_results():
-    """キャッシュされたテスト結果を取得（テストは手動実行）"""
+    """最新のテスト結果を取得（事前実行済み）"""
     global _test_results_cache, _test_results_cache_time
     try:
-        # キャッシュがない場合は空の結果を返す
-        if _test_results_cache is None:
-            return {
-                'timestamp': datetime.now().isoformat(),
-                'message': 'テスト未実行。/run-testsエンドポイントでテストを実行してください。',
+        # 事前に実行されたテスト結果を読み込み
+        import json
+        import os
+        
+        report_path = os.path.join(BASE_DIR, 'test_report_comprehensive.json')
+        if os.path.exists(report_path):
+            with open(report_path, 'r', encoding='utf-8') as f:
+                comprehensive_report = json.load(f)
+            
+            
+            # システム監視形式に変換
+            result = {
+                'timestamp': comprehensive_report.get('timestamp', datetime.now().isoformat()),
+                'message': f'事前実行済みテスト結果 (成功率: {comprehensive_report.get("success_rate", 0):.1f}%)',
                 'summary': {
+                    'total_tests': comprehensive_report.get('total_tests', 0),
+                    'passed': comprehensive_report.get('successful_tests', 0),
+                    'failed': comprehensive_report.get('failed_tests', 0),
+                    'errors': 0,
+                    'success_rate': comprehensive_report.get('success_rate', 0)
+                },
+                'test_details': [
+                    {
+                        'test_name': f"test_{i+1:02d}",
+                        'display_name': test.get('description', 'Unknown Test'),
+                        'status': 'passed' if test.get('success', False) else 'failed',
+                        'category': _categorize_test(test.get('description', '')),
+                        'description': f"実行時間: {test.get('execution_time', 0):.2f}秒",
+                        'feature': '包括的機能テスト' if test.get('success', False) else '要改善項目'
+                    }
+                    for i, test in enumerate(comprehensive_report.get('test_results', []))
+                ],
+                'execution_time': comprehensive_report.get('total_execution_time', 0),
+                'status': comprehensive_report.get('overall_status', 'UNKNOWN'),
+                'categories': {
+                    'functionality': {'total': 0, 'passed': 0, 'failed': 0, 'errors': 0},
+                    'integrity': {'total': 0, 'passed': 0, 'failed': 0, 'errors': 0}
+                }
+            }
+            
+            # カテゴリ別統計を計算
+            for test_detail in comprehensive_report.get('test_results', []):
+                category = _categorize_test(test_detail.get('description', ''))
+                status = 'passed' if test_detail.get('success', False) else 'failed'
+                
+                if category in result['categories']:
+                    result['categories'][category]['total'] += 1
+                    if status == 'passed':
+                        result['categories'][category]['passed'] += 1
+                    else:
+                        result['categories'][category]['failed'] += 1
+            
+            return result
+        
+        # ファイルがない場合のフォールバック
+        return {
+            'timestamp': datetime.now().isoformat(),
+            'message': 'テスト結果ファイルが見つかりません。管理者にお問い合わせください。',
+            'summary': {
                     'total_tests': 0,
                     'passed': 0,
                     'failed': 0,

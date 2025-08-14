@@ -207,8 +207,18 @@ class TestIntegrityChecker(unittest.TestCase):
         with open(os.path.join(self.test_dir, 'subsidy_master.yaml'), 'w', encoding='utf-8') as f:
             yaml.dump(invalid_data, f, allow_unicode=True)
         
-        # その他の必要ファイルを作成
-        self.create_test_data()
+        # フレームワーク設定ファイルのみ作成（subsidy_master.yamlは上書きしない）
+        framework_data = {
+            'metadata': {'framework_version': '1.0.0'},
+            'integrity_dimensions': {
+                'temporal_accuracy': {
+                    'definition': 'テスト用時間情報の正確性'
+                }
+            }
+        }
+        
+        with open(os.path.join(self.test_dir, 'system_integrity_framework.yaml'), 'w', encoding='utf-8') as f:
+            yaml.dump(framework_data, f, allow_unicode=True)
         
         results = self.checker.run_complete_check()
         
