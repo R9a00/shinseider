@@ -25,6 +25,80 @@ function SubsidyApplicationSupport() {
   const [autoSaveStatus, setAutoSaveStatus] = useState(''); // 'saving', 'saved', 'error'
   const [phaseNameInputs, setPhaseNameInputs] = useState({}); // 一時的なフェーズ名入力状態
 
+  // Phase 2: 設問回答からマイルストーン項目を自動生成する関数
+  const generateMilestonePhases = (answers) => {
+    // TRLベースの基本項目
+    const baseMilestones = {
+      'アイデア段階': ['問題検証', '試作開発', '初期資金調達'],
+      '試作済み': ['実証実験', '製品化', '販路開拓'],
+      '製品化済み': ['販路拡大', '事業拡張', '体制強化']
+    };
+
+    // 業種別追加項目
+    const industryAddons = {
+      '製造業': ['品質保証', '量産体制'],
+      'サービス業': ['運営体制', 'システム構築'],
+      'IT業': ['開発', 'セキュリティ'],
+      '小売業': ['店舗準備', '在庫管理'],
+      '建設業': ['許認可取得', '安全体制'],
+      '医療・介護': ['資格・認可', 'スタッフ確保']
+    };
+
+    // 承継特有項目（常に追加）
+    const successionItems = ['資産棚卸', '顧客継承', '権限移行'];
+
+    // 設問から情報を抽出
+    const businessInfo = answers['new_business_idea'] || {};
+    const personalInfo = answers['personal_story'] || {};
+    
+    // TRL判定（技術準備状況）
+    let trlStage = 'アイデア段階';
+    const development = businessInfo['DEV_STATUS_DETAIL'];
+    if (development && development.includes('製品化')) {
+      trlStage = '製品化済み';
+    } else if (development && (development.includes('試作') || development.includes('プロトタイプ'))) {
+      trlStage = '試作済み';
+    }
+
+    // 業種判定
+    let industry = '';
+    const businessType = businessInfo['BUSINESS_TYPE'];
+    if (businessType) {
+      if (businessType.includes('製造')) industry = '製造業';
+      else if (businessType.includes('IT') || businessType.includes('システム')) industry = 'IT業';
+      else if (businessType.includes('サービス')) industry = 'サービス業';
+      else if (businessType.includes('小売') || businessType.includes('販売')) industry = '小売業';
+      else if (businessType.includes('建設') || businessType.includes('工事')) industry = '建設業';
+      else if (businessType.includes('医療') || businessType.includes('介護')) industry = '医療・介護';
+    }
+
+    // 事業承継フラグ
+    const isSuccession = personalInfo['SUCCESSION_TYPE'] && personalInfo['SUCCESSION_TYPE'] !== '';
+
+    // マイルストーン項目を生成
+    let phases = [...(baseMilestones[trlStage] || baseMilestones['アイデア段階'])];
+    
+    // 業種別項目を追加
+    if (industry && industryAddons[industry]) {
+      phases = [...phases, ...industryAddons[industry]];
+    }
+    
+    // 承継項目を追加
+    if (isSuccession) {
+      phases = [...phases, ...successionItems];
+    }
+
+    // 重複を除去
+    phases = [...new Set(phases)];
+
+    // オブジェクト形式に変換
+    const result = {};
+    phases.forEach(phase => {
+      result[phase] = [{ date: '', content: '', notes: '' }];
+    });
+
+    return result;
+  };
 
   // 申請書作成データに基づくサポートガイダンス機能
   const getSupportGuidance = (item) => {
@@ -1562,6 +1636,27 @@ function SubsidyApplicationSupport() {
                   return null;
                 })()}
 
+                {/* シンプルな自動生成ボタン */}
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-green-800 mb-1">🤖 自動生成</p>
+                      <p className="text-xs text-green-600">これまでの回答からあなたに適したマイルストーンを追加します</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const generatedPhases = generateMilestonePhases(answers);
+                        const mergedValue = { ...currentValue, ...generatedPhases };
+                        handleAnswerChange(section.id, mergedValue, task.task_id);
+                      }}
+                      className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-all"
+                    >
+                      自動生成
+                    </button>
+                  </div>
+                </div>
+
                 {/* よく使う大項目追加ボタン */}
                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
                   <p className="text-xs text-gray-600 mb-2">よく使う大項目を追加：</p>
@@ -1695,19 +1790,56 @@ function SubsidyApplicationSupport() {
                               {Array.isArray(phaseItems) ? phaseItems.map((item, itemIndex) => (
                                 <div key={itemIndex} className="grid grid-cols-12 gap-2 items-center p-2 bg-gray-50 rounded">
                                   <div className="col-span-2">
-                                    <input
-                                      type="month"
-                                      value={item.date || ''}
-                                      onChange={(e) => {
-                                        const newValue = { ...currentValue };
-                                        const currentItems = Array.isArray(newValue[phaseKey]) ? newValue[phaseKey] : [];
-                                        const newItems = [...currentItems];
-                                        newItems[itemIndex] = { ...item, date: e.target.value };
-                                        newValue[phaseKey] = newItems;
-                                        handleAnswerChange(section.id, newValue, task.task_id);
-                                      }}
-                                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                                    />
+                                    <div className="flex gap-1">
+                                      <select
+                                        value={item.date ? item.date.split('-')[0] : ''}
+                                        onChange={(e) => {
+                                          const newValue = { ...currentValue };
+                                          const currentItems = Array.isArray(newValue[phaseKey]) ? newValue[phaseKey] : [];
+                                          const newItems = [...currentItems];
+                                          const currentMonth = item.date ? item.date.split('-')[1] : '01';
+                                          const newDate = e.target.value ? `${e.target.value}-${currentMonth}` : '';
+                                          newItems[itemIndex] = { ...item, date: newDate };
+                                          newValue[phaseKey] = newItems;
+                                          handleAnswerChange(section.id, newValue, task.task_id);
+                                        }}
+                                        className="flex-1 px-1 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                      >
+                                        <option value="">年</option>
+                                        {Array.from({ length: 5 }, (_, i) => {
+                                          const year = new Date().getFullYear() + i;
+                                          return (
+                                            <option key={year} value={year}>
+                                              {year}
+                                            </option>
+                                          );
+                                        })}
+                                      </select>
+                                      <select
+                                        value={item.date ? item.date.split('-')[1] : ''}
+                                        onChange={(e) => {
+                                          const newValue = { ...currentValue };
+                                          const currentItems = Array.isArray(newValue[phaseKey]) ? newValue[phaseKey] : [];
+                                          const newItems = [...currentItems];
+                                          const currentYear = item.date ? item.date.split('-')[0] : new Date().getFullYear();
+                                          const newDate = e.target.value ? `${currentYear}-${e.target.value}` : '';
+                                          newItems[itemIndex] = { ...item, date: newDate };
+                                          newValue[phaseKey] = newItems;
+                                          handleAnswerChange(section.id, newValue, task.task_id);
+                                        }}
+                                        className="flex-1 px-1 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                      >
+                                        <option value="">月</option>
+                                        {Array.from({ length: 12 }, (_, i) => {
+                                          const month = String(i + 1).padStart(2, '0');
+                                          return (
+                                            <option key={month} value={month}>
+                                              {i + 1}月
+                                            </option>
+                                          );
+                                        })}
+                                      </select>
+                                    </div>
                                   </div>
                                   <div className="col-span-5">
                                     <input
@@ -1737,7 +1869,7 @@ function SubsidyApplicationSupport() {
                                         newValue[phaseKey] = newItems;
                                         handleAnswerChange(section.id, newValue, task.task_id);
                                       }}
-                                      placeholder="備考"
+                                      placeholder="例：契約書、設計書、テスト結果"
                                       className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                                     />
                                   </div>
