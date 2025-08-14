@@ -1867,7 +1867,7 @@ function SubsidyApplicationSupport() {
     setIsSubmitting(true);
     setError(null);
     try {
-      const response = await fetch(`${config.API_BASE_URL}/generate_application_advice`, {
+      const response = await fetch(`${config.API_BASE_URL}/api/applications/generate-advice`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ subsidy_id: subsidyId, answers: answers, input_mode: inputMode, target: target })
