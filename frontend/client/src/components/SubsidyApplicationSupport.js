@@ -524,7 +524,10 @@ function SubsidyApplicationSupport() {
       if (task.type === 'milestone_input') {
         currentValue = [];
       } else if (task.type === 'hierarchical_milestone') {
-        currentValue = {};
+        // デフォルトで1つのフェーズを表示
+        currentValue = {
+          '企画・設計': [{ date: '', content: '', notes: '' }]
+        };
       } else {
         currentValue = '';
       }
@@ -1517,6 +1520,62 @@ function SubsidyApplicationSupport() {
 
             {task.type === 'hierarchical_milestone' && (
               <div className="space-y-4">
+                {/* 目標表示 */}
+                {(() => {
+                  const catchPhrase = answers['new_business_idea']?.['MINI_023_CATCH'];
+                  const futureVision = answers['personal_story']?.['STORY_FUTURE_VISION'];
+                  
+                  if (catchPhrase || futureVision) {
+                    return (
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <span className="text-lg">🎯</span>
+                          <h4 className="font-semibold text-yellow-800">事業目標</h4>
+                        </div>
+                        {catchPhrase && (
+                          <p className="text-sm text-yellow-700 font-medium">
+                            {catchPhrase}
+                          </p>
+                        )}
+                        {futureVision && (
+                          <p className="text-xs text-yellow-600 mt-1">
+                            → {futureVision}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+
+                {/* よく使う大項目追加ボタン */}
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                  <p className="text-xs text-gray-600 mb-2">よく使う大項目を追加：</p>
+                  <div className="flex flex-wrap gap-2">
+                    {['資金調達', '人材確保', '販路開拓', '品質管理', '技術開発', 'システム構築'].map(phaseName => (
+                      <button
+                        key={phaseName}
+                        type="button"
+                        onClick={() => {
+                          const newValue = { ...currentValue };
+                          if (!newValue[phaseName]) {
+                            newValue[phaseName] = [{ date: '', content: '', notes: '' }];
+                            handleAnswerChange(section.id, newValue, task.task_id);
+                          }
+                        }}
+                        disabled={currentValue[phaseName]}
+                        className={`px-3 py-1 text-xs rounded-full border transition-all ${
+                          currentValue[phaseName] 
+                            ? 'bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed' 
+                            : 'bg-white text-gray-700 border-gray-300 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700'
+                        }`}
+                      >
+                        + {phaseName}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 {/* 簡潔な説明 */}
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                   <p className="text-sm text-blue-800">
@@ -2328,26 +2387,49 @@ function SubsidyApplicationSupport() {
               </div>
             )}
             
-            <div className="mt-4 p-3 bg-white/60 backdrop-blur-sm rounded-xl shadow-md border border-white/20 inline-block">
-              <p className="text-base leading-relaxed text-gray-700 font-medium">
-                {isAtotsugi ? (
-                  <>
-                    <span className="flex items-center justify-center mb-2">
-                      <span className="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-bold mr-2">42</span>
-                      のミニタスクで簡単申請書作成！
-                    </span>
-                    <span className="text-sm text-gray-600">
-                      1タスク=1設問で迷わず入力できます。
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    補助金申請に必要な情報を入力してください。<br />
-                    入力済みの内容をもとに、アウトプットを生成します。全項目入力しなくても生成可能です。
-                  </>
-                )}
-              </p>
-            </div>
+            {isAtotsugi ? (
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* 入力 */}
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                  <div className="flex items-center mb-2">
+                    <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-2">1</div>
+                    <h3 className="text-lg font-bold text-gray-800">入力</h3>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    設問に回答して事業の要素を書き出す
+                  </p>
+                </div>
+
+                {/* 生成 */}
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                  <div className="flex items-center mb-2">
+                    <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-2">2</div>
+                    <h3 className="text-lg font-bold text-gray-800">生成</h3>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    入力内容のまとめを生成
+                  </p>
+                </div>
+
+                {/* ブラッシュアップ */}
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                  <div className="flex items-center mb-2">
+                    <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-2">3</div>
+                    <h3 className="text-lg font-bold text-gray-800">ブラッシュアップ</h3>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    生成された回答（プロンプト）を使ってAIに質問したり、自分で考える材料として利用し申請内容に磨きをかける。
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-4 p-3 bg-white/60 backdrop-blur-sm rounded-xl shadow-md border border-white/20 inline-block">
+                <p className="text-base leading-relaxed text-gray-700 font-medium">
+                  補助金申請に必要な情報を入力してください。<br />
+                  入力済みの内容をもとに、アウトプットを生成します。全項目入力しなくても生成可能です。
+                </p>
+              </div>
+            )}
             
           </div>
         </div>
@@ -2459,7 +2541,7 @@ function SubsidyApplicationSupport() {
             {isAtotsugi && (
               <div className="mb-8">
                 <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">入力方式を選択</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">入力方式を選択（まずはわかるところだけ入力）</h3>
                   <div className="grid gap-4 md:grid-cols-3">
                     <button
                       type="button"
