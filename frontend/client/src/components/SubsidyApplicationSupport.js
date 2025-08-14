@@ -518,7 +518,7 @@ function SubsidyApplicationSupport() {
   };
 
   const renderMicroTask = (section, task, sectionIndex, taskIndex) => {
-    const currentValue = answers[section.id]?.[task.task_id] || '';
+    const currentValue = answers[section.id]?.[task.task_id] || (task.type === 'milestone_input' ? [] : '');
     
     // 条件付きレンダリングのチェック（開発モードでは全て表示）
     if (task.conditional_on && task.conditional_value) {
