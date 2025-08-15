@@ -16,11 +16,15 @@ security_logger = logging.getLogger("security")
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # メール送信関数
-async def send_email_notification(contact_data):
+async def send_email_notification(contact_data, attachment_file=None):
     """お問い合わせメールを送信"""
     try:
         import aiosmtplib
         from email.message import EmailMessage
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.text import MIMEText
+        from email.mime.base import MIMEBase
+        from email import encoders
         
         # Gmail SMTP設定
         SMTP_HOST = "smtp.gmail.com"
@@ -33,8 +37,8 @@ async def send_email_notification(contact_data):
             security_logger.warning("Gmail credentials not configured - email not sent")
             return
         
-        # メール内容作成
-        message = EmailMessage()
+        # MIMEMultipartメッセージを作成（添付ファイル対応）
+        message = MIMEMultipart()
         message["From"] = SMTP_USER
         message["To"] = TO_EMAIL
         message["Subject"] = f"【Shinseider】{contact_data['subject']}"
@@ -64,7 +68,31 @@ async def send_email_notification(contact_data):
 送信日時: {contact_data['timestamp']}
 """
         
-        message.set_content(body)
+        # メール本文を追加
+        message.attach(MIMEText(body, 'plain', 'utf-8'))
+        
+        # 添付ファイルがある場合は追加
+        if attachment_file and hasattr(attachment_file, 'file'):
+            try:
+                # ファイルの内容を読み取り
+                file_content = await attachment_file.read()
+                
+                # MIMEBaseオブジェクトを作成
+                attachment_part = MIMEBase('application', 'octet-stream')
+                attachment_part.set_payload(file_content)
+                encoders.encode_base64(attachment_part)
+                
+                # ヘッダーを追加
+                attachment_part.add_header(
+                    'Content-Disposition',
+                    f'attachment; filename="{attachment_file.filename}"'
+                )
+                
+                message.attach(attachment_part)
+                security_logger.info(f"Attachment added: {attachment_file.filename}")
+                
+            except Exception as e:
+                security_logger.error(f"Failed to attach file: {e}")
         
         # メール送信
         await aiosmtplib.send(
@@ -556,8 +584,8 @@ async def send_contact(
             "timestamp": datetime.now().isoformat()
         }
         
-        # メール送信を実行
-        await send_email_notification(contact_data)
+        # メール送信を実行（添付ファイル付き）
+        await send_email_notification(contact_data, attachment)
         
         security_logger.info(f"Contact received from {email} with subject: {subject}")
         if attachment:
