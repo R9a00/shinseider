@@ -60,6 +60,52 @@ async def health_check():
     """ヘルスチェックエンドポイント（UptimeRobot監視用）"""
     return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
+@app.post("/test-email")
+async def test_email_functionality():
+    """メール送信機能のテスト用エンドポイント（デプロイ時確認用）"""
+    try:
+        from routers.applications import send_email_notification
+        
+        # テスト用のダミーデータ
+        test_contact_data = {
+            "name": "システムテスト",
+            "email": "system@test.com",
+            "subject": "デプロイ後メール送信テスト",
+            "message": "このメールはシステムのデプロイ後に自動送信されたテストメールです。メール送信機能が正常に動作していることを確認しています。",
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        # 環境変数チェック
+        gmail_user = os.getenv("GMAIL_USER")
+        gmail_password = os.getenv("GMAIL_APP_PASSWORD")
+        
+        if not gmail_user or not gmail_password:
+            return {
+                "status": "error", 
+                "message": "Gmail credentials not configured",
+                "gmail_user_set": bool(gmail_user),
+                "gmail_password_set": bool(gmail_password),
+                "timestamp": datetime.now().isoformat()
+            }
+        
+        # メール送信テスト実行
+        await send_email_notification(test_contact_data)
+        
+        return {
+            "status": "success", 
+            "message": "Test email sent successfully",
+            "gmail_user": gmail_user,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+    except Exception as e:
+        security_logger.error(f"Email test failed: {e}")
+        return {
+            "status": "error", 
+            "message": f"Email test failed: {str(e)}",
+            "timestamp": datetime.now().isoformat()
+        }
+
 # 後方互換性のための旧エンドポイント
 @app.get("/subsidies")
 async def get_subsidies_legacy():
