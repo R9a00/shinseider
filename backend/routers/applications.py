@@ -34,8 +34,10 @@ async def send_email_notification(contact_data, attachment_file=None):
         TO_EMAIL = SMTP_USER  # 自分宛に送信
         
         if not SMTP_USER or not SMTP_PASS:
-            security_logger.warning("Gmail credentials not configured - email not sent")
+            security_logger.warning(f"Gmail credentials not configured - email not sent. User: {bool(SMTP_USER)}, Pass: {bool(SMTP_PASS)}")
             return
+        
+        security_logger.info(f"Starting email send process for {contact_data.get('email', 'unknown')}")
         
         # MIMEMultipartメッセージを作成（添付ファイル対応）
         message = MIMEMultipart()
@@ -590,6 +592,8 @@ async def send_contact(
         security_logger.info(f"Contact received from {email} with subject: {subject}")
         if attachment:
             security_logger.info(f"Attachment: {attachment.filename} ({attachment.content_type})")
+        else:
+            security_logger.info("No attachment provided")
         
         return {"message": "お問い合わせを受け付けました。確認後、ご連絡いたします。"}
         
