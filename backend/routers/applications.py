@@ -15,6 +15,74 @@ security_logger = logging.getLogger("security")
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# メール送信関数
+async def send_email_notification(contact_data):
+    """お問い合わせメールを送信"""
+    try:
+        import aiosmtplib
+        from email.message import EmailMessage
+        
+        # Gmail SMTP設定
+        SMTP_HOST = "smtp.gmail.com"
+        SMTP_PORT = 587
+        SMTP_USER = os.getenv("GMAIL_USER")  # Gmailアドレス
+        SMTP_PASS = os.getenv("GMAIL_APP_PASSWORD")  # アプリパスワード
+        TO_EMAIL = SMTP_USER  # 自分宛に送信
+        
+        if not SMTP_USER or not SMTP_PASS:
+            security_logger.warning("Gmail credentials not configured - email not sent")
+            return
+        
+        # メール内容作成
+        message = EmailMessage()
+        message["From"] = SMTP_USER
+        message["To"] = TO_EMAIL
+        message["Subject"] = f"【Shinseider】{contact_data['subject']}"
+        
+        body = f"""Shinseiderからのお問い合わせです。
+
+お名前: {contact_data['name']}
+メールアドレス: {contact_data['email']}
+件名: {contact_data['subject']}
+
+メッセージ:
+{contact_data['message']}
+"""
+        
+        if contact_data.get('attachment'):
+            attachment_info = contact_data['attachment']
+            body += f"""
+
+【添付ファイル】
+ファイル名: {attachment_info['filename']}
+ファイルサイズ: {attachment_info['size']} bytes
+ファイル形式: {attachment_info['content_type']}
+"""
+        
+        body += f"""
+---
+送信日時: {contact_data['timestamp']}
+"""
+        
+        message.set_content(body)
+        
+        # メール送信
+        await aiosmtplib.send(
+            message,
+            hostname=SMTP_HOST,
+            port=SMTP_PORT,
+            start_tls=True,
+            username=SMTP_USER,
+            password=SMTP_PASS
+        )
+        
+        security_logger.info(f"Contact email sent successfully from {contact_data['email']}")
+        
+    except Exception as e:
+        security_logger.error(f"Failed to send contact email: {e}")
+        # メール送信失敗でもシステムエラーにはしない
+        pass
+
 # ヘルパー関数
 def mask_sensitive_data(answers):
     """AI相談用に機密情報をマスキング"""
@@ -488,7 +556,9 @@ async def send_contact(
             "timestamp": datetime.now().isoformat()
         }
         
-        # 実際の実装では、ここでメール送信やデータベース保存を行う
+        # メール送信を実行
+        await send_email_notification(contact_data)
+        
         security_logger.info(f"Contact received from {email} with subject: {subject}")
         if attachment:
             security_logger.info(f"Attachment: {attachment.filename} ({attachment.content_type})")
