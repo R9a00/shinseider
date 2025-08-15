@@ -79,24 +79,35 @@ async def send_email_notification(contact_data, attachment_file=None):
                 # ファイルの内容を読み取り
                 file_content = await attachment_file.read()
                 
-                # 適切なMIMEタイプを設定
-                if attachment_file.content_type:
-                    if '/' in attachment_file.content_type:
-                        main_type, sub_type = attachment_file.content_type.split('/', 1)
-                    else:
-                        main_type, sub_type = 'application', 'octet-stream'
+                # ファイル拡張子からMIMEタイプを判定
+                import mimetypes
+                filename = attachment_file.filename
+                mime_type, _ = mimetypes.guess_type(filename)
+                
+                if mime_type:
+                    main_type, sub_type = mime_type.split('/', 1)
+                elif attachment_file.content_type and '/' in attachment_file.content_type:
+                    main_type, sub_type = attachment_file.content_type.split('/', 1)
                 else:
+                    # デフォルトでoctet-streamを使用
                     main_type, sub_type = 'application', 'octet-stream'
+                
+                security_logger.info(f"File: {filename}, Detected MIME: {mime_type}, Using: {main_type}/{sub_type}")
                 
                 # MIMEBaseオブジェクトを作成
                 attachment_part = MIMEBase(main_type, sub_type)
                 attachment_part.set_payload(file_content)
                 encoders.encode_base64(attachment_part)
                 
-                # ヘッダーを追加
+                # Content-Typeヘッダーを明示的に設定
+                attachment_part.add_header('Content-Type', f'{main_type}/{sub_type}; name="{filename}"')
+                
+                # ヘッダーを追加（RFC2231対応のファイル名エンコーディング）
+                import urllib.parse
+                encoded_filename = urllib.parse.quote(filename)
                 attachment_part.add_header(
                     'Content-Disposition',
-                    f'attachment; filename="{attachment_file.filename}"'
+                    f'attachment; filename="{filename}"; filename*=UTF-8\'\'{encoded_filename}'
                 )
                 
                 message.attach(attachment_part)
