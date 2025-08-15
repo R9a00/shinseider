@@ -12,7 +12,7 @@ const questions = [
   {
     question: 'あなたの年齢を教えてください',
     type: 'choice',
-    options: ['20代', '30代', '40代', '50代以上'],
+    options: ['20代以下', '30代', '40代', '50代以上'],
     key: 'age'
   },
   {
@@ -441,7 +441,7 @@ function Phase1() {
     if ((responses.is_successor === 'はい、事業承継予定者です' || 
          responses.is_successor === 'はい、検討中です' || 
          responses.is_successor === 'はい、情報収集段階です') && 
-        (responses.age === '20代' || responses.age === '30代' || responses.age === '40代')) {
+        (responses.age === '20代以下' || responses.age === '30代' || responses.age === '40代')) {
       debugLog.push(`[アトツギ甲子園] 条件満たすため特別推奨追加`);
       
       // 推薦された補助金リストから加点対象補助金名を生成
