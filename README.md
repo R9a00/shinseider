@@ -232,49 +232,6 @@ Use `backend/research_data/` system to manage subsidy updates:
 3. **🎯 Versatile Outputs**: 目的別の出力形式
 4. **🔄 Process Standardization**: 標準化されたワークフロー
 
-## 🧪 Testing & Deployment
-
-### Email Functionality Test
-
-デプロイ後にメール送信機能が正常に動作するかテストできます：
-
-```bash
-# 本番環境をテスト
-python test_deployment.py
-
-# カスタムURLをテスト  
-python test_deployment.py https://your-api-url.com
-```
-
-### Manual Email Test
-
-API エンドポイントを直接テスト：
-
-```bash
-# Health check
-curl https://shinseider-api.onrender.com/health
-
-# Email functionality test
-curl -X POST https://shinseider-api.onrender.com/test-email
-```
-
-**レスポンス例:**
-```json
-{
-  "status": "success",
-  "message": "Test email sent successfully", 
-  "gmail_user": "shinseider@gmail.com",
-  "timestamp": "2025-08-15T09:25:42.691147"
-}
-```
-
-### Contact Form Test
-
-実際のフォームからのテスト：
-1. [Contact ページ](https://shinseider.onrender.com/contact) にアクセス
-2. テスト用メッセージを送信
-3. ブラウザのデベロッパーツールでレスポンスを確認
-
 ## 🤝 Contributing
 
 We welcome contributions! Here's how you can help:

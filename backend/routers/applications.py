@@ -74,13 +74,22 @@ async def send_email_notification(contact_data, attachment_file=None):
         message.attach(MIMEText(body, 'plain', 'utf-8'))
         
         # 添付ファイルがある場合は追加
-        if attachment_file and hasattr(attachment_file, 'file'):
+        if attachment_file:
             try:
                 # ファイルの内容を読み取り
                 file_content = await attachment_file.read()
                 
+                # 適切なMIMEタイプを設定
+                if attachment_file.content_type:
+                    if '/' in attachment_file.content_type:
+                        main_type, sub_type = attachment_file.content_type.split('/', 1)
+                    else:
+                        main_type, sub_type = 'application', 'octet-stream'
+                else:
+                    main_type, sub_type = 'application', 'octet-stream'
+                
                 # MIMEBaseオブジェクトを作成
-                attachment_part = MIMEBase('application', 'octet-stream')
+                attachment_part = MIMEBase(main_type, sub_type)
                 attachment_part.set_payload(file_content)
                 encoders.encode_base64(attachment_part)
                 
@@ -91,10 +100,11 @@ async def send_email_notification(contact_data, attachment_file=None):
                 )
                 
                 message.attach(attachment_part)
-                security_logger.info(f"Attachment added: {attachment_file.filename}")
+                security_logger.info(f"Attachment added: {attachment_file.filename} ({attachment_file.content_type})")
                 
             except Exception as e:
                 security_logger.error(f"Failed to attach file: {e}")
+                # 添付ファイルに失敗してもメール送信は継続
         
         # メール送信
         await aiosmtplib.send(
