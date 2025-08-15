@@ -45,6 +45,7 @@ app.include_router(content.router)
 app.include_router(applications.router)
 
 @app.get("/")
+@app.head("/")
 async def read_root():
     """ルートエンドポイント（ヘルスチェック機能付き）"""
     return {
@@ -56,6 +57,7 @@ async def read_root():
     }
 
 @app.get("/health")
+@app.head("/health")
 async def health_check():
     """ヘルスチェックエンドポイント（UptimeRobot監視用）"""
     return {"status": "healthy", "timestamp": datetime.now().isoformat()}
