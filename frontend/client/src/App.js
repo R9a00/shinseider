@@ -413,7 +413,7 @@ function Home() {
             </div>
             <nav className="flex flex-wrap items-center gap-x-6 gap-y-2" aria-label="フッターナビ">
               <Link to="/knowledge-base" className="hover:text-gray-900">
-                基礎知識
+                基礎知識（準備中）
               </Link>
               <Link to="/operator-info" className="hover:text-gray-900">運営者情報</Link>
               <Link to="/update-history" className="hover:text-gray-900">情報更新履歴・参照元</Link>
