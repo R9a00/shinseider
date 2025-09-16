@@ -1,0 +1,113 @@
+{
+  "timestamp": "2025-09-16T19:33:13.332364",
+  "summary": {
+    "total_tests": 5,
+    "passed": 5,
+    "failed": 0,
+    "errors": 0,
+    "success_rate": 100.0
+  },
+  "test_details": [
+    {
+      "test_name": "APIヘルスチェック",
+      "category": "functionality",
+      "status": "PASSED",
+      "message": "ステータス: 200",
+      "duration": 0.005,
+      "timestamp": "2025-09-16T19:33:13.337708"
+    },
+    {
+      "test_name": "補助金一覧API",
+      "category": "functionality",
+      "status": "PASSED",
+      "message": "補助金数: 6件",
+      "duration": 0.052,
+      "timestamp": "2025-09-16T19:33:13.389819"
+    },
+    {
+      "test_name": "バージョン履歴API",
+      "category": "functionality",
+      "status": "PASSED",
+      "message": "バージョン: 1.2.0",
+      "duration": 0.066,
+      "timestamp": "2025-09-16T19:33:13.455589"
+    },
+    {
+      "test_name": "完全性チェックAPI",
+      "category": "functionality",
+      "status": "PASSED",
+      "message": "ステータス: ok",
+      "duration": 0.003,
+      "timestamp": "2025-09-16T19:33:13.458541"
+    },
+    {
+      "test_name": "データ完全性チェック",
+      "category": "integrity",
+      "status": "PASSED",
+      "message": "補助金データ: 6件, メタデータ: 有",
+      "duration": 0.061,
+      "timestamp": "2025-09-16T19:33:13.519752"
+    }
+  ],
+  "features": {
+    "api_endpoints": [
+      {
+        "test_name": "APIヘルスチェック",
+        "category": "functionality",
+        "status": "PASSED",
+        "message": "ステータス: 200",
+        "duration": 0.005,
+        "timestamp": "2025-09-16T19:33:13.337708"
+      },
+      {
+        "test_name": "補助金一覧API",
+        "category": "functionality",
+        "status": "PASSED",
+        "message": "補助金数: 6件",
+        "duration": 0.052,
+        "timestamp": "2025-09-16T19:33:13.389819"
+      },
+      {
+        "test_name": "バージョン履歴API",
+        "category": "functionality",
+        "status": "PASSED",
+        "message": "バージョン: 1.2.0",
+        "duration": 0.066,
+        "timestamp": "2025-09-16T19:33:13.455589"
+      },
+      {
+        "test_name": "完全性チェックAPI",
+        "category": "functionality",
+        "status": "PASSED",
+        "message": "ステータス: ok",
+        "duration": 0.003,
+        "timestamp": "2025-09-16T19:33:13.458541"
+      }
+    ],
+    "data_integrity": [
+      {
+        "test_name": "データ完全性チェック",
+        "category": "integrity",
+        "status": "PASSED",
+        "message": "補助金データ: 6件, メタデータ: 有",
+        "duration": 0.061,
+        "timestamp": "2025-09-16T19:33:13.519752"
+      }
+    ],
+    "system_health": []
+  },
+  "categories": {
+    "functionality": {
+      "total": 4,
+      "passed": 4,
+      "failed": 0,
+      "success_rate": 100.0
+    },
+    "integrity": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "success_rate": 100.0
+    }
+  }
+}

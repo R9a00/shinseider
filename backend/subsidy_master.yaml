@@ -1,10 +1,15 @@
 metadata:
-  last_updated: '2025-08-14'
-  version: 2.0.0
+  last_updated: '2025-09-16'
+  version: 1.2.0
   maintainer: 羽生田大陸（株式会社羽生田鉄工所）
   total_subsidies: 6
   data_source: integrated_master_system
   system_type: unified_database
+  update_policy:
+    check_frequency: '定期監視実施中'
+    last_research_date: '2025-09-16'
+    research_status: '継続調査中（現在の情報が最新）'
+    next_scheduled_check: '必要時'
 subsidies:
   jigyou_shoukei_ma:
     id: jigyou_shoukei_ma
@@ -17,14 +22,19 @@ subsidies:
       information_date: '2025-08-14'
       notes: 専門家活用枠
       start_date: '2025-08-12'
-    version: 1.0.3
-    last_updated: '2025-08-14'
+    version: 1.0.4
+    last_updated: '2025-09-16'
     source_references:
     - accessed_date: '2025-08-14'
       title: 事業承継・M&A補助金（専門家活用枠）公募要領
       url: https://shoukei-mahojokin.go.jp/
       version: 令和7年度版
     change_history:
+    - author: claude_auto_update
+      changes: '継続監視実施、既存情報が最新であることを確認'
+      date: '2025-09-16'
+      reference_updated: false
+      version: 1.0.4
     - author: claude_auto_update
       changes: 'LLM調査による募集期間更新: 状況不明'
       date: '2025-08-14'

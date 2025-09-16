@@ -163,15 +163,15 @@ function SystemStatus() {
                     {testResults.test_details.filter(test => test.category === 'integrity').map((test, index) => (
                       <div key={test.test_name} className="bg-white rounded-md p-3 border border-blue-200">
                         <div className="flex justify-between items-start mb-2">
-                          <div className="font-medium text-sm text-gray-900">{test.display_name}</div>
+                          <div className="font-medium text-sm text-gray-900">{test.test_name || test.display_name}</div>
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                            test.status === 'passed' ? 'bg-green-100 text-green-800' : 
-                            test.status === 'failed' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+                            (test.status === 'passed' || test.status === 'PASSED') ? 'bg-green-100 text-green-800' : 
+                            (test.status === 'failed' || test.status === 'FAILED') ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
                           }`}>
-                            {test.status === 'passed' ? '✅' : test.status === 'failed' ? '❌' : '⚠️'}
+                            {(test.status === 'passed' || test.status === 'PASSED') ? '✅' : (test.status === 'failed' || test.status === 'FAILED') ? '❌' : '⚠️'}
                           </span>
                         </div>
-                        <div className="text-xs text-gray-600">{test.description}</div>
+                        <div className="text-xs text-gray-600">{test.message || test.description}</div>
                         {test.feature && (
                           <div className="text-xs text-blue-600 mt-1 font-medium">{test.feature}</div>
                         )}
@@ -190,15 +190,15 @@ function SystemStatus() {
                     {testResults.test_details.filter(test => test.category === 'functionality').map((test, index) => (
                       <div key={test.test_name} className="bg-white rounded-md p-3 border border-green-200">
                         <div className="flex justify-between items-start mb-2">
-                          <div className="font-medium text-sm text-gray-900">{test.display_name}</div>
+                          <div className="font-medium text-sm text-gray-900">{test.test_name || test.display_name}</div>
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                            test.status === 'passed' ? 'bg-green-100 text-green-800' : 
-                            test.status === 'failed' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+                            (test.status === 'passed' || test.status === 'PASSED') ? 'bg-green-100 text-green-800' : 
+                            (test.status === 'failed' || test.status === 'FAILED') ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
                           }`}>
-                            {test.status === 'passed' ? '✅' : test.status === 'failed' ? '❌' : '⚠️'}
+                            {(test.status === 'passed' || test.status === 'PASSED') ? '✅' : (test.status === 'failed' || test.status === 'FAILED') ? '❌' : '⚠️'}
                           </span>
                         </div>
-                        <div className="text-xs text-gray-600">{test.description}</div>
+                        <div className="text-xs text-gray-600">{test.message || test.description}</div>
                         {test.feature && (
                           <div className="text-xs text-green-600 mt-1 font-medium">{test.feature}</div>
                         )}

@@ -69,10 +69,14 @@ async def get_version_history():
         all_changes.sort(key=lambda x: x.get('date', ''), reverse=True)
         
         return {
-            "system_version": metadata.get('version', '1.0.0'),
-            "last_updated": metadata.get('last_updated', 'N/A'),
-            "maintainer": metadata.get('maintainer', 'N/A'),
-            "total_subsidies": metadata.get('total_subsidies', len(subsidies)),
+            "metadata": {
+                "version": metadata.get('version', '1.0.0'),
+                "last_updated": metadata.get('last_updated', 'N/A'),
+                "maintainer": metadata.get('maintainer', 'N/A'),
+                "total_subsidies": metadata.get('total_subsidies', len(subsidies))
+            },
+            "subsidies": subsidies,
+            "update_policy": metadata.get('update_policy', {}),
             "recent_changes": all_changes[:20]  # 最新20件
         }
         
@@ -230,40 +234,30 @@ async def get_detailed_test_results():
         import json
         import os
         
-        report_path = os.path.join(BASE_DIR, 'test_report_comprehensive.json')
+        report_path = os.path.join(BASE_DIR, 'test_results.json')
         if os.path.exists(report_path):
             with open(report_path, 'r', encoding='utf-8') as f:
                 comprehensive_report = json.load(f)
             
             
-            # システム監視形式に変換
+            # 新しいテスト結果形式に対応
             result = {
                 'timestamp': comprehensive_report.get('timestamp', datetime.now().isoformat()),
-                'message': f'事前実行済みテスト結果 (成功率: {comprehensive_report.get("success_rate", 0):.1f}%)',
-                'summary': {
-                    'total_tests': comprehensive_report.get('total_tests', 0),
-                    'passed': comprehensive_report.get('successful_tests', 0),
-                    'failed': comprehensive_report.get('failed_tests', 0),
+                'message': f'事前実行済みテスト結果 (成功率: {comprehensive_report.get("summary", {}).get("success_rate", 0):.1f}%)',
+                'summary': comprehensive_report.get('summary', {
+                    'total_tests': 0,
+                    'passed': 0,
+                    'failed': 0,
                     'errors': 0,
-                    'success_rate': comprehensive_report.get('success_rate', 0)
-                },
-                'test_details': [
-                    {
-                        'test_name': f"test_{i+1:02d}",
-                        'display_name': test.get('description', 'Unknown Test'),
-                        'status': 'passed' if test.get('success', False) else 'failed',
-                        'category': _categorize_test(test.get('description', '')),
-                        'description': f"実行時間: {test.get('execution_time', 0):.2f}秒",
-                        'feature': '包括的機能テスト' if test.get('success', False) else '要改善項目'
-                    }
-                    for i, test in enumerate(comprehensive_report.get('test_results', []))
-                ],
-                'execution_time': comprehensive_report.get('total_execution_time', 0),
-                'status': comprehensive_report.get('overall_status', 'UNKNOWN'),
-                'categories': {
+                    'success_rate': 0
+                }),
+                'test_details': comprehensive_report.get('test_details', []),
+                'execution_time': 0,
+                'status': 'PASSED' if comprehensive_report.get('summary', {}).get('success_rate', 0) >= 80 else 'FAILED',
+                'categories': comprehensive_report.get('categories', {
                     'functionality': {'total': 0, 'passed': 0, 'failed': 0, 'errors': 0},
                     'integrity': {'total': 0, 'passed': 0, 'failed': 0, 'errors': 0}
-                }
+                })
             }
             
             # カテゴリ別統計を計算
