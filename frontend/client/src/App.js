@@ -8,7 +8,6 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import UpdateHistory from './components/UpdateHistory';
 import SystemStatus from './components/SystemStatus';
 import Contact from './components/Contact';
-import News from './components/News';
 import KnowledgeBase from './components/KnowledgeBase';
 import Disclaimer from './components/Disclaimer';
 
@@ -413,8 +412,8 @@ function Home() {
               <img src={`/shinseider_logo.png?t=${Date.now()}`} alt="Shinseider" className="h-12 w-auto" />
             </div>
             <nav className="flex flex-wrap items-center gap-x-6 gap-y-2" aria-label="フッターナビ">
-              <Link to="/knowledge-base" className="hover:text-gray-900 flex items-center gap-1">
-                基礎知識 <span className="text-xs bg-orange-100 text-orange-800 px-1.5 py-0.5 rounded">作成中</span>
+              <Link to="/knowledge-base" className="hover:text-gray-900">
+                基礎知識
               </Link>
               <Link to="/operator-info" className="hover:text-gray-900">運営者情報</Link>
               <Link to="/update-history" className="hover:text-gray-900">情報更新履歴・参照元</Link>
@@ -422,63 +421,6 @@ function Home() {
               <Link to="/disclaimer" className="hover:text-gray-900">免責事項</Link>
               <Link to="/contact" className="hover:text-gray-900">お問い合わせ</Link>
             </nav>
-          </div>
-          {/* 開発ロードマップ */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <div className="mb-4">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full font-medium text-sm">ベータ版</span>
-                <h3 className="font-semibold text-gray-800">開発ロードマップ</h3>
-              </div>
-              <p className="text-xs text-gray-600 mb-4">シンセイダーの機能開発状況をお知らせします</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-              {/* 利用可能 */}
-              <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span className="font-semibold text-green-800">利用可能</span>
-                </div>
-                <ul className="space-y-1 text-green-700">
-                  <li>• 30秒診断（基本版）</li>
-                  <li>• アトツギ甲子園申請サポート</li>
-                  <li>• 申請書下書き作成</li>
-                  <li>• Word文書ダウンロード</li>
-                  <li>• 補助金基礎知識ベース</li>
-                  <li>• お問い合わせフォーム</li>
-                </ul>
-              </div>
-
-              {/* 改善中 */}
-              <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
-                  <span className="font-semibold text-orange-800">改善中</span>
-                </div>
-                <ul className="space-y-1 text-orange-700">
-                  <li>• 基礎知識コンテンツの拡充</li>
-                  <li>• 申請書テンプレート精度向上</li>
-                  <li>• 診断ロジックの改善</li>
-                  <li>• UI操作性の向上</li>
-                  <li>• チェックリスト内容充実</li>
-                </ul>
-              </div>
-
-              {/* 検討中 */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                  <span className="font-semibold text-blue-800">検討中</span>
-                </div>
-                <ul className="space-y-1 text-blue-700">
-                  <li>• 補助金ニュース機能の追加</li>
-                  <li>• 申請書フォーマット更新対応</li>
-                  <li>• より詳細な入力支援</li>
-                  <li>• 申請前チェック機能強化</li>
-                </ul>
-              </div>
-            </div>
           </div>
 
           <div className="mt-6 flex items-center justify-center text-xs text-gray-400">

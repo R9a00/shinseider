@@ -1,0 +1,181 @@
+{
+  "test_timestamp": "2025-09-16 19:08:31",
+  "base_url": "https://shinseider.onrender.com",
+  "total_routes": 12,
+  "passed": 1,
+  "failed": 11,
+  "route_results": [
+    {
+      "route": "/",
+      "url": "https://shinseider.onrender.com/",
+      "response_code": 200,
+      "final_url": "https://shinseider.onrender.com/",
+      "status": "PASS",
+      "error": null,
+      "checks": {
+        "returns_html": true,
+        "contains_react_root": true,
+        "no_404_page": true,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/phase1",
+      "url": "https://shinseider.onrender.com/phase1",
+      "response_code": 404,
+      "final_url": "https://shinseider.onrender.com/phase1",
+      "status": "FAIL",
+      "error": null,
+      "checks": {
+        "returns_html": false,
+        "contains_react_root": false,
+        "no_404_page": false,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/subsidy-selection",
+      "url": "https://shinseider.onrender.com/subsidy-selection",
+      "response_code": 404,
+      "final_url": "https://shinseider.onrender.com/subsidy-selection",
+      "status": "FAIL",
+      "error": null,
+      "checks": {
+        "returns_html": false,
+        "contains_react_root": false,
+        "no_404_page": false,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/subsidy-application-support/atotsugi",
+      "url": "https://shinseider.onrender.com/subsidy-application-support/atotsugi",
+      "response_code": 404,
+      "final_url": "https://shinseider.onrender.com/subsidy-application-support/atotsugi",
+      "status": "FAIL",
+      "error": null,
+      "checks": {
+        "returns_html": false,
+        "contains_react_root": false,
+        "no_404_page": false,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/subsidy-application-support/monodukuri_r7_21th",
+      "url": "https://shinseider.onrender.com/subsidy-application-support/monodukuri_r7_21th",
+      "response_code": 404,
+      "final_url": "https://shinseider.onrender.com/subsidy-application-support/monodukuri_r7_21th",
+      "status": "FAIL",
+      "error": null,
+      "checks": {
+        "returns_html": false,
+        "contains_react_root": false,
+        "no_404_page": false,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/knowledge-base",
+      "url": "https://shinseider.onrender.com/knowledge-base",
+      "response_code": 404,
+      "final_url": "https://shinseider.onrender.com/knowledge-base",
+      "status": "FAIL",
+      "error": null,
+      "checks": {
+        "returns_html": false,
+        "contains_react_root": false,
+        "no_404_page": false,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/operator-info",
+      "url": "https://shinseider.onrender.com/operator-info",
+      "response_code": 404,
+      "final_url": "https://shinseider.onrender.com/operator-info",
+      "status": "FAIL",
+      "error": null,
+      "checks": {
+        "returns_html": false,
+        "contains_react_root": false,
+        "no_404_page": false,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/update-history",
+      "url": "https://shinseider.onrender.com/update-history",
+      "response_code": 404,
+      "final_url": "https://shinseider.onrender.com/update-history",
+      "status": "FAIL",
+      "error": null,
+      "checks": {
+        "returns_html": false,
+        "contains_react_root": false,
+        "no_404_page": false,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/system-status",
+      "url": "https://shinseider.onrender.com/system-status",
+      "response_code": 404,
+      "final_url": "https://shinseider.onrender.com/system-status",
+      "status": "FAIL",
+      "error": null,
+      "checks": {
+        "returns_html": false,
+        "contains_react_root": false,
+        "no_404_page": false,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/privacy-policy",
+      "url": "https://shinseider.onrender.com/privacy-policy",
+      "response_code": 404,
+      "final_url": "https://shinseider.onrender.com/privacy-policy",
+      "status": "FAIL",
+      "error": null,
+      "checks": {
+        "returns_html": false,
+        "contains_react_root": false,
+        "no_404_page": false,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/disclaimer",
+      "url": "https://shinseider.onrender.com/disclaimer",
+      "response_code": 404,
+      "final_url": "https://shinseider.onrender.com/disclaimer",
+      "status": "FAIL",
+      "error": null,
+      "checks": {
+        "returns_html": false,
+        "contains_react_root": false,
+        "no_404_page": false,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/contact",
+      "url": "https://shinseider.onrender.com/contact",
+      "response_code": 404,
+      "final_url": "https://shinseider.onrender.com/contact",
+      "status": "FAIL",
+      "error": null,
+      "checks": {
+        "returns_html": false,
+        "contains_react_root": false,
+        "no_404_page": false,
+        "redirected": false
+      }
+    }
+  ],
+  "summary": {
+    "success_rate": 8.333333333333332,
+    "all_routes_working": false
+  }
+}

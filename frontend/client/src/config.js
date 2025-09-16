@@ -4,7 +4,7 @@ const config = {
   API_BASE_URL: process.env.REACT_APP_API_BASE_URL || 
     (process.env.NODE_ENV === 'production' ? 
      'https://shinseider-api.onrender.com' : 
-     'http://localhost:8888'),
+     'http://localhost:8000'),
   
   // Development mode check
   isDevelopment: process.env.NODE_ENV === 'development',

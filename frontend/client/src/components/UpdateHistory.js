@@ -15,8 +15,8 @@ function UpdateHistory() {
   const fetchVersionHistory = async () => {
     try {
       const [versionResponse, statusResponse] = await Promise.all([
-        fetch(`${config.API_BASE_URL}/version-history`),
-        fetch(`${config.API_BASE_URL}/system-integrity-status`)
+        fetch(`${config.API_BASE_URL}/api/system/version-history`),
+        fetch(`${config.API_BASE_URL}/api/system/integrity-status`)
       ]);
       
       if (!versionResponse.ok) {

@@ -1,0 +1,181 @@
+{
+  "test_timestamp": "2025-09-16 18:34:58",
+  "base_url": "http://localhost:3333",
+  "total_routes": 12,
+  "passed": 12,
+  "failed": 0,
+  "route_results": [
+    {
+      "route": "/",
+      "url": "http://localhost:3333/",
+      "response_code": 200,
+      "final_url": "http://localhost:3333/",
+      "status": "PASS",
+      "error": null,
+      "checks": {
+        "returns_html": true,
+        "contains_react_root": true,
+        "no_404_page": true,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/phase1",
+      "url": "http://localhost:3333/phase1",
+      "response_code": 200,
+      "final_url": "http://localhost:3333/phase1",
+      "status": "PASS",
+      "error": null,
+      "checks": {
+        "returns_html": true,
+        "contains_react_root": true,
+        "no_404_page": true,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/subsidy-selection",
+      "url": "http://localhost:3333/subsidy-selection",
+      "response_code": 200,
+      "final_url": "http://localhost:3333/subsidy-selection",
+      "status": "PASS",
+      "error": null,
+      "checks": {
+        "returns_html": true,
+        "contains_react_root": true,
+        "no_404_page": true,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/subsidy-application-support/atotsugi",
+      "url": "http://localhost:3333/subsidy-application-support/atotsugi",
+      "response_code": 200,
+      "final_url": "http://localhost:3333/subsidy-application-support/atotsugi",
+      "status": "PASS",
+      "error": null,
+      "checks": {
+        "returns_html": true,
+        "contains_react_root": true,
+        "no_404_page": true,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/subsidy-application-support/monodukuri_r7_21th",
+      "url": "http://localhost:3333/subsidy-application-support/monodukuri_r7_21th",
+      "response_code": 200,
+      "final_url": "http://localhost:3333/subsidy-application-support/monodukuri_r7_21th",
+      "status": "PASS",
+      "error": null,
+      "checks": {
+        "returns_html": true,
+        "contains_react_root": true,
+        "no_404_page": true,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/knowledge-base",
+      "url": "http://localhost:3333/knowledge-base",
+      "response_code": 200,
+      "final_url": "http://localhost:3333/knowledge-base",
+      "status": "PASS",
+      "error": null,
+      "checks": {
+        "returns_html": true,
+        "contains_react_root": true,
+        "no_404_page": true,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/operator-info",
+      "url": "http://localhost:3333/operator-info",
+      "response_code": 200,
+      "final_url": "http://localhost:3333/operator-info",
+      "status": "PASS",
+      "error": null,
+      "checks": {
+        "returns_html": true,
+        "contains_react_root": true,
+        "no_404_page": true,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/update-history",
+      "url": "http://localhost:3333/update-history",
+      "response_code": 200,
+      "final_url": "http://localhost:3333/update-history",
+      "status": "PASS",
+      "error": null,
+      "checks": {
+        "returns_html": true,
+        "contains_react_root": true,
+        "no_404_page": true,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/system-status",
+      "url": "http://localhost:3333/system-status",
+      "response_code": 200,
+      "final_url": "http://localhost:3333/system-status",
+      "status": "PASS",
+      "error": null,
+      "checks": {
+        "returns_html": true,
+        "contains_react_root": true,
+        "no_404_page": true,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/privacy-policy",
+      "url": "http://localhost:3333/privacy-policy",
+      "response_code": 200,
+      "final_url": "http://localhost:3333/privacy-policy",
+      "status": "PASS",
+      "error": null,
+      "checks": {
+        "returns_html": true,
+        "contains_react_root": true,
+        "no_404_page": true,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/disclaimer",
+      "url": "http://localhost:3333/disclaimer",
+      "response_code": 200,
+      "final_url": "http://localhost:3333/disclaimer",
+      "status": "PASS",
+      "error": null,
+      "checks": {
+        "returns_html": true,
+        "contains_react_root": true,
+        "no_404_page": true,
+        "redirected": false
+      }
+    },
+    {
+      "route": "/contact",
+      "url": "http://localhost:3333/contact",
+      "response_code": 200,
+      "final_url": "http://localhost:3333/contact",
+      "status": "PASS",
+      "error": null,
+      "checks": {
+        "returns_html": true,
+        "contains_react_root": true,
+        "no_404_page": true,
+        "redirected": false
+      }
+    }
+  ],
+  "summary": {
+    "success_rate": 100.0,
+    "all_routes_working": true
+  }
+}

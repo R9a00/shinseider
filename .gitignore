@@ -98,3 +98,6 @@ data_input/
 frontend/client/src/components/DeepDiveAnalysis.js
 frontend/client/src/components/deepdive/
 backend/routers/deepdive.py
+
+# Requirements documentation system (development only)
+requirements-docs/

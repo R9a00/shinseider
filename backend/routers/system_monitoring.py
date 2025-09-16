@@ -38,6 +38,48 @@ _test_results_cache = None
 _test_results_cache_time = None
 TEST_CACHE_DURATION = 300  # 5分
 
+@router.get("/version-history")
+async def get_version_history():
+    """バージョン履歴情報を返す"""
+    try:
+        # subsidy_master.yamlからバージョン履歴を取得
+        master_path = os.path.join(BASE_DIR, "subsidy_master.yaml")
+        
+        if not os.path.exists(master_path):
+            return {"error": "Version history not found"}
+        
+        with open(master_path, 'r', encoding='utf-8') as f:
+            data = yaml.safe_load(f)
+        
+        # メタデータとバージョン履歴を整理
+        metadata = data.get('metadata', {})
+        subsidies = data.get('subsidies', {})
+        
+        # 全補助金の変更履歴をまとめる
+        all_changes = []
+        for subsidy_id, subsidy_data in subsidies.items():
+            changes = subsidy_data.get('change_history', [])
+            for change in changes:
+                change_entry = change.copy()
+                change_entry['subsidy_id'] = subsidy_id
+                change_entry['subsidy_name'] = subsidy_data.get('name', subsidy_id)
+                all_changes.append(change_entry)
+        
+        # 日付でソート（新しい順）
+        all_changes.sort(key=lambda x: x.get('date', ''), reverse=True)
+        
+        return {
+            "system_version": metadata.get('version', '1.0.0'),
+            "last_updated": metadata.get('last_updated', 'N/A'),
+            "maintainer": metadata.get('maintainer', 'N/A'),
+            "total_subsidies": metadata.get('total_subsidies', len(subsidies)),
+            "recent_changes": all_changes[:20]  # 最新20件
+        }
+        
+    except Exception as e:
+        security_logger.error(f"バージョン履歴取得エラー: {str(e)}")
+        return {"error": "Version history not found"}
+
 @router.get("/integrity-status")
 async def system_integrity_status():
     """システム完全性のチェック状況を返す"""
@@ -104,7 +146,11 @@ async def get_operational_status():
             {"endpoint": "/system-integrity-status", "method": "GET"},
         ]
         
-        base_url = os.getenv("API_BASE_URL", "http://localhost:8888")
+        # 本番環境ではRenderのURL、開発環境ではlocalhost:8000を使用
+        if os.getenv("RAILWAY_ENVIRONMENT_NAME") or os.getenv("RENDER"):
+            base_url = "https://shinseider-api.onrender.com"
+        else:
+            base_url = os.getenv("API_BASE_URL", "http://localhost:8000")
         endpoints_status = []
         
         for endpoint_info in test_endpoints:
