@@ -24,6 +24,7 @@ function SubsidyApplicationSupport() {
   const [lastSaved, setLastSaved] = useState(null);
   const [autoSaveStatus, setAutoSaveStatus] = useState(''); // 'saving', 'saved', 'error'
   const [phaseNameInputs, setPhaseNameInputs] = useState({}); // 一時的なフェーズ名入力状態
+  const [checklistStatus, setChecklistStatus] = useState({}); // チェックリストの完了状態
 
   // Phase 2: 設問回答からマイルストーン項目を自動生成する関数
   const generateMilestonePhases = (answers) => {
@@ -325,26 +326,12 @@ function SubsidyApplicationSupport() {
     URL.revokeObjectURL(url);
   };
 
-  // Download task schedule as CSV
-  const downloadTaskSchedule = () => {
-    const today = new Date().toLocaleDateString('ja-JP');
-    let csvContent = `タスク名,期限,説明\n`;
-    
-    if (tasks.milestones) {
-      tasks.milestones.forEach(milestone => {
-        const deadline = `申請${milestone.lead.replace('P-', '').replace('d', '')}日前`;
-        const description = milestone.description || milestone.name;
-        csvContent += `"${milestone.name}","${deadline}","${description}"\n`;
-      });
-    }
-    
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${subsidyName}_タスクスケジュール_${today.replace(/\//g, '')}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+  // チェックリストの完了状態切り替え
+  const toggleChecklistItem = (index) => {
+    setChecklistStatus(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
   };
 
   // バリデーション関数
@@ -2799,34 +2786,27 @@ function SubsidyApplicationSupport() {
                   
                   {checklist.length > 0 && (
                     <div className="mb-6">
-                      <h4 className="font-medium text-gray-900 mb-3">提出前確認事項（分類別）</h4>
+                      <h4 className="font-medium text-gray-900 mb-3">提出前確認事項</h4>
                       <div className="space-y-2">
-                        {classifyChecklistItems().slice(0, 4).map(({ item, category, icon }, index) => (
-                          <div key={index} className="flex items-start space-x-2">
-                            <span className={`mt-1 ${
-                              category === 'support' ? 'text-red-600' : 
-                              category === 'discussion' ? 'text-blue-600' : 
-                              category === 'auto' ? 'text-green-600' : 'text-yellow-600'
-                            }`}>
-                              {icon}
-                            </span>
-                            <div className="flex-1">
-                              <span className="text-sm text-gray-700">{item}</span>
-                              <span className={`ml-2 text-xs ${
-                                category === 'support' ? 'text-red-500' : 
-                                category === 'discussion' ? 'text-blue-500' : 
-                                category === 'auto' ? 'text-green-500' : 'text-gray-500'
-                              }`}>
-                                {category === 'support' ? '(要サポート)' : 
-                                 category === 'discussion' ? '(要検討)' : 
-                                 category === 'auto' ? '(確認済み)' : '(要確認)'}
-                              </span>
-                            </div>
+                        {checklist.map((item, index) => (
+                          <div key={index} className="flex items-start space-x-3">
+                            <input
+                              type="checkbox"
+                              id={`checklist-${index}`}
+                              checked={checklistStatus[index] || false}
+                              onChange={() => toggleChecklistItem(index)}
+                              className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <label 
+                              htmlFor={`checklist-${index}`}
+                              className={`flex-1 text-sm cursor-pointer ${
+                                checklistStatus[index] ? 'line-through text-gray-500' : 'text-gray-700'
+                              }`}
+                            >
+                              {item}
+                            </label>
                           </div>
                         ))}
-                        {checklist.length > 4 && (
-                          <p className="text-xs text-gray-500 ml-6">他 {checklist.length - 4} 項目</p>
-                        )}
                       </div>
                     </div>
                   )}
@@ -2870,20 +2850,10 @@ function SubsidyApplicationSupport() {
                       </svg>
                       申請準備タスク・スケジュール
                     </h3>
-                    <button
-                      type="button"
-                      onClick={downloadTaskSchedule}
-                      className="inline-flex items-center px-3 py-2 border border-blue-300 rounded-md shadow-sm text-sm font-medium text-blue-800 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                      CSV出力
-                    </button>
                   </div>
                   
                   <div className="space-y-3">
-                    {tasks.milestones.slice(0, 4).map((milestone, index) => (
+                    {tasks.milestones.map((milestone, index) => (
                       <div key={milestone.id} className="flex items-start space-x-3 p-3 bg-white rounded-md border border-blue-100">
                         <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-xs font-medium text-blue-800">
                           {index + 1}
@@ -2891,21 +2861,13 @@ function SubsidyApplicationSupport() {
                         <div className="flex-1">
                           <h4 className="text-sm font-medium text-gray-900">{milestone.name}</h4>
                           <p className="text-xs text-gray-600 mt-1">
-                            目標: 申請{milestone.lead.replace('P-', '').replace('d', '')}日前までに完了
+                            申請期限{milestone.lead.replace('P-', '').replace('d', '')}日前までに完了する
                           </p>
                         </div>
                       </div>
                     ))}
-                    {tasks.milestones.length > 4 && (
-                      <p className="text-xs text-gray-500 text-center">他 {tasks.milestones.length - 4} タスク</p>
-                    )}
                   </div>
                   
-                  <div className="mt-4 p-3 bg-blue-100 rounded-md">
-                    <p className="text-sm text-blue-800">
-                      📅 スケジュールをCSVでダウンロードして、カレンダーアプリやプロジェクト管理ツールでご活用ください
-                    </p>
-                  </div>
                 </div>
               )}
               

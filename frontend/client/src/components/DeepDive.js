@@ -388,13 +388,15 @@ END_OF_REPORT
 
 const STORAGE_KEY = 'deepdive:v3';
 
-function DeepDive() {
+function DeepDive({ trigger }) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentBlock, setCurrentBlock] = useState(0);
   const [data, setData] = useState({
     meta: { companyName: '', author: '', updatedAt: '', version: 'v3' },
     blocks: {}
   });
+  const [showReport, setShowReport] = useState(false);
+  const [reportMode, setReportMode] = useState('onepager');
 
   // ローカルストレージからデータ読み込み
   useEffect(() => {
@@ -457,24 +459,26 @@ function DeepDive() {
   // DoD判定（Definition of Done）
   const calculateCompletionScore = (block) => {
     const requiredFields = block.fields.filter(f => f.required);
-    const completedFields = requiredFields.filter(f => {
+    
+    // required: falseのフィールドのみの場合は、全フィールドを対象にする
+    const targetFields = requiredFields.length > 0 ? requiredFields : block.fields;
+    
+    const completedFields = targetFields.filter(f => {
       const value = getFieldValue(block.key, f.key);
       return value && value.trim().length > 10; // 最低10文字
     });
     
-    if (requiredFields.length === 0) return 100;
-    
-    const inputtedFields = requiredFields.filter(f => {
+    const inputtedFields = targetFields.filter(f => {
       const value = getFieldValue(block.key, f.key);
       return value && value.trim().length > 0; // 何か入力されている
     });
     
     if (inputtedFields.length === 0) return 0; // 未入力
-    if (completedFields.length === requiredFields.length) return 100; // 完了
+    if (completedFields.length === targetFields.length) return 100; // 完了
     
     // 入力済みだが不完全な場合は25-75%の範囲
     const baseScore = 25;
-    const progressScore = (completedFields.length / requiredFields.length) * 50;
+    const progressScore = (completedFields.length / targetFields.length) * 50;
     return Math.round(baseScore + progressScore);
   };
 
@@ -482,6 +486,155 @@ function DeepDive() {
   const calculateOverallCompletion = () => {
     const scores = BLOCKS.map(block => calculateCompletionScore(block));
     return scores.reduce((sum, score) => sum + score, 0) / scores.length;
+  };
+
+  // 全完了チェック
+  const isFullyCompleted = () => {
+    return calculateOverallCompletion() >= 100;
+  };
+
+
+  // 整理されたフォーマット（構造化）エクスポート
+  const exportStructured = () => {
+    const structuredData = `# 事業深掘り分析 - 整理済みフォーマット
+
+## 【基本情報】
+**企業名**: ${data.meta.companyName || '未設定'}
+**分析者**: ${data.meta.author || '未設定'}
+**完了日**: ${new Date().toLocaleDateString('ja-JP')}
+
+---
+
+## 【1. 企業の基盤】
+
+### ルーツ・沿革
+- **時期**: ${getFieldValue('roots', 'when') || '未入力'}
+- **人物**: ${getFieldValue('roots', 'who') || '未入力'}
+- **動機**: ${getFieldValue('roots', 'why') || '未入力'}
+- **行動**: ${getFieldValue('roots', 'what') || '未入力'}
+- **継承価値**: ${getFieldValue('roots', 'goal_heritage') || '未入力'}
+
+### 企業理念
+- **ミッション**: ${getFieldValue('philosophy', 'mission') || '未入力'}
+- **ビジョン**: ${getFieldValue('philosophy', 'vision') || '未入力'}
+- **バリュー**: ${getFieldValue('philosophy', 'values') || '未入力'}
+
+### 競争優位性（強み3つ）
+1. **強み1**: ${getFieldValue('strength_1', 'claim') || '未入力'}
+   - 根拠: ${getFieldValue('strength_1', 'evidence') || '未入力'}
+   - 独自性: ${getFieldValue('strength_1', 'why_unique') || '未入力'}
+
+2. **強み2**: ${getFieldValue('strength_2', 'claim') || '未入力'}
+   - 根拠: ${getFieldValue('strength_2', 'evidence') || '未入力'}
+   - 独自性: ${getFieldValue('strength_2', 'why_unique') || '未入力'}
+
+3. **強み3**: ${getFieldValue('strength_3', 'claim') || '未入力'}
+   - 根拠: ${getFieldValue('strength_3', 'evidence') || '未入力'}
+   - 独自性: ${getFieldValue('strength_3', 'why_unique') || '未入力'}
+
+---
+
+## 【2. 外部環境分析】
+
+### PEST分析
+**政治的要因**
+- 事実: ${getFieldValue('pest_p', 'facts') || '未入力'}
+- 機会: ${getFieldValue('pest_p', 'opps') || '未入力'}
+- 脅威: ${getFieldValue('pest_p', 'threats') || '未入力'}
+
+**経済的要因**
+- 事実: ${getFieldValue('pest_e', 'facts') || '未入力'}
+- 機会: ${getFieldValue('pest_e', 'opps') || '未入力'}
+- 脅威: ${getFieldValue('pest_e', 'threats') || '未入力'}
+
+**社会的要因**
+- 事実: ${getFieldValue('pest_s', 'facts') || '未入力'}
+- 機会: ${getFieldValue('pest_s', 'opps') || '未入力'}
+- 脅威: ${getFieldValue('pest_s', 'threats') || '未入力'}
+
+**技術的要因**
+- 事実: ${getFieldValue('pest_t', 'facts') || '未入力'}
+- 機会: ${getFieldValue('pest_t', 'opps') || '未入力'}
+- 脅威: ${getFieldValue('pest_t', 'threats') || '未入力'}
+
+### 5Forces分析
+1. **新規参入の脅威**: ${getFieldValue('ff_new', 'strength') || '未入力'}
+   - 対応策: ${getFieldValue('ff_new', 'moves') || '未入力'}
+
+2. **供給業者の交渉力**: ${getFieldValue('ff_sup', 'strength') || '未入力'}
+   - 対応策: ${getFieldValue('ff_sup', 'moves') || '未入力'}
+
+3. **買い手の交渉力**: ${getFieldValue('ff_buy', 'strength') || '未入力'}
+   - 対応策: ${getFieldValue('ff_buy', 'moves') || '未入力'}
+
+4. **代替品の脅威**: ${getFieldValue('ff_sub', 'strength') || '未入力'}
+   - 対応策: ${getFieldValue('ff_sub', 'moves') || '未入力'}
+
+5. **既存競合の脅威**: ${getFieldValue('ff_riv', 'strength') || '未入力'}
+   - 対応策: ${getFieldValue('ff_riv', 'moves') || '未入力'}
+
+---
+
+## 【3. 新事業計画】
+
+### 事業コンセプト
+- **Why Us**: ${getFieldValue('q1_whyus', 'story') || '未入力'}
+- **ターゲット**: ${getFieldValue('q2_whose', 'persona') || '未入力'}
+- **ニーズ**: ${getFieldValue('q2_whose', 'needs') || '未入力'}
+- **アイデア詳細**: ${getFieldValue('q3_idea', 'details') || '未入力'}
+
+### 競争戦略
+- **独自資産**: ${getFieldValue('q4_onlyus', 'assets') || '未入力'}
+- **参入障壁**: ${getFieldValue('q4_onlyus', 'moat') || '未入力'}
+- **競合**: ${getFieldValue('q7_comp', 'players') || '未入力'}
+- **差別化**: ${getFieldValue('q7_comp', 'diff') || '未入力'}
+
+### 市場・収益性
+- **市場規模**: ${getFieldValue('q6_market', 'tam_sam_som') || '未入力'}
+- **収益モデル**: ${getFieldValue('q8_bm', 'formula') || '未入力'}
+- **ユニット経済**: ${getFieldValue('q8_bm', 'unit') || '未入力'}
+
+### 実行計画
+- **チーム体制**: ${getFieldValue('q9_team', 'roles') || '未入力'}
+- **人材ギャップ**: ${getFieldValue('q9_team', 'gaps') || '未入力'}
+- **初期投資**: ${getFieldValue('q10_budget', 'capex') || '未入力'}
+- **運営費**: ${getFieldValue('q10_budget', 'opex') || '未入力'}
+
+### リスク・成功指標
+- **成功時**: ${getFieldValue('q5_success', 'good') || '未入力'}
+- **リスク**: ${getFieldValue('q5_success', 'bad') || '未入力'}
+
+---
+
+## 【4. 総合評価・推奨アクション】
+
+### 強み活用ポイント
+1. ${getFieldValue('strength_1', 'claim')?.split('。')[0] || '強み1活用'}
+2. ${getFieldValue('strength_2', 'claim')?.split('。')[0] || '強み2活用'}  
+3. ${getFieldValue('strength_3', 'claim')?.split('。')[0] || '強み3活用'}
+
+### 優先対応課題
+1. ${getFieldValue('pest_p', 'threats')?.split('。')[0] || '政治的脅威対応'}
+2. ${getFieldValue('ff_buy', 'moves')?.split('。')[0] || '顧客関係強化'}
+3. ${getFieldValue('q9_team', 'gaps')?.split('。')[0] || '人材ギャップ解消'}
+
+### 次の7日間アクション
+1. ${getFieldValue('q1_whyus', 'fit')?.split('。')[0] || '事業適合性確認'}
+2. ${getFieldValue('q2_whose', 'persona')?.split('。')[0] || 'ターゲット検証'}
+3. ${getFieldValue('q10_budget', 'capex')?.split('。')[0] || '予算計画策定'}
+
+---
+*このフォーマットは深掘り分析ツールにより自動生成されました*`;
+
+    return structuredData;
+  };
+
+  // 完了時の成果物生成
+  const generateCompletionPackage = () => {
+    const doc = exportDoc();
+    const md = exportMarkdown();
+    const structured = exportStructured();
+    return { doc, md, structured };
   };
 
   // Markdownエクスポート（AI相談用・プロンプト付き）
@@ -578,6 +731,657 @@ function DeepDive() {
     URL.revokeObjectURL(url);
   };
 
+  // レポート生成機能
+
+  const calculateReadiness = () => {
+    const DOD = {
+      roots: 5, philosophy: 5, strength_1: 4, strength_2: 4, strength_3: 4,
+      pest_p: 4, pest_e: 4, pest_s: 4, pest_t: 4,
+      ff_new: 4, ff_sup: 4, ff_riv: 4, ff_buy: 4, ff_sub: 4,
+      q1_whyus: 2, q2_whose: 2, q3_idea: 2, q4_onlyus: 2, q5_success: 2, 
+      q6_market: 2, q7_comp: 2, q8_bm: 2, q9_team: 2, q10_budget: 2
+    };
+    
+    const keys = Object.keys(DOD);
+    let filledBlocks = 0;
+    let missing = 0;
+    
+    keys.forEach(key => {
+      const need = DOD[key];
+      const block = data.blocks[key] || {};
+      const filled = Object.values(block).filter(v => (v || '').trim().length > 0).length;
+      if (filled >= need) filledBlocks++;
+      else missing += (need - filled);
+    });
+    
+    return { 
+      score: Math.round((filledBlocks / keys.length) * 100), 
+      blocksDone: filledBlocks, 
+      blocksTotal: keys.length, 
+      missing 
+    };
+  };
+
+  const getThreatsCount = () => {
+    const threatKeys = ['pest_p', 'pest_e', 'pest_s', 'pest_t', 'ff_new', 'ff_sup', 'ff_riv', 'ff_buy', 'ff_sub'];
+    let count = 0;
+    threatKeys.forEach(key => {
+      const block = data.blocks[key] || {};
+      ['threats', 'drivers', 'risk', 'risks'].forEach(field => {
+        if (block[field]) {
+          count += block[field].split(/\n|、|・|,/).filter(x => x.trim()).length;
+        }
+      });
+    });
+    return count;
+  };
+
+  const getExecutiveSummary = () => {
+    return {
+      oneLiner: getFieldValue('q3_idea', 'details') || '—',
+      coreStrength: [getFieldValue('strength_1', 'claim'), getFieldValue('strength_2', 'claim')].filter(x => x).join(' / ') || '—',
+      customerJob: `${getFieldValue('q2_whose', 'persona')} → ${getFieldValue('q2_whose', 'needs')}`,
+      diff: getFieldValue('q7_comp', 'diff') || '—',
+      kpi: [
+        '72h見積回答率(%)（例：70→85）',
+        '短納期受注成約率(%)（例：20→30）',
+        'リードタイム(h)（例：96→72）'
+      ]
+    };
+  };
+
+  const renderReport = () => {
+    const readiness = calculateReadiness();
+    const threats = getThreatsCount();
+    const summary = getExecutiveSummary();
+
+    return (
+      <div className="report-content space-y-6">
+        <style>{`
+          @media print {
+            .fixed { position: static !important; }
+            .overflow-auto { overflow: visible !important; }
+            .max-h-\\[95vh\\] { max-height: none !important; }
+            button { display: none !important; }
+            .bg-gray-50 { background: white !important; }
+            .border-b { border-bottom: 1px solid #000 !important; }
+            @page { size: A4; margin: 15mm; }
+            body { font-size: 12pt; line-height: 1.4; }
+            h1 { font-size: 18pt; } h2 { font-size: 14pt; } h3 { font-size: 12pt; }
+          }
+        `}</style>
+
+        {/* KPIサマリー */}
+        <div className="grid grid-cols-4 gap-4">
+          <div className="border border-gray-200 rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-blue-600">{readiness.score}%</div>
+            <div className="text-sm text-gray-600">準備度</div>
+            <div className="text-xs text-gray-500 mt-1">必要項目の充足率</div>
+          </div>
+          <div className="border border-gray-200 rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-green-600">{readiness.blocksDone}/{readiness.blocksTotal}</div>
+            <div className="text-sm text-gray-600">完了ブロック</div>
+            <div className="text-xs text-gray-500 mt-1">24ブロック中の完了数</div>
+          </div>
+          <div className="border border-gray-200 rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-orange-600">{threats}</div>
+            <div className="text-sm text-gray-600">脅威・ドライバー</div>
+            <div className="text-xs text-gray-500 mt-1">PEST・5Fから抽出した要注意事項</div>
+          </div>
+          <div className="border border-gray-200 rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-purple-600">5</div>
+            <div className="text-sm text-gray-600">7日タスク</div>
+            <div className="text-xs text-gray-500 mt-1">即座に着手すべき行動項目</div>
+          </div>
+        </div>
+
+        {/* EXECUTIVE SUMMARY */}
+        <div>
+          <h2 className="text-xl font-bold text-gray-900 mb-4">EXECUTIVE SUMMARY</h2>
+          <div className="grid grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <div><strong>要約：</strong>{summary.oneLiner}</div>
+              <div><strong>強みの核：</strong>{summary.coreStrength}</div>
+              <div><strong>主要顧客×ジョブ：</strong>{summary.customerJob}</div>
+              <div><strong>差別化：</strong>{summary.diff}</div>
+            </div>
+            <div>
+              <h3 className="font-bold mb-2">先行KPI</h3>
+              <ul className="list-disc list-inside space-y-1 text-sm">
+                {summary.kpi.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* MARKET & STRATEGY */}
+        <div>
+          <h2 className="text-xl font-bold text-gray-900 mb-4">MARKET & STRATEGY</h2>
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <h3 className="font-bold mb-2">PEST Snapshot</h3>
+              <table className="w-full border-collapse border border-gray-300 text-sm">
+                <tbody>
+                  <tr><th className="border border-gray-300 p-2 bg-gray-50">P</th><td className="border border-gray-300 p-2">{getFieldValue('pest_p', 'facts')} / {getFieldValue('pest_p', 'opps')}</td></tr>
+                  <tr><th className="border border-gray-300 p-2 bg-gray-50">E</th><td className="border border-gray-300 p-2">{getFieldValue('pest_e', 'facts')} / {getFieldValue('pest_e', 'opps')}</td></tr>
+                  <tr><th className="border border-gray-300 p-2 bg-gray-50">S</th><td className="border border-gray-300 p-2">{getFieldValue('pest_s', 'facts')} / {getFieldValue('pest_s', 'opps')}</td></tr>
+                  <tr><th className="border border-gray-300 p-2 bg-gray-50">T</th><td className="border border-gray-300 p-2">{getFieldValue('pest_t', 'facts')} / {getFieldValue('pest_t', 'opps')}</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <h3 className="font-bold mb-2">5FORCES</h3>
+              <table className="w-full border-collapse border border-gray-300 text-sm">
+                <tbody>
+                  <tr><th className="border border-gray-300 p-2 bg-gray-50">新規参入</th><td className="border border-gray-300 p-2">{getFieldValue('ff_new', 'strength') || '—'}/5</td></tr>
+                  <tr><th className="border border-gray-300 p-2 bg-gray-50">売り手</th><td className="border border-gray-300 p-2">{getFieldValue('ff_sup', 'strength') || '—'}/5</td></tr>
+                  <tr><th className="border border-gray-300 p-2 bg-gray-50">競合</th><td className="border border-gray-300 p-2">{getFieldValue('ff_riv', 'strength') || '—'}/5</td></tr>
+                  <tr><th className="border border-gray-300 p-2 bg-gray-50">買い手</th><td className="border border-gray-300 p-2">{getFieldValue('ff_buy', 'strength') || '—'}/5</td></tr>
+                  <tr><th className="border border-gray-300 p-2 bg-gray-50">代替</th><td className="border border-gray-300 p-2">{getFieldValue('ff_sub', 'strength') || '—'}/5</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        {/* BUSINESS MODEL */}
+        <div>
+          <h2 className="text-xl font-bold text-gray-900 mb-4">BUSINESS MODEL & UNIT ECONOMICS</h2>
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <h3 className="font-bold mb-2">収益式</h3>
+              <div className="bg-blue-50 border border-blue-200 rounded p-3 mb-3">
+                {getFieldValue('q8_bm', 'formula') || '—'}
+              </div>
+              <h3 className="font-bold mb-2">単位経済</h3>
+              <p className="text-sm">{getFieldValue('q8_bm', 'unit') || '—'}</p>
+            </div>
+            <div>
+              <h3 className="font-bold mb-2">市場・投資整合</h3>
+              <table className="w-full border-collapse border border-gray-300 text-sm">
+                <tbody>
+                  <tr><th className="border border-gray-300 p-2 bg-gray-50">市場(TAM/SAM/SOM)</th><td className="border border-gray-300 p-2">{getFieldValue('q6_market', 'tam_sam_som') || '—'}</td></tr>
+                  <tr><th className="border border-gray-300 p-2 bg-gray-50">初期投資(CAPEX)</th><td className="border border-gray-300 p-2">{getFieldValue('q10_budget', 'capex') || '—'}</td></tr>
+                  <tr><th className="border border-gray-300 p-2 bg-gray-50">運営費(OPEX)</th><td className="border border-gray-300 p-2">{getFieldValue('q10_budget', 'opex') || '—'}</td></tr>
+                </tbody>
+              </table>
+              <p className="text-xs text-gray-500 mt-2">※ 市場→モデル→資金の整合を会議で確認</p>
+            </div>
+          </div>
+        </div>
+
+        {/* RISKS & MITIGATION */}
+        <div>
+          <h2 className="text-xl font-bold text-gray-900 mb-4">RISKS & MITIGATION</h2>
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <h3 className="font-bold mb-2">主要脅威・ドライバー ({threats}件)</h3>
+              <div className="space-y-2 text-sm">
+                {[
+                  getFieldValue('pest_p', 'threats'),
+                  getFieldValue('pest_e', 'threats'), 
+                  getFieldValue('pest_s', 'threats'),
+                  getFieldValue('pest_t', 'threats'),
+                  getFieldValue('ff_new', 'drivers'),
+                  getFieldValue('ff_sup', 'drivers'),
+                  getFieldValue('ff_riv', 'drivers'),
+                  getFieldValue('ff_buy', 'drivers'),
+                  getFieldValue('ff_sub', 'drivers')
+                ].filter(item => item && item.trim()).slice(0, 6).map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-2 p-2 bg-orange-50 border-l-4 border-orange-200">
+                    <span className="text-orange-600 font-bold text-xs mt-0.5">⚠</span>
+                    <span className="text-gray-700">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 className="font-bold mb-2">対策・打ち手</h3>
+              <div className="space-y-2 text-sm">
+                {[
+                  getFieldValue('ff_new', 'moves'),
+                  getFieldValue('ff_sup', 'moves'), 
+                  getFieldValue('ff_riv', 'moves'),
+                  getFieldValue('ff_buy', 'moves'),
+                  getFieldValue('ff_sub', 'moves')
+                ].filter(item => item && item.trim()).slice(0, 5).map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-2 p-2 bg-green-50 border-l-4 border-green-200">
+                    <span className="text-green-600 font-bold text-xs mt-0.5">✓</span>
+                    <span className="text-gray-700">{item}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
+                ※ 各脅威に対する具体的な対応策を実行し、定期的にモニタリングを行う
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* NEXT 7-30-90 */}
+        <div>
+          <h2 className="text-xl font-bold text-gray-900 mb-4">NEXT 7-30-90</h2>
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <h3 className="font-bold mb-2">7日以内</h3>
+              <ul className="list-disc list-inside space-y-1 text-sm">
+                <li>顧客3社へ価値仮説ヒアリング（30分×3）</li>
+                <li>72h見積SLAの社内周知とテンプレ配布</li>
+                <li>PoC先の要件定義をミニドキュメント化</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-bold mb-2">30日以内</h3>
+              <ul className="list-disc list-inside space-y-1 text-sm">
+                <li>PoC(3件)：KPI=回答率/成約率/着手時間</li>
+                <li>価格テーブル仮: 単価×数量×率で妥当性検証</li>
+                <li>導入手順書(紙併存) v1.0</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-bold mb-2">90日以内</h3>
+              <ul className="list-disc list-inside space-y-1 text-sm">
+                <li>参加工場×地域の拡張計画</li>
+                <li>API/EDIの連携要件整理</li>
+                <li>支援ドキュメント整備と成功事例化</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const generateMarkdownReport = () => {
+    const readiness = calculateReadiness();
+    const summary = getExecutiveSummary();
+    const today = new Date().toLocaleDateString();
+
+    return `# 事業分析レポート（${today}）
+
+- 会社: ${data.meta.companyName || '—'} / 作成: ${data.meta.author || '—'} / 更新: ${data.meta.updatedAt || '—'}
+- 準備度: ${readiness.score}%（${readiness.blocksDone}/${readiness.blocksTotal} 完了・未充足${readiness.missing}）
+- 先行KPI: ${summary.kpi.join(' / ')}
+
+## EXECUTIVE SUMMARY
+- 要約: ${summary.oneLiner}
+- 強みの核: ${summary.coreStrength}
+- 主要顧客×ジョブ: ${summary.customerJob}
+- 差別化: ${summary.diff}
+
+## MARKET & STRATEGY（要約）
+- P: ${getFieldValue('pest_p', 'facts') || '—'} / ${getFieldValue('pest_p', 'opps') || '—'}
+- E: ${getFieldValue('pest_e', 'facts') || '—'} / ${getFieldValue('pest_e', 'opps') || '—'}
+- S: ${getFieldValue('pest_s', 'facts') || '—'} / ${getFieldValue('pest_s', 'opps') || '—'}
+- T: ${getFieldValue('pest_t', 'facts') || '—'} / ${getFieldValue('pest_t', 'opps') || '—'}
+- 5F 強度: 新${getFieldValue('ff_new', 'strength') || '—'} / 売${getFieldValue('ff_sup', 'strength') || '—'} / 競${getFieldValue('ff_riv', 'strength') || '—'} / 買${getFieldValue('ff_buy', 'strength') || '—'} / 代${getFieldValue('ff_sub', 'strength') || '—'}
+
+## BUSINESS MODEL
+- 収益式: ${getFieldValue('q8_bm', 'formula') || '—'}
+- 単位経済: ${getFieldValue('q8_bm', 'unit') || '—'}
+- 市場: ${getFieldValue('q6_market', 'tam_sam_som') || '—'}
+- CAPEX: ${getFieldValue('q10_budget', 'capex') || '—'} / OPEX: ${getFieldValue('q10_budget', 'opex') || '—'}
+
+## RISKS & MITIGATION
+### 主要脅威・ドライバー (${getThreatsCount()}件)
+${[
+  getFieldValue('pest_p', 'threats'),
+  getFieldValue('pest_e', 'threats'), 
+  getFieldValue('pest_s', 'threats'),
+  getFieldValue('pest_t', 'threats'),
+  getFieldValue('ff_new', 'drivers'),
+  getFieldValue('ff_sup', 'drivers'),
+  getFieldValue('ff_riv', 'drivers'),
+  getFieldValue('ff_buy', 'drivers'),
+  getFieldValue('ff_sub', 'drivers')
+].filter(item => item && item.trim()).slice(0, 6).map((item, idx) => `- ⚠ ${item}`).join('\n')}
+
+### 対策・打ち手
+${[
+  getFieldValue('ff_new', 'moves'),
+  getFieldValue('ff_sup', 'moves'), 
+  getFieldValue('ff_riv', 'moves'),
+  getFieldValue('ff_buy', 'moves'),
+  getFieldValue('ff_sub', 'moves')
+].filter(item => item && item.trim()).slice(0, 5).map((item, idx) => `- ✓ ${item}`).join('\n')}
+
+## NEXT 7-30-90
+- 7日: 価値仮説ヒアリング／SLA周知／PoC要件
+- 30日: PoC(3件)／価格テーブル仮／導入手順v1
+- 90日: 参加工場拡張／API要件／成功事例化
+`;
+  };
+
+  const generatePrintableHTML = () => {
+    const readiness = calculateReadiness();
+    const threats = getThreatsCount();
+    const summary = getExecutiveSummary();
+    const today = new Date().toLocaleDateString();
+
+    return `
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事業分析レポート - ${data.meta.companyName || '企業名'}</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6; 
+            margin: 0; 
+            padding: 20px; 
+            color: #1f2937;
+            font-size: 14px;
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 20px;
+        }
+        .header h1 { 
+            margin: 0 0 10px 0; 
+            color: #1f2937; 
+            font-size: 24px;
+        }
+        .meta { 
+            color: #6b7280; 
+            font-size: 12px; 
+        }
+        .kpi-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 15px; 
+            margin: 20px 0; 
+        }
+        .kpi-card { 
+            border: 1px solid #d1d5db; 
+            border-radius: 8px; 
+            padding: 15px; 
+            text-align: center; 
+        }
+        .kpi-number { 
+            font-size: 24px; 
+            font-weight: bold; 
+            margin-bottom: 5px; 
+        }
+        .kpi-label { 
+            font-size: 12px; 
+            color: #6b7280; 
+        }
+        .kpi-desc { 
+            font-size: 10px; 
+            color: #9ca3af; 
+            margin-top: 4px;
+        }
+        .blue { color: #2563eb; }
+        .green { color: #16a34a; }
+        .orange { color: #ea580c; }
+        .purple { color: #9333ea; }
+        
+        .section { 
+            margin: 25px 0; 
+        }
+        .section h2 { 
+            font-size: 18px; 
+            margin: 0 0 15px 0; 
+            color: #1f2937; 
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+        .section h3 { 
+            font-size: 14px; 
+            margin: 15px 0 8px 0; 
+            font-weight: bold;
+        }
+        
+        .grid-2 { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+        }
+        .grid-3 { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 15px; 
+        }
+        
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 10px 0; 
+            font-size: 12px;
+        }
+        th, td { 
+            border: 1px solid #d1d5db; 
+            padding: 8px; 
+            text-align: left; 
+        }
+        th { 
+            background: #f9fafb; 
+            font-weight: bold; 
+        }
+        
+        .formula-box { 
+            background: #eff6ff; 
+            border: 1px solid #bfdbfe; 
+            border-radius: 6px; 
+            padding: 12px; 
+            margin: 10px 0; 
+            font-weight: bold;
+        }
+        
+        ul { 
+            margin: 10px 0; 
+            padding-left: 20px; 
+        }
+        li { 
+            margin: 4px 0; 
+        }
+        
+        .summary-item { 
+            margin: 8px 0; 
+        }
+        .summary-label { 
+            font-weight: bold; 
+        }
+        
+        .note { 
+            font-size: 11px; 
+            color: #6b7280; 
+            margin-top: 8px;
+        }
+        
+        @page { 
+            size: A4; 
+            margin: 15mm; 
+        }
+        
+        @media print {
+            body { font-size: 12px; }
+            .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+            .grid-2 { grid-template-columns: 1fr 1fr; }
+            .grid-3 { grid-template-columns: repeat(3, 1fr); }
+            .section { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 事業分析レポート</h1>
+        <div class="meta">
+            会社: ${data.meta.companyName || '—'} | 作成: ${data.meta.author || '—'} | 更新: ${data.meta.updatedAt ? new Date(data.meta.updatedAt).toLocaleDateString() : '—'} | 出力日: ${today}
+        </div>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-number blue">${readiness.score}%</div>
+            <div class="kpi-label">準備度</div>
+            <div class="kpi-desc">必要項目の充足率</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-number green">${readiness.blocksDone}/${readiness.blocksTotal}</div>
+            <div class="kpi-label">完了ブロック</div>
+            <div class="kpi-desc">24ブロック中の完了数</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-number orange">${threats}</div>
+            <div class="kpi-label">脅威・ドライバー</div>
+            <div class="kpi-desc">PEST・5Fから抽出した要注意事項</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-number purple">5</div>
+            <div class="kpi-label">7日タスク</div>
+            <div class="kpi-desc">即座に着手すべき行動項目</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>EXECUTIVE SUMMARY</h2>
+        <div class="grid-2">
+            <div>
+                <div class="summary-item"><span class="summary-label">要約：</span>${summary.oneLiner}</div>
+                <div class="summary-item"><span class="summary-label">強みの核：</span>${summary.coreStrength}</div>
+                <div class="summary-item"><span class="summary-label">主要顧客×ジョブ：</span>${summary.customerJob}</div>
+                <div class="summary-item"><span class="summary-label">差別化：</span>${summary.diff}</div>
+            </div>
+            <div>
+                <h3>先行KPI</h3>
+                <ul>
+                    ${summary.kpi.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>MARKET & STRATEGY</h2>
+        <div class="grid-2">
+            <div>
+                <h3>PEST Snapshot</h3>
+                <table>
+                    <tr><th>P</th><td>${getFieldValue('pest_p', 'facts') || '—'} / ${getFieldValue('pest_p', 'opps') || '—'}</td></tr>
+                    <tr><th>E</th><td>${getFieldValue('pest_e', 'facts') || '—'} / ${getFieldValue('pest_e', 'opps') || '—'}</td></tr>
+                    <tr><th>S</th><td>${getFieldValue('pest_s', 'facts') || '—'} / ${getFieldValue('pest_s', 'opps') || '—'}</td></tr>
+                    <tr><th>T</th><td>${getFieldValue('pest_t', 'facts') || '—'} / ${getFieldValue('pest_t', 'opps') || '—'}</td></tr>
+                </table>
+            </div>
+            <div>
+                <h3>5FORCES</h3>
+                <table>
+                    <tr><th>新規参入</th><td>${getFieldValue('ff_new', 'strength') || '—'}/5</td></tr>
+                    <tr><th>売り手</th><td>${getFieldValue('ff_sup', 'strength') || '—'}/5</td></tr>
+                    <tr><th>競合</th><td>${getFieldValue('ff_riv', 'strength') || '—'}/5</td></tr>
+                    <tr><th>買い手</th><td>${getFieldValue('ff_buy', 'strength') || '—'}/5</td></tr>
+                    <tr><th>代替</th><td>${getFieldValue('ff_sub', 'strength') || '—'}/5</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>BUSINESS MODEL & UNIT ECONOMICS</h2>
+        <div class="grid-2">
+            <div>
+                <h3>収益式</h3>
+                <div class="formula-box">${getFieldValue('q8_bm', 'formula') || '—'}</div>
+                <h3>単位経済</h3>
+                <p>${getFieldValue('q8_bm', 'unit') || '—'}</p>
+            </div>
+            <div>
+                <h3>市場・投資整合</h3>
+                <table>
+                    <tr><th>市場(TAM/SAM/SOM)</th><td>${getFieldValue('q6_market', 'tam_sam_som') || '—'}</td></tr>
+                    <tr><th>初期投資(CAPEX)</th><td>${getFieldValue('q10_budget', 'capex') || '—'}</td></tr>
+                    <tr><th>運営費(OPEX)</th><td>${getFieldValue('q10_budget', 'opex') || '—'}</td></tr>
+                </table>
+                <p class="note">※ 市場→モデル→資金の整合を会議で確認</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>RISKS & MITIGATION</h2>
+        <div class="grid-2">
+            <div>
+                <h3>主要脅威・ドライバー (${threats}件)</h3>
+                <div style="font-size: 11px;">
+                    ${[
+                      getFieldValue('pest_p', 'threats'),
+                      getFieldValue('pest_e', 'threats'), 
+                      getFieldValue('pest_s', 'threats'),
+                      getFieldValue('pest_t', 'threats'),
+                      getFieldValue('ff_new', 'drivers'),
+                      getFieldValue('ff_sup', 'drivers'),
+                      getFieldValue('ff_riv', 'drivers'),
+                      getFieldValue('ff_buy', 'drivers'),
+                      getFieldValue('ff_sub', 'drivers')
+                    ].filter(item => item && item.trim()).slice(0, 6).map(item => 
+                      `<div style="margin: 6px 0; padding: 6px; background: #fff7ed; border-left: 3px solid #fb923c;">
+                        <strong style="color: #ea580c;">⚠</strong> ${item}
+                      </div>`
+                    ).join('')}
+                </div>
+            </div>
+            <div>
+                <h3>対策・打ち手</h3>
+                <div style="font-size: 11px;">
+                    ${[
+                      getFieldValue('ff_new', 'moves'),
+                      getFieldValue('ff_sup', 'moves'), 
+                      getFieldValue('ff_riv', 'moves'),
+                      getFieldValue('ff_buy', 'moves'),
+                      getFieldValue('ff_sub', 'moves')
+                    ].filter(item => item && item.trim()).slice(0, 5).map(item => 
+                      `<div style="margin: 6px 0; padding: 6px; background: #f0fdf4; border-left: 3px solid #22c55e;">
+                        <strong style="color: #16a34a;">✓</strong> ${item}
+                      </div>`
+                    ).join('')}
+                </div>
+                <p class="note" style="margin-top: 8px; padding: 8px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 4px;">
+                    ※ 各脅威に対する具体的な対応策を実行し、定期的にモニタリングを行う
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>NEXT 7-30-90</h2>
+        <div class="grid-3">
+            <div>
+                <h3>7日以内</h3>
+                <ul>
+                    <li>顧客3社へ価値仮説ヒアリング（30分×3）</li>
+                    <li>72h見積SLAの社内周知とテンプレ配布</li>
+                    <li>PoC先の要件定義をミニドキュメント化</li>
+                </ul>
+            </div>
+            <div>
+                <h3>30日以内</h3>
+                <ul>
+                    <li>PoC(3件)：KPI=回答率/成約率/着手時間</li>
+                    <li>価格テーブル仮: 単価×数量×率で妥当性検証</li>
+                    <li>導入手順書(紙併存) v1.0</li>
+                </ul>
+            </div>
+            <div>
+                <h3>90日以内</h3>
+                <ul>
+                    <li>参加工場×地域の拡張計画</li>
+                    <li>API/EDIの連携要件整理</li>
+                    <li>支援ドキュメント整備と成功事例化</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
+  };
+
   // クリップボードにコピー
   const copyToClipboard = async (text) => {
     try {
@@ -611,12 +1415,17 @@ function DeepDive() {
   const currentBlockData = BLOCKS[currentBlock];
 
   if (!isOpen) {
+    if (trigger) {
+      return React.cloneElement(trigger, {
+        onClick: () => setIsOpen(true)
+      });
+    }
     return (
       <button
         onClick={() => setIsOpen(true)}
         className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-colors"
       >
-        🔍 深掘りを開始
+        フカボリを開始する
       </button>
     );
   }
@@ -627,7 +1436,7 @@ function DeepDive() {
         {/* ヘッダー */}
         <div className="bg-gray-50 border-b px-6 py-4 flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">🔍 深掘りウィザード</h2>
+            <h2 className="text-2xl font-bold text-gray-900">📊 事業分析ワークシート</h2>
             <p className="text-sm text-gray-600">完成度: {calculateOverallCompletion().toFixed(1)}%</p>
           </div>
           <div className="flex items-center gap-3">
@@ -740,41 +1549,135 @@ function DeepDive() {
             </div>
 
             {/* フッター */}
-            <div className="bg-gray-50 border-t px-6 py-4 flex justify-between items-center">
-              <div className="flex gap-2">
-                <button
-                  onClick={() => downloadFile(exportDoc(), `深掘り分析書-${Date.now()}.doc`, 'application/msword')}
-                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-                >
-                  📄 Word文書
-                </button>
-                <button
-                  onClick={() => downloadFile(exportMarkdown(), `AI相談パック-${Date.now()}.md`, 'text/markdown')}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-                >
-                  🤖 AI相談パック
-                </button>
+            <div className={`border-t px-6 py-4 ${isFullyCompleted() ? 'bg-green-50' : 'bg-gray-50'}`}>
+              {isFullyCompleted() && (
+                <div className="text-center mb-4">
+                  <div className="flex items-center justify-center gap-3 text-green-700 font-medium mb-3">
+                    🎉 全24ブロック完了！お疲れさまでした！
+                  </div>
+                  <button
+                    onClick={() => downloadFile(exportStructured(), `整理済み分析書-${Date.now()}.md`, 'text/markdown')}
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium mr-2"
+                  >
+                    整理済みフォーマット
+                  </button>
+                  <button
+                    onClick={() => setShowReport(true)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium mr-2"
+                  >
+                    📊 決裁用レポート
+                  </button>
+                  <span className="text-xs text-gray-500">One-Pager / Dossier形式</span>
+                </div>
+              )}
+              <div className="text-center mb-3">
+                <p className="text-xs text-gray-500 leading-tight">
+                  フォームに入力すると事業の深掘り資料が作成されます。<br />
+                  作成に悩んだら、プロンプトをダウンロードしてAIと意見交換しよう。
+                </p>
               </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => goToBlock(currentBlock - 1)}
-                  disabled={currentBlock === 0}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  ← 前へ
-                </button>
-                <button
-                  onClick={() => goToBlock(currentBlock + 1)}
-                  disabled={currentBlock === BLOCKS.length - 1}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  次へ →
-                </button>
+              <div className="flex justify-between items-center">
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setShowReport(true)}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                  >
+                    📊 決裁用レポート
+                  </button>
+                  <button
+                    onClick={() => downloadFile(exportDoc(), `深掘り分析書-${Date.now()}.doc`, 'application/msword')}
+                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                  >
+                    Word文書
+                  </button>
+                  <button
+                    onClick={() => downloadFile(exportMarkdown(), `AI相談プロンプト-${Date.now()}.md`, 'text/markdown')}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                  >
+                    AI相談プロンプト
+                  </button>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => goToBlock(currentBlock - 1)}
+                    disabled={currentBlock === 0}
+                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    ← 前
+                  </button>
+                  <button
+                    onClick={() => goToBlock(currentBlock + 1)}
+                    disabled={currentBlock === BLOCKS.length - 1}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    次 →
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* レポートモーダル */}
+      {showReport && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-7xl w-full max-h-[95vh] overflow-hidden flex flex-col">
+            <div className="bg-gray-50 border-b px-6 py-4 flex justify-between items-center">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">📊 事業分析レポート</h3>
+                <p className="text-sm text-gray-600">
+                  会社: {data.meta.companyName || '—'} / 作成: {data.meta.author || '—'} / 更新: {data.meta.updatedAt ? new Date(data.meta.updatedAt).toLocaleDateString() : '—'}
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <select 
+                  value={reportMode} 
+                  onChange={(e) => setReportMode(e.target.value)}
+                  className="border border-gray-300 rounded px-3 py-1 text-sm"
+                >
+                  <option value="onepager">One-Pager</option>
+                  <option value="dossier">Dossier</option>
+                </select>
+                <button
+                  onClick={() => {
+                    const content = generateMarkdownReport();
+                    navigator.clipboard.writeText(content);
+                    alert('Markdownをクリップボードにコピーしました');
+                  }}
+                  className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
+                >
+                  Markdownコピー
+                </button>
+                <button
+                  onClick={() => {
+                    const printWindow = window.open('', '_blank');
+                    const reportHTML = generatePrintableHTML();
+                    printWindow.document.write(reportHTML);
+                    printWindow.document.close();
+                    printWindow.focus();
+                    setTimeout(() => {
+                      printWindow.print();
+                    }, 500);
+                  }}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+                >
+                  印刷/PDF
+                </button>
+                <button
+                  onClick={() => setShowReport(false)}
+                  className="text-gray-500 hover:text-gray-700 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-auto p-6" id="reportContent">
+              {renderReport()}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -194,12 +194,13 @@ function Home() {
                 <div className="space-y-4">
                   <div className="flex gap-4">
                     <Link to="/subsidy-selection" className="flex-1 rounded-xl bg-red-600 px-6 py-4 text-base font-semibold text-white shadow-sm hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 transition-all duration-200 text-center">
-                      シンセイ準備をはじめる
+                      申請を準備する
                     </Link>
                     <Link to="/phase1" className="flex-1 rounded-xl border border-gray-300 bg-white px-6 py-4 text-base font-semibold text-gray-700 shadow-sm hover:bg-gray-50 hover:text-red-600 hover:border-red-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 transition-all duration-200 text-center">
                       まずは30秒診断 →
                     </Link>
                   </div>
+                  
                   
                   {/* プライバシー表示 */}
                   <div className="pt-2">
@@ -351,13 +352,13 @@ function Home() {
                       </svg>
                       シンセイを準備する
                     </Link>
+                    <p className="text-gray-600 mb-6 leading-relaxed">
+                      申請書を書き始める前に事業を深掘りすることも効果的です
+                    </p>
                     <DeepDive
                       trigger={
                         <button className="inline-flex items-center justify-center w-full rounded-xl bg-gray-700 px-6 py-3 text-base font-semibold text-white shadow-lg hover:bg-gray-800 transition-all duration-200">
-                          <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                          </svg>
-                          フカボリを始める
+                          フカボリを開始する
                         </button>
                       }
                     />
