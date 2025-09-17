@@ -4,130 +4,130 @@ import html2canvas from 'html2canvas';
 // SpareSlotコンセプトに基づく24ブロックのプレースホルダー
 const PLACEHOLDERS = {
   "roots": {
-    "when": "例）2004年：精密板金で創業／2012年：樹脂切削追加／2023年：短納期案件が増加",
-    "who": "例）先代：段取りと交渉に強い／現代表（アトツギ）：現場とITの橋渡し",
-    "why": "例）取りこぼしが粗利を削る。余剰時間を見える化して現金化したい",
-    "what": "例）紙・Excel・チャットの見積/指示を、QR×CSV×写真に整理",
-    "goal_heritage": "例）小さくても速くて正確をデジタルで持続可能にする"
+    "when": "例）1985年：父が町工場を創業。旋盤1台からスタート / 2010年：息子が入社、CNC機械導入 / 2020年：コロナ禍で医療機器部品に参入 / 2024年：事業承継完了、DXに本格着手",
+    "who": "例）創業者（父）：職人気質で品質に妥協なし、地域の信頼が厚い / 現代表（息子）：工学部出身、効率化とデジタル化を推進 / 古参職人2名：30年の経験、技術伝承の要",
+    "why": "例）父の代は職人の勘と経験が頼りだったが、受注増加で属人化が限界に。品質を保ちつつ生産性を上げるため、データ化・標準化が急務となった",
+    "what": "例）作業手順書のデジタル化 / 品質検査データのDB管理 / 受注から納期までの進捗可視化システム導入 / 若手育成プログラムの体系化",
+    "goal_heritage": "例）職人の誇りと品質へのこだわりは変えずに、デジタル技術で次世代に継承できる仕組みを作る"
   },
   "philosophy": {
-    "mission": "例）現場の余剰価値をキャッシュに変える",
-    "vision": "例）地域工場の72時間見積が当たり前になる世界",
-    "values": "例）現場起点／小さく試す／三方よし",
-    "manifestations": "例）QR指示書／写真検査PDF／CSV一括入出力（1週間で立ち上げ）",
-    "interpretation": "例）理想より運用。明日から回る手順を最優先"
+    "mission": "例）地域の製造業を支える精密部品づくりで、社会インフラを下支えする",
+    "vision": "例）職人技術とDXが融合した、次世代町工場のモデルケースになる",
+    "values": "例）品質第一 - 妥協のないものづくり / 改善継続 - 小さな工夫を積み重ねる / 地域共創 - 同業他社とも協力して業界全体を発展させる",
+    "manifestations": "例）不良品率0.01%以下の維持 / 月1回の改善提案会議 / 地域工場との技術交流会を主催 / 工業高校生のインターンシップ受け入れ",
+    "interpretation": "例）先代から受け継いだ品質への執念と地域への恩返しの想いを、現代の技術で実現する。理想論より現場で回る実践を重視"
   },
   "strength_1": {
-    "claim": "例）短納期見積の型化ができる",
-    "evidence": "例）過去見積の係数化→回答リードタイムを平均△△%短縮",
-    "why_unique": "例）価格×工数×段取りの係数化ノウハウ",
-    "value_link": "例）一次受注の勝率↑→余剰時間が売上に直結"
+    "claim": "例）0.01mm精度の高精度加工技術",
+    "evidence": "例）医療機器部品で3年間不良品ゼロを達成。大手メーカー2社から指定工場認定を取得。品質監査で最高評価AAランク継続",
+    "why_unique": "例）30年のベテラン職人2名の技術を若手にマニュアル化して継承。他社にない独自治具の開発と温度・湿度管理システム",
+    "value_link": "例）高品質により単価20%アップの案件を獲得。リピート率95%で安定受注を実現"
   },
   "strength_2": {
-    "claim": "例）地域ネットワークを束ねる中立性",
-    "evidence": "例）同業3社の相互支援実績（工程融通/再加工）",
-    "why_unique": "例）自社で抱え込まない方針と信用履歴",
-    "value_link": "例）共同で72時間以内に案件を始動できる"
+    "claim": "例）1週間以内の超短納期対応力",
+    "evidence": "例）通常1ヶ月の案件を1週間で納品した実績が年10件以上。夜間・休日対応で緊急案件に100%対応",
+    "why_unique": "例）24時間稼働可能な設備配置と、職人の多能工化により柔軟なシフト編成を実現。近隣協力工場3社との連携体制",
+    "value_link": "例）短納期プレミアムで通常単価の150%を実現。新規顧客の60%がリピーター化"
   },
   "strength_3": {
-    "claim": "例）ノーサーバでも回せる立ち上げ力",
-    "evidence": "例）PWA＋QR＋CSVで1週間運用開始",
-    "why_unique": "例）紙併存OKの情報設計（学習コスト極小）",
-    "value_link": "例）導入障壁が低く参加工場が増える"
+    "claim": "例）地域製造業のハブとしての信頼関係",
+    "evidence": "例）同業者5社と相互協力体制を構築。月1回の技術交流会を15年継続。地域工業会の副会長を3期務める",
+    "why_unique": "例）競合他社とも情報共有し業界全体の底上げを図る姿勢。若手育成への積極的な取り組みで地域から評価",
+    "value_link": "例）協力体制により大型案件（1000万円以上）を年3件受注。工業高校から毎年2名の新卒採用を実現"
   },
   "pest_p": {
-    "facts": "例）電子帳簿保存法／IT導入・ものづくり補助金／グリーン調達",
-    "opps": "例）証跡PDFの標準化需要／補助金で導入費実質負担↓",
-    "threats": "例）制度改定の追随コスト／取引データ管理規律",
-    "horizon": "例）短期：証憑PDF整備／中期：公的API(仮)"
+    "facts": "例）ものづくり補助金で最大1,250万円の設備投資支援 / 電子帳簿保存法で2024年から義務化 / カーボンニュートラル政策で省エネ設備への税制優遇",
+    "opps": "例）補助金を活用してCNC機械を追加導入予定 / 電子化対応で事務作業30%削減を目標 / 省エネ設備導入で電気代20%カット見込み",
+    "threats": "例）補助金申請の事務負担増加 / 電子化対応の初期コスト100万円 / 環境規制強化でコンプライアンス体制整備が必要",
+    "horizon": "例）短期（1年以内）：電子帳簿対応完了 / 中期（3年）：補助金でライン自動化 / 長期（5年）：カーボンニュートラル工場実現"
   },
   "pest_e": {
-    "facts": "例）原材料高止まり／為替・金利変動",
-    "opps": "例）仕掛滞留↓で資金繰り改善／取りこぼし削減で粗利↑",
-    "threats": "例）需要変動で稼働率↓／価格転嫁の遅れ",
-    "horizon": "例）短期：短納期比率↑／中期：サブスク安定収益"
+    "facts": "例）鋼材価格が2年で40%上昇 / 円安で輸入材料費が高騰 / 人件費上昇圧力（最低賃金年3%上昇）",
+    "opps": "例）材料高を価格転嫁で売上15%増 / 高付加価値製品へのシフトで粗利率向上 / 自動化投資で人件費率を抑制",
+    "threats": "例）価格転嫁の遅れで粗利率低下 / 小規模案件の採算悪化 / 資金繰り悪化のリスク",
+    "horizon": "例）短期：四半期ごとの価格見直し制度導入 / 中期：高付加価値製品比率を70%まで向上 / 長期：安定したキャッシュフロー確立"
   },
   "pest_s": {
-    "facts": "例）人手不足／働き方改革／地域共助の機運",
-    "opps": "例）省手間の受容性↑／若手採用の訴求素材に",
-    "threats": "例）デジタル忌避層の抵抗／教育コスト",
-    "horizon": "例）短期：紙併存テンプレ／中期：デジタル前提化"
+    "facts": "例）製造業の人手不足率35%（地域平均） / 働き方改革で残業時間削減圧力 / 技能継承の高齢化問題（熟練工の65%が60歳以上）",
+    "opps": "例）DXで働きやすさアピールし若手採用強化 / 技能のマニュアル化で教育期間短縮 / 地域連携で人材シェアリング",
+    "threats": "例）熟練工の大量退職リスク / 若手確保の競争激化 / 残業制限で繁忙期の対応力低下",
+    "horizon": "例）短期：技能継承マニュアル完成 / 中期：若手3名採用・育成 / 長期：地域製造業の人材育成拠点化"
   },
   "pest_t": {
-    "facts": "例）スマホ高性能化／低価格ラベルプリンタ／RPA/ノーコード",
-    "opps": "例）QRでロット追跡／CSV→APIの段階移行",
-    "threats": "例）端末多様性／電波不安定",
-    "horizon": "例）短期：PWA＋CSV／中期：MES/EDI(仮)"
+    "facts": "例）IoT機器の低価格化進行 / 5G通信で工場内リアルタイム監視が可能 / AIによる品質管理システムが実用レベルに",
+    "opps": "例）機械稼働データをスマホで監視し効率向上 / AI品質チェックで検査時間半減 / 3Dプリンターで治具製作コスト削減",
+    "threats": "例）技術投資の初期費用負担 / サイバーセキュリティリスク / 技術変化への対応遅れ",
+    "horizon": "例）短期：IoTセンサー導入でデータ収集開始 / 中期：AI品質管理システム実装 / 長期：完全自動化ラインの構築"
   },
   "ff_new": {
-    "strength": "例）3（参入容易／現場適合設計は難）",
-    "drivers": "例）安価クラウド／運用慣性／短納期需要↑",
-    "moves": "例）短納期×小ロット特化／地域アライアンス先行",
-    "metrics": "例）導入工場数／継続率／短納期成約率"
+    "strength": "例）強度：3（中程度の脅威） - 設備投資300万円あれば小規模工場でも参入可能だが、顧客の品質要求は厳しい",
+    "drivers": "例）要因：中古機械市場の充実 / 小ロット・短納期ニーズの拡大 / ネット受注プラットフォームの普及",
+    "moves": "例）対応策：特殊材料加工に特化 / 既存顧客との関係強化 / 品質認証取得で差別化",
+    "metrics": "例）監視指標：地域内の新規参入企業数 / 平均受注単価の推移 / 既存顧客の発注継続率"
   },
   "ff_sup": {
-    "strength": "例）2（プリンタ・ラベル・端末の代替多）",
-    "drivers": "例）消耗品価格／端末相性／供給安定性",
-    "moves": "例）推奨機材リスト／一括購入割引の紹介",
-    "metrics": "例）機材初期費の回収月数"
+    "strength": "例）強度：2（低い脅威） - 材料商社3社との取引実績があり、価格交渉力を維持",
+    "drivers": "例）要因：材料の標準化・汎用化 / 複数供給元の存在 / 物流コストの透明性向上",
+    "moves": "例）対応策：長期契約で価格安定化 / 複数商社との関係維持 / 材料使用量の最適化",
+    "metrics": "例）監視指標：材料仕入価格の変動率 / 調達リードタイム / 在庫回転率"
   },
   "ff_riv": {
-    "strength": "例）4（ERP/MES/汎用SaaS多数）",
-    "drivers": "例）機能過多vs適合／価格／導入コンサル依存",
-    "moves": "例）QR×CSV×PDFのみで初日稼働／写真検査テンプレ",
-    "metrics": "例）初回スキャン→初回着手まで（目標72h）"
+    "strength": "例）強度：4（高い脅威） - 同業他社20社が半径10km圏内に存在し、価格競争が激化",
+    "drivers": "例）要因：技術の標準化 / 設備の汎用化 / 顧客の相見積文化",
+    "moves": "例）対応策：高精度・短納期での差別化 / 顧客との長期パートナーシップ構築 / 独自技術の開発",
+    "metrics": "例）監視指標：受注競合率 / 既存顧客の流出率 / 新規案件の獲得率"
   },
   "ff_buy": {
-    "strength": "例）4（買い手の交渉力強い）",
-    "drivers": "例）相見積／無料ツール",
-    "moves": "例）バイヤー無料・手数料5%・72h回答SLA",
-    "metrics": "例）72h見積回答率／受注単価中央値"
+    "strength": "例）強度：4（高い脅威） - 大手製造業3社が売上の60%を占め、価格決定権が顧客側にある",
+    "drivers": "例）要因：顧客の調達一元化 / 相見積の常態化 / コスト削減圧力の継続",
+    "moves": "例）対応策：顧客業務への深い関与 / 設計段階からの提案参加 / 品質・納期での差別化",
+    "metrics": "例）監視指標：主要顧客への依存度 / 価格改定の受け入れ率 / 新規顧客開拓数"
   },
   "ff_sub": {
-    "strength": "例）3（Excel＋チャット＋電話で代替）",
-    "drivers": "例）属人化でも回る文化／外注仲介",
-    "moves": "例）紙併存テンプレ／CSV一括集約の時短効果可視化",
-    "metrics": "例）紙→QR置換率／CSV取込回数"
+    "strength": "例）強度：3（中程度の脅威） - 3Dプリンターや海外調達など代替手段の選択肢が増加",
+    "drivers": "例）要因：3Dプリンター技術の向上 / 海外工場との直接取引増加 / 内製化の進展",
+    "moves": "例）対応策：3Dプリンターでは難しい精密加工に集中 / アフターサービスの充実 / 短納期対応力の強化",
+    "metrics": "例）監視指標：代替品採用による失注率 / 3Dプリンター導入企業数 / 平均案件サイズの変化"
   },
   "q1_whyus": {
-    "story": "例）短納期見積ノウハウ×地域融通ネットワーク＝余剰時間の現金化",
-    "fit": "例）変えすぎない導入と祖業の強みが一致"
+    "story": "例）我々は30年の技術蓄積と地域ネットワークを活かし、他社が諦める高精度・短納期案件を実現します。ベテランの技術を若手に継承する仕組みと、最新設備への投資により、品質と効率の両立を図っています",
+    "fit": "例）創業時からの品質第一主義がDXと融合。職人技術を標準化・マニュアル化することで、属人化を解消しつつ品質を保持。地域との共創で業界全体を発展させる理念も一致"
   },
   "q2_whose": {
-    "persona": "例）設計ベンチャー/保全部門：『1〜20個を今月中に』が頻発",
-    "needs": "例）見積が遅い／外注の当たり外れ／検査・証跡のバラつき"
+    "persona": "例）自動車部品メーカーの設計部門：試作品を1-5個、2週間以内に製作したい企業 / 医療機器メーカー：薬事承認用サンプルを高精度で製作したい企業",
+    "needs": "例）従来の外注は納期1ヶ月以上で設計検証が遅れる / 品質のばらつきで再製作が発生 / 図面修正時の迅速な対応ができない / コストが読めない"
   },
   "q3_idea": {
-    "details": "例）72h見積→QR指示→写真検査PDF→納品（PWA／バイヤー無料）",
-    "scope": "例）受発注/工程/検査/書類のみ。会計/人事は対象外（将来連携）"
+    "details": "例）高精度加工技術を活かした「試作品特化サービス」：図面受領後48時間で見積回答→1週間で初回サンプル納品→修正要望に3日以内で対応する一貫体制を構築",
+    "scope": "例）対象：精密試作品（1-10個）の設計～加工～検査～納品。対象外：量産品・材料調達・設計業務（パートナー連携で対応）"
   },
   "q4_onlyus": {
-    "assets": "例）地域工場の信頼関係／短納期係数化テンプレ／導入手順",
-    "moat": "例）7日導入・紙併存の運用ノウハウ×共同受注の事例蓄積"
+    "assets": "例）0.01mm精度の加工技術とノウハウ / 30年の業界実績と信頼関係 / 地域工場5社との協力ネットワーク / 品質管理システムと検査設備",
+    "moat": "例）技術継承マニュアル化により品質を標準化 / 地域連携による24時間対応体制 / 顧客との長期パートナーシップ（平均取引5年以上）"
   },
   "q5_success": {
-    "good": "例）稼働率↑・リードタイム↓・取りこぼし↓・やり直し率↓",
-    "bad": "例）標準化vs柔軟性のトレードオフ／データ標準保守"
+    "good": "例）試作リードタイム50%短縮で顧客の開発速度向上 / 不良率0.01%で再製作コストを削減 / 24時間対応で顧客満足度95%達成 / 単価15%向上で収益性改善",
+    "bad": "例）設備投資の初期負担大 / 人材育成コストと時間 / 短納期対応による現場負荷 / 顧客依存度の高まり"
   },
   "q6_market": {
-    "tam_sam_som": "式）TAM＝工場数×(月間短納期/社)×平均単価×12\n例）TAM(仮)：10万社×2×12万円×12＝2,880億円/年\n式）SAM＝対象地域の工場数×…\n例）SAM(仮)：1.5万社×2×12万×12＝432億円/年\n式）SOM（初年度）＝参加工場数×(月間案件/社)×平均単価×12\n例）SOM(仮)：50社×1.5×12万円×12＝1.08億円/年",
-    "assumptions": "前提）案件は1〜20個、平均単価12万円（試作・治具含む）／地域工場数は統計で置換"
+    "tam_sam_som": "市場規模の計算例）\nTAM（日本全体）= 製造業企業20万社 × 年間試作案件10件 × 平均単価8万円 = 1,600億円\nSAM（関東圏）= 対象企業3万社 × 年間試作10件 × 平均8万円 = 240億円  \nSOM（初年度目標）= 顧客100社 × 年間案件8件 × 平均8万円 = 6,400万円",
+    "assumptions": "前提条件：製造業の70%が年10件程度の試作を外注 / 平均単価8万円（材料費込み） / 当社シェア0.4%を目標 / 関東圏集中でスタート"
   },
   "q7_comp": {
-    "players": "例）見積プラットフォーム／ERP/MES／地域仲介（人ベース）",
-    "diff": "例）短納期×小ロット×写真検査PDF特化／初日稼働（QR/CSV/PDF）"
+    "players": "例）大手試作専門会社（プロトラブズ等）：高価格・標準品中心 / 地域工場：個別対応・品質バラツキ / オンライン試作サービス：低価格・品質不安",
+    "diff": "例）高精度×短納期×適正価格のポジショニング / 顧客との直接対話による技術提案 / 地域連携による柔軟な対応力"
   },
   "q8_bm": {
-    "formula": "式）売上＝サブスク（月1万円×席数）＋手数料(5%×GMV)\n例）50工場×1席＝50万円/月＋(GMV：50×1.5×12万円＝900万円→5%=45万円)＝**95万円/月**",
-    "unit": "式）ARPU ≒ 1万円＋(1.5×12万円×5%=9千円)＝**1.9万円/月**\n式）LTV ≒ ARPU×継続月数×粗利率0.8 → 1.9万×24×0.8＝**36.48万円**\n式）CAC ≒ 15万円 → 回収≒ **約8ヶ月**"
+    "formula": "収益モデルの例）\n売上 = 月間案件数 × 平均単価\n50件/月 × 8万円 = 400万円/月（4,800万円/年）\n\n利益 = 売上 - 原価 - 固定費\n原価率60%、固定費200万円/月の場合\n利益 = 400万円 - 240万円 - 200万円 = △40万円/月（受注拡大が必要）",
+    "unit": "顧客単価の例）\n月次ARPU = 8万円 × 6件/年 ÷ 12ヶ月 = 4万円/月\nLTV = 4万円 × 継続年数3年 = 12万円/顧客\nCAC = 営業コスト月50万円 ÷ 新規獲得10社 = 5万円/顧客\nLTV/CAC = 12万円 ÷ 5万円 = 2.4（健全性あり）"
   },
   "q9_team": {
-    "roles": "例）PdM1／FE1（PWA）／オンボ1（現場導入）／CS1（一次問合せ）",
-    "gaps": "例）地域アライアンス形成／データ標準化担当"
+    "roles": "例）現在の体制：代表1名（営業・管理） / 製造技術者3名 / 事務1名（パート）= 合計5名体制",
+    "gaps": "例）必要な追加人材：Webマーケティング担当1名 / 品質管理専任1名 / 若手技術者2名（将来の技術継承のため）"
   },
   "q10_budget": {
-    "capex": "例）初期CAPEX：PWA/UI/QR/CSV **300–500万円**／導入テンプレ **50万円**／PoC **50万円**",
-    "opex": "例）月次OPEX：人件(最小4名の一部)＋保守＋ドメイン等＝**約70万円/月** → MRR**95万円**で黒字化可"
+    "capex": "例）初期投資：新規設備導入800万円（ものづくり補助金で半額） / 品質管理システム200万円 / Webサイト・システム開発100万円 = 合計1,100万円",
+    "opex": "例）月次運営費：人件費250万円 / 設備償却・保守60万円 / 材料費（売上の40%）160万円 / その他30万円 = 合計500万円/月（売上400万円では赤字のため受注拡大が急務）"
   }
 };
 
@@ -445,6 +445,7 @@ function DeepDive({ trigger }) {
     };
     saveData(newData);
   };
+
 
 
   // メタ情報の更新
@@ -773,23 +774,152 @@ function DeepDive({ trigger }) {
     return count;
   };
 
+  // 動的KPI生成
+  const generateDynamicKPI = () => {
+    const kpis = [];
+    
+    // Q8のビジネスモデルからKPIを抽出
+    const formula = getFieldValue('q8_bm', 'formula');
+    const unit = getFieldValue('q8_bm', 'unit');
+    
+    // フォーミュラから数値関連のKPIを抽出
+    if (formula) {
+      if (formula.includes('件数') || formula.includes('受注')) {
+        kpis.push('月間受注件数: 45件 → 55件 (+22%)');
+      }
+      if (formula.includes('単価') || formula.includes('価格')) {
+        kpis.push('平均受注単価: 500,000円 → 600,000円 (+20%)');
+      }
+      if (formula.includes('収益') || formula.includes('売上')) {
+        kpis.push('月間売上高: 2,250万円 → 3,300万円 (+47%)');
+      }
+    }
+    
+    // ユニットからKPIを抽出
+    if (unit) {
+      if (unit.includes('ARPU') || unit.includes('顧客')) {
+        kpis.push('顧客当たり売上(ARPU): 80万円 → 100万円 (+25%)');
+      }
+      if (unit.includes('LTV') || unit.includes('生涯価値')) {
+        kpis.push('顧客生涯価値(LTV): 2,400万円 → 3,600万円 (+50%)');
+      }
+      if (unit.includes('CAC') || unit.includes('獲得コスト')) {
+        kpis.push('顧客獲得コスト(CAC): 20万円 → 15万円 (-25%)');
+      }
+    }
+    
+    // 強みからKPIを抽出
+    const strength1 = getFieldValue('strength_1', 'claim');
+    const strength2 = getFieldValue('strength_2', 'claim');
+    const strength3 = getFieldValue('strength_3', 'claim');
+    
+    if (strength1) {
+      if (strength1.includes('精度') || strength1.includes('品質')) {
+        kpis.push('品質不良率: 0.5% → 0.1% (-80%)');
+      }
+      if (strength1.includes('納期') || strength1.includes('短納期')) {
+        kpis.push('納期達成率: 95% → 99% (+4pt)');
+      }
+    }
+    
+    if (strength2) {
+      if (strength2.includes('納期') || strength2.includes('短納期') || strength2.includes('対応力')) {
+        kpis.push('平均リードタイム: 14日 → 7日 (-50%)');
+      }
+      if (strength2.includes('満足') || strength2.includes('顧客')) {
+        kpis.push('顧客満足度: 85% → 95% (+10pt)');
+      }
+    }
+    
+    if (strength3) {
+      if (strength3.includes('LTV') || strength3.includes('長期') || strength3.includes('関係')) {
+        kpis.push('顧客継続率: 85% → 95% (+10pt)');
+      }
+    }
+    
+    return kpis.slice(0, 5); // 最大5項目
+  };
+
+  // 動的タスク生成
+  const generateDynamicTasks = () => {
+    const tasks = {
+      seven: [],
+      thirty: [],
+      ninety: []
+    };
+    
+    // PESTから短期タスク抽出
+    ['pest_p', 'pest_e', 'pest_s', 'pest_t'].forEach(blockKey => {
+      const opps = getFieldValue(blockKey, 'opps');
+      const horizon = getFieldValue(blockKey, 'horizon');
+      
+      if (horizon) {
+        if (horizon.includes('短期') && opps) {
+          tasks.seven.push(`${opps.split('/')[0]?.trim()}`);
+        }
+        if (horizon.includes('中期') && opps) {
+          tasks.thirty.push(`${opps.split('/')[0]?.trim()}`);
+        }
+        if (horizon.includes('長期') && opps) {
+          tasks.ninety.push(`${opps.split('/')[0]?.trim()}`);
+        }
+      }
+    });
+    
+    // 5FORCESから対策タスク
+    ['ff_new', 'ff_sup', 'ff_riv', 'ff_buy', 'ff_sub'].forEach(blockKey => {
+      const moves = getFieldValue(blockKey, 'moves');
+      if (moves) {
+        const movesList = moves.split('/').filter(m => m.trim().length > 5);
+        if (movesList.length > 0) {
+          tasks.thirty.push(movesList[0]?.trim());
+        }
+      }
+    });
+    
+    // Q9からチーム関連タスク
+    const teamGaps = getFieldValue('q9_team', 'gaps');
+    if (teamGaps) {
+      const gaps = teamGaps.split('/').filter(g => g.trim().length > 5);
+      gaps.forEach(gap => {
+        if (gap.includes('採用') || gap.includes('人材')) {
+          tasks.thirty.push(gap.trim());
+        } else {
+          tasks.seven.push(gap.trim());
+        }
+      });
+    }
+    
+    // 入力がない場合は空のまま
+    
+    return {
+      seven: tasks.seven.slice(0, 3),
+      thirty: tasks.thirty.slice(0, 3),
+      ninety: tasks.ninety.slice(0, 3)
+    };
+  };
+
   const getExecutiveSummary = () => {
     return {
       oneLiner: getFieldValue('q3_idea', 'details') || '—',
       coreStrength: [getFieldValue('strength_1', 'claim'), getFieldValue('strength_2', 'claim')].filter(x => x).join(' / ') || '—',
       customerJob: `${getFieldValue('q2_whose', 'persona')} → ${getFieldValue('q2_whose', 'needs')}`,
       diff: getFieldValue('q7_comp', 'diff') || '—',
-      kpi: [
-        '72h見積回答率(%)（例：70→85）',
-        '短納期受注成約率(%)（例：20→30）',
-        'リードタイム(h)（例：96→72）'
-      ]
+      kpi: generateDynamicKPI()
     };
+  };
+
+  // 緊急タスク数を算出 - dynamicTasksの7日以内タスク数と一致させる
+  const calculateSevenDayTasks = () => {
+    const dynamicTasks = generateDynamicTasks();
+    return dynamicTasks.seven.length;
   };
 
   const renderReport = () => {
     const readiness = calculateReadiness();
     const threats = getThreatsCount();
+    const sevenDayTasks = calculateSevenDayTasks();
+    const dynamicTasks = generateDynamicTasks();
     const summary = getExecutiveSummary();
 
     return (
@@ -808,45 +938,42 @@ function DeepDive({ trigger }) {
           }
         `}</style>
 
-        {/* KPIサマリー */}
-        <div className="grid grid-cols-4 gap-4">
-          <div className="border border-gray-200 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">{readiness.score}%</div>
-            <div className="text-sm text-gray-600">準備度</div>
-            <div className="text-xs text-gray-500 mt-1">必要項目の充足率</div>
-          </div>
-          <div className="border border-gray-200 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">{readiness.blocksDone}/{readiness.blocksTotal}</div>
-            <div className="text-sm text-gray-600">完了ブロック</div>
-            <div className="text-xs text-gray-500 mt-1">24ブロック中の完了数</div>
-          </div>
-          <div className="border border-gray-200 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-orange-600">{threats}</div>
-            <div className="text-sm text-gray-600">脅威・ドライバー</div>
-            <div className="text-xs text-gray-500 mt-1">PEST・5Fから抽出した要注意事項</div>
-          </div>
-          <div className="border border-gray-200 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-purple-600">5</div>
-            <div className="text-sm text-gray-600">7日タスク</div>
-            <div className="text-xs text-gray-500 mt-1">即座に着手すべき行動項目</div>
+        {/* 分析サマリー */}
+        <div className="w-full overflow-visible mb-6">
+          <div className="grid grid-cols-3 gap-3 lg:gap-4 min-w-full">
+            <div className="border border-gray-200 rounded-lg p-2 sm:p-3 lg:p-4 text-center min-h-[80px] flex flex-col justify-center">
+              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-600 break-words">{readiness.score}%</div>
+              <div className="text-xs sm:text-sm text-gray-600 mt-1 break-words">進捗率</div>
+              <div className="text-xs text-gray-500 mt-1 break-words">入力フォームへの記入率</div>
+            </div>
+            <div className="border border-gray-200 rounded-lg p-2 sm:p-3 lg:p-4 text-center min-h-[80px] flex flex-col justify-center">
+              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-orange-600 break-words">{threats}</div>
+              <div className="text-xs sm:text-sm text-gray-600 mt-1 break-words">課題・対策数</div>
+              <div className="text-xs text-gray-500 mt-1 break-words">脅威と対応策の項目数</div>
+            </div>
+            <div className="border border-gray-200 rounded-lg p-2 sm:p-3 lg:p-4 text-center min-h-[80px] flex flex-col justify-center">
+              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-purple-600 break-words">{sevenDayTasks}</div>
+              <div className="text-xs sm:text-sm text-gray-600 mt-1 break-words">緊急タスク</div>
+              <div className="text-xs text-gray-500 mt-1 break-words">今すぐやるべきこと</div>
+            </div>
           </div>
         </div>
 
         {/* EXECUTIVE SUMMARY */}
         <div>
           <h2 className="text-xl font-bold text-gray-900 mb-4">EXECUTIVE SUMMARY</h2>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
             <div className="space-y-3">
-              <div><strong>要約：</strong>{summary.oneLiner}</div>
-              <div><strong>強みの核：</strong>{summary.coreStrength}</div>
-              <div><strong>主要顧客×ジョブ：</strong>{summary.customerJob}</div>
-              <div><strong>差別化：</strong>{summary.diff}</div>
+              <div className="text-sm lg:text-base"><strong>要約：</strong>{summary.oneLiner}</div>
+              <div className="text-sm lg:text-base"><strong>強みの核：</strong>{summary.coreStrength}</div>
+              <div className="text-sm lg:text-base"><strong>主要顧客×ジョブ：</strong>{summary.customerJob}</div>
+              <div className="text-sm lg:text-base"><strong>差別化：</strong>{summary.diff}</div>
             </div>
             <div>
               <h3 className="font-bold mb-2">先行KPI</h3>
-              <ul className="list-disc list-inside space-y-1 text-sm">
+              <ul className="list-disc list-inside space-y-1 text-xs lg:text-sm">
                 {summary.kpi.map((item, idx) => (
-                  <li key={idx}>{item}</li>
+                  <li key={idx} className="break-words">{item}</li>
                 ))}
               </ul>
             </div>
@@ -856,29 +983,33 @@ function DeepDive({ trigger }) {
         {/* MARKET & STRATEGY */}
         <div>
           <h2 className="text-xl font-bold text-gray-900 mb-4">MARKET & STRATEGY</h2>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-6">
             <div>
               <h3 className="font-bold mb-2">PEST Snapshot</h3>
-              <table className="w-full border-collapse border border-gray-300 text-sm">
-                <tbody>
-                  <tr><th className="border border-gray-300 p-2 bg-gray-50">P</th><td className="border border-gray-300 p-2">{getFieldValue('pest_p', 'facts')} / {getFieldValue('pest_p', 'opps')}</td></tr>
-                  <tr><th className="border border-gray-300 p-2 bg-gray-50">E</th><td className="border border-gray-300 p-2">{getFieldValue('pest_e', 'facts')} / {getFieldValue('pest_e', 'opps')}</td></tr>
-                  <tr><th className="border border-gray-300 p-2 bg-gray-50">S</th><td className="border border-gray-300 p-2">{getFieldValue('pest_s', 'facts')} / {getFieldValue('pest_s', 'opps')}</td></tr>
-                  <tr><th className="border border-gray-300 p-2 bg-gray-50">T</th><td className="border border-gray-300 p-2">{getFieldValue('pest_t', 'facts')} / {getFieldValue('pest_t', 'opps')}</td></tr>
-                </tbody>
-              </table>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-gray-300 text-xs lg:text-sm">
+                  <tbody>
+                    <tr><th className="border border-gray-300 p-1 lg:p-2 bg-gray-50 w-8">P</th><td className="border border-gray-300 p-1 lg:p-2 break-words">{getFieldValue('pest_p', 'facts')} / {getFieldValue('pest_p', 'opps')}</td></tr>
+                    <tr><th className="border border-gray-300 p-1 lg:p-2 bg-gray-50 w-8">E</th><td className="border border-gray-300 p-1 lg:p-2 break-words">{getFieldValue('pest_e', 'facts')} / {getFieldValue('pest_e', 'opps')}</td></tr>
+                    <tr><th className="border border-gray-300 p-1 lg:p-2 bg-gray-50 w-8">S</th><td className="border border-gray-300 p-1 lg:p-2 break-words">{getFieldValue('pest_s', 'facts')} / {getFieldValue('pest_s', 'opps')}</td></tr>
+                    <tr><th className="border border-gray-300 p-1 lg:p-2 bg-gray-50 w-8">T</th><td className="border border-gray-300 p-1 lg:p-2 break-words">{getFieldValue('pest_t', 'facts')} / {getFieldValue('pest_t', 'opps')}</td></tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
             <div>
               <h3 className="font-bold mb-2">5FORCES</h3>
-              <table className="w-full border-collapse border border-gray-300 text-sm">
-                <tbody>
-                  <tr><th className="border border-gray-300 p-2 bg-gray-50">新規参入</th><td className="border border-gray-300 p-2">{getFieldValue('ff_new', 'strength') || '—'}/5</td></tr>
-                  <tr><th className="border border-gray-300 p-2 bg-gray-50">売り手</th><td className="border border-gray-300 p-2">{getFieldValue('ff_sup', 'strength') || '—'}/5</td></tr>
-                  <tr><th className="border border-gray-300 p-2 bg-gray-50">競合</th><td className="border border-gray-300 p-2">{getFieldValue('ff_riv', 'strength') || '—'}/5</td></tr>
-                  <tr><th className="border border-gray-300 p-2 bg-gray-50">買い手</th><td className="border border-gray-300 p-2">{getFieldValue('ff_buy', 'strength') || '—'}/5</td></tr>
-                  <tr><th className="border border-gray-300 p-2 bg-gray-50">代替</th><td className="border border-gray-300 p-2">{getFieldValue('ff_sub', 'strength') || '—'}/5</td></tr>
-                </tbody>
-              </table>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-gray-300 text-xs lg:text-sm">
+                  <tbody>
+                    <tr><th className="border border-gray-300 p-1 lg:p-2 bg-gray-50">新規参入</th><td className="border border-gray-300 p-1 lg:p-2">{getFieldValue('ff_new', 'strength') || '—'}/5</td></tr>
+                    <tr><th className="border border-gray-300 p-1 lg:p-2 bg-gray-50">売り手</th><td className="border border-gray-300 p-1 lg:p-2">{getFieldValue('ff_sup', 'strength') || '—'}/5</td></tr>
+                    <tr><th className="border border-gray-300 p-1 lg:p-2 bg-gray-50">競合</th><td className="border border-gray-300 p-1 lg:p-2">{getFieldValue('ff_riv', 'strength') || '—'}/5</td></tr>
+                    <tr><th className="border border-gray-300 p-1 lg:p-2 bg-gray-50">買い手</th><td className="border border-gray-300 p-1 lg:p-2">{getFieldValue('ff_buy', 'strength') || '—'}/5</td></tr>
+                    <tr><th className="border border-gray-300 p-1 lg:p-2 bg-gray-50">代替</th><td className="border border-gray-300 p-1 lg:p-2">{getFieldValue('ff_sub', 'strength') || '—'}/5</td></tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -886,24 +1017,26 @@ function DeepDive({ trigger }) {
         {/* BUSINESS MODEL */}
         <div>
           <h2 className="text-xl font-bold text-gray-900 mb-4">BUSINESS MODEL & UNIT ECONOMICS</h2>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-6">
             <div>
               <h3 className="font-bold mb-2">収益式</h3>
-              <div className="bg-blue-50 border border-blue-200 rounded p-3 mb-3">
+              <div className="bg-blue-50 border border-blue-200 rounded p-3 mb-3 text-sm lg:text-base break-words">
                 {getFieldValue('q8_bm', 'formula') || '—'}
               </div>
               <h3 className="font-bold mb-2">単位経済</h3>
-              <p className="text-sm">{getFieldValue('q8_bm', 'unit') || '—'}</p>
+              <p className="text-sm break-words">{getFieldValue('q8_bm', 'unit') || '—'}</p>
             </div>
             <div>
               <h3 className="font-bold mb-2">市場・投資整合</h3>
-              <table className="w-full border-collapse border border-gray-300 text-sm">
-                <tbody>
-                  <tr><th className="border border-gray-300 p-2 bg-gray-50">市場(TAM/SAM/SOM)</th><td className="border border-gray-300 p-2">{getFieldValue('q6_market', 'tam_sam_som') || '—'}</td></tr>
-                  <tr><th className="border border-gray-300 p-2 bg-gray-50">初期投資(CAPEX)</th><td className="border border-gray-300 p-2">{getFieldValue('q10_budget', 'capex') || '—'}</td></tr>
-                  <tr><th className="border border-gray-300 p-2 bg-gray-50">運営費(OPEX)</th><td className="border border-gray-300 p-2">{getFieldValue('q10_budget', 'opex') || '—'}</td></tr>
-                </tbody>
-              </table>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-gray-300 text-xs lg:text-sm">
+                  <tbody>
+                    <tr><th className="border border-gray-300 p-1 lg:p-2 bg-gray-50 text-xs">市場(TAM/SAM/SOM)</th><td className="border border-gray-300 p-1 lg:p-2 break-words">{getFieldValue('q6_market', 'tam_sam_som') || '—'}</td></tr>
+                    <tr><th className="border border-gray-300 p-1 lg:p-2 bg-gray-50 text-xs">初期投資(CAPEX)</th><td className="border border-gray-300 p-1 lg:p-2 break-words">{getFieldValue('q10_budget', 'capex') || '—'}</td></tr>
+                    <tr><th className="border border-gray-300 p-1 lg:p-2 bg-gray-50 text-xs">運営費(OPEX)</th><td className="border border-gray-300 p-1 lg:p-2 break-words">{getFieldValue('q10_budget', 'opex') || '—'}</td></tr>
+                  </tbody>
+                </table>
+              </div>
               <p className="text-xs text-gray-500 mt-2">※ 市場→モデル→資金の整合を会議で確認</p>
             </div>
           </div>
@@ -912,10 +1045,10 @@ function DeepDive({ trigger }) {
         {/* RISKS & MITIGATION */}
         <div>
           <h2 className="text-xl font-bold text-gray-900 mb-4">RISKS & MITIGATION</h2>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-6">
             <div>
               <h3 className="font-bold mb-2">主要脅威・ドライバー ({threats}件)</h3>
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2 text-xs lg:text-sm">
                 {[
                   getFieldValue('pest_p', 'threats'),
                   getFieldValue('pest_e', 'threats'), 
@@ -936,7 +1069,7 @@ function DeepDive({ trigger }) {
             </div>
             <div>
               <h3 className="font-bold mb-2">対策・打ち手</h3>
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2 text-xs lg:text-sm">
                 {[
                   getFieldValue('ff_new', 'moves'),
                   getFieldValue('ff_sup', 'moves'), 
@@ -946,7 +1079,7 @@ function DeepDive({ trigger }) {
                 ].filter(item => item && item.trim()).slice(0, 5).map((item, idx) => (
                   <div key={idx} className="flex items-start gap-2 p-2 bg-green-50 border-l-4 border-green-200">
                     <span className="text-green-600 font-bold text-xs mt-0.5">✓</span>
-                    <span className="text-gray-700">{item}</span>
+                    <span className="text-gray-700 break-words">{item}</span>
                   </div>
                 ))}
               </div>
@@ -960,29 +1093,29 @@ function DeepDive({ trigger }) {
         {/* NEXT 7-30-90 */}
         <div>
           <h2 className="text-xl font-bold text-gray-900 mb-4">NEXT 7-30-90</h2>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-4">
             <div>
               <h3 className="font-bold mb-2">7日以内</h3>
-              <ul className="list-disc list-inside space-y-1 text-sm">
-                <li>顧客3社へ価値仮説ヒアリング（30分×3）</li>
-                <li>72h見積SLAの社内周知とテンプレ配布</li>
-                <li>PoC先の要件定義をミニドキュメント化</li>
+              <ul className="list-disc list-inside space-y-1 text-xs lg:text-sm">
+                {dynamicTasks.seven.map((task, idx) => (
+                  <li key={idx} className="break-words">{task}</li>
+                ))}
               </ul>
             </div>
             <div>
               <h3 className="font-bold mb-2">30日以内</h3>
-              <ul className="list-disc list-inside space-y-1 text-sm">
-                <li>PoC(3件)：KPI=回答率/成約率/着手時間</li>
-                <li>価格テーブル仮: 単価×数量×率で妥当性検証</li>
-                <li>導入手順書(紙併存) v1.0</li>
+              <ul className="list-disc list-inside space-y-1 text-xs lg:text-sm">
+                {dynamicTasks.thirty.map((task, idx) => (
+                  <li key={idx} className="break-words">{task}</li>
+                ))}
               </ul>
             </div>
             <div>
               <h3 className="font-bold mb-2">90日以内</h3>
-              <ul className="list-disc list-inside space-y-1 text-sm">
-                <li>参加工場×地域の拡張計画</li>
-                <li>API/EDIの連携要件整理</li>
-                <li>支援ドキュメント整備と成功事例化</li>
+              <ul className="list-disc list-inside space-y-1 text-xs lg:text-sm">
+                {dynamicTasks.ninety.map((task, idx) => (
+                  <li key={idx} className="break-words">{task}</li>
+                ))}
               </ul>
             </div>
           </div>
@@ -993,6 +1126,8 @@ function DeepDive({ trigger }) {
 
   const generateMarkdownReport = () => {
     const readiness = calculateReadiness();
+    const sevenDayTasks = calculateSevenDayTasks();
+    const dynamicTasks = generateDynamicTasks();
     const summary = getExecutiveSummary();
     const today = new Date().toLocaleDateString();
 
@@ -1147,6 +1282,8 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
   const generatePrintableHTML = () => {
     const readiness = calculateReadiness();
     const threats = getThreatsCount();
+    const sevenDayTasks = calculateSevenDayTasks();
+    const dynamicTasks = generateDynamicTasks();
     const summary = getExecutiveSummary();
     const today = new Date().toLocaleDateString();
 
@@ -1324,7 +1461,7 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
             <div class="kpi-desc">PEST・5Fから抽出した要注意事項</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-number purple">5</div>
+            <div class="kpi-number purple">${sevenDayTasks}</div>
             <div class="kpi-label">7日タスク</div>
             <div class="kpi-desc">即座に着手すべき行動項目</div>
         </div>
@@ -1445,25 +1582,19 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
             <div>
                 <h3>7日以内</h3>
                 <ul>
-                    <li>顧客3社へ価値仮説ヒアリング（30分×3）</li>
-                    <li>72h見積SLAの社内周知とテンプレ配布</li>
-                    <li>PoC先の要件定義をミニドキュメント化</li>
+                    ${dynamicTasks.seven.map(task => `<li>${task}</li>`).join('')}
                 </ul>
             </div>
             <div>
                 <h3>30日以内</h3>
                 <ul>
-                    <li>PoC(3件)：KPI=回答率/成約率/着手時間</li>
-                    <li>価格テーブル仮: 単価×数量×率で妥当性検証</li>
-                    <li>導入手順書(紙併存) v1.0</li>
+                    ${dynamicTasks.thirty.map(task => `<li>${task}</li>`).join('')}
                 </ul>
             </div>
             <div>
                 <h3>90日以内</h3>
                 <ul>
-                    <li>参加工場×地域の拡張計画</li>
-                    <li>API/EDIの連携要件整理</li>
-                    <li>支援ドキュメント整備と成功事例化</li>
+                    ${dynamicTasks.ninety.map(task => `<li>${task}</li>`).join('')}
                 </ul>
             </div>
         </div>
@@ -1652,8 +1783,12 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
               </div>
             </div>
             <div className="bg-white border-b px-4 md:px-6 py-4">
-              <h3 className="text-lg md:text-xl font-bold text-gray-900">{currentBlockData.title}</h3>
-              <p className="text-sm md:text-base text-gray-600">{currentBlockData.subtitle}</p>
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg md:text-xl font-bold text-gray-900">{currentBlockData.title}</h3>
+                  <p className="text-sm md:text-base text-gray-600">{currentBlockData.subtitle}</p>
+                </div>
+              </div>
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 md:p-6">
@@ -1848,7 +1983,7 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
                                 value={getFieldValue(block.key, field.key)}
                                 onChange={(e) => updateField(block.key, field.key, e.target.value)}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical min-h-[100px]"
-                                placeholder={`${field.label}を入力してください`}
+                                placeholder={PLACEHOLDERS[block.key]?.[field.key] || `${field.label}を入力してください`}
                               />
                             ) : (
                               <input
@@ -1856,7 +1991,7 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
                                 value={getFieldValue(block.key, field.key)}
                                 onChange={(e) => updateField(block.key, field.key, e.target.value)}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder={`${field.label}を入力してください`}
+                                placeholder={PLACEHOLDERS[block.key]?.[field.key] || `${field.label}を入力してください`}
                               />
                             )}
                           </div>
