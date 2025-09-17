@@ -396,7 +396,7 @@ function DeepDive({ trigger }) {
     blocks: {}
   });
   const [showReport, setShowReport] = useState(false);
-  const [reportMode, setReportMode] = useState('onepager');
+  const [reportMode, setReportMode] = useState('dossier');
   const [expandedBlocks, setExpandedBlocks] = useState(new Set());
 
   // ローカルストレージからデータ読み込み
@@ -445,6 +445,7 @@ function DeepDive({ trigger }) {
     saveData(newData);
   };
 
+
   // メタ情報の更新
   const updateMeta = (key, value) => {
     const newData = {
@@ -461,26 +462,20 @@ function DeepDive({ trigger }) {
   const calculateCompletionScore = (block) => {
     const requiredFields = block.fields.filter(f => f.required);
     
-    // required: falseのフィールドのみの場合は、全フィールドを対象にする
+    // 必須フィールドがある場合は必須フィールドのみで判定
+    // 必須フィールドがない場合は全フィールドで判定
     const targetFields = requiredFields.length > 0 ? requiredFields : block.fields;
     
     const completedFields = targetFields.filter(f => {
       const value = getFieldValue(block.key, f.key);
-      return value && value.trim().length > 10; // 最低10文字
+      return value && value.trim().length > 0; // 1文字以上入力されていればOK
     });
     
-    const inputtedFields = targetFields.filter(f => {
-      const value = getFieldValue(block.key, f.key);
-      return value && value.trim().length > 0; // 何か入力されている
-    });
-    
-    if (inputtedFields.length === 0) return 0; // 未入力
+    if (completedFields.length === 0) return 0; // 未入力
     if (completedFields.length === targetFields.length) return 100; // 完了
     
-    // 入力済みだが不完全な場合は25-75%の範囲
-    const baseScore = 25;
-    const progressScore = (completedFields.length / targetFields.length) * 50;
-    return Math.round(baseScore + progressScore);
+    // 部分完了の場合は入力済みフィールドの割合に応じて
+    return Math.round((completedFields.length / targetFields.length) * 100);
   };
 
   // 全体の完成度計算
@@ -1527,35 +1522,30 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 md:p-4">
       <div className="bg-white rounded-lg max-w-6xl w-full max-h-[95vh] md:max-h-[90vh] overflow-hidden flex flex-col">
-        {/* ヘッダー */}
-        <div className="bg-gray-50 border-b px-4 md:px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <span className="lg:hidden text-sm text-gray-600">
-              モバイル版：下のブロックをタップして入力
-            </span>
-            <div>
-              <h2 className="text-xl md:text-2xl font-bold text-gray-900">📊 事業分析ワークシート</h2>
-              <p className="text-sm text-gray-600">完成度: {calculateOverallCompletion().toFixed(1)}%</p>
-            </div>
+        {/* ヘッダー（固定） */}
+        <div className="flex-shrink-0 bg-gray-50 border-b px-4 md:px-6 py-4 flex justify-between items-center">
+          <div>
+            <h2 className="text-lg md:text-2xl font-bold text-gray-900">📊 事業分析ワークシート</h2>
+            <p className="text-sm text-gray-600">完成度: {calculateOverallCompletion().toFixed(1)}%</p>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={handlePause}
-              className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md text-sm"
+              className="hidden lg:block bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md text-sm"
             >
               ⏸️ 中断する
             </button>
             <button
               onClick={() => setIsOpen(false)}
-              className="text-gray-400 hover:text-gray-600 text-2xl"
+              className="text-gray-400 hover:text-gray-600 text-xl lg:text-2xl"
             >
               ×
             </button>
           </div>
         </div>
 
-        {/* メタ情報 */}
-        <div className="bg-blue-50 px-4 md:px-6 py-3 border-b">
+        {/* メタ情報（固定） */}
+        <div className="flex-shrink-0 bg-blue-50 px-4 md:px-6 py-3 border-b">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">会社名</label>
@@ -1666,10 +1656,10 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
                       onClick={() => setShowReport(true)}
                       className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
                     >
-                      📊 決裁用レポート
+                      📊 入力まとめ
                     </button>
                   </div>
-                  <span className="text-xs text-gray-500 mt-2 block">One-Pager / Dossier形式</span>
+                  <span className="text-xs text-gray-500 mt-2 block">詳細分析レポート形式</span>
                 </div>
               )}
               <div className="text-center mb-3">
@@ -1684,7 +1674,7 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
                     onClick={() => setShowReport(true)}
                     className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
                   >
-                    📊 決裁用レポート
+                    📊 入力まとめ
                   </button>
                   <button
                     onClick={() => downloadFile(exportDoc(), `深掘り分析書-${Date.now()}.doc`, 'application/msword')}
@@ -1839,6 +1829,7 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
                   📊 分析レポートを見る
                 </button>
                 
+                
                 <button
                   onClick={handlePause}
                   className="w-full px-4 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-medium"
@@ -1853,31 +1844,24 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
 
       {/* レポートモーダル */}
       {showReport && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-7xl w-full max-h-[95vh] overflow-hidden flex flex-col">
-            <div className="bg-gray-50 border-b px-6 py-4 flex justify-between items-center">
+        <div className="fixed inset-0 bg-black bg-opacity-70 z-[60] flex items-center justify-center p-2 lg:p-4">
+          <div className="bg-white rounded-lg max-w-7xl w-full max-h-[98vh] lg:max-h-[95vh] overflow-hidden flex flex-col">
+            {/* レポートヘッダー（モバイル簡素化） */}
+            <div className="bg-gray-50 border-b px-3 lg:px-6 py-2 lg:py-4 flex justify-between items-center">
               <div>
-                <h3 className="text-xl font-bold text-gray-900">📊 事業分析レポート</h3>
-                <p className="text-sm text-gray-600">
+                <h3 className="text-lg lg:text-xl font-bold text-gray-900">📊 事業分析レポート</h3>
+                <p className="hidden lg:block text-sm text-gray-600">
                   会社: {data.meta.companyName || '—'} / 作成: {data.meta.author || '—'} / 更新: {data.meta.updatedAt ? new Date(data.meta.updatedAt).toLocaleDateString() : '—'}
                 </p>
               </div>
-              <div className="flex items-center gap-3">
-                <select 
-                  value={reportMode} 
-                  onChange={(e) => setReportMode(e.target.value)}
-                  className="border border-gray-300 rounded px-3 py-1 text-sm"
-                >
-                  <option value="onepager">ペライチ</option>
-                  <option value="dossier">詳細</option>
-                </select>
+              <div className="flex items-center gap-1 lg:gap-3">
                 <button
                   onClick={() => {
                     const content = generateMarkdownReport();
                     navigator.clipboard.writeText(content);
                     alert('Markdownをクリップボードにコピーしました');
                   }}
-                  className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
+                  className="hidden lg:block bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
                 >
                   Markdownコピー
                 </button>
@@ -1892,19 +1876,19 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
                       printWindow.print();
                     }, 500);
                   }}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+                  className="hidden lg:block bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
                 >
                   印刷/PDF
                 </button>
                 <button
                   onClick={() => setShowReport(false)}
-                  className="text-gray-500 hover:text-gray-700 text-2xl"
+                  className="text-gray-500 hover:text-gray-700 text-xl lg:text-2xl"
                 >
                   ×
                 </button>
               </div>
             </div>
-            <div className="flex-1 overflow-auto p-6" id="reportContent">
+            <div className="flex-1 overflow-auto p-3 lg:p-6" id="reportContent">
               {renderReport()}
             </div>
           </div>
