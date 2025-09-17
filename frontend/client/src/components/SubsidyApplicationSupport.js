@@ -2378,12 +2378,13 @@ function SubsidyApplicationSupport() {
     });
   };
 
-  const getProgressPercentage = () => {
-    if (subsidyId !== 'atotsugi') return 0;
-    
-    let totalTasks = 0;
-    let completedTasks = 0;
-    
+  // タスク数（総数・完了数）を取得
+  const getTaskCounts = () => {
+    if (subsidyId !== 'atotsugi') return { total: 0, completed: 0 };
+
+    let total = 0;
+    let completed = 0;
+
     sections.forEach(section => {
       if (inputMode === 'micro_tasks' && section.input_modes?.micro_tasks) {
         section.input_modes.micro_tasks.forEach(task => {
@@ -2397,11 +2398,10 @@ function SubsidyApplicationSupport() {
               shouldCount = conditionValue === task.conditional_value;
             }
           }
-          
+
           if (shouldCount) {
-            totalTasks++;
+            total++;
             const value = answers[section.id]?.[task.task_id];
-            // より柔軟な値チェック：「わからない・要相談」なども有効な入力として扱う
             const isValidValue = (val) => {
               if (val === undefined || val === null) return false;
               if (typeof val === 'string') return val.trim() !== '';
@@ -2415,28 +2415,32 @@ function SubsidyApplicationSupport() {
               }
               return true; // その他の値タイプは有効とみなす
             };
-            
+
             if (isValidValue(value)) {
-              completedTasks++;
+              completed++;
             }
           }
         });
       } else if (inputMode === 'integrated' && section.input_modes?.integrated) {
-        totalTasks++;
+        total++;
         const sectionAnswer = answers[section.id];
         if (sectionAnswer) {
-          // 文字列の場合は trim() を使用、オブジェクトの場合は存在チェック
-          const hasValidAnswer = typeof sectionAnswer === 'string' 
-            ? sectionAnswer.trim() 
+          const hasValidAnswer = typeof sectionAnswer === 'string'
+            ? sectionAnswer.trim()
             : (typeof sectionAnswer === 'object' && Object.keys(sectionAnswer).length > 0);
           if (hasValidAnswer) {
-            completedTasks++;
+            completed++;
           }
         }
       }
     });
-    
-    return totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+    return { total, completed };
+  };
+
+  const getProgressPercentage = () => {
+    const { total, completed } = getTaskCounts();
+    return total > 0 ? Math.round((completed / total) * 100) : 0;
   };
 
   if (loading) {
@@ -2636,7 +2640,11 @@ function SubsidyApplicationSupport() {
                   {getProgressPercentage() === 100 ? (
                     <span className="text-green-600 font-medium">🎉 全項目完了</span>
                   ) : (
-                    <span>残り{42 - Math.round((getProgressPercentage() / 100) * 42)}タスク（部分入力でも生成OK）</span>
+                    (() => {
+                      const { total, completed } = getTaskCounts();
+                      const remaining = Math.max(total - completed, 0);
+                      return <span>残り{remaining}タスク（部分入力でもOK）</span>;
+                    })()
                   )}
                 </div>
                 
