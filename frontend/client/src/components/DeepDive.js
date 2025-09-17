@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import html2canvas from 'html2canvas';
 
 // SpareSlotコンセプトに基づく24ブロックのプレースホルダー
 const PLACEHOLDERS = {
@@ -1471,6 +1472,43 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
 </html>`;
   };
 
+  // 画像として保存（モバイル用）
+  const saveAsImage = async () => {
+    try {
+      const element = document.getElementById('reportContent');
+      if (!element) return;
+
+      // html2canvasで要素をキャンバスに変換
+      const canvas = await html2canvas(element, {
+        scale: 2, // 高解像度
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        width: element.scrollWidth,
+        height: element.scrollHeight,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight
+      });
+
+      // キャンバスをBlob（画像データ）に変換
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `事業分析レポート-${data.meta.companyName || '無題'}-${Date.now()}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }
+      }, 'image/png');
+    } catch (error) {
+      console.error('画像保存エラー:', error);
+      alert('画像の保存に失敗しました。');
+    }
+  };
+
   // クリップボードにコピー
   const copyToClipboard = async (text) => {
     try {
@@ -1522,8 +1560,8 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 md:p-4">
       <div className="bg-white rounded-lg max-w-6xl w-full max-h-[95vh] md:max-h-[90vh] overflow-hidden flex flex-col">
-        {/* ヘッダー（固定） */}
-        <div className="flex-shrink-0 bg-gray-50 border-b px-4 md:px-6 py-4 flex justify-between items-center">
+        {/* ヘッダー */}
+        <div className="bg-gray-50 border-b px-4 md:px-6 py-4 flex justify-between items-center">
           <div>
             <h2 className="text-lg md:text-2xl font-bold text-gray-900">📊 事業分析ワークシート</h2>
             <p className="text-sm text-gray-600">完成度: {calculateOverallCompletion().toFixed(1)}%</p>
@@ -1544,31 +1582,6 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
           </div>
         </div>
 
-        {/* メタ情報（固定） */}
-        <div className="flex-shrink-0 bg-blue-50 px-4 md:px-6 py-3 border-b">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">会社名</label>
-              <input
-                type="text"
-                value={data.meta.companyName}
-                onChange={(e) => updateMeta('companyName', e.target.value)}
-                className="w-full px-3 py-1 border border-gray-300 rounded-md text-sm"
-                placeholder="株式会社〇〇"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">作成者</label>
-              <input
-                type="text"
-                value={data.meta.author}
-                onChange={(e) => updateMeta('author', e.target.value)}
-                className="w-full px-3 py-1 border border-gray-300 rounded-md text-sm"
-                placeholder="山田太郎"
-              />
-            </div>
-          </div>
-        </div>
 
         {/* デスクトップレイアウト */}
         <div className="hidden lg:flex flex-1 overflow-hidden">
@@ -1613,6 +1626,31 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
 
           {/* メインコンテンツ */}
           <div className="flex-1 flex flex-col overflow-hidden">
+            {/* メタ情報（デスクトップのみ） */}
+            <div className="bg-blue-50 px-4 md:px-6 py-3 border-b">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">会社名</label>
+                  <input
+                    type="text"
+                    value={data.meta.companyName}
+                    onChange={(e) => updateMeta('companyName', e.target.value)}
+                    className="w-full px-3 py-1 border border-gray-300 rounded-md text-sm"
+                    placeholder="株式会社〇〇"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">作成者</label>
+                  <input
+                    type="text"
+                    value={data.meta.author}
+                    onChange={(e) => updateMeta('author', e.target.value)}
+                    className="w-full px-3 py-1 border border-gray-300 rounded-md text-sm"
+                    placeholder="山田太郎"
+                  />
+                </div>
+              </div>
+            </div>
             <div className="bg-white border-b px-4 md:px-6 py-4">
               <h3 className="text-lg md:text-xl font-bold text-gray-900">{currentBlockData.title}</h3>
               <p className="text-sm md:text-base text-gray-600">{currentBlockData.subtitle}</p>
@@ -1712,6 +1750,31 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
 
         {/* モバイルレイアウト：アコーディオン形式 */}
         <div className="lg:hidden flex-1 overflow-y-auto p-4">
+          {/* メタ情報（モバイル） */}
+          <div className="mb-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">会社名</label>
+                <input
+                  type="text"
+                  value={data.meta.companyName}
+                  onChange={(e) => updateMeta('companyName', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  placeholder="株式会社〇〇"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">作成者</label>
+                <input
+                  type="text"
+                  value={data.meta.author}
+                  onChange={(e) => updateMeta('author', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  placeholder="山田太郎"
+                />
+              </div>
+            </div>
+          </div>
           <div className="mb-4 p-3 bg-yellow-100 border border-yellow-400 rounded-md">
             <p className="text-sm text-yellow-800">📱 モバイル版: 各ブロックをタップして入力してください</p>
           </div>
@@ -1855,6 +1918,16 @@ ${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, fiel
                 </p>
               </div>
               <div className="flex items-center gap-1 lg:gap-3">
+                {/* モバイル専用：画像保存ボタン */}
+                <button
+                  onClick={saveAsImage}
+                  className="lg:hidden bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded text-xs"
+                  title="画像として保存"
+                >
+                  📷 保存
+                </button>
+                
+                {/* デスクトップ専用ボタン */}
                 <button
                   onClick={() => {
                     const content = generateMarkdownReport();
