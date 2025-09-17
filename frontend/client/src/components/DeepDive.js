@@ -397,6 +397,7 @@ function DeepDive({ trigger }) {
   });
   const [showReport, setShowReport] = useState(false);
   const [reportMode, setReportMode] = useState('onepager');
+  const [expandedBlocks, setExpandedBlocks] = useState(new Set());
 
   // ローカルストレージからデータ読み込み
   useEffect(() => {
@@ -999,33 +1000,110 @@ function DeepDive({ trigger }) {
     const summary = getExecutiveSummary();
     const today = new Date().toLocaleDateString();
 
-    return `# 事業分析レポート（${today}）
+    if (reportMode === 'onepager') {
+      // ペライチ: 1ページの要約版
+      return `# 【ペライチ】事業分析要約（${today}）
 
-- 会社: ${data.meta.companyName || '—'} / 作成: ${data.meta.author || '—'} / 更新: ${data.meta.updatedAt || '—'}
-- 準備度: ${readiness.score}%（${readiness.blocksDone}/${readiness.blocksTotal} 完了・未充足${readiness.missing}）
-- 先行KPI: ${summary.kpi.join(' / ')}
+## 基本情報
+- **会社**: ${data.meta.companyName || '—'}
+- **作成者**: ${data.meta.author || '—'}
+- **準備度**: ${readiness.score}% (${readiness.blocksDone}/${readiness.blocksTotal} 完了)
+
+## エグゼクティブサマリー
+- **事業概要**: ${getFieldValue('roots', 'what') || '未入力'}
+- **価値提案**: ${getFieldValue('philosophy', 'mission') || '未入力'}
+- **主要KPI**: ${summary.kpi.join(' / ')}
+- **主要脅威**: ${summary.threats}件の課題を特定
+
+## 戦略的優先度
+${getFieldValue('strategy', 'priorities') || '戦略的優先度が未設定です'}
+
+## 次期アクション
+${getFieldValue('execution', 'next_actions') || '次期アクションが未設定です'}
+
+---
+*本資料はペライチ形式で生成されました*`;
+    } else {
+      // 詳細: 詳細版
+      return `# 【詳細】事業分析詳細書（${today}）
+
+## 基本情報
+- **会社**: ${data.meta.companyName || '—'}
+- **作成者**: ${data.meta.author || '—'}
+- **更新日**: ${data.meta.updatedAt || '—'}
+- **分析完成度**: ${readiness.score}% (${readiness.blocksDone}/${readiness.blocksTotal}ブロック完了)
 
 ## EXECUTIVE SUMMARY
-- 要約: ${summary.oneLiner}
-- 強みの核: ${summary.coreStrength}
-- 主要顧客×ジョブ: ${summary.customerJob}
-- 差別化: ${summary.diff}
+- **一言要約**: ${summary.oneLiner}
+- **強みの核**: ${summary.coreStrength}
+- **主要顧客×ジョブ**: ${summary.customerJob}
+- **差別化要因**: ${summary.diff}
+- **主要KPI**: ${summary.kpi.join(' / ')}
+- **識別された脅威**: ${summary.threats}件
 
-## MARKET & STRATEGY（要約）
-- P: ${getFieldValue('pest_p', 'facts') || '—'} / ${getFieldValue('pest_p', 'opps') || '—'}
-- E: ${getFieldValue('pest_e', 'facts') || '—'} / ${getFieldValue('pest_e', 'opps') || '—'}
-- S: ${getFieldValue('pest_s', 'facts') || '—'} / ${getFieldValue('pest_s', 'opps') || '—'}
-- T: ${getFieldValue('pest_t', 'facts') || '—'} / ${getFieldValue('pest_t', 'opps') || '—'}
-- 5F 強度: 新${getFieldValue('ff_new', 'strength') || '—'} / 売${getFieldValue('ff_sup', 'strength') || '—'} / 競${getFieldValue('ff_riv', 'strength') || '—'} / 買${getFieldValue('ff_buy', 'strength') || '—'} / 代${getFieldValue('ff_sub', 'strength') || '—'}
+## BUSINESS FOUNDATION
+### 企業ルーツ・理念
+- **創業背景**: ${getFieldValue('roots', 'why') || '未入力'}
+- **ミッション**: ${getFieldValue('philosophy', 'mission') || '未入力'}
+- **ビジョン**: ${getFieldValue('philosophy', 'vision') || '未入力'}
+- **コアバリュー**: ${getFieldValue('philosophy', 'values') || '未入力'}
+
+## MARKET ANALYSIS (PEST)
+### 政治・法規制要因 (P)
+- **事実**: ${getFieldValue('pest_p', 'facts') || '未分析'}
+- **機会**: ${getFieldValue('pest_p', 'opps') || '未分析'}
+- **脅威**: ${getFieldValue('pest_p', 'threats') || '未分析'}
+
+### 経済要因 (E)
+- **事実**: ${getFieldValue('pest_e', 'facts') || '未分析'}
+- **機会**: ${getFieldValue('pest_e', 'opps') || '未分析'}
+- **脅威**: ${getFieldValue('pest_e', 'threats') || '未分析'}
+
+### 社会・文化要因 (S)
+- **事実**: ${getFieldValue('pest_s', 'facts') || '未分析'}
+- **機会**: ${getFieldValue('pest_s', 'opps') || '未分析'}
+- **脅威**: ${getFieldValue('pest_s', 'threats') || '未分析'}
+
+### 技術要因 (T)
+- **事実**: ${getFieldValue('pest_t', 'facts') || '未分析'}
+- **機会**: ${getFieldValue('pest_t', 'opps') || '未分析'}
+- **脅威**: ${getFieldValue('pest_t', 'threats') || '未分析'}
+
+## COMPETITIVE ANALYSIS (5FORCES)
+### 新規参入の脅威
+- **強度**: ${getFieldValue('ff_new', 'strength') || '未評価'}
+- **ドライバー**: ${getFieldValue('ff_new', 'drivers') || '未分析'}
+- **対策**: ${getFieldValue('ff_new', 'moves') || '未策定'}
+
+### 供給業者の交渉力
+- **強度**: ${getFieldValue('ff_sup', 'strength') || '未評価'}
+- **ドライバー**: ${getFieldValue('ff_sup', 'drivers') || '未分析'}
+- **対策**: ${getFieldValue('ff_sup', 'moves') || '未策定'}
+
+### 既存競合との競争
+- **強度**: ${getFieldValue('ff_riv', 'strength') || '未評価'}
+- **ドライバー**: ${getFieldValue('ff_riv', 'drivers') || '未分析'}
+- **対策**: ${getFieldValue('ff_riv', 'moves') || '未策定'}
+
+### 買い手の交渉力
+- **強度**: ${getFieldValue('ff_buy', 'strength') || '未評価'}
+- **ドライバー**: ${getFieldValue('ff_buy', 'drivers') || '未分析'}
+- **対策**: ${getFieldValue('ff_buy', 'moves') || '未策定'}
+
+### 代替品の脅威
+- **強度**: ${getFieldValue('ff_sub', 'strength') || '未評価'}
+- **ドライバー**: ${getFieldValue('ff_sub', 'drivers') || '未分析'}
+- **対策**: ${getFieldValue('ff_sub', 'moves') || '未策定'}
 
 ## BUSINESS MODEL
-- 収益式: ${getFieldValue('q8_bm', 'formula') || '—'}
-- 単位経済: ${getFieldValue('q8_bm', 'unit') || '—'}
-- 市場: ${getFieldValue('q6_market', 'tam_sam_som') || '—'}
-- CAPEX: ${getFieldValue('q10_budget', 'capex') || '—'} / OPEX: ${getFieldValue('q10_budget', 'opex') || '—'}
+- **収益モデル**: ${getFieldValue('q8_bm', 'formula') || '未設定'}
+- **単位経済性**: ${getFieldValue('q8_bm', 'unit') || '未設定'}
+- **市場規模**: ${getFieldValue('q6_market', 'tam_sam_som') || '未分析'}
+- **CAPEX要件**: ${getFieldValue('q10_budget', 'capex') || '未設定'}
+- **OPEX要件**: ${getFieldValue('q10_budget', 'opex') || '未設定'}
 
-## RISKS & MITIGATION
-### 主要脅威・ドライバー (${getThreatsCount()}件)
+## RISK ASSESSMENT
+### 統合脅威一覧 (${getThreatsCount()}件)
 ${[
   getFieldValue('pest_p', 'threats'),
   getFieldValue('pest_e', 'threats'), 
@@ -1036,22 +1114,38 @@ ${[
   getFieldValue('ff_riv', 'drivers'),
   getFieldValue('ff_buy', 'drivers'),
   getFieldValue('ff_sub', 'drivers')
-].filter(item => item && item.trim()).slice(0, 6).map((item, idx) => `- ⚠ ${item}`).join('\n')}
+].filter(item => item && item.trim()).map((item, idx) => `${idx + 1}. ⚠ ${item}`).join('\n')}
 
-### 対策・打ち手
+### 対策・打ち手一覧
 ${[
   getFieldValue('ff_new', 'moves'),
   getFieldValue('ff_sup', 'moves'), 
   getFieldValue('ff_riv', 'moves'),
   getFieldValue('ff_buy', 'moves'),
   getFieldValue('ff_sub', 'moves')
-].filter(item => item && item.trim()).slice(0, 5).map((item, idx) => `- ✓ ${item}`).join('\n')}
+].filter(item => item && item.trim()).map((item, idx) => `${idx + 1}. ✓ ${item}`).join('\n')}
 
-## NEXT 7-30-90
-- 7日: 価値仮説ヒアリング／SLA周知／PoC要件
-- 30日: PoC(3件)／価格テーブル仮／導入手順v1
-- 90日: 参加工場拡張／API要件／成功事例化
-`;
+## STRATEGIC EXECUTION
+### 戦略的優先度
+${getFieldValue('strategy', 'priorities') || '戦略的優先度が未設定です'}
+
+### 実行計画
+${getFieldValue('execution', 'plan') || '実行計画が未設定です'}
+
+### 次期アクション
+${getFieldValue('execution', 'next_actions') || '次期アクションが未設定です'}
+
+## APPENDIX
+### 全24ブロック分析詳細
+${BLOCKS.map((block, index) => `
+#### ${index + 1}. ${block.title}
+${block.fields.map(field => `**${field.label}**: ${getFieldValue(block.key, field.key) || '未入力'}`).join('\n')}
+`).join('\n')}
+
+---
+*本資料は詳細形式で生成されました*
+*分析日時: ${new Date().toISOString()}*`;
+    }
   };
 
   const generatePrintableHTML = () => {
@@ -1431,13 +1525,18 @@ ${[
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 md:p-4">
+      <div className="bg-white rounded-lg max-w-6xl w-full max-h-[95vh] md:max-h-[90vh] overflow-hidden flex flex-col">
         {/* ヘッダー */}
-        <div className="bg-gray-50 border-b px-6 py-4 flex justify-between items-center">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">📊 事業分析ワークシート</h2>
-            <p className="text-sm text-gray-600">完成度: {calculateOverallCompletion().toFixed(1)}%</p>
+        <div className="bg-gray-50 border-b px-4 md:px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <span className="lg:hidden text-sm text-gray-600">
+              モバイル版：下のブロックをタップして入力
+            </span>
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900">📊 事業分析ワークシート</h2>
+              <p className="text-sm text-gray-600">完成度: {calculateOverallCompletion().toFixed(1)}%</p>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <button
@@ -1456,7 +1555,7 @@ ${[
         </div>
 
         {/* メタ情報 */}
-        <div className="bg-blue-50 px-6 py-3 border-b">
+        <div className="bg-blue-50 px-4 md:px-6 py-3 border-b">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">会社名</label>
@@ -1481,7 +1580,8 @@ ${[
           </div>
         </div>
 
-        <div className="flex flex-1 overflow-hidden">
+        {/* デスクトップレイアウト */}
+        <div className="hidden lg:flex flex-1 overflow-hidden">
           {/* サイドナビ */}
           <div className="w-80 bg-gray-50 border-r overflow-y-auto">
             <div className="p-4">
@@ -1523,12 +1623,12 @@ ${[
 
           {/* メインコンテンツ */}
           <div className="flex-1 flex flex-col overflow-hidden">
-            <div className="bg-white border-b px-6 py-4">
-              <h3 className="text-xl font-bold text-gray-900">{currentBlockData.title}</h3>
-              <p className="text-gray-600">{currentBlockData.subtitle}</p>
+            <div className="bg-white border-b px-4 md:px-6 py-4">
+              <h3 className="text-lg md:text-xl font-bold text-gray-900">{currentBlockData.title}</h3>
+              <p className="text-sm md:text-base text-gray-600">{currentBlockData.subtitle}</p>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-4 md:p-6">
               <div className="space-y-6">
                 {currentBlockData.fields.map(field => (
                   <div key={field.key}>
@@ -1549,25 +1649,27 @@ ${[
             </div>
 
             {/* フッター */}
-            <div className={`border-t px-6 py-4 ${isFullyCompleted() ? 'bg-green-50' : 'bg-gray-50'}`}>
+            <div className={`border-t px-4 md:px-6 py-4 ${isFullyCompleted() ? 'bg-green-50' : 'bg-gray-50'}`}>
               {isFullyCompleted() && (
                 <div className="text-center mb-4">
                   <div className="flex items-center justify-center gap-3 text-green-700 font-medium mb-3">
                     🎉 全24ブロック完了！お疲れさまでした！
                   </div>
-                  <button
-                    onClick={() => downloadFile(exportStructured(), `整理済み分析書-${Date.now()}.md`, 'text/markdown')}
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium mr-2"
-                  >
-                    整理済みフォーマット
-                  </button>
-                  <button
-                    onClick={() => setShowReport(true)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium mr-2"
-                  >
-                    📊 決裁用レポート
-                  </button>
-                  <span className="text-xs text-gray-500">One-Pager / Dossier形式</span>
+                  <div className="flex flex-col sm:flex-row gap-2 justify-center items-center">
+                    <button
+                      onClick={() => downloadFile(exportStructured(), `整理済み分析書-${Date.now()}.md`, 'text/markdown')}
+                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
+                    >
+                      整理済みフォーマット
+                    </button>
+                    <button
+                      onClick={() => setShowReport(true)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
+                    >
+                      📊 決裁用レポート
+                    </button>
+                  </div>
+                  <span className="text-xs text-gray-500 mt-2 block">One-Pager / Dossier形式</span>
                 </div>
               )}
               <div className="text-center mb-3">
@@ -1576,43 +1678,173 @@ ${[
                   作成に悩んだら、プロンプトをダウンロードしてAIと意見交換しよう。
                 </p>
               </div>
-              <div className="flex justify-between items-center">
-                <div className="flex gap-2">
+              <div className="flex flex-col md:flex-row justify-between gap-4">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <button
                     onClick={() => setShowReport(true)}
-                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
                   >
                     📊 決裁用レポート
                   </button>
                   <button
                     onClick={() => downloadFile(exportDoc(), `深掘り分析書-${Date.now()}.doc`, 'application/msword')}
-                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
                   >
                     Word文書
                   </button>
                   <button
                     onClick={() => downloadFile(exportMarkdown(), `AI相談プロンプト-${Date.now()}.md`, 'text/markdown')}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
                   >
                     AI相談プロンプト
                   </button>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 justify-center md:justify-end">
                   <button
                     onClick={() => goToBlock(currentBlock - 1)}
                     disabled={currentBlock === 0}
-                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex-1 sm:flex-none"
                   >
                     ← 前
                   </button>
                   <button
                     onClick={() => goToBlock(currentBlock + 1)}
                     disabled={currentBlock === BLOCKS.length - 1}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex-1 sm:flex-none"
                   >
                     次 →
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* モバイルレイアウト：アコーディオン形式 */}
+        <div className="lg:hidden flex-1 overflow-y-auto p-4">
+          <div className="mb-4 p-3 bg-yellow-100 border border-yellow-400 rounded-md">
+            <p className="text-sm text-yellow-800">📱 モバイル版: 各ブロックをタップして入力してください</p>
+          </div>
+          <div className="space-y-4">
+            {BLOCKS.map((block, index) => {
+              const completion = calculateCompletionScore(block);
+              const isExpanded = expandedBlocks.has(index);
+              
+              return (
+                <div key={block.key} className="border-2 border-blue-200 rounded-lg overflow-hidden shadow-sm">
+                  {/* ブロックヘッダー（クリックで展開/折りたたみ） */}
+                  <button
+                    onClick={() => {
+                      const newExpanded = new Set(expandedBlocks);
+                      if (isExpanded) {
+                        newExpanded.delete(index);
+                      } else {
+                        newExpanded.add(index);
+                      }
+                      setExpandedBlocks(newExpanded);
+                    }}
+                    className={`w-full p-4 text-left transition-colors ${
+                      isExpanded ? 'bg-blue-100 border-b-2 border-blue-300' : 'bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100'
+                    }`}
+                  >
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h3 className="font-medium text-gray-900">{index + 1}. {block.title}</h3>
+                        <p className="text-sm text-gray-600 mt-1">{block.subtitle}</p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1">
+                          {completion === 100 ? '✅' : completion > 0 ? '📝' : '⏳'}
+                          <span className="text-xs text-gray-600">
+                            {completion.toFixed(0)}%
+                          </span>
+                        </div>
+                        <svg 
+                          className={`w-5 h-5 text-gray-400 transition-transform ${
+                            isExpanded ? 'rotate-180' : ''
+                          }`}
+                          fill="none" 
+                          stroke="currentColor" 
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+                    
+                    {/* プログレスバー */}
+                    <div className="w-full bg-gray-200 rounded-full h-1.5 mt-3">
+                      <div
+                        className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
+                        style={{ width: `${completion}%` }}
+                      />
+                    </div>
+                  </button>
+                  
+                  {/* 展開された入力フォームエリア */}
+                  {isExpanded && (
+                    <div className="p-4 bg-white border-t-2 border-blue-200">
+                      <div className="space-y-4">
+                        {block.fields.map((field) => (
+                          <div key={field.key} className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">
+                              {field.label}
+                            </label>
+                            {field.type === 'textarea' ? (
+                              <textarea
+                                value={getFieldValue(block.key, field.key)}
+                                onChange={(e) => updateField(block.key, field.key, e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical min-h-[100px]"
+                                placeholder={`${field.label}を入力してください`}
+                              />
+                            ) : (
+                              <input
+                                type={field.type || 'text'}
+                                value={getFieldValue(block.key, field.key)}
+                                onChange={(e) => updateField(block.key, field.key, e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder={`${field.label}を入力してください`}
+                              />
+                            )}
+                          </div>
+                        ))}
+                        
+                        {/* 閉じるボタン */}
+                        <div className="pt-3 border-t border-gray-200">
+                          <button
+                            onClick={() => {
+                              const newExpanded = new Set(expandedBlocks);
+                              newExpanded.delete(index);
+                              setExpandedBlocks(newExpanded);
+                            }}
+                            className="w-full px-4 py-2 text-sm text-blue-700 bg-blue-50 border border-blue-300 rounded-md hover:bg-blue-100 transition-colors font-medium"
+                          >
+                            ✅ 入力完了・閉じる
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            
+            {/* モバイル用アクションボタン */}
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <div className="space-y-3">
+                <button
+                  onClick={() => setShowReport(!showReport)}
+                  className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium"
+                >
+                  📊 分析レポートを見る
+                </button>
+                
+                <button
+                  onClick={handlePause}
+                  className="w-full px-4 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-medium"
+                >
+                  💾 保存して終了
+                </button>
               </div>
             </div>
           </div>
@@ -1636,8 +1868,8 @@ ${[
                   onChange={(e) => setReportMode(e.target.value)}
                   className="border border-gray-300 rounded px-3 py-1 text-sm"
                 >
-                  <option value="onepager">One-Pager</option>
-                  <option value="dossier">Dossier</option>
+                  <option value="onepager">ペライチ</option>
+                  <option value="dossier">詳細</option>
                 </select>
                 <button
                   onClick={() => {
