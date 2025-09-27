@@ -7,10 +7,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 import logging
 import os
+import sys
 import yaml
 from datetime import datetime
 
 # ルーターをインポート
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from routers import subsidies, system_monitoring, content, applications
 
 # ロガー設定
