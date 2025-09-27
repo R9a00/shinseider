@@ -1,1 +1,1 @@
-web: cd backend && python -m uvicorn main:app --host 0.0.0.0 --port $PORT --workers 1
+web: cd backend && PYTHONPATH=/opt/render/project/src/backend python3 -m uvicorn main:app --host 0.0.0.0 --port $PORT --workers 1
