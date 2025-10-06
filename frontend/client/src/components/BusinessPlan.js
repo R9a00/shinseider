@@ -20,7 +20,7 @@ function BusinessPlan() {
 
   const handleSave = async () => {
     try {
-      const response = await fetch(`${config.API_BASE_URL}/generate_business_plan`, {
+      const response = await fetch(`${config.API_BASE_URL}/api/applications/generate-business-plan`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

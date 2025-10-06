@@ -1,20 +1,18 @@
 """
-軽量化されたメインAPIサーバー
+軽量化されたメインAPIサーバー - 起動高速化版
 機能別にルーターを分離してモジュール化
 """
-from fastapi import FastAPI, HTTPException, Form, UploadFile, File
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Optional
+from fastapi.responses import JSONResponse
 import logging
 import os
 import sys
-import yaml
 from datetime import datetime
+import time
 
-# ルーターをインポート
+# 基本設定のみ先行ロード
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
-from routers import subsidies, system_monitoring, content, applications
 
 # ロガー設定
 logging.basicConfig(
@@ -39,13 +37,78 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 重い処理用のミドルウェア
+@app.middleware("http")
+async def loading_middleware(request: Request, call_next):
+    """重い処理のリクエストに対してローディングメッセージを付与"""
+    start_time = time.time()
+
+    # システム監視関連のエンドポイントを特定
+    heavy_endpoints = [
+        "/api/system/test-results",
+        "/api/system/run-tests",
+        "/api/system/operational-status",
+        "/api/system/trigger-integrity-check",
+        "/system-status"
+    ]
+
+    is_heavy_endpoint = any(request.url.path.startswith(endpoint) for endpoint in heavy_endpoints)
+
+    # レスポンス実行
+    response = await call_next(request)
+
+    # 処理時間を計算
+    process_time = time.time() - start_time
+
+    # 重いエンドポイントまたは3秒以上かかった場合、レスポンスヘッダーにローディング情報を追加
+    if is_heavy_endpoint or process_time > 3.0:
+        response.headers["X-Loading-Message"] = "This process may take some time. Please wait."
+        response.headers["X-Process-Time"] = str(round(process_time, 2))
+
+    return response
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# ルーターを登録
-app.include_router(subsidies.router)
-app.include_router(system_monitoring.router)
-app.include_router(content.router)
-app.include_router(applications.router)
+# ルーターを遅延ロード（アプリ起動後に登録）
+def register_routers():
+    """ルーターを遅延読み込みで登録"""
+    # 軽量モードの確認
+    lightweight_mode = os.getenv("LIGHTWEIGHT_MODE", "false").lower() == "true"
+
+    try:
+        # 必須ルーター（常に読み込み）
+        from routers import subsidies
+        app.include_router(subsidies.router)
+        logging.info("Core subsidies router loaded")
+
+        if not lightweight_mode:
+            # フル機能モード - 全ルーターをロード
+            logging.info("Loading system monitoring features... このプロセスには少し時間がかかります")
+            from routers import system_monitoring, content, applications
+            app.include_router(system_monitoring.router)
+            app.include_router(content.router)
+            app.include_router(applications.router)
+            logging.info("All routers loaded successfully (full mode)")
+        else:
+            # 軽量モード - 必要最小限のみ
+            from routers import content
+            app.include_router(content.router)
+            logging.info("Lightweight mode: basic routers only")
+
+    except Exception as e:
+        logging.error(f"Router loading failed: {e}")
+        # フォールバック: 最低限のルーターのみ
+        try:
+            from routers import subsidies
+            app.include_router(subsidies.router)
+            logging.info("Fallback: basic subsidies router loaded")
+        except Exception as basic_error:
+            logging.error(f"Critical: Even basic router loading failed: {basic_error}")
+
+# 起動後にルーターを登録
+@app.on_event("startup")
+async def startup_event():
+    register_routers()
 
 @app.get("/")
 @app.head("/")
@@ -65,142 +128,45 @@ async def health_check():
     """ヘルスチェックエンドポイント（UptimeRobot監視用）"""
     return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
+@app.get("/loading-status")
+async def get_loading_status():
+    """ロード状況とユーザー向けメッセージを返す"""
+    lightweight_mode = os.getenv("LIGHTWEIGHT_MODE", "false").lower() == "true"
 
-# 後方互換性のための旧エンドポイント
-@app.get("/subsidies")
-async def get_subsidies_legacy():
-    """旧形式の補助金一覧取得（後方互換性）"""
-    return await subsidies.get_subsidies()
+    # 現在ロード済みのルーターを確認
+    loaded_routers = []
+    loading_status = "ready"
+    user_message = "システムは正常に動作しています"
 
-@app.get("/subsidies/{subsidy_id}/metadata")
-async def get_subsidy_metadata_legacy(subsidy_id: str):
-    """旧形式の補助金メタデータ取得（後方互換性）"""
-    return await subsidies.get_subsidy_metadata(subsidy_id)
+    try:
+        # 基本的にsubsidiesは常にロード済み
+        loaded_routers.append("subsidies")
 
-@app.get("/get_application_questions/{subsidy_id}")
-async def get_application_questions_legacy(subsidy_id: str):
-    """旧形式の申請質問取得（後方互換性）"""
-    return await subsidies.get_application_questions(subsidy_id)
+        if not lightweight_mode:
+            loaded_routers.extend(["system_monitoring", "content", "applications"])
+            loading_status = "complete"
+            user_message = "全ての機能がご利用いただけます"
+        else:
+            loaded_routers.append("content")
+            loading_status = "lightweight"
+            user_message = "基本機能をご利用いただけます。高度な機能は必要時に読み込まれます"
 
-@app.get("/version-history")
-async def get_version_history_legacy():
-    """旧形式のバージョン履歴取得（後方互換性）"""
-    return await content.get_version_history()
+    except Exception as e:
+        loading_status = "error"
+        user_message = f"一部機能の読み込みに問題があります: {str(e)}"
 
-@app.get("/system-integrity-status")
-async def system_integrity_status_legacy():
-    """旧形式のシステム完全性状況取得（後方互換性）"""
-    return await system_monitoring.system_integrity_status()
+    return {
+        "status": loading_status,
+        "message": user_message,
+        "loaded_routers": loaded_routers,
+        "lightweight_mode": lightweight_mode,
+        "timestamp": datetime.now().isoformat()
+    }
 
-@app.get("/test-results")
-async def get_test_results_legacy():
-    """旧形式のテスト結果取得（後方互換性）"""
-    return await system_monitoring.get_detailed_test_results()
 
-@app.post("/run-tests")
-async def run_tests_legacy():
-    """旧形式のテスト実行（後方互換性）"""
-    return await system_monitoring.run_tests()
+# 軽量化のため後方互換性エンドポイントは必要時のみ動的ロード
 
-@app.post("/refresh-test-results")
-async def refresh_test_results_legacy():
-    """旧形式のテスト結果リフレッシュ（後方互換性）"""
-    return await system_monitoring.refresh_test_results()
-
-# 補助金関連の後方互換性
-@app.get("/subsidies/{subsidy_id}/expense-examples")
-async def get_expense_examples_legacy(subsidy_id: str):
-    """旧形式の経費例取得（後方互換性）"""
-    return await subsidies.get_expense_examples(subsidy_id)
-
-@app.get("/subsidies/{subsidy_id}/version-history")
-async def get_subsidy_version_history_legacy(subsidy_id: str):
-    """旧形式の補助金バージョン履歴取得（後方互換性）"""
-    return await subsidies.get_subsidy_version_history(subsidy_id)
-
-# 申請書作成関連の後方互換性
-@app.post("/generate_application_advice")
-async def generate_application_advice_legacy(request: applications.ApplicationAdviceRequest):
-    """旧形式の申請アドバイス生成（後方互換性）"""
-    return await applications.generate_application_advice(request)
-
-@app.post("/save_desire")
-async def save_desire_legacy(request: applications.DesireRequest):
-    """旧形式の希望保存（後方互換性）"""
-    return await applications.save_desire(request)
-
-@app.post("/generate_textbook")
-async def generate_textbook_legacy(request: applications.TextbookRequest):
-    """旧形式のテキストブック生成（後方互換性）"""
-    return await applications.generate_textbook(request)
-
-@app.post("/save_application_data")
-async def save_application_data_legacy(request: applications.ApplicationDataRequest):
-    """旧形式の申請データ保存（後方互換性）"""
-    return await applications.save_application_data(request)
-
-@app.post("/generate_business_plan")
-async def generate_business_plan_legacy(request: applications.BusinessPlanRequest):
-    """旧形式の事業計画書生成（後方互換性）"""
-    return await applications.generate_business_plan(request)
-
-@app.post("/send_contact")
-async def send_contact_legacy(
-    name: str = Form(...),
-    email: str = Form(...),
-    subject: str = Form(...),
-    message: str = Form(...),
-    attachment: Optional[UploadFile] = File(None)
-):
-    """旧形式のお問い合わせ送信（後方互換性）"""
-    return await applications.send_contact(name, email, subject, message, attachment)
-
-# コンテンツ関連の後方互換性
-@app.get("/news")
-async def get_news_legacy():
-    """旧形式のニュース取得（後方互換性）"""
-    return await content.get_news()
-
-@app.get("/knowledge-base")
-async def get_knowledge_base_legacy():
-    """旧形式の基礎知識取得（後方互換性）"""
-    return await content.get_knowledge_base()
-
-@app.get("/subsidy-selection")
-async def get_subsidy_selection_legacy():
-    """旧形式の補助金選択取得（後方互換性）"""
-    return await content.get_subsidy_selection()
-
-@app.get("/knowledge-base/{section_id}")
-async def get_knowledge_section_legacy(section_id: str):
-    """旧形式の基礎知識セクション取得（後方互換性）"""
-    return await content.get_knowledge_section(section_id)
-
-@app.get("/public-change-history")
-async def get_public_change_history_legacy():
-    """旧形式の公開変更履歴取得（後方互換性）"""
-    return await content.get_public_change_history()
-
-@app.get("/subsidy-investigation-status")
-async def get_subsidy_investigation_status_legacy():
-    """旧形式の補助金調査状況取得（後方互換性）"""
-    return await content.get_subsidy_investigation_status()
-
-@app.get("/public-update-report")
-async def get_public_update_report_legacy():
-    """旧形式の公開更新レポート取得（後方互換性）"""
-    return await content.get_public_update_report()
-
-# システム監視関連の後方互換性
-@app.get("/operational-status")
-async def get_operational_status_legacy():
-    """旧形式の運用状況取得（後方互換性）"""
-    return await system_monitoring.get_operational_status()
-
-@app.post("/trigger-integrity-check")
-async def trigger_integrity_check_legacy():
-    """旧形式の完全性チェック実行（後方互換性）"""
-    return await system_monitoring.trigger_integrity_check()
+# 軽量化のため後方互換性エンドポイントを削除
 
 @app.get("/system-status")
 async def get_comprehensive_system_status():
@@ -209,20 +175,36 @@ async def get_comprehensive_system_status():
         status_data = {
             "timestamp": datetime.now().isoformat(),
             "system_version": "1.4.0",
-            "status": "operational"
+            "status": "operational",
+            "loading_message": "システム状況を読み込み中です。この処理には少し時間がかかります。"
         }
         
         # システム完全性状況を取得（内部関数使用）
         try:
-            integrity_status = await system_monitoring.system_integrity_status()
-            status_data['integrity_check'] = integrity_status
+            # system_monitoringが利用可能かチェック
+            if 'routers.system_monitoring' in sys.modules:
+                from routers import system_monitoring
+                integrity_status = await system_monitoring.system_integrity_status()
+                status_data['integrity_check'] = integrity_status
+            else:
+                status_data['integrity_check'] = {
+                    'status': 'loading',
+                    'message': '完全性チェック機能を読み込み中です。少しお待ちください。'
+                }
         except Exception as e:
             status_data['integrity_check'] = {'status': 'error', 'error': str(e)}
-        
+
         # テスト結果を取得（内部関数使用）
         try:
-            test_results = await system_monitoring.get_detailed_test_results()
-            status_data['test_results'] = test_results
+            if 'routers.system_monitoring' in sys.modules:
+                from routers import system_monitoring
+                test_results = await system_monitoring.get_detailed_test_results()
+                status_data['test_results'] = test_results
+            else:
+                status_data['test_results'] = {
+                    'status': 'loading',
+                    'message': 'テスト結果を読み込み中です。少しお待ちください。'
+                }
         except Exception as e:
             status_data['test_results'] = {'status': 'error', 'error': str(e)}
         

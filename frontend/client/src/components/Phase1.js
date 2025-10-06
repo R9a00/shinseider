@@ -239,7 +239,7 @@ function Phase1() {
 
     try {
       const initiativeParams = Array.isArray(initiatives) ? initiatives.join(',') : '';
-      const response = await fetch(`${config.API_BASE_URL}/subsidies/${subsidyId}/expense-examples?initiatives=${encodeURIComponent(initiativeParams)}`);
+      const response = await fetch(`${config.API_BASE_URL}/api/subsidies/${subsidyId}/expense-examples?initiatives=${encodeURIComponent(initiativeParams)}`);
       if (response.ok) {
         const data = await response.json();
         return data.expense_examples;

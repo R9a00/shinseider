@@ -15,7 +15,7 @@ function SubsidySelection() {
   useEffect(() => {
     const fetchSubsidies = async () => {
       try {
-        const response = await fetch(`${config.API_BASE_URL}/subsidies`);
+        const response = await fetch(`${config.API_BASE_URL}/api/subsidies/`);
         if (!response.ok) {
           throw new Error('補助金リストの取得に失敗しました。');
         }

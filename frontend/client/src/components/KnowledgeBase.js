@@ -50,7 +50,7 @@ function KnowledgeBase() {
 
   const fetchKnowledgeData = async () => {
     try {
-      const response = await fetch(`${config.API_BASE_URL}/knowledge-base`);
+      const response = await fetch(`${config.API_BASE_URL}/api/content/knowledge-base`);
       if (!response.ok) {
         throw new Error('基礎知識データの取得に失敗しました');
       }

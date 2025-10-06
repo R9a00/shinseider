@@ -21,7 +21,7 @@ function News() {
 
   const fetchNewsData = async () => {
     try {
-      const response = await fetch(`${config.API_BASE_URL}/news`);
+      const response = await fetch(`${config.API_BASE_URL}/api/content/news`);
       if (!response.ok) {
         throw new Error('ニュースデータの取得に失敗しました');
       }

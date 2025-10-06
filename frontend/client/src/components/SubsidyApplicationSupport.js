@@ -442,7 +442,7 @@ function SubsidyApplicationSupport() {
     const fetchSubsidyData = async () => {
       try {
         setLoading(true);
-        const sectionsResponse = await fetch(`${config.API_BASE_URL}/get_application_questions/${subsidyId}`);
+        const sectionsResponse = await fetch(`${config.API_BASE_URL}/api/subsidies/${subsidyId}/application-questions`);
         if (!sectionsResponse.ok) {
           throw new Error('質問データの取得に失敗しました');
         }
@@ -461,7 +461,7 @@ function SubsidyApplicationSupport() {
         // Load saved draft data
         loadDataFromLocalStorage();
 
-        const metadataResponse = await fetch(`${config.API_BASE_URL}/subsidies/${subsidyId}/metadata`);
+        const metadataResponse = await fetch(`${config.API_BASE_URL}/api/subsidies/${subsidyId}/metadata`);
         if (metadataResponse.ok) {
           const metadataData = await metadataResponse.json();
           setSubsidyName(metadataData.name);

@@ -15,8 +15,8 @@ function SystemStatus() {
   const fetchSystemStatus = async () => {
     try {
       const [integrityResponse, testResultsResponse] = await Promise.all([
-        fetch(`${config.API_BASE_URL}/system-integrity-status`),
-        fetch(`${config.API_BASE_URL}/test-results`)
+        fetch(`${config.API_BASE_URL}/api/system/integrity-status`),
+        fetch(`${config.API_BASE_URL}/api/system/test-results`)
       ]);
 
       if (!integrityResponse.ok || !testResultsResponse.ok) {

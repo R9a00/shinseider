@@ -72,9 +72,9 @@ const Contact = () => {
         formDataToSend.append('attachment', selectedFile);
       }
 
-      console.log('Sending request to:', `${config.API_BASE_URL}/send_contact`);
+      console.log('Sending request to:', `${config.API_BASE_URL}/api/applications/send-contact`);
       
-      const response = await fetch(`${config.API_BASE_URL}/send_contact`, {
+      const response = await fetch(`${config.API_BASE_URL}/api/applications/send-contact`, {
         method: 'POST',
         body: formDataToSend
       });

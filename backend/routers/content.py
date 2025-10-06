@@ -29,7 +29,7 @@ async def get_version_history():
 async def get_news():
     """ニュース一覧を取得"""
     try:
-        news_path = os.path.join(BASE_DIR, "news.yaml")
+        news_path = os.path.join(BASE_DIR, "news_content.yaml")
         with open(news_path, "r", encoding="utf-8") as f:
             data = yaml.safe_load(f)
         return data
