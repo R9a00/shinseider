@@ -302,6 +302,7 @@ def main():
     lineage = load("policy_lineage.yaml")
     entry_def = load("koshien_entry.yaml")
     amb = load("ambassadors.yaml")
+    fukabori = load("fukabori.yaml")
     ev_data = load("events.yaml")
     news_data = load("news.yaml")
 
@@ -388,6 +389,11 @@ def main():
                 "prompt": prompt_text,
                 "review_prompt": entry_def["review_prompt_template"],
             }, ensure_ascii=False).replace("<", "\\u003c"),
+        }),
+        "fukabori.html": ("fukabori.html", {
+            "groups": fukabori["groups"],
+            "ai_targets": entry_def["ai_targets"],
+            "companion_prompt_json": json.dumps(fukabori["companion_prompt"], ensure_ascii=False),
         }),
         "subsidy.html": ("subsidy.html", {"s": subsidy, "track": track,
                                           "subsidy_rows": subsidy_rows,

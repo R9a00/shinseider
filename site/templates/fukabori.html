@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% block title %}フカボリ — 事業の深掘り | {{ site_name }}{% endblock %}
+{% block main %}
+<article>
+<h1>フカボリ<span class="ws-tag">試作版</span></h1>
+<p class="lead">エントリー文の先にある、時間のかかる丁寧なルートです。24ブロックで事業を分解し、AIに欠落と矛盾を突かせて、数字で守れる計画に近づけます。<strong>入力はあなたの端末にだけ保存され、サイト側に送信されることはありません。</strong></p>
+<p class="muted">進め方: 書けるブロックだけ埋める → 「AIに深掘りさせる」 → 返ってきた指摘のうちJSON_PATCHを取り込む → 埋まりが増える。この繰り返しで、1回で終える必要はありません。空欄が多くても、どこが欠けていて誰に何を聞けば埋まるかをAIが返します。</p>
+
+{% for g in groups %}
+<section class="step">
+  <h2>{{ g.title }}</h2>
+  {% for b in g.blocks %}
+  <div class="fk-block card" data-block="{{ b.key }}">
+    <h3 class="tight">{{ b.title }} <span class="fk-status muted"></span></h3>
+    <p class="muted">{{ b.subtitle }} <span class="fk-id">ID: {{ b.key }}</span></p>
+    <details class="prompt-view sample-view">
+      <summary>記入例を見る</summary>
+      <div class="sample-body">
+      {% for f in b.fields if f.example %}
+        <p><b>{{ f.label }}</b> — 例）{{ f.example }}</p>
+      {% endfor %}
+      </div>
+    </details>
+    {% for f in b.fields %}
+    <label class="fk-label">{{ f.label }}{% if not f.required %} <span class="muted">（任意）</span>{% endif %}</label>
+    <textarea rows="2" class="fk-text" data-field="{{ f.key }}"></textarea>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</section>
+{% endfor %}
+
+<section class="step" id="fk-ai">
+  <h2>AIに深掘りさせる</h2>
+  <p>ここまでの下書きを、専用の指示文ごとAIに渡します。AIからは、要約・欠落と追加質問（誰に・どこで・何分で回収できるかまで）・ブロックごとの補強・数字の整合チェック・貼り戻し用のJSON差分・次の7/30/90日のアクションが返ります。</p>
+  <div class="ai-row">
+    {% for t in ai_targets %}
+    <button class="ai-chip" type="button" data-home="{{ t.home_url }}" data-name="{{ t.name }}"{% if t.q_base %} data-qbase="{{ t.q_base }}"{% endif %}>
+      <img src="https://www.google.com/s2/favicons?domain={{ t.favicon_domain }}&sz=64" alt="" onerror="this.hidden=true">{{ t.name }}
+    </button>
+    {% endfor %}
+    <button class="ai-chip" id="fk-copy" type="button">コピーだけ</button>
+  </div>
+  <p id="fk-ai-msg" class="muted"></p>
+
+  <h3>返ってきたJSON_PATCHを取り込む</h3>
+  <p>AIの回答の終盤にある <code>JSON_PATCH</code>（```json〜```のかたまり）をそのまま貼ってください。空欄には差分がそのまま入り、すでに書いてある欄には「[AI補強]」として追記されます（勝手に上書きはしません）。</p>
+  <textarea id="fk-patch" rows="6" placeholder='{"blocks": {"q8_bm": {"formula": "……"}}}'></textarea>
+  <div class="cta-row">
+    <button class="btn primary" id="fk-apply" type="button">取り込む</button>
+  </div>
+  <p id="fk-patch-msg" class="muted"></p>
+</section>
+
+<section class="step">
+  <h2>保存と持ち出し</h2>
+  <div class="save-row">
+    <button class="btn small" id="fk-dl-md" type="button">下書きを保存（.md）</button>
+    <span class="save-links">途中経過の控え（.json）を
+      <button class="linklike" id="fk-dl-json" type="button">書き出す</button> ／
+      <label class="linklike" for="fk-up-json">読み込む</label>
+    </span>
+    <input type="file" id="fk-up-json" accept=".json" hidden>
+  </div>
+  <p class="muted">.json はエントリー文の控えと同じ入れ物です。別の端末や、手元のAIに読ませて続きを頼むときの受け渡しに使えます。</p>
+  <p id="fk-save-msg" class="muted"></p>
+</section>
+</article>
+
+<script type="application/json" id="fk-prompt">{{ companion_prompt_json | safe }}</script>
+{% endblock %}
+{% block scripts %}
+<script>
+(function(){
+  var HEADER = JSON.parse(document.getElementById('fk-prompt').textContent);
+  var KEY = 'shinseider_project';
+
+  function loadProject(){
+    try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {version:1, entry:{sections:{}, checklist:{}}}; }
+    catch(_) { return {version:1, entry:{sections:{}, checklist:{}}}; }
+  }
+  function saveProject(p){
+    p.updated = new Date().toISOString();
+    try { localStorage.setItem(KEY, JSON.stringify(p)); } catch(_) {}
+    var el = document.getElementById('fk-save-msg');
+    if (el) el.textContent = '自動保存済み（あなたの端末のみ・' + new Date().toLocaleTimeString('ja-JP') + '）';
+  }
+  var project = loadProject();
+  project.fukabori = project.fukabori || {blocks:{}};
+
+  function fieldValue(bk, fk){ return (project.fukabori.blocks[bk] || {})[fk] || ''; }
+  function setField(bk, fk, v){
+    project.fukabori.blocks[bk] = project.fukabori.blocks[bk] || {};
+    project.fukabori.blocks[bk][fk] = v;
+  }
+
+  function refresh(){
+    document.querySelectorAll('.fk-block').forEach(function(box){
+      var bk = box.getAttribute('data-block');
+      var total = 0, filled = 0;
+      box.querySelectorAll('.fk-text').forEach(function(ta){
+        var v = fieldValue(bk, ta.getAttribute('data-field'));
+        if (ta.value !== v) ta.value = v;
+        total++; if (v.trim()) filled++;
+      });
+      box.querySelector('.fk-status').textContent = '— ' + (filled ? filled + '/' + total : '未入力');
+    });
+  }
+
+  document.querySelectorAll('.fk-text').forEach(function(ta){
+    ta.addEventListener('input', function(){
+      var bk = ta.closest('.fk-block').getAttribute('data-block');
+      setField(bk, ta.getAttribute('data-field'), ta.value);
+      saveProject(project); refresh();
+    });
+  });
+
+  // ---- 指示文の組み立て（下書きをMarkdownで直列化） ----
+  function draftMd(){
+    var md = '# ユーザー下書き（24ブロック）\n';
+    document.querySelectorAll('.fk-block').forEach(function(box){
+      var title = box.querySelector('h3').firstChild.textContent.trim();
+      md += '\n## ' + title + '（ID: ' + box.getAttribute('data-block') + '）\n';
+      box.querySelectorAll('.fk-text').forEach(function(ta){
+        var label = ta.previousElementSibling.textContent.replace('（任意）','').trim();
+        var v = ta.value.trim();
+        md += '- ' + label + '（' + ta.getAttribute('data-field') + '）: ' + (v ? v.replace(/\n/g, ' ／ ') : '（未入力）') + '\n';
+      });
+    });
+    return md;
+  }
+  function fullPrompt(){ return HEADER + '\n' + draftMd(); }
+
+  var aiMsg = document.getElementById('fk-ai-msg');
+  document.querySelectorAll('#fk-ai .ai-chip[data-home]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var prompt = fullPrompt();
+      var qbase = btn.getAttribute('data-qbase');
+      var url = qbase ? qbase + encodeURIComponent(prompt) : null;
+      // 長すぎるURLはAI側で受け取れないことがあるので、その場合はコピー方式に切り替える
+      if (url && url.length <= 8000) {
+        window.open(url, '_blank', 'noopener');
+        navigator.clipboard.writeText(prompt).catch(function(){});
+        aiMsg.textContent = btn.getAttribute('data-name') + 'が指示文入りで開きます。そのまま送信してください。';
+        return;
+      }
+      window.open(btn.getAttribute('data-home'), '_blank', 'noopener');
+      navigator.clipboard.writeText(prompt).then(function(){
+        aiMsg.textContent = 'コピーしました。開いた' + btn.getAttribute('data-name') + 'に貼り付けてください（新しい会話がおすすめです）。';
+      }).catch(function(){
+        aiMsg.textContent = 'コピーできませんでした。「コピーだけ」を試してください。';
+      });
+    });
+  });
+  document.getElementById('fk-copy').addEventListener('click', function(){
+    navigator.clipboard.writeText(fullPrompt()).then(function(){
+      aiMsg.textContent = 'コピーしました。AIに貼り付けてください。';
+    }).catch(function(){
+      aiMsg.textContent = 'コピーできませんでした。';
+    });
+  });
+
+  // ---- JSON_PATCHの取り込み ----
+  document.getElementById('fk-apply').addEventListener('click', function(){
+    var msg = document.getElementById('fk-patch-msg');
+    var raw = document.getElementById('fk-patch').value;
+    var m = raw.match(/```json\s*([\s\S]*?)```/);
+    var obj;
+    try { obj = JSON.parse((m ? m[1] : raw).trim()); }
+    catch(_) { msg.textContent = 'JSONとして読めませんでした。```json〜```のかたまりごと貼ってください。'; return; }
+    var blocks = obj.blocks || obj;
+    var applied = 0, skipped = 0;
+    Object.keys(blocks).forEach(function(bk){
+      var box = document.querySelector('.fk-block[data-block="' + bk + '"]');
+      if (!box || typeof blocks[bk] !== 'object') { skipped++; return; }
+      Object.keys(blocks[bk]).forEach(function(fk){
+        var v = blocks[bk][fk];
+        if (typeof v !== 'string' || !v.trim()) { skipped++; return; }
+        if (!box.querySelector('.fk-text[data-field="' + fk + '"]')) { skipped++; return; }
+        var cur = fieldValue(bk, fk);
+        setField(bk, fk, cur.trim() ? cur + '\n\n[AI補強] ' + v : v);
+        applied++;
+      });
+    });
+    saveProject(project); refresh();
+    msg.textContent = applied + '件を取り込みました' + (skipped ? '（対象外' + skipped + '件はスキップ）' : '') + '。';
+  });
+
+  // ---- 保存と持ち出し ----
+  function dl(name, text, type){
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], {type: type || 'text/plain'}));
+    a.download = name; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 5000);
+  }
+  document.getElementById('fk-dl-md').addEventListener('click', function(){
+    dl('fukabori_draft.md', draftMd(), 'text/markdown');
+  });
+  document.getElementById('fk-dl-json').addEventListener('click', function(){
+    dl('shinseider_project.json', JSON.stringify(project, null, 1), 'application/json');
+  });
+  document.getElementById('fk-up-json').addEventListener('change', function(e){
+    var f = e.target.files[0];
+    if (!f) return;
+    var r = new FileReader();
+    r.onload = function(){
+      try {
+        var p = JSON.parse(r.result);
+        localStorage.setItem(KEY, JSON.stringify(p));
+        location.reload();
+      } catch(_) {
+        document.getElementById('fk-save-msg').textContent = '読み込めませんでした（.jsonの形式が不正です）。';
+      }
+    };
+    r.readAsText(f);
+  });
+
+  refresh();
+})();
+</script>
+{% endblock %}

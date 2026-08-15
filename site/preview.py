@@ -24,6 +24,7 @@ sections = [
     ("間に合うか（道筋）", "schedule.html"),
     ("出たくない理由", "cool.html"),
     ("エントリー文をつくる", "entry.html"),
+    ("フカボリ（じっくり版）", "fukabori.html"),
     ("相談できる人（地域アンバサダー）", "ambassadors.html"),
     ("進み具合（試作）", "workspace.html"),
     ("日程と公式発表", "news.html"),

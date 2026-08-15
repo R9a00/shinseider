@@ -24,7 +24,7 @@ body {
 [id] { scroll-margin-top: 4.6rem; }  /* 追従ヘッダーの下に頭が隠れないように（ページ内ジャンプ全般） */
 main { max-width: var(--maxw); margin: 0 auto; padding: 1.5rem 1.5rem 5rem; }
 h1, h2, h3 { font-family: var(--serif); font-weight: 600; letter-spacing: .02em; }
-h1 { font-size: 2.1rem; line-height: 1.7; margin: 1.4em 0 .7em; }
+h1 { font-size: 2.1rem; line-height: 1.7; margin: .85em 0 .5em; }
 h2 { font-size: 1.3rem; line-height: 1.8; margin: 3.2rem 0 .8rem; padding-top: 2rem; border-top: 1px solid var(--hair); }
 h3 { font-size: 1.05rem; margin: 1.6em 0 .4em; }
 h2.tight, h3.tight { border: 0; padding-top: 0; margin-top: 0; }
@@ -425,7 +425,13 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--ink); }
 .objection p { margin: .2em 0 0; font-size: .95rem; }
 
 /* 工程（つくる→鍛える→出す）: 見出し肩の朱の字 */
-.phase { margin: 3.4rem 0 0; }
+.phase { margin: 2.3rem 0 0; }
+
+/* フカボリ（24ブロック） */
+.fk-block { margin: 1.1rem 0; }
+.fk-label { display: block; margin: .7em 0 .15em; font-size: .9rem; font-weight: 600; }
+.fk-label .muted { font-weight: 400; }
+.fk-id { font-size: .75em; border: 1px solid var(--line); padding: 0 .35em; border-radius: 3px; }
 .phase-kicker {
   display: flex; align-items: center; gap: .9em;
   font-size: .76rem; font-weight: 600; letter-spacing: .38em;
