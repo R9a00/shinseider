@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% block title %}エントリー文をつくる | {{ site_name }}{% endblock %}
+{% block title %}アトツギ甲子園エントリーの方向性を固める | {{ site_name }}{% endblock %}
 {% block main %}
-<h1>甲子園エントリー文をつくる</h1>
+<h1>アトツギ甲子園エントリーの方向性を固める</h1>
 <p class="lead">ここで作った文章が、エントリーフォームの回答と応募書類の両方の元になります。<strong>入力はあなたの端末にだけ保存され、サイト側に送信されることはありません。</strong></p>
 <details class="prompt-view">
   <summary>エントリーから提出までの流れを確認する</summary>
@@ -20,16 +20,8 @@
   <span class="phase-kicker">つくる</span>
 
   <section class="step">
-    <h2>話すことは5つ</h2>
-    <p>提出文に必要な中身を、5つの問いに分けてあります。まだ答えが固まっていなくて構いません。</p>
-    <ol class="entry-themes">
-    {% for s in sections %}
-      <li>
-        <strong>{{ s.title }}</strong> — {{ s.question }}
-        <p class="muted">{{ s.hint }}</p>
-      </li>
-    {% endfor %}
-    </ol>
+    <h2>ここに書く — 5つの欄</h2>
+    <p>提出文に必要な中身は、この5つです。まだ答えが固まっていなくて構いません。いまの言葉で直接書き込んでください。書きにくければ、<a href="#ai-help">AIに聞き役を頼む</a>と楽です。</p>
     <details class="prompt-view sample-view">
       <summary>書き方の見本を見る（架空の会社の例）</summary>
       <div class="sample-body">
@@ -39,12 +31,22 @@
         <p class="muted">{{ sample.note }}</p>
       </div>
     </details>
+    <div id="sections-area">
+    {% for s in sections %}
+      <div class="entry-section card" data-id="{{ s.id }}" data-title="{{ s.title }}">
+        <h3 class="tight">{{ s.title }} <span class="sec-status muted"></span></h3>
+        <p><strong>{{ s.question }}</strong><br><span class="muted">{{ s.hint }}</span></p>
+        <textarea rows="5" class="sec-text" placeholder="（ここに直接書く。下のAIで作って取り込んでもOK）"></textarea>
+        <p class="sec-hints muted"></p>
+      </div>
+    {% endfor %}
+    </div>
   </section>
 
-  <section class="step">
+  <section class="step" id="ai-help">
     <h2>AIに聞き役をやってもらう</h2>
     <p>5つをいきなり文章にする必要はありません。ふだん使っているAIを押してください。ClaudeとChatGPTは、インタビュー用の指示文が入力された状態で開くので、送信するだけです。GeminiとGrokは指示文がコピーされるので、開いた画面に貼り付けて送信してください。あとはAIが1問ずつ聞いてくれるので、話し言葉で答えていくだけです。</p>
-    <p>答え終わると、AIが「## 見出し」付きの清書にまとめてくれます。それを下の欄に貼り戻せば、骨子のできあがりです。</p>
+    <p>答え終わると、AIが「## 見出し」付きの清書にまとめてくれます。それをすぐ下に貼って取り込むと、上の5つの欄に入ります。</p>
     <div class="ai-grid">
       {% for t in ai_targets %}
       <button class="ai-card" type="button" data-open="{{ t.url_filled }}" data-mode="{{ t.mode }}">
@@ -64,25 +66,12 @@
 
   <section class="step">
     <h2>仕上がった文章をここに戻す</h2>
-    <p>AIが最後に出してくれた「## 見出し」付きの清書を、そのまま貼り付けてください。</p>
+    <p>AIが最後に出してくれた「## 見出し」付きの清書を、そのまま貼り付けてください。取り込むと上の5つの欄に入ります。</p>
     <textarea id="paste-area" rows="8" placeholder="## 現業と自分&#10;……"></textarea>
     <div class="cta-row">
       <button class="btn primary" id="import-btn" type="button">取り込む</button>
     </div>
     <p id="import-msg" class="muted"></p>
-  </section>
-
-  <section class="step">
-    <h2>骨子の状態</h2>
-    <div id="sections-area">
-    {% for s in sections %}
-      <div class="entry-section card" data-id="{{ s.id }}" data-title="{{ s.title }}">
-        <h3 class="tight">{{ s.title }} <span class="sec-status muted"></span></h3>
-        <textarea rows="5" class="sec-text" placeholder="（未入力。上で取り込むか、ここに直接書いてもOK）"></textarea>
-        <p class="sec-hints muted"></p>
-      </div>
-    {% endfor %}
-    </div>
   </section>
 </div>
 
