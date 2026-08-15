@@ -41,11 +41,11 @@
 
   <section class="step">
     <h2>AIに聞き役をやってもらう</h2>
-    <p>5つをいきなり文章にする必要はありません。ふだん使っているAIを押すと、インタビュー用の指示文がコピーされ、そのAIが開きます。貼り付けて送信すると、AIが1問ずつ聞いてくれるので、話し言葉で答えていくだけです。</p>
+    <p>5つをいきなり文章にする必要はありません。ふだん使っているAIを押してください。ClaudeとChatGPTは、インタビュー用の指示文が入力された状態で開くので、送信するだけです。GeminiとGrokは指示文がコピーされるので、開いた画面に貼り付けて送信してください。あとはAIが1問ずつ聞いてくれるので、話し言葉で答えていくだけです。</p>
     <p>答え終わると、AIが「## 見出し」付きの清書にまとめてくれます。それを下の欄に貼り戻せば、骨子のできあがりです。</p>
     <div class="ai-grid">
       {% for t in ai_targets %}
-      <button class="ai-card" type="button" data-open="{{ t.url_filled }}">
+      <button class="ai-card" type="button" data-open="{{ t.url_filled }}" data-mode="{{ t.mode }}">
         <span class="ai-head"><img src="https://www.google.com/s2/favicons?domain={{ t.favicon_domain }}&sz=64" alt="" onerror="this.hidden=true">{{ t.name }}</span>
         {% if t.note %}<span class="ai-note">{{ t.note }}</span>{% endif %}
       </button>
@@ -93,13 +93,13 @@
       <p>AIを、身内ではない審査員役に切り替える指示文です。骨子ごと渡すので、弱いところが提出前にわかります。</p>
       <div class="ai-row">
         {% for t in ai_targets %}
-        <button class="ai-chip" type="button" data-home="{{ t.home_url }}" data-name="{{ t.name }}">
+        <button class="ai-chip" type="button" data-home="{{ t.home_url }}" data-name="{{ t.name }}"{% if t.q_base %} data-qbase="{{ t.q_base }}"{% endif %}>
           <img src="https://www.google.com/s2/favicons?domain={{ t.favicon_domain }}&sz=64" alt="" onerror="this.hidden=true">{{ t.name }}
         </button>
         {% endfor %}
         <button class="ai-chip" id="copy-review" type="button">コピーだけ</button>
       </div>
-      <p class="review-hint">押すと審査員用の指示文（骨子入り）がコピーされ、そのAIが開きます。貼り付けるだけです。</p>
+      <p class="review-hint">押すと審査員用の指示文（骨子入り）ごとそのAIが開きます。ClaudeとChatGPTは入力された状態で開き、それ以外はコピーされるので貼り付けてください。</p>
       <p id="review-msg" class="review-msg"></p>
       <textarea id="review-notes" rows="4" placeholder="返ってきた指摘のメモ（あなたの端末にだけ保存されます）"></textarea>
       <p class="review-note">これは予行です。本物の審査委員のコメントは、エントリーして書類を出した人に届きます。</p>
@@ -204,20 +204,23 @@
       setTimeout(function(){ document.getElementById('copy-prompt').textContent = '指示文をコピー'; }, 1800);
     });
   });
-  // コピーしてから開く方式のAI（Gemini等）
+  // AIを開く: prefill = 指示文入りURL（?q=）で開く / copy_open = コピーして開き貼り付けてもらう
+  // どちらもクリップボードには入れておく（prefillはAI側の仕様変更に備えた保険）
   // 注意: window.openはクリック処理の同期部分で呼ぶこと（非同期後はポップアップブロックされる）
   document.querySelectorAll('.ai-card[data-open]').forEach(function(btn){
     btn.addEventListener('click', function(){
       var url = btn.getAttribute('data-open');
+      var prefill = btn.getAttribute('data-mode') === 'prefill';
       var note = btn.querySelector('.ai-note');
       var orig = note ? note.textContent : '';
       window.open(url, '_blank', 'noopener');
       navigator.clipboard.writeText(DATA.prompt).then(function(){
         if (note) {
-          note.textContent = 'コピーしました — 開いた画面に貼り付けて送信';
+          note.textContent = prefill ? '開きました — そのまま送信できます' : 'コピーしました — 開いた画面に貼り付けて送信';
           setTimeout(function(){ note.textContent = orig; }, 5000);
         }
       }).catch(function(){
+        if (prefill) return;
         if (note) note.textContent = 'コピーできませんでした — 下の「指示文の全文」からコピーしてください';
         var d = document.getElementById('prompt-view');
         if (d) d.open = true;
@@ -243,6 +246,15 @@
       var msgEl = document.getElementById('review-msg');
       var prompt = buildReviewPrompt(msgEl);
       if (!prompt) return;
+      var qbase = btn.getAttribute('data-qbase');
+      var url = qbase ? qbase + encodeURIComponent(prompt) : null;
+      // 長すぎるURLはAI側で受け取れないことがあるので、その場合はコピー方式に切り替える
+      if (url && url.length <= 8000) {
+        window.open(url, '_blank', 'noopener');
+        navigator.clipboard.writeText(prompt).catch(function(){});
+        msgEl.textContent = btn.getAttribute('data-name') + 'が骨子入りの指示文が入力された状態で開きます。そのまま送信してください。';
+        return;
+      }
       window.open(btn.getAttribute('data-home'), '_blank', 'noopener');
       navigator.clipboard.writeText(prompt).then(function(){
         msgEl.textContent = 'コピーしました。開いた' + btn.getAttribute('data-name') + 'に貼り付けてください（新しい会話がおすすめです）。';

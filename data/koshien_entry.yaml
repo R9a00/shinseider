@@ -103,30 +103,38 @@ pace:
     message: 本日が締切です。18:00までに公式サイトから送信を。
   closed_message: 第7回のエントリー受付は終了しました。書類提出が済んでいる方は11/27 12:00までの提出を。次の機会に向けた情報も引き続き掲載します。
 ai_targets:
+# mode: prefill = ?q= で指示文入りのまま開ける（Claude/ChatGPTが対応）
+#       copy_open = URLで本文を渡せないAI。コピーして開き、貼り付けてもらう
 - id: claude
   name: Claude
-  mode: copy_open
-  url: https://claude.ai/new
+  mode: prefill
+  url: https://claude.ai/new?q={prompt}
+  q_base: https://claude.ai/new?q=
   favicon_domain: claude.ai
   home_url: https://claude.ai/new
+  note: 指示文が入った状態で開きます
 - id: chatgpt
   name: ChatGPT
-  mode: copy_open
-  url: https://chatgpt.com/
+  mode: prefill
+  url: https://chatgpt.com/?q={prompt}
+  q_base: https://chatgpt.com/?q=
   favicon_domain: chatgpt.com
   home_url: https://chatgpt.com/
+  note: 指示文が入った状態で開きます
 - id: gemini
   name: Gemini
   mode: copy_open
   url: https://gemini.google.com/app
   favicon_domain: gemini.google.com
   home_url: https://gemini.google.com/app
+  note: コピーされます — 開いたら貼り付け
 - id: grok
   name: Grok
   mode: copy_open
   url: https://grok.com/
   favicon_domain: grok.com
   home_url: https://grok.com/
+  note: コピーされます — 開いたら貼り付け
 review_prompt_template: |
   あなたは中小企業の新規事業ピッチ大会の審査委員です。以下は、後継予定者（アトツギ）が書いたエントリー文の骨子です。
   あなたは本人の関係者ではありません。忖度は不要です。励ましだけの感想は書かないでください。
