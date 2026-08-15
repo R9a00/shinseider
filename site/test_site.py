@@ -68,8 +68,8 @@ def main():
         pg.check("input[name=q_succ][value=yes]"); pg.check("input[name=q_fin][value=yes]")
         pg.click("button[type=submit]")
         pg.wait_for_selector("#result:not([hidden])", timeout=8000)
-        if "現在地" not in pg.inner_text("#result"):
-            failures.append("チェック結果に現在地ページへの導線がない")
+        if "進み具合" not in pg.inner_text("#result"):
+            failures.append("チェック結果に進み具合ページへの導線がない")
         pg.goto(f"file://{DIST}/workspace.html")
         try:
             pg.wait_for_selector("#ws-status:not([hidden])", timeout=5000)
