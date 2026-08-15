@@ -3,14 +3,15 @@
 {% block main %}
 <article>
 <h1>フカボリ<span class="ws-tag">試作版</span></h1>
-<p class="lead">エントリー文の先にある、時間をかける丁寧なルートです。AIが聞き役になって、会社の来歴から新しい事業の数字まで順に聞いていきます。あなたは話すだけ——枠組みはこちらで持ちます。全部で30〜60分、途中でやめても続きから再開できます。<strong>入力はあなたの端末にだけ保存され、サイト側に送信されることはありません。</strong></p>
+<p class="lead">アトツギ甲子園のかつての優勝者が使っていたフレームを用いて作られた「時間はかかるが丁寧に仕上げるルート」です。会社の来歴から新しい事業の数字まで、順に深掘って聞いていきます。</p>
+<p class="lead">全部で30〜60分、途中でやめても、セーブすることで続きから再開できます。<strong>入力はあなたの端末にだけ保存され、サイト側に送信されることはありません。</strong></p>
 
 <div class="phase">
   <span class="phase-kicker">つくる</span>
 
   <section class="step" id="fk-ai">
     <h2>AIに聞いてもらう</h2>
-    <p>ふだん使っているAIを押してください。AIが1問ずつ、ふつうの言葉で聞いていきます。途中でやめたくなったら、AIに「保存」と言えば、それまでの分がコードにまとまります。</p>
+    <p>ふだん使っているAIを押してください。AIが1問ずつ、ふつうの言葉で聞いていきます。途中でやめたくなったら、AIに「セーブ」と言えば、それまでの分がコードにまとまります。それを下で取り込んでおけば、次はAIが続きから聞いてくれます。</p>
     <div class="ai-row">
       {% for t in ai_targets %}
       <button class="ai-chip" type="button" data-home="{{ t.home_url }}" data-name="{{ t.name }}"{% if t.q_base %} data-qbase="{{ t.q_base }}"{% endif %}>
@@ -22,7 +23,7 @@
     <p class="fk-msg muted"></p>
 
     <h3>AIが出したコードを取り込む</h3>
-    <p>会話の最後（または「保存」と言ったとき）にAIが出すコード（<code>```json〜```</code>のかたまり）を、そのまま貼ってください。下の器に整理されて入ります。すでに書いてある欄は上書きせず、[AI補強]として追記されます。</p>
+    <p>会話の最後（または「セーブ」と言ったとき）にAIが出すコード（<code>```json〜```</code>のかたまり）を、そのまま貼ってください。下の器に整理されて入ります。すでに書いてある欄は上書きせず、[AI補強]として追記されます。</p>
     <textarea class="fk-patch" rows="6" placeholder='{"blocks": …'></textarea>
     <div class="cta-row">
       <button class="btn primary fk-apply" type="button">取り込む</button>
