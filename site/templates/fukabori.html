@@ -10,10 +10,15 @@
   <span class="phase-kicker">つくる</span>
 
   <section class="step" id="fk-ai">
-    <h2>章ごとに、AIと話して埋める</h2>
-    <p>章のボタンを押すと、その章専用の指示文と一緒にAIが開きます。あなたは話すだけ。章が終わるとAIがコード（セーブデータ）を出すので、下の取り込み欄に貼ってから次の章へ進んでください。</p>
+    <h2>進め方 — この3手のくり返し</h2>
+    <ol class="flow">
+      <li><b>AIを選ぶ</b><span>最初に1回だけ。選択は記憶されます</span></li>
+      <li><b>章のボタンで話す</b><span>章ごとの指示文と一緒にAIが開きます（1章10〜20分）</span></li>
+      <li><b>コードを取り込む</b><span>章の終わりにAIが出すセーブデータを、下の欄に貼る</span></li>
+    </ol>
 
-    <p class="fk-pick-row">使うAI:
+    <h3>① 使うAI</h3>
+    <p class="fk-pick-row">
       {% for t in ai_targets %}
       <button class="ai-chip fk-ai-pick" type="button" data-name="{{ t.name }}"{% if t.q_base %} data-qbase="{{ t.q_base }}"{% endif %} data-home="{{ t.home_url }}">
         <img src="https://www.google.com/s2/favicons?domain={{ t.favicon_domain }}&sz=64" alt="" onerror="this.hidden=true">{{ t.name }}
@@ -21,6 +26,7 @@
       {% endfor %}
     </p>
 
+    <h3>② 章を選んで話す</h3>
     <div class="fk-steps">
       {% for g in groups %}
       <div class="fk-step" data-chapter="{{ loop.index0 }}">
@@ -52,7 +58,7 @@
       <p><button class="btn small" id="fk-copy-prompt" type="button">この指示文をコピー</button></p>
     </details>
 
-    <h3>AIが出したコードを取り込む</h3>
+    <h3>③ AIが出したコードを取り込む</h3>
     <p>章のコードも検算のコードも、ぜんぶここに貼れば器に入ります。すでに書いてある欄は上書きせず、[AI補強]として追記されます。</p>
     <textarea id="fk-patch" rows="6" placeholder='{"blocks": …'></textarea>
     <div class="cta-row">
@@ -92,10 +98,22 @@
 </div>
 
 <section class="step">
+  <h2>進んだ使い方</h2>
+  <ul>
+    <li><b>指示文セットを持ち出す</b> — 下の「指示文セットを保存」で、全4章と検算の指示文が1つの.mdになります。ふだんのAIのプロジェクト機能（Claude・ChatGPTとも）にこのファイルと控えの.jsonを入れておくと、章をまたいで文脈がつながる常設の相談相手になります。</li>
+    <li><b>声で答える</b> — インタビューは話すだけなので、スマホの音声入力と相性がよいです。</li>
+    <li><b>数字はリサーチ機能で取る</b> — 市場規模や業界の数字は、AIのWeb検索（リサーチ機能）をオンにして出典つきで取り、出典も一緒に控えてください。</li>
+    <li><b>検算は2つのAIで</b> — 同じ内容をClaudeとChatGPTの両方に検算させて突き合わせると、指摘の偏りが消えます。</li>
+    <li><b>エージェントAIに任せる</b> — Claude CodeのようなエージェントAIを使っている人は、指示文セットと.jsonを渡せば、まとめて進めてもらえます。</li>
+  </ul>
+</section>
+
+<section class="step">
   <h2>保存と持ち出し</h2>
   <p>入力は書くそばから、この端末に自動保存されています。別の日に続きから再開するだけなら、何もしなくて大丈夫です。別の端末に移るときや、控えを残したいときは:</p>
   <div class="save-row">
     <button class="btn small" id="fk-dl-md" type="button">下書きを保存（.md）</button>
+    <button class="btn small" id="fk-dl-prompts" type="button">指示文セットを保存（.md）</button>
     <span class="save-links">途中経過の控え（.json）を
       <button class="linklike" id="fk-dl-json" type="button">書き出す</button> ／
       <label class="linklike" for="fk-up-json">読み込む</label>
@@ -342,6 +360,14 @@
   }
   document.getElementById('fk-dl-md').addEventListener('click', function(){
     dl('fukabori_draft.md', promptFor('critique').split('# ユーザー下書き（24ブロック）')[1] || '', 'text/markdown');
+  });
+  document.getElementById('fk-dl-prompts').addEventListener('click', function(){
+    var md = '# フカボリ 指示文セット\n\nシンセイダーのフカボリ（https://shinseider.onrender.com/fukabori.html）で使う、章別インタビューと検算の指示文一式です。\n1章ずつAIに渡して使います。章が終わるとAIがコード（セーブデータ）を出すので、フカボリのページで取り込んでください。\n';
+    PROMPTS.chapters.forEach(function(ch, i){
+      md += '\n---\n\n# 第' + (i + 1) + '章 ' + ch.title + '\n\n' + ch.prompt + '\n';
+    });
+    md += '\n---\n\n# 仕上げ（検算・ダメ出し）\n\n' + PROMPTS.critique + '\n\n※この指示文のあとに「# ユーザー下書き（24ブロック）」として、フカボリの「下書きを保存（.md）」の中身を貼って使います。\n';
+    dl('fukabori_prompts.md', md, 'text/markdown');
   });
   document.getElementById('fk-dl-json').addEventListener('click', function(){
     dl('shinseider_project.json', JSON.stringify(project, null, 1), 'application/json');
