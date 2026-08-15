@@ -19,36 +19,10 @@
 <div class="phase">
   <span class="phase-kicker">つくる</span>
 
-  <section class="step">
-    <h2>ここに書く — 5つの欄</h2>
-    <p>提出文に必要な中身は、この5つです。まだ答えが固まっていなくて構いません。いまの言葉で直接書き込んでください。書きにくければ、<a href="#ai-help">AIに骨子をまとめてもらう</a>と楽です。</p>
-    <details class="prompt-view sample-view">
-      <summary>書き方の見本を見る（架空の会社の例）</summary>
-      <div class="sample-body">
-        {% for s in sample.sections %}
-        <p><b>{{ s.title }}</b> — {{ s.body }}</p>
-        {% endfor %}
-        <p class="muted">{{ sample.note }}</p>
-      </div>
-    </details>
-    <div id="sections-area">
-    {% for s in sections %}
-      <div class="entry-section card" data-id="{{ s.id }}" data-title="{{ s.title }}">
-        <h3 class="tight">{{ s.title }} <span class="sec-status muted"></span></h3>
-        <p><strong>{{ s.question }}</strong><br><span class="muted">{{ s.hint }}</span></p>
-        <textarea rows="5" class="sec-text" placeholder="（ここに直接書く。下のAIで作って取り込んでもOK）"></textarea>
-        <p class="sec-hints muted"></p>
-      </div>
-    {% endfor %}
-    </div>
-  </section>
-
   <section class="step" id="ai-help">
     <h2>AIを有効に使う</h2>
     <p>最近は業務に広くAIを使う人も増えていると思いますが、一番有用な使い方は「時短」と「網羅性を上げる」方向性であると思います。アトツギ甲子園についても、忙しいみなさんは時間を「浪費」しないよう取り組んだほうが良い。そこで、AI(LLM)を使って骨子をまとめる仕組みを用意しましたのでご利用下さい。</p>
     <p>指示はシンプルなプロンプト（どんな役割で何をさせるかを示す文）ですが、現在のモデルならこのくらいでも、十分に役割を果たしてくれるはずです。</p>
-    <p>もっと時間をかけて丁寧にやるなら、<a href="fukabori.html">フカボリ（じっくり版）</a>へ。ルーツ・強み・市場規模・収益の数字・実現性まで、24ブロックでAIと詰められます。</p>
-    <p>もしも、AIで物足りなくなったり、具体的に困ったことがあればお気軽にご相談ください（連絡先は<a href="about.html">運営者と方針</a>のページに）。</p>
     <div class="ai-grid">
       {% for t in ai_targets %}
       <button class="ai-card" type="button" data-open="{{ t.url_filled }}" data-mode="{{ t.mode }}">
@@ -64,16 +38,41 @@
       <summary>AIに渡す指示文の全文を見る</summary>
       <pre>{{ prompt_text }}</pre>
     </details>
-  </section>
 
-  <section class="step">
-    <h2>仕上がった文章をここに戻す</h2>
-    <p>AIが最後に出してくれた「## 見出し」付きの清書を、そのまま貼り付けてください。取り込むと上の5つの欄に入ります。</p>
+    <h3>仕上がった文章をここに戻す</h3>
+    <p>AIが最後に出してくれた「## 見出し」付きの清書を、そのまま貼り付けてください。取り込むと下の5つの欄に入ります。</p>
     <textarea id="paste-area" rows="8" placeholder="## 現業と自分&#10;……"></textarea>
     <div class="cta-row">
       <button class="btn primary" id="import-btn" type="button">取り込む</button>
     </div>
     <p id="import-msg" class="muted"></p>
+
+    <p>もっと時間をかけて丁寧にやるなら、<a href="fukabori.html">フカボリ（じっくり版）</a>へ。ルーツ・強み・市場規模・収益の数字・実現性まで、24ブロックでAIと詰められます。</p>
+    <p>もしも、AIで物足りなくなったり、具体的に困ったことがあればお気軽にご相談ください（連絡先は<a href="about.html">運営者と方針</a>のページに）。</p>
+  </section>
+
+  <section class="step">
+    <h2>骨子 — 5つの欄</h2>
+    <p>AIから取り込んだ内容がここに入ります。手直しも、直接書き込むのも自由です。まだ答えが固まっていなくて構いません。</p>
+    <details class="prompt-view sample-view">
+      <summary>書き方の見本を見る（架空の会社の例）</summary>
+      <div class="sample-body">
+        {% for s in sample.sections %}
+        <p><b>{{ s.title }}</b> — {{ s.body }}</p>
+        {% endfor %}
+        <p class="muted">{{ sample.note }}</p>
+      </div>
+    </details>
+    <div id="sections-area">
+    {% for s in sections %}
+      <div class="entry-section card" data-id="{{ s.id }}" data-title="{{ s.title }}">
+        <h3 class="tight">{{ s.title }} <span class="sec-status muted"></span></h3>
+        <p><strong>{{ s.question }}</strong><br><span class="muted">{{ s.hint }}</span></p>
+        <textarea rows="5" class="sec-text" placeholder="（上のAIで作って取り込むか、ここに直接書く）"></textarea>
+        <p class="sec-hints muted"></p>
+      </div>
+    {% endfor %}
+    </div>
   </section>
 </div>
 
