@@ -26,7 +26,7 @@ sections = [
     ("エントリー文をつくる", "entry.html"),
     ("相談できる人（地域アンバサダー）", "ambassadors.html"),
     ("進み具合（試作）", "workspace.html"),
-    ("動き（日程と発表）", "news.html"),
+    ("日程と公式発表", "news.html"),
     ("補助金詳細", "subsidy.html"),
     ("情報の確かさ", "trust.html"),
     ("運営者と方針", "about.html"),
