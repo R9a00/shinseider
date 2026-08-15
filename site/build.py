@@ -324,6 +324,17 @@ def main():
 
     track = next(t for t in subsidy["tracks"] if t["id"] == "succession_promotion")
     entry_end = benefit["event"]["schedule"]["entry_period"]["end"]  # ISO文字列
+
+    # 補助金ページの一覧: 制度（subsidy_directory）×優遇段階（benefit_ladderが正）を結合
+    def perks_for(sid):
+        return [
+            {"stage": step["label"], "effect": u["effect"]}
+            for step in benefit["benefit_ladder"]
+            for u in step.get("unlocks", [])
+            if u.get("subsidy_id") == sid
+        ]
+    subsidy_rows = [{**e, "perks": perks_for(e["id"])} for e in benefit["subsidy_directory"]]
+    assert all(r["perks"] for r in subsidy_rows), "directoryの制度がladderに見当たらない"
     env.globals["entry_deadline"] = entry_end  # ヘッダーの締切チップ用（全ページ）
 
     # インタビュー指示文: テーマ×要素（旧システム53項目の蒸留）をデータから組み立てる
@@ -378,7 +389,10 @@ def main():
                 "review_prompt": entry_def["review_prompt_template"],
             }, ensure_ascii=False).replace("<", "\\u003c"),
         }),
-        "subsidy.html": ("subsidy.html", {"s": subsidy, "track": track}),
+        "subsidy.html": ("subsidy.html", {"s": subsidy, "track": track,
+                                          "subsidy_rows": subsidy_rows,
+                                          "benefit_notes": benefit["conditions_and_notes"],
+                                          "benefit_src": benefit["provenance"][0]}),
         "check.html": ("check.html", {}),
         # 信頼面: 内部語彙（confidence値・git生ログ）は出さず、人の言葉の更新履歴のみ
         "trust.html": ("trust.html", {
