@@ -205,8 +205,10 @@
       var prefill = btn.getAttribute('data-mode') === 'prefill';
       var note = btn.querySelector('.ai-note');
       var orig = note ? note.textContent : '';
+      // コピーはwindow.openより先に開始する（開いた後だとフォーカスが移って失敗する）
+      var copied = navigator.clipboard.writeText(DATA.prompt);
       window.open(url, '_blank', 'noopener');
-      navigator.clipboard.writeText(DATA.prompt).then(function(){
+      copied.then(function(){
         if (note) {
           note.textContent = prefill ? '開きました — そのまま送信できます' : 'コピーしました — 開いた画面に貼り付けて送信';
           setTimeout(function(){ note.textContent = orig; }, 5000);
@@ -240,16 +242,18 @@
       if (!prompt) return;
       var qbase = btn.getAttribute('data-qbase');
       var url = qbase ? qbase + encodeURIComponent(prompt) : null;
+      // コピーはwindow.openより先に開始する（開いた後だとフォーカスが移って失敗する）
+      var copied = navigator.clipboard.writeText(prompt);
       // 長すぎるURLはAI側で受け取れないことがあるので、その場合はコピー方式に切り替える
       if (url && url.length <= 8000) {
         window.open(url, '_blank', 'noopener');
-        navigator.clipboard.writeText(prompt).catch(function(){});
+        copied.catch(function(){});
         msgEl.textContent = btn.getAttribute('data-name') + 'が骨子入りの指示文が入力された状態で開きます。そのまま送信してください。';
         return;
       }
       window.open(btn.getAttribute('data-home'), '_blank', 'noopener');
-      navigator.clipboard.writeText(prompt).then(function(){
-        msgEl.textContent = 'コピーしました。開いた' + btn.getAttribute('data-name') + 'に貼り付けてください（新しい会話がおすすめです）。';
+      copied.then(function(){
+        msgEl.textContent = '指示文をコピーしました。開いた' + btn.getAttribute('data-name') + 'の新しい会話に貼り付けて送信してください。入力欄に前の下書きが残っていたら消してください。';
       }).catch(function(){
         msgEl.textContent = 'コピーできませんでした。「コピーだけ」を試してください。';
       });

@@ -177,18 +177,20 @@
         var prompt = promptFn();
         var qbase = btn.getAttribute('data-qbase');
         var url = qbase ? qbase + encodeURIComponent(prompt) : null;
+        // コピーはwindow.openより先に開始する（開いた後だとフォーカスが移って失敗する）
+        var copied = navigator.clipboard.writeText(prompt);
         // 長すぎるURLはAI側で受け取れないことがあるので、その場合はコピー方式に切り替える
         if (url && url.length <= 8000) {
           window.open(url, '_blank', 'noopener');
-          navigator.clipboard.writeText(prompt).catch(function(){});
+          copied.catch(function(){});
           msg.textContent = btn.getAttribute('data-name') + 'が指示文入りで開きます。そのまま送信してください。';
           return;
         }
         window.open(btn.getAttribute('data-home'), '_blank', 'noopener');
-        navigator.clipboard.writeText(prompt).then(function(){
-          msg.textContent = 'コピーしました。開いた' + btn.getAttribute('data-name') + 'に貼り付けてください（新しい会話がおすすめです）。';
+        copied.then(function(){
+          msg.textContent = '指示文をコピーしました。開いた' + btn.getAttribute('data-name') + 'の新しい会話に貼り付けて送信してください。入力欄に前の下書きが残っていたら消してください。';
         }).catch(function(){
-          msg.textContent = 'コピーできませんでした。「コピーだけ」を試してください。';
+          msg.textContent = 'コピーできませんでした。「コピーだけ」を押してから、AIに貼り付けてください。';
         });
       });
     });
