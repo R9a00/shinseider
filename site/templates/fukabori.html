@@ -22,6 +22,11 @@
       <button class="ai-chip fk-copy" type="button">コピーだけ</button>
     </div>
     <p class="fk-msg muted"></p>
+    <details class="prompt-view">
+      <summary>AIに渡す指示文の全文を見る</summary>
+      <pre class="fk-prompt-view"></pre>
+      <p><button class="btn small fk-copy-prompt" type="button">指示文だけをコピー（下書きを含めない）</button></p>
+    </details>
 
     <h3>AIが出したコードを取り込む</h3>
     <p>会話の最後（または「セーブ」と言ったとき）にAIが出すコード（<code>```json〜```</code>のかたまり）を、そのまま貼ってください。下の器に整理されて入ります。すでに書いてある欄は上書きせず、[AI補強]として追記されます。</p>
@@ -76,6 +81,11 @@
       <button class="ai-chip fk-copy" type="button">コピーだけ</button>
     </div>
     <p class="fk-msg muted"></p>
+    <details class="prompt-view">
+      <summary>AIに渡す指示文の全文を見る</summary>
+      <pre class="fk-prompt-view"></pre>
+      <p><button class="btn small fk-copy-prompt" type="button">指示文だけをコピー（下書きを含めない）</button></p>
+    </details>
     <h3>返ってきたコードを取り込む</h3>
     <textarea class="fk-patch" rows="6" placeholder='{"blocks": …'></textarea>
     <div class="cta-row">
@@ -169,10 +179,36 @@
     return md;
   }
 
+  // ---- コード抽出: ```json / ```なし / 前後に文章付き のどれでも拾う ----
+  function extractJson(raw){
+    var m = raw.match(/```(?:json)?\s*([\s\S]*?)```/i);
+    var cand = (m ? m[1] : raw).trim();
+    try { return JSON.parse(cand); } catch(_) {}
+    var s = cand.indexOf('{');
+    if (s < 0) throw new Error('no json');
+    var depth = 0;
+    for (var i = s; i < cand.length; i++) {
+      if (cand[i] === '{') depth++;
+      else if (cand[i] === '}') { depth--; if (depth === 0) return JSON.parse(cand.slice(s, i + 1)); }
+    }
+    throw new Error('unbalanced');
+  }
+
   // ---- AIボタン: つくる=インタビュー / 試す=検算 ----
-  function bindAiRow(sectionId, promptFn){
+  function bindAiRow(sectionId, base){
     var section = document.getElementById(sectionId);
     var msg = section.querySelector('.fk-msg');
+    function promptFn(){ return base + '\n' + draftMd(); }
+    var pv = section.querySelector('.fk-prompt-view');
+    if (pv) pv.textContent = base;
+    var cp = section.querySelector('.fk-copy-prompt');
+    if (cp) cp.addEventListener('click', function(){
+      navigator.clipboard.writeText(base).then(function(){
+        msg.textContent = '指示文だけをコピーしました（あなたの下書きは含まれていません）。';
+      }).catch(function(){
+        msg.textContent = 'コピーできませんでした。';
+      });
+    });
     section.querySelectorAll('.ai-chip[data-home]').forEach(function(btn){
       btn.addEventListener('click', function(){
         var prompt = promptFn();
@@ -209,10 +245,9 @@
     var pmsg = section.querySelector('.fk-patch-msg');
     section.querySelector('.fk-apply').addEventListener('click', function(){
       var raw = box.value;
-      var m = raw.match(/```json\s*([\s\S]*?)```/);
       var obj;
-      try { obj = JSON.parse((m ? m[1] : raw).trim()); }
-      catch(_) { pmsg.textContent = 'コードとして読めませんでした。```json〜```のかたまりごと貼ってください。'; return; }
+      try { obj = extractJson(raw); }
+      catch(_) { pmsg.textContent = 'コードとして読めませんでした。AIの回答のうち、コードのかたまりを含む部分をそのまま貼ってください。'; return; }
       var blocks = obj.blocks || obj;
       var applied = 0;
       Object.keys(blocks).forEach(function(bk){
@@ -232,8 +267,8 @@
       if (applied) box.value = '';
     });
   }
-  bindAiRow('fk-ai', function(){ return PROMPTS.interview + '\n' + draftMd(); });
-  bindAiRow('fk-check', function(){ return PROMPTS.critique + '\n' + draftMd(); });
+  bindAiRow('fk-ai', PROMPTS.interview);
+  bindAiRow('fk-check', PROMPTS.critique);
 
   // ---- 保存と持ち出し ----
   function dl(name, text, type){
