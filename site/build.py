@@ -350,6 +350,26 @@ def main():
             _u = t["url"].replace("{prompt}", urllib.parse.quote(prompt_text))
             assert len(_u) <= 8000, f"プリフィルURLが上限超過({len(_u)}字): {t['id']}。prompt_templateを圧縮すること"
 
+    # フカボリ: 章単位のインタビュー指示文。器の定義はgroupsから生成（単一ソース）。
+    # 1章=1会話に区切ることで指示文を短くし、URL渡し（押したら入っている）を成立させる
+    fk_chapters = [
+        {
+            "title": g["title"],
+            "prompt": fukabori["chapter_prompt"]
+            .replace("{chapter_no}", str(gi + 1))
+            .replace("{chapter_title}", g["title"])
+            .replace("{structure}", "\n".join(
+                f"- {b['key']}「{b['title']}」:" + "/".join(
+                    f"{f['key']}={f['label']}" + ("" if f.get("required") else "*")
+                    for f in b["fields"])
+                for b in g["blocks"])),
+        }
+        for gi, g in enumerate(fukabori["groups"])
+    ]
+    for _ch in fk_chapters:
+        _u = "https://claude.ai/new?q=" + urllib.parse.quote(_ch["prompt"])
+        assert len(_u) <= 8000, f"フカボリ章プロンプトが上限超過({len(_u)}字): {_ch['title']}"
+
     # 「間に合うか」メッセージと逆算プラン（データ駆動）
     pace = entry_def["pace"]
     env.globals["pace_json"] = json.dumps({
@@ -399,15 +419,9 @@ def main():
         "fukabori.html": ("fukabori.html", {
             "groups": fukabori["groups"],
             "ai_targets": entry_def["ai_targets"],
-            # 器の定義はgroupsから生成して指示文に埋め込む（単一ソース）
-            "fk_prompts_json": json.dumps({
-                "interview": fukabori["interview_prompt"].replace("{structure}", "\n".join(
-                    f"- {b['key']}「{b['title']}」: " + " / ".join(
-                        f"{f['key']}={f['label']}" + ("" if f.get("required") else "(任意)")
-                        for f in b["fields"])
-                    for g in fukabori["groups"] for b in g["blocks"])),
-                "critique": fukabori["companion_prompt"],
-            }, ensure_ascii=False),
+            "fk_prompts_json": json.dumps(
+                {"chapters": fk_chapters, "critique": fukabori["companion_prompt"]},
+                ensure_ascii=False),
         }),
         "subsidy.html": ("subsidy.html", {"s": subsidy, "track": track,
                                           "subsidy_rows": subsidy_rows,

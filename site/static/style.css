@@ -428,6 +428,16 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--ink); }
 .phase { margin: 2.3rem 0 0; }
 
 /* フカボリ（24ブロック） */
+.fk-pick-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.fk-ai-pick { opacity: .55; }
+.fk-ai-pick.on { opacity: 1; outline: 2px solid var(--accent, #a33); }
+.fk-steps { margin: 1.2rem 0; }
+.fk-step { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem;
+  border: 1px solid var(--line); border-radius: 6px; padding: .7rem .9rem; margin: .5rem 0; }
+.fk-step.next { border-color: var(--accent, #a33); box-shadow: 0 0 0 1px var(--accent, #a33); }
+.fk-step-no { font-size: .75rem; font-weight: 700; border: 1px solid var(--line); padding: .1em .5em; border-radius: 3px; }
+.fk-step-actions { margin-left: auto; display: flex; gap: .8rem; align-items: center; }
+.fk-step-purpose { flex-basis: 100%; font-size: .88em; }
 .fk-group { margin: 1rem 0; border-top: 1px solid var(--line); }
 .fk-group > summary { cursor: pointer; font-weight: 600; padding: .7em 0; }
 .fk-block { margin: 1.1rem 0; }
