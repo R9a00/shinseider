@@ -12,6 +12,7 @@
   <section class="step" id="fk-ai">
     <h2>AIに聞いてもらう</h2>
     <p>ふだん使っているAIを押してください。AIが1問ずつ、ふつうの言葉で聞いていきます。途中でやめたくなったら、AIに「セーブ」と言えば、それまでの分がコードにまとまります。それを下で取り込んでおけば、次はAIが続きから聞いてくれます。</p>
+    <p class="muted">指示文が長いため、自動では入りません。押すと指示文がコピーされるので、開いた画面に<strong>貼り付けてから送信</strong>してください（開いた画面にも同じ案内が出ます）。</p>
     <div class="ai-row">
       {% for t in ai_targets %}
       <button class="ai-chip" type="button" data-home="{{ t.home_url }}" data-name="{{ t.name }}"{% if t.q_base %} data-qbase="{{ t.q_base }}"{% endif %}>
@@ -186,9 +187,11 @@
           msg.textContent = btn.getAttribute('data-name') + 'が指示文入りで開きます。そのまま送信してください。';
           return;
         }
-        window.open(btn.getAttribute('data-home'), '_blank', 'noopener');
+        // 長文はURLに載らないため、開いた画面に「貼り付けてください」の案内だけをURLで入れておく
+        var helper = '※案内: 長い指示文がクリップボードにコピーされています。この案内文を消して、貼り付け（Cmd+V / 長押し→ペースト）してから送信してください。もしこの案内文のまま送信された場合は「コピーされている指示文を貼り付けてください」とだけ返答してください。';
+        window.open(qbase ? qbase + encodeURIComponent(helper) : btn.getAttribute('data-home'), '_blank', 'noopener');
         copied.then(function(){
-          msg.textContent = '指示文をコピーしました。開いた' + btn.getAttribute('data-name') + 'の新しい会話に貼り付けて送信してください。入力欄に前の下書きが残っていたら消してください。';
+          msg.textContent = '指示文をコピーしました。開いた' + btn.getAttribute('data-name') + 'の入力欄の案内文を消して、貼り付けて送信してください。';
         }).catch(function(){
           msg.textContent = 'コピーできませんでした。「コピーだけ」を押してから、AIに貼り付けてください。';
         });

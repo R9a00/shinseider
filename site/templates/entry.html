@@ -251,9 +251,11 @@
         msgEl.textContent = btn.getAttribute('data-name') + 'が骨子入りの指示文が入力された状態で開きます。そのまま送信してください。';
         return;
       }
-      window.open(btn.getAttribute('data-home'), '_blank', 'noopener');
+      // 長文はURLに載らないため、開いた画面に「貼り付けてください」の案内だけをURLで入れておく
+      var helper = '※案内: 長い指示文がクリップボードにコピーされています。この案内文を消して、貼り付け（Cmd+V / 長押し→ペースト）してから送信してください。もしこの案内文のまま送信された場合は「コピーされている指示文を貼り付けてください」とだけ返答してください。';
+      window.open(qbase ? qbase + encodeURIComponent(helper) : btn.getAttribute('data-home'), '_blank', 'noopener');
       copied.then(function(){
-        msgEl.textContent = '指示文をコピーしました。開いた' + btn.getAttribute('data-name') + 'の新しい会話に貼り付けて送信してください。入力欄に前の下書きが残っていたら消してください。';
+        msgEl.textContent = '指示文をコピーしました。開いた' + btn.getAttribute('data-name') + 'の入力欄の案内文を消して、貼り付けて送信してください。';
       }).catch(function(){
         msgEl.textContent = 'コピーできませんでした。「コピーだけ」を試してください。';
       });
