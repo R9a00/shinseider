@@ -344,6 +344,11 @@ def main():
         for i, s in enumerate(entry_def["entry_sections"], 1)
     ]
     prompt_text = entry_def["prompt_template"].replace("{theme_elements}", "\n".join(theme_lines))
+    # プリフィルURLが長すぎるとAI側で受け取れない・途中で切れる。上限8000字を超えたらビルドを止める
+    for t in entry_def["ai_targets"]:
+        if t.get("mode") == "prefill":
+            _u = t["url"].replace("{prompt}", urllib.parse.quote(prompt_text))
+            assert len(_u) <= 8000, f"プリフィルURLが上限超過({len(_u)}字): {t['id']}。prompt_templateを圧縮すること"
 
     # 「間に合うか」メッセージと逆算プラン（データ駆動）
     pace = entry_def["pace"]
@@ -383,6 +388,7 @@ def main():
                 {**t, "url_filled": t["url"].replace("{prompt}", urllib.parse.quote(prompt_text))}
                 for t in entry_def["ai_targets"]
             ],
+            # プリフィルURLが長すぎるとAI側で受け取れない（8000字を上限とする。超えたらビルドを止める）
             "entry_json": json.dumps({
                 "sections": [{"id": s["id"], "title": s["title"]} for s in entry_def["entry_sections"]],
                 "validation": entry_def["validation"],
