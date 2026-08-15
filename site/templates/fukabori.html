@@ -59,10 +59,12 @@
     </details>
 
     <h3>③ AIが出したコードを取り込む</h3>
-    <p>章のコードも検算のコードも、ぜんぶここに貼れば器に入ります。すでに書いてある欄は上書きせず、[AI補強]として追記されます。</p>
-    <textarea id="fk-patch" rows="6" placeholder='{"blocks": …'></textarea>
+    <p>章のコードも検算のコードも、ぜんぶここ。AIの回答のコード（右上のコピーボタンで写せます）を貼るか、AIが出したファイル（fukabori_save.json）を<strong>この欄にドロップ</strong>してください。すでに書いてある欄は上書きせず、[AI補強]として追記されます。</p>
+    <textarea id="fk-patch" rows="6" placeholder='ここに貼る、またはファイルをドロップ'></textarea>
     <div class="cta-row">
       <button class="btn primary" id="fk-apply" type="button">取り込む</button>
+      <span class="save-links"><label class="linklike" for="fk-patch-file">ファイルから取り込む</label></span>
+      <input type="file" id="fk-patch-file" accept=".json,.md,.txt" hidden>
     </div>
     <p id="fk-patch-msg" class="muted"></p>
     <p>仕上げの検算まで終えると、エントリー文の5テーマに使える材料（KOSHIEN_BRIDGE）がAIから返ります。それを持って<a href="entry.html">エントリー文のページ</a>に戻り、骨子に反映してください。</p>
@@ -325,12 +327,13 @@
     throw new Error('unbalanced');
   }
 
-  // ---- 取り込み（章のコードも検算のコードもここ） ----
-  document.getElementById('fk-apply').addEventListener('click', function(){
+  // ---- 取り込み（章のコードも検算のコードもここ。貼り付け・ファイル選択・ドロップの3経路） ----
+  var patchBox = document.getElementById('fk-patch');
+  function applyPatchText(raw){
     var pmsg = document.getElementById('fk-patch-msg');
-    var box = document.getElementById('fk-patch');
+    var box = patchBox;
     var obj;
-    try { obj = extractJson(box.value); }
+    try { obj = extractJson(raw); }
     catch(_) { pmsg.textContent = 'コードとして読めませんでした。AIの回答のうち、コードのかたまりを含む部分をそのまま貼ってください。'; return; }
     var blocks = obj.blocks || obj;
     var applied = 0;
@@ -349,6 +352,22 @@
     saveProject(project); refresh();
     pmsg.textContent = applied ? applied + '件を取り込みました。次の章に進めます。' : '取り込める内容が見つかりませんでした。';
     if (applied) box.value = '';
+  }
+  document.getElementById('fk-apply').addEventListener('click', function(){ applyPatchText(patchBox.value); });
+  ['dragover', 'dragenter'].forEach(function(ev){
+    patchBox.addEventListener(ev, function(e){ e.preventDefault(); });
+  });
+  patchBox.addEventListener('drop', function(e){
+    e.preventDefault();
+    var f = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (!f) return;
+    f.text().then(function(t){ patchBox.value = t; applyPatchText(t); });
+  });
+  document.getElementById('fk-patch-file').addEventListener('change', function(e){
+    var f = e.target.files[0];
+    if (!f) return;
+    f.text().then(function(t){ patchBox.value = t; applyPatchText(t); });
+    e.target.value = '';
   });
 
   // ---- 保存と持ち出し ----
