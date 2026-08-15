@@ -393,7 +393,15 @@ def main():
         "fukabori.html": ("fukabori.html", {
             "groups": fukabori["groups"],
             "ai_targets": entry_def["ai_targets"],
-            "companion_prompt_json": json.dumps(fukabori["companion_prompt"], ensure_ascii=False),
+            # 器の定義はgroupsから生成して指示文に埋め込む（単一ソース）
+            "fk_prompts_json": json.dumps({
+                "interview": fukabori["interview_prompt"].replace("{structure}", "\n".join(
+                    f"- {b['key']}「{b['title']}」: " + " / ".join(
+                        f"{f['key']}={f['label']}" + ("" if f.get("required") else "(任意)")
+                        for f in b["fields"])
+                    for g in fukabori["groups"] for b in g["blocks"])),
+                "critique": fukabori["companion_prompt"],
+            }, ensure_ascii=False),
         }),
         "subsidy.html": ("subsidy.html", {"s": subsidy, "track": track,
                                           "subsidy_rows": subsidy_rows,

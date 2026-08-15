@@ -428,6 +428,8 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--ink); }
 .phase { margin: 2.3rem 0 0; }
 
 /* フカボリ（24ブロック） */
+.fk-group { margin: 1rem 0; border-top: 1px solid var(--line); }
+.fk-group > summary { cursor: pointer; font-weight: 600; padding: .7em 0; }
 .fk-block { margin: 1.1rem 0; }
 .fk-label { display: block; margin: .7em 0 .15em; font-size: .9rem; font-weight: 600; }
 .fk-label .muted { font-weight: 400; }
