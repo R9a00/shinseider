@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block main %}
+<section class="hero">
+  <p class="kicker">第7回アトツギ甲子園 エントリー受付中</p>
+  <h1><span class="hl-box">その構想、誰かに<br>本気で見てもらったことはありますか。</span></h1>
+  <p class="lead">親は何も言わないか、否定をする。社員は何も言えないか、忖度をする。自分をよく知る人ほど評価は甘くなり、知らない人は真剣に聞いてくれない。あなたの描く事業構想は、まだ一度も本気の批評に触れていないのかもしれません。</p>
+  <p class="lead">アトツギ甲子園は、中小企業庁主催・39歳以下の後継予定者のピッチ大会です。あなたに利害のない審査委員たちが、申請された事業の構想を客観的に評価し、コメントを返します。自分の中にある未来の構想を出来の良い妄想で終わらせる気がないなら、この挑戦を足がかりにしてみませんか。</p>
+  <p class="standing">中小企業庁が任命するアトツギ甲子園アンバサダーが運営する、非公式の申請準備ツールです — <a href="about.html">運営者と方針</a></p>
+
+  <ol class="vals">
+    <li>
+      <b>忖度のない評価が返ってくる</b>
+      <p>書類を出した全員に、審査委員からコメントが届きます。褒めるための言葉ではなく、構想への評価です。</p>
+    </li>
+    <li>
+      <b>構想が文章になる</b>
+      <p>頭の中にある構想は、書いて初めて他人が検討できる形になります。エントリー文の五つの問いは、そのための道具です。</p>
+    </li>
+    <li>
+      <b>承継の話を始めるきっかけになる</b>
+      <p>エントリーは会社名で行うので、現経営者と話さないわけにいきません。後回しにしがちな話を始める口実に使えます。</p>
+    </li>
+    <li>
+      <b>補助金の審査で優遇される</b>
+      <p>出場（地方予選含む）まで進めば、複数の国の補助金の審査で優遇されます。公募要領には、こう書いてあります。</p>
+    </li>
+  </ol>
+
+  <blockquote class="evidence">
+    「公募申請時点で、申請者の代表者（予定を含む。）が『アトツギ甲子園』の出場者（地方予選を含む。）であること」
+    <cite>— 事業承継・M&A補助金（事業承継促進枠）15次公募要領・加点事由⑧（2026-08-06確認）</cite>
+  </blockquote>
+  <div class="count-block" id="countdown" data-deadline="{{ entry_end }}">
+    <div class="countdown">
+      <span class="countdown-label">第7回エントリー締切<br>2026年11月25日 18:00 まで</span>
+      <span class="countdown-num" id="countdown-days">—</span><span class="countdown-unit">日</span>
+    </div>
+    <p class="countdown-more"><a href="schedule.html">いまから始めても間に合う？ 今日から始める場合の道筋 →</a></p>
+  </div>
+  <div class="cta-row">
+    <a class="btn primary" href="check.html">出られるか、30秒で確認する</a>
+    <a class="btn" href="https://atotsugi-koshien.go.jp/" rel="noopener">公式サイトでエントリー</a>
+  </div>
+</section>
+
+<section>
+  <h2>ページ案内</h2>
+  <p>エントリー文づくりと提出前の確認は、このサイトで済みます。</p>
+  <nav class="doors">
+    <a class="door" href="check.html">
+      <span class="door-t">出られるかの確認</span>
+      <span class="door-d">対象は39歳以下・代表になる前の後継予定者（親族外も含む）。30秒で確かめられます</span>
+      <span class="door-arrow">→</span>
+    </a>
+    <a class="door" href="schedule.html">
+      <span class="door-t">締切までの道筋</span>
+      <span class="door-d">今日から11/25までにやることを、日付入りで並べます</span>
+      <span class="door-arrow">→</span>
+    </a>
+    <a class="door" href="ambassadors.html">
+      <span class="door-t">相談できる人を探す</span>
+      <span class="door-d">各地の先輩アトツギ（地域アンバサダー）を地図から</span>
+      <span class="door-arrow">→</span>
+    </a>
+    <a class="door" href="subsidy.html">
+      <span class="door-t">補助金と加点の詳細</span>
+      <span class="door-d">上限1,000万円・出場者への加点。要領原文つき</span>
+      <span class="door-arrow">→</span>
+    </a>
+    <a class="door" href="cool.html">
+      <span class="door-t">出たくない理由</span>
+      <span class="door-d">よく聞く理由と、それに対する事実を挙げます</span>
+      <span class="door-arrow">→</span>
+    </a>
+  </nav>
+</section>
+
+<section>
+  <h2>審査に通過すると何が起こるか</h2>
+  <p>特典は申請者全員一律ではなく、書類審査、地方大会・ファイナリストと進むごとに増えて行きます。</p>
+  <ol class="ladder ladder--benefit">
+    {% for step in benefit.benefit_ladder %}
+    {% set has_pref = step.unlocks | selectattr('type', 'equalto', 'subsidy_preference') | list %}
+    <li class="ladder-step{% if has_pref %} has-pref{% endif %}">
+      <div class="ladder-status">{{ step.label }}</div>
+      <ul class="ladder-unlocks">
+        {% for u in step.unlocks %}
+        <li>
+          {% if u.type == 'subsidy_preference' %}
+          <strong>{{ u.subsidy_name or '事業承継・M&A補助金' }}</strong> — {{ u.effect }}
+          {% else %}{{ u.detail }}{% endif %}
+          {% if u.comment %}<span class="unlock-comment">{{ u.comment }}</span>{% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </li>
+    {% endfor %}
+  </ol>
+  <p class="note">共通条件: エントリーした会社名・事業者名での申請が必要（<a href="https://atotsugi-koshien.go.jp/faq" rel="noopener">公式FAQ</a>・2026-08-06確認）。</p>
+</section>
+
+<section>
+  <h2>具体的にいくら儲かるか</h2>
+  <p>賞金がないので、出ること自体でお金を稼ぐことはできません。効いてくるのは、自社で「投資」をする場面です。優遇策は上段のとおり複数制度にありますが、対象が「5年以内に承継予定の後継者」と、アトツギ甲子園に出る人とそのまま重なってきます。たとえば、</p>
+  <div class="figure-block">
+    <div class="figure-label">事業承継・M&A補助金〈事業承継促進枠〉 補助上限</div>
+    <div class="figure-num">1,000<span class="figure-unit">万円</span></div>
+    <div class="figure-sub">基本800万円・賃上げ要件を満たせば1,000万円／補助率 最大2/3 <span class="muted">（15次公募要領・2026年8月6日確認）</span></div>
+  </div>
+  <p>この補助金の審査で、出場者（地方予選含む）は公式に加点されます。出場が決まるのは2026年末から2027年頭なので、その後の公募回に加点を持って申請できます。<strong>いまのエントリーは、将来の投資の準備を兼ねます。</strong></p>
+  <a class="btn small" href="subsidy.html">この補助金の詳細（要件・加点・審査観点）→</a>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+(function(){
+  var el = document.getElementById('countdown');
+  var d = new Date(el.getAttribute('data-deadline'));
+  var days = Math.max(0, Math.ceil((d - new Date()) / 86400000));
+  document.getElementById('countdown-days').textContent = days;
+})();
+</script>
+{% endblock %}

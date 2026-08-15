@@ -1,0 +1,252 @@
+# =============================================================
+# シンセイダー データベース schema v2（試作）
+# 制度 / 公募回 / 枠 / 加点 / 出所 を分離した新設計。
+# 全フィールドに provenance（出所・取得日・確認状態）を付け、
+# 「未確認の自動更新が締切情報に混ざる」旧システムの事故を構造的に防ぐ。
+# confidence: verified            = 一次資料（公募要領・公式ページ）から抽出し、値を直接確認済み
+#             extracted_unreviewed = LLM抽出のまま。公開前に人のレビュー必須
+#             unconfirmed          = 推定・未発表
+# =============================================================
+schema_version: "2.0-poc"
+generated: "2026-08-06"
+generated_by: "claude + web一次資料抽出（WebFetch経由）"
+
+subsidy:
+  id: jigyo_shokei_ma
+  name: 事業承継・M&A補助金
+  administering_agency: 中小企業庁
+  portal_url: https://shoukei-mahojokin.go.jp/
+  jgrants_available: true
+  summary: >-
+    事業承継（親族内・従業員承継）やM&Aを契機とした設備投資・専門家活用・
+    経営統合（PMI）・廃業再チャレンジを支援する補助金。年複数回公募。
+    アトツギ層に最も直接的に適合する制度。
+
+  # ---- 枠（track）は制度の下の第一級オブジェクト ----
+  tracks:
+    - id: succession_promotion
+      name: 事業承継促進枠
+      target_persona: "5年以内に事業承継を予定する後継者（＝アトツギ本人）による成長投資"
+      amount:
+        min_yen: 1000000
+        max_yen: 8000000
+        max_yen_with_wage_raise: 10000000   # 賃上げ要件（給与支給総額3%以上上昇）達成時
+        haigyo_addon_max_yen: 3000000       # 廃業費併用時の上乗せ
+      subsidy_rate:
+        small_business: "2/3以内"           # 小規模事業者等
+        default: "1/2以内"
+      key_eligibility:
+        - "承継予定者が次のいずれか：対象会社の役員経験3年以上／継続雇用3年以上／通算3年以上／被承継者の親族で代表経験なし"
+        - "公募申請期日から5年以内に事業承継を完了する計画（認定経営革新等支援機関の確認書が必須）"
+        - "対象会社は公募申請時点で3期分の決算・申告が完了していること"
+        - "日本国内に拠点・居住地を置き国内で事業を営む中小企業者等"
+      expense_categories:
+        事業費: [設備費, 産業財産権等関連経費, 謝金, 旅費, 外注費, 委託費]
+        廃業費_併用時のみ: [廃業支援費, 在庫廃棄費, 解体費, 原状回復費, リース解約費, 土壌汚染調査費, 移転・移設費]
+      provenance:
+        source_url: https://shoukei-mahojokin.go.jp/assets/documents/r7h/15-succession/requirements_succession_15.pdf
+        source_title: 事業承継促進枠 公募要領（15次公募）
+        accessed: "2026-08-06"
+        confidence: extracted_unreviewed   # LLM抽出。公開前に原文照合レビューを1回挟むこと
+
+    - id: expert_utilization
+      name: 専門家活用枠
+      target_persona: "M&Aの買い手・売り手によるFA/仲介・DD等の専門家費用"
+      provenance: {source_url: "https://shoukei-mahojokin.go.jp/", accessed: "2026-08-06", confidence: verified, note: "枠の存在のみ確認。詳細未取得"}
+    - id: pmi_promotion
+      name: PMI推進枠
+      provenance: {source_url: "https://shoukei-mahojokin.go.jp/", accessed: "2026-08-06", confidence: verified, note: "枠の存在のみ確認。詳細未取得"}
+    - id: haigyo_rechallenge
+      name: 廃業・再チャレンジ枠
+      provenance: {source_url: "https://shoukei-mahojokin.go.jp/", accessed: "2026-08-06", confidence: verified, note: "枠の存在のみ確認。詳細未取得"}
+
+  # ---- 公募回（round）は日付を持つインスタンス。制度情報と混ぜない ----
+  rounds:
+    - number: 15
+      fiscal_source: 令和7年度補正予算
+      application_period:
+        start: "2026-06-19"
+        end: "2026-07-24T17:00+09:00"
+      status: closed        # 申請受付終了・交付申請段階
+      guidelines_url: https://shoukei-mahojokin.go.jp/assets/documents/r7h/15-succession/requirements_succession_15.pdf
+      provenance:
+        source_url: https://shoukei-mahojokin.go.jp/r7h/15-succession_download/
+        accessed: "2026-08-06"
+        confidence: verified
+    - number: 16
+      status: expected
+      note: "未発表。13次(2026年頭)→14次(2026-02-27開始)→15次(2026-06-19開始)のペースから2026年秋頃と推定"
+      provenance: {confidence: unconfirmed}
+
+  adoption_rate:
+    recent_estimate: "約6割（11〜13次公募の実績ベース・支援業者集計）"
+    provenance:
+      source_url: https://www.11consul.com/2026/01/19/mahojyokin/
+      accessed: "2026-08-06"
+      confidence: extracted_unreviewed
+      note: 一次資料（事務局採択結果ページ）での裏取りが未了
+
+  # ---- 審査観点：AI下書き生成の「章立て」としてそのまま使う ----
+  scoring:
+    evaluation_axes:
+      - id: necessity
+        name: 取組の目的・必要性
+        gist: 承継予定者による生産性向上等の取組が自社の成長と地域経済の発展に資すること
+      - id: feasibility
+        name: 取組の実現可能性
+        gist: 商品・サービスのコンセプトと具体化までの手法・プロセスの明確さ、人員・パートナーの確保
+      - id: profitability
+        name: 取組の収益性
+        gist: ターゲット顧客・市場の明確さ、ニーズ把握、収益見通しの妥当性・信頼性
+      - id: continuity
+        name: 取組の継続性
+        gist: 計画変更時の対応、スケジュール、売上・利益計画の妥当性
+    bonus_points:
+      - id: atotsugi_koshien          # ★アトツギ甲子園導線のコア
+        name: アトツギ甲子園加点
+        requirement_quote: "公募申請時点で、申請者の代表者（予定を含む。）が『アトツギ甲子園』の出場者（地方予選を含む。）であること"
+        evidence: "出場（地方予選含む）が確認できる証憑。プレスリリースや発表サイトのキャプチャも可。ファイナリストはファイナリストであることが確認できる証憑"
+        finalist_treatment: 重加点（公式特典ページの表現）
+      - {id: accounting_standard, name: 中小企業会計要領/指針の適用}
+      - {id: management_plans, name: 経営力向上計画・経営革新計画・先端設備等導入計画のいずれかの認定}
+      - {id: chiiki_okoshi, name: 地域おこし協力隊}
+      - {id: chiiki_mirai, name: 地域未来牽引企業}
+      - {id: kenko_keiei, name: 健康経営優良法人}
+      - {id: cyber_otasuke, name: サイバーセキュリティお助け隊利用}
+      - {id: bcp, name: 事業継続力強化計画認定}
+      - {id: work_life_balance, name: えるぼし/くるみん認定}
+      - {id: wage_raise, name: 賃上げ加点（2%以上の給与上昇率表明）}
+      - {id: growth_matching, name: 成長加速マッチングサービス登録}
+      - {id: succession_plan_support, name: 事業承継・引継ぎ支援センター等による事業承継計画策定支援}
+      - {id: tariff_impact, name: 米国関税措置による影響}
+    provenance:
+      source_url: https://shoukei-mahojokin.go.jp/assets/documents/r7h/15-succession/requirements_succession_15.pdf
+      accessed: "2026-08-06"
+      confidence: extracted_unreviewed
+
+  required_documents:
+    common: [公募申請書（jGrantsフォーム）, 認定経営革新等支援機関の確認書, 事業承継計画表, 事業承継実施に係る誓約書, 承継予定者の要件充足書類]
+    corporation: [履歴事項全部証明書, 直近3期の決算書]
+    sole_proprietor: [住民票, 確定申告書B, 青色申告決算書, 開業届, 青色申告承認申請書]
+    per_bonus_point: 各加点事由の認定証・証憑（アトツギ甲子園は出場証憑）
+    provenance:
+      source_url: https://shoukei-mahojokin.go.jp/assets/documents/r7h/15-succession/requirements_succession_15.pdf
+      accessed: "2026-08-06"
+      confidence: extracted_unreviewed
+
+  # =============================================================
+  # ここから v2 追加ブロック：
+  # 「要件を落とさない」「いつまでに何を」「その場で決める」「政策準拠」「潮流」
+  # =============================================================
+
+  # ---- 要件台帳：落とすと即失格(block)かを明示し、準備リードタイムを持つ ----
+  requirements:
+    items:
+    - id: req_gbizid
+      label: gBizIDプライムの取得（jGrants申請の前提）
+      severity: block
+      kind: account
+      lead_time: "オンライン(マイナンバーカード)なら短期、書面申請は数週間の想定"
+      lead_time_confidence: unconfirmed   # 現行の発行日数は要確認
+      action: 未取得なら今日着手する項目
+    - id: req_support_org
+      label: 認定経営革新等支援機関の確認書（承継の蓋然性確認）
+      severity: block
+      kind: third_party_document
+      lead_time: "機関探し〜発行まで数週間想定。顧問税理士・金融機関・商工会議所が候補"
+      lead_time_confidence: unconfirmed
+      note: 承継計画の中身を初めて外部に説明する場になるため、実質的な計画レビュー
+    - id: req_3terms_finance
+      label: 対象会社の3期分の決算・申告完了（法人）
+      severity: block
+      kind: state
+      note: 満たせない場合はこの枠では申請不可。事前判定で最初に確認すべき項目
+    - id: req_sole_proprietor_5y
+      label: 個人事業主の場合：開業届・青色申告承認申請書の提出日から5年経過
+      severity: block
+      kind: state
+      confidence: extracted_unreviewed
+      detection_note: >-
+        二重抽出照合（2回目の独立抽出）で検出された、1回目に漏れていた要件。
+        原文照合レビュー待ち。検証ループが実際に抽出漏れを捕捉した実例として記録
+    - id: req_succession_5y
+      label: 公募申請期日から5年以内の承継完了計画
+      severity: block
+      kind: decision_dependent   # 意思決定(D2)が先行しないと満たせない
+    - id: req_successor_experience
+      label: 承継予定者の経験要件（役員3年/雇用3年/通算3年/親族で代表未経験）
+      severity: block
+      kind: state
+      note: 該当パターンにより証憑（役員経歴・雇用契約書・親族関係図）が変わる
+    - id: req_quotes
+      label: 補助対象経費の見積書（設備等）
+      severity: block
+      kind: procurement
+      lead_time: "相見積が必要な場合、仕様確定〜取得まで数週間"
+      lead_time_confidence: unconfirmed
+    provenance:
+      source_url: https://shoukei-mahojokin.go.jp/assets/documents/r7h/15-succession/requirements_succession_15.pdf
+      accessed: "2026-08-06"
+      confidence: extracted_unreviewed
+
+  # ---- 意思決定ポイント：「その場で決めさせる」項目。決めないと先へ進めない ----
+  decision_points:
+    - id: D1_track
+      question: どの枠で申請するか
+      options: [事業承継促進枠（承継前の成長投資）, 専門家活用枠（M&Aの専門家費用）, PMI推進枠（統合後）]
+      default_for_atotsugi: succession_promotion
+      blocks: [申請書全体の構成]
+    - id: D2_succession_commitment
+      question: 承継の意思と時期を現経営者（親）と合意できるか。5年以内と宣言できるか
+      nature: 家族・経営の合意形成。書類ではなく対話が必要な、最も重い意思決定
+      blocks: [req_succession_5y, req_support_org]
+      guidance: これが決まらない限りこの枠は使えない。アトツギ甲子園への挑戦自体が、この対話の口実・締切として機能する
+    - id: D3_wage_raise
+      question: 賃上げ特例（給与総額3%以上増）にコミットするか
+      tradeoff: 上限800万→1,000万円に拡大。未達成時の取扱い（減額・返還等）は要領原文で要確認
+      tradeoff_confidence: unconfirmed
+    - id: D4_haigyo_addon
+      question: 廃業費の上乗せ（+300万円）を併用するか（既存事業の一部廃止を伴う場合）
+    - id: D5_investment_scope
+      question: 補助対象にする投資の中身と金額を確定する（見積取得の前提）
+      blocks: [req_quotes]
+    - id: D6_atotsugi_entry
+      question: アトツギ甲子園（第7回）にエントリーするか
+      deadline: "2026-11-25"
+      deadline_confidence: verified
+      benefit: 出場（地方予選含む）で本補助金の加点。ファイナリストで重加点
+      note: 本補助金の次回公募より先に来る、最初の実期日
+
+  # ---- 政策準拠：制度の「元となる考え方」への適合を下書きに織り込むための層 ----
+  policy_alignment:
+    policy_intent:
+      summary: >-
+        経営者の高齢化・後継者不在による廃業から雇用と地域経済を守り、
+        単なる延命ではなく「承継を機にした成長投資・生産性向上」を促す制度。
+        審査観点（目的・必要性）に「自社の成長及び地域経済等の発展に資する」が
+        明記されていることが、その直接の現れ。
+      evidence_in_guidelines: "審査観点①、賃上げ特例、地域未来牽引・地域おこし協力隊等の加点構成"
+      confidence: verified   # 要領内の記載から直接導出
+    upstream_documents:   # 次フェーズで一次資料を取得して充実させる箇所
+      - {name: 中小企業白書（事業承継関連章）, status: todo}
+      - {name: 令和7年度補正予算 中小企業対策関連資料, status: todo}
+      - {name: 中小企業庁 事業承継・M&A推進計画等の施策文書, status: todo}
+    drafting_directive: >-
+      下書き生成時、事業計画は「自社の利益」だけでなく
+      「地域の雇用・取引網・技術の存続」「承継を機にした生産性向上」への接続を
+      明示的に主張すること。これが政策意図との整合の主張になる。
+
+  # ---- 潮流シグナル：加点事由一覧は「国がいま推すもの」の索引として読める ----
+  trend_signals:
+    derived_from_bonus_points:
+      - {trend: 賃上げ・所得向上, signals: [賃上げ加点, 賃上げ特例上限拡大]}
+      - {trend: 人手不足対応・省力化, signals: [省力化投資補助金が特典対象である事実]}
+      - {trend: セキュリティ対策, signals: [サイバーセキュリティお助け隊加点]}
+      - {trend: 事業継続・防災, signals: [事業継続力強化計画(BCP)加点]}
+      - {trend: 両立支援・人的資本, signals: [えるぼし/くるみん加点, 健康経営優良法人加点]}
+      - {trend: 地域経済維持, signals: [地域未来牽引企業加点, 地域おこし協力隊加点]}
+      - {trend: 通商環境変化への対応, signals: [米国関税措置影響加点]}
+    usage: >-
+      下書きレビュー時のチェック観点として使う：
+      「この計画は上記のどの潮流に自然に接続できるか。無理なく主張できる接続を1〜3個選べ」
+    confidence: verified   # 加点一覧そのものからの導出

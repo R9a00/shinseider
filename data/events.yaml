@@ -1,0 +1,133 @@
+# 第7回アトツギ甲子園シーズンの公式イベント・期日
+# すべて公式発表・公式イベントページの原文で確認したもののみ。labelは月カレンダーのセル表示用
+meta:
+  note: 開催日時は各出典ページの原文で確認。説明会の申込は当日10:00締切（各ページ記載）
+events:
+- id: entry_open
+  start: '2026-08-03'
+  title: 第7回エントリー受付開始
+  kind: milestone
+  label: 受付開始
+  source_url: https://www.chusho.meti.go.jp/zaimu/shoukei/2026/260803.html
+  accessed: '2026-08-15'
+- id: online_briefing_1
+  start: '2026-08-12'
+  time: 14:00〜16:00
+  title: 第1回オンライン説明会
+  format: オンライン（Zoomウェビナー）
+  note: 申込は当日10:00まで
+  kind: briefing
+  label: 説明会
+  source_url: https://atotsugi-koshien.go.jp/event/event-4794/
+  accessed: '2026-08-15'
+- id: camp_apply_deadline
+  start: '2026-08-26'
+  title: サマーキャンプ申込締切
+  kind: deadline
+  minor: true
+  label: キャンプ締切
+  source_url: https://atotsugi-koshien.go.jp/event/event-4749/
+  accessed: '2026-08-15'
+- id: summer_camp
+  start: '2026-08-31'
+  end: '2026-09-01'
+  time: DAY1 13:00〜20:00／DAY2 10:00〜16:30
+  title: アトツギサマーキャンプ2026
+  venue: ビジョンセンター東京八重洲（東京駅 徒歩4分）
+  note: 参加費無料（交通・宿泊費は自己負担）
+  kind: camp
+  label: キャンプ
+  source_url: https://atotsugi-koshien.go.jp/event/event-4749/
+  accessed: '2026-08-15'
+- id: online_briefing_2
+  start: '2026-09-16'
+  time: 14:00〜16:00
+  title: 第2回オンライン説明会
+  format: オンライン（Zoomウェビナー）
+  note: 申込は当日10:00まで
+  kind: briefing
+  label: 説明会
+  source_url: https://atotsugi-koshien.go.jp/event/event-4795/
+  accessed: '2026-08-15'
+- id: online_briefing_3
+  start: '2026-10-13'
+  time: 13:00〜15:00
+  title: 第3回オンライン説明会
+  format: オンライン（Zoomウェビナー）
+  note: 申込は当日10:00まで
+  kind: briefing
+  label: 説明会
+  source_url: https://atotsugi-koshien.go.jp/event/event-4796/
+  accessed: '2026-08-15'
+- id: entry_deadline
+  start: '2026-11-25'
+  time: '18:00'
+  title: エントリー締切
+  kind: deadline
+  label: エントリー締切
+  source_url: https://www.chusho.meti.go.jp/zaimu/shoukei/2026/260803.html
+  accessed: '2026-08-15'
+- id: docs_deadline
+  start: '2026-11-27'
+  time: '12:00'
+  title: 応募書類の提出締切（PDF）
+  kind: deadline
+  label: 書類締切
+  source_url: https://www.chusho.meti.go.jp/zaimu/shoukei/2026/260803.html
+  accessed: '2026-08-15'
+- id: reg_hokkaido_tohoku
+  start: '2027-01-19'
+  title: 地方大会 北海道・東北ブロック
+  venue: 仙台市中小企業活性化センター
+  kind: taikai
+  label: 仙台
+  source_url: https://www.chusho.meti.go.jp/zaimu/shoukei/2026/260803.html
+  accessed: '2026-08-15'
+- id: reg_kanto
+  start: '2027-01-25'
+  title: 地方大会 関東ブロック
+  venue: 品川ザ・グランドホール
+  kind: taikai
+  label: 東京
+  source_url: https://www.chusho.meti.go.jp/zaimu/shoukei/2026/260803.html
+  accessed: '2026-08-15'
+- id: reg_chubu
+  start: '2027-01-28'
+  title: 地方大会 中部ブロック
+  venue: 中日ホール＆カンファレンス
+  kind: taikai
+  label: 名古屋
+  source_url: https://www.chusho.meti.go.jp/zaimu/shoukei/2026/260803.html
+  accessed: '2026-08-15'
+- id: reg_kinki
+  start: '2027-02-01'
+  title: 地方大会 近畿ブロック
+  venue: グランキューブ大阪
+  kind: taikai
+  label: 大阪
+  source_url: https://www.chusho.meti.go.jp/zaimu/shoukei/2026/260803.html
+  accessed: '2026-08-15'
+- id: reg_chushikoku
+  start: '2027-02-04'
+  title: 地方大会 中国・四国ブロック
+  venue: 高松シンボルタワー
+  kind: taikai
+  label: 高松
+  source_url: https://www.chusho.meti.go.jp/zaimu/shoukei/2026/260803.html
+  accessed: '2026-08-15'
+- id: reg_kyushu_okinawa
+  start: '2027-02-08'
+  title: 地方大会 九州・沖縄ブロック
+  venue: 熊本城ホール
+  kind: taikai
+  label: 熊本
+  source_url: https://www.chusho.meti.go.jp/zaimu/shoukei/2026/260803.html
+  accessed: '2026-08-15'
+- id: final
+  start: '2027-02-26'
+  title: 決勝大会
+  venue: 東京建物ぴあシアター＆カンファレンス
+  kind: final
+  label: 決勝
+  source_url: https://www.chusho.meti.go.jp/zaimu/shoukei/2026/260803.html
+  accessed: '2026-08-15'

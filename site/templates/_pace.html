@@ -1,0 +1,64 @@
+<div class="pace">
+  <p class="pace-message" id="pace-message"></p>
+  {% if not pace_compact %}
+  <div class="pace-plan-wrap" id="pace-plan-wrap" hidden>
+    <p class="muted pace-plan-head">今日から始めるなら:</p>
+    <ol class="pace-plan" id="pace-plan"></ol>
+    <p class="muted pace-note">※現経営者に対してどう対話を切り出したらいいか、エントリーしたいが説得が難しいなど、ございましたら<a href="ambassadors.html">アンバサダー</a>にご相談ください。</p>
+  </div>
+  {% endif %}
+  <script type="application/json" class="pace-data">{{ pace_json | safe }}</script>
+  <script>
+  (function(){
+    /* 同一ページ内・プレビュー結合時に複数の.paceが並んでも、
+       各スクリプトは自分の属する.paceブロックだけを描画する（IDの一意性に依存しない） */
+    var self = document.currentScript;
+    var root = self && self.closest ? self.closest('.pace') : null;
+    if (!root || root.getAttribute('data-pace-done')) return;
+    root.setAttribute('data-pace-done', '1');
+    var D = JSON.parse(root.querySelector('script.pace-data').textContent);
+    var now = new Date();
+    var deadline = new Date(D.entry_deadline);
+    var days = Math.ceil((deadline - now) / 86400000);
+    var msgEl = root.querySelector('.pace-message');
+    if (!msgEl) return;
+    if (days < 0) { msgEl.textContent = D.closed_message; return; }
+    var b = D.buckets.find(function(x){ return days >= x.min_days; });
+    msgEl.textContent = b ? b.message : '';
+
+    var wrap = root.querySelector('.pace-plan-wrap');
+    if (!wrap) return;
+    var target = new Date(D.submit_target + 'T23:59:00+09:00');
+    var dT = Math.max(1, Math.ceil((target - now) / 86400000));
+    function fmt(d){ return (d.getMonth() + 1) + '/' + d.getDate(); }
+    function plus(n){ var x = new Date(now); x.setDate(x.getDate() + n); return x; }
+    var entryLink = '<a href="entry.html">エントリー文をつくる</a>';
+    var steps;
+    if (dT <= 3) {
+      steps = [
+        ['今日', 'AIとインタビューして骨子を作る（' + entryLink + '）'],
+        ['明日', '声に出して読み合わせ、現経営者に話す'],
+        [fmt(target) + 'まで', '公式サイトから送信（締切は11/25 18:00）']
+      ];
+    } else {
+      var c1 = plus(Math.max(1, Math.round(dT * 0.15)));
+      var c2 = plus(Math.round(dT * 0.5));
+      var c3 = plus(Math.round(dT * 0.8));
+      steps = [
+        [fmt(c1) + 'まで', '現経営者と、承継の話を始める（いちばん重い一歩）'],
+        [fmt(c2) + 'まで', 'AIとインタビューして骨子を作る（' + entryLink + '）'],
+        [fmt(c3) + 'まで', '読み合わせて磨く。会社名でエントリーすることに合意をとる'],
+        [fmt(target) + 'まで', '公式サイトからエントリー（締切前日推奨）。書類は届くフォーマットで11/27 12:00までにPDF提出']
+      ];
+    }
+    var ol = root.querySelector('.pace-plan');
+    ol.innerHTML = '';
+    steps.forEach(function(s){
+      var li = document.createElement('li');
+      li.innerHTML = '<strong>' + s[0] + '</strong> ' + s[1];
+      ol.appendChild(li);
+    });
+    wrap.hidden = false;
+  })();
+  </script>
+</div>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>シンセイダー デザインパターン比較（A/B/C）</title>
+<style>
+* { box-sizing: border-box; margin: 0; }
+body { font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif; }
+.pv-topbar { position: sticky; top: 0; z-index: 50; background: #171512; color: #f5f1e8;
+  padding: .6em 1.2em; font-size: .82rem; display: flex; gap: 1.4em; align-items: baseline; }
+.pv-topbar a { color: #f0c9c5; text-decoration: none; font-weight: 700; }
+.pat-label { position: sticky; top: 2.4em; z-index: 40; display: inline-block; background: #171512; color: #fff;
+  font-size: .8rem; font-weight: 800; padding: .35em 1.1em; border-radius: 0 8px 8px 0; letter-spacing: .06em; }
+
+/* ============================================================
+   PATTERN A — 質実な道具（現代プロダクトUI）
+   白地・強いタイポ対比・道具（カウントダウン＋チェック）が初画面の主役
+============================================================ */
+.pa { background: #ffffff; color: #16181d; padding: 4.5rem 1.5rem 5rem; }
+.pa .wrap { max-width: 68rem; margin: 0 auto; }
+.pa .brand { display: flex; align-items: center; gap: .6em; margin-bottom: 3.2rem; }
+.pa .brand img { height: 30px; }
+.pa .brand span { font-size: .8rem; color: #6b7280; }
+.pa .hero { display: grid; grid-template-columns: 1.15fr .85fr; gap: 3rem; align-items: start; }
+.pa .kick { color: #d3302f; font-weight: 800; font-size: .82rem; letter-spacing: .05em; margin-bottom: 1rem; }
+.pa h1 { font-size: 3.0rem; line-height: 1.28; letter-spacing: -.015em; font-weight: 800; margin-bottom: 1.2rem; }
+.pa .lead { font-size: 1.02rem; line-height: 1.95; color: #43474f; }
+.pa .cta { display: flex; gap: .7rem; margin-top: 1.8rem; }
+.pa .btn { padding: .85em 1.5em; border-radius: 10px; font-weight: 700; font-size: .95rem; text-decoration: none; }
+.pa .btn.pri { background: #d3302f; color: #fff; box-shadow: 0 6px 16px rgba(211,48,47,.25); }
+.pa .btn.sec { color: #16181d; border: 1.5px solid #e3e5e8; }
+.pa .tool { background: #fbfbfc; border: 1px solid #e9eaee; border-radius: 18px; padding: 1.6rem 1.7rem;
+  box-shadow: 0 24px 60px -32px rgba(22,24,29,.25); }
+.pa .tool .tl { font-size: .8rem; color: #6b7280; font-weight: 600; }
+.pa .tool .num { font-size: 4.4rem; font-weight: 800; letter-spacing: -.03em; line-height: 1.05; color: #16181d; }
+.pa .tool .num em { font-style: normal; font-size: 1.3rem; color: #6b7280; font-weight: 700; margin-left: .2em; }
+.pa .tool .bar { height: 6px; background: #eef0f3; border-radius: 99px; margin: 1rem 0 .4rem; overflow: hidden; }
+.pa .tool .bar i { display: block; height: 100%; width: 64%; background: linear-gradient(90deg,#d3302f,#f0716f); border-radius: 99px; }
+.pa .tool .bm { font-size: .78rem; color: #9aa0a8; }
+.pa .tool .go { display: block; text-align: center; margin-top: 1.1rem; background: #16181d; color: #fff;
+  border-radius: 10px; padding: .9em; font-weight: 700; text-decoration: none; }
+.pa .tool .sub { display: block; text-align: center; font-size: .8rem; color: #6b7280; margin-top: .6rem; text-decoration: none; }
+.pa .vals { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #e9eaee;
+  border: 1px solid #e9eaee; border-radius: 14px; overflow: hidden; margin-top: 3.5rem; }
+.pa .val { background: #fff; padding: 1.4rem 1.3rem; }
+.pa .val b { display: block; font-size: 1rem; margin-bottom: .5em; }
+.pa .val b::before { content: ""; display: block; width: 22px; height: 3px; background: #d3302f; margin-bottom: .9em; border-radius: 2px; }
+.pa .val p { font-size: .86rem; line-height: 1.8; color: #5b6068; }
+@media (max-width: 800px) { .pa .hero { grid-template-columns: 1fr; } .pa .vals { grid-template-columns: 1fr 1fr; } .pa h1 { font-size: 2.1rem; } }
+
+/* ============================================================
+   PATTERN B — ヒーロー基地（ブランドの遊び心を前面に）
+   濃紺の基地・戦隊レッド・スコアボード・ランク番号
+============================================================ */
+.pb { background: #0e1521; color: #f2f4f8; padding: 4.5rem 1.5rem 5rem; position: relative; overflow: hidden; }
+.pb::before { content: ""; position: absolute; top: -80px; right: -120px; width: 480px; height: 480px;
+  background: radial-gradient(closest-side, rgba(215,38,30,.35), transparent 70%); }
+.pb .wrap { max-width: 66rem; margin: 0 auto; position: relative; }
+.pb .brand { display: flex; align-items: center; gap: .7em; margin-bottom: 3rem; }
+.pb .brand img { height: 34px; filter: drop-shadow(0 2px 8px rgba(215,38,30,.5)); }
+.pb .brand span { font-size: .78rem; color: #8fa1bd; letter-spacing: .12em; font-weight: 700; }
+.pb .kick { display: inline-block; background: #d7261e; color: #fff; font-weight: 800; font-size: .8rem;
+  padding: .35em 1em; letter-spacing: .1em; transform: skewX(-8deg); margin-bottom: 1.3rem; }
+.pb .kick span { display: inline-block; transform: skewX(8deg); }
+.pb h1 { font-size: 3.1rem; line-height: 1.3; font-weight: 900; margin-bottom: 1.2rem; }
+.pb h1 mark { background: none; color: #f5b301; }
+.pb .lead { color: #b9c4d6; line-height: 2; max-width: 40rem; }
+.pb .board { display: flex; gap: 2.5rem; align-items: center; background: #131d2e; border: 1px solid #24334c;
+  border-radius: 16px; padding: 1.4rem 2rem; margin: 2.2rem 0; width: fit-content; }
+.pb .board .bl { font-size: .78rem; color: #8fa1bd; letter-spacing: .1em; font-weight: 700; }
+.pb .board .num { font-size: 4.6rem; font-weight: 900; color: #f5b301; line-height: 1;
+  font-variant-numeric: tabular-nums; text-shadow: 0 0 24px rgba(245,179,1,.35); }
+.pb .board .num em { font-style: normal; font-size: 1.2rem; color: #8fa1bd; margin-left: .15em; }
+.pb .cta { display: flex; gap: .8rem; margin: 1.6rem 0 3.2rem; }
+.pb .btn { padding: .95em 1.7em; font-weight: 800; text-decoration: none; border-radius: 8px; font-size: .98rem; }
+.pb .btn.pri { background: #d7261e; color: #fff; box-shadow: 0 8px 24px rgba(215,38,30,.45); }
+.pb .btn.sec { color: #f2f4f8; border: 2px solid #34435f; }
+.pb .vals { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.pb .val { background: #131d2e; border: 1px solid #24334c; border-left: 4px solid #d7261e; border-radius: 12px; padding: 1.3rem 1.4rem; position: relative; }
+.pb .val i { position: absolute; top: .9rem; right: 1.1rem; font-style: normal; font-weight: 900; font-size: 1.6rem; color: #24334c; }
+.pb .val b { display: block; margin-bottom: .4em; font-size: 1.02rem; color: #fff; }
+.pb .val p { font-size: .87rem; line-height: 1.85; color: #b9c4d6; }
+@media (max-width: 800px) { .pb h1 { font-size: 2.2rem; } .pb .vals { grid-template-columns: 1fr; } .pb .board { width: 100%; } }
+
+/* ============================================================
+   PATTERN C — 静かな専門店（編集的・上質紙）
+   明朝の見出し・罫線・余白のリズム。箱を使わず組版で見せる
+============================================================ */
+.pc { background: #faf8f3; color: #211e19; padding: 5rem 1.5rem 5.5rem; }
+.pc .wrap { max-width: 44rem; margin: 0 auto; }
+.pc .brand { display: flex; align-items: baseline; gap: .8em; padding-bottom: 2.4rem; border-bottom: 1px solid #211e19; margin-bottom: 3rem; }
+.pc .brand img { height: 26px; }
+.pc .brand span { font-size: .75rem; color: #7a7466; letter-spacing: .2em; }
+.pc .kick { font-size: .8rem; color: #a5372c; letter-spacing: .3em; margin-bottom: 1.6rem; font-weight: 600; }
+.pc h1 { font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; font-weight: 600;
+  font-size: 2.7rem; line-height: 1.6; letter-spacing: .02em; margin-bottom: 1.6rem; }
+.pc .lead { line-height: 2.2; color: #45403a; font-size: .98rem; }
+.pc .count { display: flex; align-items: baseline; gap: 1em; margin: 2.6rem 0; padding: 1.6rem 0; border-top: 1px solid #ddd6c8; border-bottom: 1px solid #ddd6c8; }
+.pc .count .cl { font-size: .82rem; color: #7a7466; }
+.pc .count .num { font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; font-size: 3.6rem; color: #a5372c; line-height: 1; }
+.pc .count .num em { font-style: normal; font-size: 1.1rem; color: #7a7466; margin-left: .1em; }
+.pc .count a { margin-left: auto; font-size: .85rem; color: #a5372c; }
+.pc .vals { counter-reset: v; margin: 2.6rem 0; }
+.pc .val { counter-increment: v; display: grid; grid-template-columns: 3.4rem 1fr; gap: 1.1rem; padding: 1.35rem 0; border-bottom: 1px solid #e7e1d3; }
+.pc .val::before { content: "0" counter(v); font-family: "Hiragino Mincho ProN", serif; font-size: 1.6rem; color: #a5372c; line-height: 1.2; }
+.pc .val b { display: block; font-size: 1.04rem; margin-bottom: .35em; grid-column: 2; }
+.pc .val p { font-size: .9rem; line-height: 2; color: #5c564c; grid-column: 2; }
+.pc .val::before { grid-row: 1 / span 2; }
+.pc .cta { display: flex; gap: 1rem; margin-top: 2.6rem; }
+.pc .btn { padding: .9em 1.6em; text-decoration: none; font-weight: 600; font-size: .93rem; }
+.pc .btn.pri { background: #211e19; color: #faf8f3; }
+.pc .btn.sec { color: #211e19; border: 1px solid #211e19; }
+@media (max-width: 800px) { .pc h1 { font-size: 1.9rem; } }
+</style>
+</head>
+<body>
+<div class="pv-topbar"><strong>デザインパターン比較</strong><a href="#pa">A 質実な道具</a><a href="#pb">B ヒーロー基地</a><a href="#pc">C 静かな専門店</a><span style="color:#8a857c">— 内容は同一・見た目だけ違います</span></div>
+
+<div class="pat-label" id="pa">PATTERN A — 質実な道具（現代プロダクトUI）</div>
+<section class="pa">
+  <div class="wrap">
+    <div class="brand"><img src="logo.png" alt="シンセイダー"><span>アトツギのための準備室</span></div>
+    <div class="hero">
+      <div>
+        <div class="kick">第7回アトツギ甲子園 エントリー受付中</div>
+        <h1>その構想、誰かに<br>本気で見てもらったことは。</h1>
+        <p class="lead">アトツギの事業構想には、本気の批評がなかなか返ってきません。親にも、社員にも、取引先にも、あなたの立場を前に「ダメだ」とは言いにくい。アトツギ甲子園は、その数少ない例外です。</p>
+        <div class="cta"><a class="btn pri" href="#">30秒適合チェック</a><a class="btn sec" href="#">公式サイトでエントリー</a></div>
+      </div>
+      <div class="tool">
+        <div class="tl">第7回エントリー締切（11/25 18:00）まで</div>
+        <div class="num">106<em>日</em></div>
+        <div class="bar"><i></i></div>
+        <div class="bm">いまから始めても間に合います — 今日から始める場合の道筋 →</div>
+        <a class="go" href="#">エントリー文をつくる（AIと30分）</a>
+        <a class="sub" href="#">入力はあなたの端末にだけ保存されます</a>
+      </div>
+    </div>
+    <div class="vals">
+      <div class="val"><b>本気の評価が、返ってくる</b><p>利害のない審査委員が構想そのものを見ます。書類を出した全員にコメントが届きます。</p></div>
+      <div class="val"><b>構想が、言葉になる</b><p>頭の中の「いつかやりたい」が、人に見せて批評してもらえる計画に変わります。</p></div>
+      <div class="val"><b>承継の話を、始められる</b><p>エントリーは会社名で行うため、現経営者との対話が自然に始まります。</p></div>
+      <div class="val"><b>補助金で、実利もある</b><p>出場まで進むと、事業承継・M&A補助金の審査で公式に加点されます。</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="pat-label" id="pb">PATTERN B — ヒーロー基地（ブランドの遊び心）</div>
+<section class="pb">
+  <div class="wrap">
+    <div class="brand"><img src="logo.png" alt="シンセイダー"><span>ATOTSUGI 準備基地</span></div>
+    <div class="kick"><span>第7回アトツギ甲子園 エントリー受付中</span></div>
+    <h1>その構想、誰かに<br><mark>本気で</mark>見てもらったことは。</h1>
+    <p class="lead">アトツギの事業構想には、本気の批評がなかなか返ってきません。親にも、社員にも、取引先にも、あなたの立場を前に「ダメだ」とは言いにくい。アトツギ甲子園は、その数少ない例外です。</p>
+    <div class="board">
+      <div>
+        <div class="bl">ENTRY 締切まで</div>
+        <div class="num">106<em>日</em></div>
+      </div>
+      <div>
+        <div class="bl">道筋</div>
+        <div style="font-size:.9rem;color:#b9c4d6;max-width:16rem;line-height:1.8">いまから始めても間に合います。今日から始める場合の道筋 →</div>
+      </div>
+    </div>
+    <div class="cta"><a class="btn pri" href="#">30秒適合チェック</a><a class="btn sec" href="#">エントリー文をつくる</a></div>
+    <div class="vals">
+      <div class="val"><i>01</i><b>本気の評価が、返ってくる</b><p>利害のない審査委員が構想そのものを見ます。書類を出した全員にコメントが届きます。</p></div>
+      <div class="val"><i>02</i><b>構想が、言葉になる</b><p>頭の中の「いつかやりたい」が、人に見せて批評してもらえる計画に変わります。</p></div>
+      <div class="val"><i>03</i><b>承継の話を、始められる</b><p>エントリーは会社名で行うため、現経営者との対話が自然に始まります。</p></div>
+      <div class="val"><i>04</i><b>補助金で、実利もある</b><p>出場まで進むと、事業承継・M&A補助金の審査で公式に加点されます。</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="pat-label" id="pc">PATTERN C — 静かな専門店（編集的・上質紙）</div>
+<section class="pc">
+  <div class="wrap">
+    <div class="brand"><img src="logo.png" alt="シンセイダー"><span>アトツギのための準備室</span></div>
+    <div class="kick">第7回アトツギ甲子園 エントリー受付中</div>
+    <h1>その構想、誰かに<br>本気で見てもらったことは。</h1>
+    <p class="lead">アトツギの事業構想には、本気の批評がなかなか返ってきません。親にも、社員にも、取引先にも、あなたの立場を前に「ダメだ」とは言いにくい。アトツギ甲子園は、その数少ない例外です。</p>
+    <div class="count">
+      <span class="cl">エントリー締切まで</span>
+      <span class="num">106<em>日</em></span>
+      <a href="#">今日から始める場合の道筋 →</a>
+    </div>
+    <div class="vals">
+      <div class="val"><b>本気の評価が、返ってくる</b><p>利害のない審査委員が構想そのものを見ます。書類を出した全員にコメントが届きます。</p></div>
+      <div class="val"><b>構想が、言葉になる</b><p>頭の中の「いつかやりたい」が、人に見せて批評してもらえる計画に変わります。</p></div>
+      <div class="val"><b>承継の話を、始められる</b><p>エントリーは会社名で行うため、現経営者との対話が自然に始まります。</p></div>
+      <div class="val"><b>補助金で、実利もある</b><p>出場まで進むと、事業承継・M&A補助金の審査で公式に加点されます。</p></div>
+    </div>
+    <div class="cta"><a class="btn pri" href="#">30秒適合チェック</a><a class="btn sec" href="#">公式サイトでエントリー</a></div>
+  </div>
+</section>
+</body>
+</html>

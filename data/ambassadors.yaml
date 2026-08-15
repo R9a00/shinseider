@@ -1,0 +1,684 @@
+meta:
+  current_round: 7
+  rounds:
+  - round: 7
+    appointed: '2026-07-15'
+    count: 42
+    source:
+      url: https://kyodonewsprwire.jp/release/202607132419
+      note: 第7回エントリー開始プレスリリース内の名簿（42名）
+      accessed: '2026-08-14'
+      confidence: extracted_unreviewed
+  - round: 6
+    appointed: '2025-07-30'
+    count: 40
+    source:
+      url: https://kyodonewsprwire.jp/release/202507302938
+      note: 第6回エントリー開始プレスリリース（本文に40名の名簿表を直接掲載）。METI発表 https://www.meti.go.jp/press/2025/07/20250730002/20250730002.html
+        は同内容だが名簿が本文に表示されない
+      accessed: '2026-08-14'
+      confidence: extracted_unreviewed
+  appointer: 中小企業庁（長官任命）
+  role_note: 参加のきっかけは「他者からの紹介」が多いことから、過去ファイナリストを中心に任命。 魅力発信と、地域の後継者向けセミナー・トークセッション等を実施する。
+  review_note: 氏名の異体字（濵/濱、齊/斎等）と第7回の鳥取・島根の所属はMETI別紙PDFでの照合が必要。 中国経産局ページとPRワイヤーで鳥取/島根の対応が逆になっており、 2025年名簿（中澤建設=島根）と整合するPRワイヤー側を採用した。
+    【運営者確認 2026-08-15】棚元優太（アルミファクトリー・第4回準ファイナリスト）と棚元将太郎（大征工業・現任アンバサダー）は兄弟で別人（将太郎氏に決勝級の記録は付けない）。齊藤雄大（斎藤鐵工所・静岡）と齋藤孝曉（長後製パン・神奈川）は別人。
+    岸田将志の会社は第6回任命リリースで「Kコーポレーション」だったが、第5回地方名簿・公式チラシPDFは「有限会社岸コーポレーション」で氏名・県一致のため後者を採用（抽出誤りと判断）。
+  koshien_note: 出場歴は地方大会以上（地方大会出場・準ファイナリスト・決勝出場・受賞）。第3回45名・第4回68名・第5回90名・第6回90名の地方名簿、および第1〜6回の決勝関連発表と全員を氏名+会社で照合（県では絞らない。第1回・第2回に地方大会はない）。照合
+    2026-08-15。この結果、名簿の66名全員に出場記録あり
+  site_note: 会社サイトは検索と実地確認（社名・所在地・代表者の一致）を経たもののみ掲載。確認できなかった7社（滝本新作商店・武藤工芸鋳物・大森屋青果・マスヤ・川野真珠養殖・藤澤精麦工場・Kコーポレーション）は未掲載。一部は自社ドメインでないページ（Ownd/ペライチ等の自社公式ページ）。確認
+    2026-08-15
+  koshien_sources:
+  - label: 第1回（事務局発表）
+    url: https://prtimes.jp/main/html/rd/p/000000013.000051210.html
+  - label: 第2回
+    url: https://atotsugi-koshien.go.jp/event/event-736/
+  - label: 第3回（出場者一覧PDF）
+    url: https://www.chusho.meti.go.jp/zaimu/shoukei/2023/230221shoukei.pdf
+  - label: 第4回
+    url: https://atotsugi-koshien.go.jp/event/event-2060/
+  - label: 第5回
+    url: https://atotsugi-koshien.go.jp/event/event-3562/
+  - label: 第6回
+    url: https://atotsugi-koshien.go.jp/event/event-4737/
+  - label: 第3回地方（45名）
+    url: https://prtimes.jp/main/html/rd/p/000000029.000051210.html
+  - label: 第4回地方（68名）
+    url: https://prtimes.jp/main/html/rd/p/000000041.000051210.html
+  - label: 第5回地方（90名）
+    url: https://www.chusho.meti.go.jp/zaimu/shoukei/2024/241220shoukei.html
+  - label: 第6回地方（90名）
+    url: https://kyodonewsprwire.jp/release/202512110855
+  blocks_note: '地域区分は大会の地方大会ブロック＝経済産業局管轄（関東=関東局11県で新潟・山梨・長野・静岡を含む、中部=中部局5県で三重を含む、近畿=近畿局で福井を含む）。根拠: 第6回関東ブロック決勝進出が山梨・静岡・東京でブロック賞名が関東経済産業局長賞（kyodonewsprwire.jp/release/202601263015、2026-08-15確認）'
+people:
+- name: 滝本 壮
+  company: 株式会社滝本新作商店
+  pref: 北海道
+  terms:
+  - 7
+  koshien:
+  - round: 6
+    result: 地方大会出場
+- name: 村本 賢亮
+  company: 株式会社壺屋総本店
+  pref: 北海道
+  terms:
+  - 7
+  koshien:
+  - round: 4
+    result: ファイナリスト
+  site: https://tsuboya.net/
+- name: 久保 栄一郎
+  company: 株式会社弘前ドライクリーニング工場
+  pref: 青森県
+  terms:
+  - 7
+  site: https://hirosakidry.co.jp/
+  koshien:
+  - round: 3
+    result: 地方大会出場
+- name: 今野 雅生
+  company: 株式会社カーネ・ラ・ヴィータ
+  pref: 宮城県
+  terms:
+  - 6
+  - 7
+  koshien:
+  - round: 5
+    result: ファイナリスト
+  site: https://sen-pd2-kunren.com/
+- name: 武藤 元貴
+  company: 有限会社武藤工芸鋳物
+  pref: 秋田県
+  terms:
+  - 6
+  - 7
+  koshien:
+  - round: 3
+    result: 地方大会出場
+- name: 安孫子 大輝
+  company: ホクシア株式会社
+  pref: 山形県
+  terms:
+  - 6
+  - 7
+  koshien:
+  - round: 4
+    result: ファイナリスト
+  site: https://hoxia.co.jp/
+- name: 藤田 浩一
+  company: 株式会社常陸風月堂
+  pref: 茨城県
+  terms:
+  - 6
+  - 7
+  koshien:
+  - round: 3
+    result: ファイナリスト
+  site: https://www.kasho-fugetsu.net/
+- name: 井口 善博
+  company: 井口工業株式会社
+  pref: 群馬県
+  terms:
+  - 7
+  site: https://www.iguchikogyo.co.jp/
+  koshien:
+  - round: 6
+    result: 地方大会出場
+- name: 関根 俊直
+  company: セキネシール工業株式会社
+  pref: 埼玉県
+  terms:
+  - 6
+  - 7
+  koshien:
+  - round: 4
+    result: ファイナリスト
+  site: https://sekineseal.co.jp/
+- name: 高澤 恵大
+  company: 大森屋青果有限会社
+  pref: 千葉県
+  terms:
+  - 6
+  - 7
+  koshien:
+  - round: 4
+    result: 地方大会出場
+  - round: 5
+    result: 地方大会出場
+- name: 中西 雄大
+  company: 新協電子株式会社
+  pref: 東京都
+  terms:
+  - 7
+  koshien:
+  - round: 6
+    result: ファイナリスト
+  site: https://www.sinkyo.co.jp/
+- name: 齋藤 孝曉
+  company: 長後製パン株式会社
+  pref: 神奈川県
+  terms:
+  - 7
+  site: https://panya-jp.com/
+  koshien:
+  - round: 6
+    result: 地方大会出場
+- name: 栗林 礼奈
+  company: 株式会社マスヤ
+  pref: 新潟県
+  terms:
+  - 6
+  - 7
+  koshien:
+  - round: 5
+    result: ファイナリスト
+- name: 佐藤 賢
+  company: 有限会社モールドモデル
+  pref: 山梨県
+  terms:
+  - 6
+  - 7
+  koshien:
+  - round: 5
+    result: 地方大会出場
+  - round: 6
+    result: グランプリ（経済産業大臣賞）
+  site: http://www.mold-model.com/
+- name: 羽生田 大陸
+  company: 株式会社羽生田鉄工所
+  pref: 長野県
+  terms:
+  - 6
+  - 7
+  operator: true
+  koshien:
+  - round: 3
+    result: ファイナリスト
+  - round: 4
+    result: 地方大会出場
+  site: https://www.hanyuda.co.jp/
+- name: 棚元 将太郎
+  company: 大征工業株式会社
+  pref: 富山県
+  terms:
+  - 6
+  - 7
+  site: https://www.taiseikougyou.jp/
+  koshien:
+  - round: 5
+    result: 地方大会出場
+  - round: 6
+    result: 地方大会出場
+- name: 白榮 洋和
+  company: ダイエー株式会社
+  pref: 石川県
+  terms:
+  - 7
+  site: https://daieikomatsu.co.jp/
+  koshien:
+  - round: 5
+    result: 地方大会出場
+- name: 増田 悠二
+  company: 北鋼シャーリング株式会社
+  pref: 福井県
+  terms:
+  - 7
+  koshien:
+  - round: 4
+    result: 準ファイナリスト
+  site: https://hokkou-s.com/shirring/
+- name: 墨 俊希
+  company: 株式会社艶金
+  pref: 岐阜県
+  terms:
+  - 7
+  site: https://www.tsuyakin.co.jp/
+  koshien:
+  - round: 5
+    result: 地方大会出場
+- name: 齊藤 雄大
+  company: 株式会社斎藤鐵工所
+  pref: 静岡県
+  terms:
+  - 7
+  koshien:
+  - round: 5
+    result: ファイナリスト
+  site: https://saitoiron.co.jp/
+- name: 中村 慎吾
+  company: 株式会社ナカムラ
+  pref: 愛知県
+  terms:
+  - 7
+  koshien:
+  - round: 5
+    result: 地方大会出場
+  - round: 6
+    result: ファイナリスト
+  site: https://nakamurashouten.co.jp/
+- name: 川野 晃太
+  company: 川野真珠養殖
+  pref: 三重県
+  terms:
+  - 7
+  koshien:
+  - round: 5
+    result: 地方大会出場
+- name: 濵﨑 航平
+  company: 株式会社濵﨑銃砲火薬店
+  pref: 滋賀県
+  terms:
+  - 6
+  - 7
+  koshien:
+  - round: 5
+    result: ファイナリスト
+  site: https://hamasaki-guns.com/
+- name: 大西 達也
+  company: 大西建設株式会社
+  pref: 京都府
+  terms:
+  - 7
+  site: https://024kensetu.localinfo.jp/
+  koshien:
+  - round: 5
+    result: 地方大会出場
+- name: 川端 佑弥
+  company: 株式会社辰弥
+  pref: 大阪府
+  terms:
+  - 7
+  koshien:
+  - round: 6
+    result: ファイナリスト
+  site: https://www.tatsumi-kk.jp/
+- name: 小林 宏聡
+  company: 株式会社マルキン
+  pref: 兵庫県
+  terms:
+  - 7
+  koshien:
+  - round: 6
+    result: 優秀賞
+  site: https://honmamon.jp/
+- name: 大西 佑亮
+  company: ミヅホ株式会社
+  pref: 奈良県
+  terms:
+  - 6
+  - 7
+  site: https://www.mizuhosu.co.jp/
+  koshien:
+  - round: 5
+    result: 地方大会出場
+- name: 遠藤 みさと
+  company: 株式会社BEANS
+  pref: 鳥取県
+  terms:
+  - 7
+  site: https://office-beans.co.jp/
+  koshien:
+  - round: 4
+    result: 地方大会出場
+- name: 中澤 太輔
+  company: 株式会社中澤建設
+  pref: 島根県
+  terms:
+  - 6
+  - 7
+  site: https://nakazawa-ken.jp/
+  koshien:
+  - round: 4
+    result: 地方大会出場
+  - round: 5
+    result: 地方大会出場
+- name: 川上 善大
+  company: 株式会社カワカミ
+  pref: 岡山県
+  terms:
+  - 7
+  koshien:
+  - round: 6
+    result: ファイナリスト
+  site: https://kawakami.tech/
+- name: 林 秀樹
+  company: 株式会社ウッディーホーム山崎
+  pref: 広島県
+  terms:
+  - 6
+  - 7
+  site: http://www.yama-hon.com/
+  koshien:
+  - round: 5
+    result: 地方大会出場
+- name: 佐藤 史康
+  company: 株式会社佐藤商会
+  pref: 山口県
+  terms:
+  - 7
+  site: https://gift-sato.com/
+  koshien:
+  - round: 6
+    result: 地方大会出場
+- name: 山地 正城
+  company: 有限会社タウンファーマシー
+  pref: 徳島県
+  terms:
+  - 7
+  site: https://www.town-farmacy.com/
+  koshien:
+  - round: 6
+    result: 地方大会出場
+- name: 田渕 恭平
+  company: 田渕石材株式会社
+  pref: 香川県
+  terms:
+  - 7
+  site: https://www.precious-stone.org/
+  koshien:
+  - round: 6
+    result: 地方大会出場
+- name: 藤井 遼太郎
+  company: 株式会社藤井組
+  pref: 愛媛県
+  terms:
+  - 7
+  koshien:
+  - round: 6
+    result: ファイナリスト
+  site: https://group-fujii.com/
+- name: 安永 翔太
+  company: 株式会社ヤスナガ
+  pref: 福岡県
+  terms:
+  - 7
+  site: http://www.t-yasunaga.co.jp/
+  koshien:
+  - round: 5
+    result: 地方大会出場
+  - round: 6
+    result: 地方大会出場
+- name: 靏 健寿
+  company: 鶴製茶
+  pref: 佐賀県
+  terms:
+  - 6
+  - 7
+  site: http://tsuruseicha.com/
+  koshien:
+  - round: 4
+    result: 地方大会出場
+- name: 池野 辰太郎
+  company: 有限会社酒の一斗
+  pref: 長崎県
+  terms:
+  - 7
+  koshien:
+  - round: 4
+    result: 準ファイナリスト
+  site: https://sakenoitto.com/
+- name: 谷山 陽祐
+  company: 株式会社尼崎薬品
+  pref: 熊本県
+  terms:
+  - 7
+  koshien:
+  - round: 6
+    result: ファイナリスト
+  site: https://www.amayaku.com/
+- name: 藤澤 隆典
+  company: 合資会社藤澤精麦工場
+  pref: 大分県
+  terms:
+  - 7
+  koshien:
+  - round: 6
+    result: 地方大会出場
+- name: 松田 陽子
+  company: 城山ふとん店
+  pref: 宮崎県
+  terms:
+  - 7
+  koshien:
+  - round: 1
+    result: ファイナリスト
+  site: https://shiroyamafuton.com/
+- name: 富澤 英里子
+  company: 合資会社伊達醸造
+  pref: 鹿児島県
+  terms:
+  - 7
+  site: https://www.datejozo.co.jp/
+  koshien:
+  - round: 4
+    result: 地方大会出場
+  - round: 6
+    result: 地方大会出場
+- name: 梅木 悠太
+  company: 株式会社山ス伊藤商店
+  pref: 北海道
+  terms:
+  - 6
+  koshien:
+  - round: 1
+    result: ファイナリスト
+  site: https://yamasu.amebaownd.com/
+- name: 工藤 貴大
+  company: 株式会社大喜館
+  pref: 北海道
+  terms:
+  - 6
+  koshien:
+  - round: 5
+    result: ファイナリスト
+  site: https://www.taikiyu.com/
+- name: 宮島 茜
+  company: 有限会社勝山電気工事
+  pref: 群馬県
+  terms:
+  - 6
+  site: https://www.katsuyama-ew.com/
+  koshien:
+  - round: 5
+    result: 地方大会出場
+- name: 島田 真太郎
+  company: テクノツール株式会社
+  pref: 東京都
+  terms:
+  - 6
+  koshien:
+  - round: 2
+    result: ファイナリスト
+  - round: 3
+    result: 優秀賞
+  site: https://ttools.co.jp/
+- name: 小松 元気
+  company: 株式会社カネス製茶
+  pref: 静岡県
+  terms:
+  - 6
+  koshien:
+  - round: 4
+    result: ファイナリスト
+  site: https://kanes.co.jp/
+- name: 山田 美早紀
+  company: デクシオーラ株式会社
+  pref: 石川県
+  terms:
+  - 6
+  site: https://www.dexiola.co.jp/
+  koshien:
+  - round: 5
+    result: 地方大会出場
+- name: 熊田 征純
+  company: ニッケンかみそり株式会社
+  pref: 岐阜県
+  terms:
+  - 6
+  koshien:
+  - round: 5
+    result: 優秀賞
+  site: https://www.nikkenkamisori.co.jp/
+- name: 大森 玲弥
+  company: 株式会社岡崎竜城スイミングクラブ
+  pref: 愛知県
+  terms:
+  - 6
+  koshien:
+  - round: 5
+    result: 優秀賞
+  site: https://tatsuki-group.com/
+- name: 西塚 卓郎
+  company: 株式会社ダイマル
+  pref: 三重県
+  terms:
+  - 6
+  koshien:
+  - round: 3
+    result: ファイナリスト
+  site: https://tsunagu-kozai.com/
+- name: 芦田 拓弘
+  company: 株式会社あしだ
+  pref: 京都府
+  terms:
+  - 6
+  koshien:
+  - round: 4
+    result: 地方大会出場
+  - round: 5
+    result: グランプリ（経済産業大臣賞）
+  site: https://www.woody-ashida.com/
+- name: 桐島 豊
+  company: 有限会社電研
+  pref: 大阪府
+  terms:
+  - 6
+  koshien:
+  - round: 5
+    result: ファイナリスト
+  site: https://denken-alumite.co.jp/
+- name: 髙丸 泰幸
+  company: 髙丸工業株式会社
+  pref: 兵庫県
+  terms:
+  - 6
+  koshien:
+  - round: 4
+    result: 準ファイナリスト
+  site: https://www.takamaru.com/
+- name: 岸田 将志
+  company: 有限会社岸コーポレーション
+  pref: 鳥取県
+  terms:
+  - 6
+  koshien:
+  - round: 5
+    result: 地方大会出場
+- name: 若林 美樹
+  company: 株式会社若林平三郎商店
+  pref: 岡山県
+  terms:
+  - 6
+  koshien:
+  - round: 4
+    result: ファイナリスト
+  site: https://hewakaba.com/
+- name: 吉本 龍太郎
+  company: 株式会社中特ホールディングス
+  pref: 山口県
+  terms:
+  - 6
+  koshien:
+  - round: 3
+    result: ファイナリスト
+  site: https://www.chutoku-g.co.jp/
+- name: 井澤 優
+  company: 株式会社いさわ
+  pref: 徳島県
+  terms:
+  - 6
+  site: https://tagtennis.com/
+  koshien:
+  - round: 4
+    result: 地方大会出場
+- name: 山添 勢
+  company: 有限会社森清掃社
+  pref: 香川県
+  terms:
+  - 6
+  koshien:
+  - round: 4
+    result: 優秀賞
+  site: https://moriseisou.com/
+- name: 高辻 孝将
+  company: 株式会社山田屋
+  pref: 愛媛県
+  terms:
+  - 6
+  koshien:
+  - round: 5
+    result: ファイナリスト
+  site: https://yamadayamanju.jp/
+- name: 渡辺 雄輝
+  company: 渡辺鉄工株式会社
+  pref: 福岡県
+  terms:
+  - 6
+  koshien:
+  - round: 4
+    result: ファイナリスト
+  site: https://watanabe1886.com/
+- name: 山内 怜
+  company: 山内造船株式会社
+  pref: 長崎県
+  terms:
+  - 6
+  site: https://www.shipyamauchi.com/
+  koshien:
+  - round: 5
+    result: 地方大会出場
+- name: 栗田 貴宏
+  company: 有限会社育葉産業
+  pref: 大分県
+  terms:
+  - 6
+  koshien:
+  - round: 5
+    result: 優秀賞
+  site: https://www.m-mitsuba.com/
+- name: 早川 薫
+  company: 早川しょうゆみそ株式会社
+  pref: 宮崎県
+  terms:
+  - 6
+  koshien:
+  - round: 2
+    result: 優秀賞
+  site: https://hayakawa-sm.com/
+- name: 錦戸 啓人
+  company: 三和コンクリート工業株式会社
+  pref: 熊本県
+  terms:
+  - 6
+  koshien:
+  - round: 4
+    result: 準ファイナリスト
+  site: https://sanwacon.com/
+- name: 平松 佑麻
+  company: 宝来メデック株式会社
+  pref: 鹿児島県
+  terms:
+  - 6
+  koshien:
+  - round: 4
+    result: 準ファイナリスト
+  site: https://hm-inc.jp/
+- name: 新城 力
+  company: 合資会社嘉手納ブロック工業
+  pref: 沖縄県
+  terms:
+  - 6
+  site: https://kadenablock.hp.peraichi.com/
+  koshien:
+  - round: 5
+    result: 地方大会出場

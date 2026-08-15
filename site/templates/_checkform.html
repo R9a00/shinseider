@@ -1,0 +1,68 @@
+<form id="check-form" class="check-form">
+  <fieldset>
+    <legend>Q1. 生まれ年月</legend>
+    <label><input type="radio" name="q_age" value="yes" required> 1987年4月以降に生まれた（39歳以下枠）</label>
+    <label><input type="radio" name="q_age" value="no"> それより前に生まれた</label>
+  </fieldset>
+  <fieldset>
+    <legend>Q2. 立場</legend>
+    <label><input type="radio" name="q_pos" value="yes" required> 家業（中小企業）の後継予定者で、代表権はまだ持っていない</label>
+    <label><input type="radio" name="q_pos" value="alt"> 家業と別法人の代表だが、家業の承継予定または経営資源の活用がある</label>
+    <label><input type="radio" name="q_pos" value="no"> どちらでもない</label>
+  </fieldset>
+
+  <div class="optional-block">
+    <p class="optional-head">ここから下は<strong>任意</strong>です。事業承継・M&A補助金〈促進枠〉を使えそうかの見立てに使うだけで、アトツギ甲子園の応募には関係ありません。</p>
+    <fieldset>
+      <legend>Q3. 承継の時期感（任意）</legend>
+      <label><input type="radio" name="q_succ" value="yes"> 5年以内の承継を現経営者と合意できそう（またはもう合意している）</label>
+      <label><input type="radio" name="q_succ" value="maybe"> まだ話せていない・決めきれていない</label>
+      <label><input type="radio" name="q_succ" value="no"> 承継の予定はない</label>
+    </fieldset>
+    <fieldset>
+      <legend>Q4. 決算の状況（任意）</legend>
+      <label><input type="radio" name="q_fin" value="yes"> 会社として3期分の決算・申告が済んでいる</label>
+      <label><input type="radio" name="q_fin" value="no"> まだ／わからない</label>
+    </fieldset>
+  </div>
+  <button class="btn primary" type="submit">判定する</button>
+  <p class="muted">入力はあなたの端末にだけ保存されます。当サイトは一切のデータを取得しません。</p>
+</form>
+<div id="result" class="card result" hidden></div>
+<script type="application/json" id="check-data">{{ check_json | safe }}</script>
+<script>
+document.getElementById('check-form').addEventListener('submit', function(e){
+  e.preventDefault();
+  var f = new FormData(e.target);
+  var age = f.get('q_age'), pos = f.get('q_pos'), succ = f.get('q_succ'), fin = f.get('q_fin');
+  var data = JSON.parse(document.getElementById('check-data').textContent);
+  var days = Math.max(0, Math.ceil((new Date(data.entry_deadline) - new Date()) / 86400000));
+  var html = '';
+  var koshienOK = (age === 'yes') && (pos === 'yes' || pos === 'alt');
+  if (koshienOK) {
+    html += '<h2>アトツギ甲子園：エントリー資格に適合の見込み</h2>' +
+      '<p>締切（11/25 18:00）まで<strong>あと' + days + '日</strong>。出場（地方予選含む）まで進むと、事業承継・M&A補助金の審査で加点の対象になります。</p>' +
+      '<p>次の一歩: <a href="entry.html">エントリー文をつくる</a>（30分から）</p>';
+  } else {
+    html += '<h2>アトツギ甲子園：資格要件に合わない可能性</h2><p>年齢・立場の要件は公式のエントリー要領で必ず確認してください（例外や詳細条件があります）。</p>';
+  }
+  if (succ === 'yes' && fin === 'yes') {
+    html += '<h3>補助金の見立て：主要な入口要件を満たしそうです</h3><p>次の一歩は、認定支援機関（顧問税理士→金融機関→商工会議所の順で相談）と投資内容の具体化。<a href="subsidy.html">要件の全リスト→</a></p>';
+  } else if (succ === 'maybe') {
+    html += '<h3>いちばん重い一歩は、書類ではなく対話かもしれません</h3><p>この補助金は「5年以内の承継」を決めないと使えません。アトツギ甲子園への挑戦は、現経営者とその話を始めるきっかけと締切になってくれます。</p>';
+  } else if (succ === 'no') {
+    html += '<h3>補助金の見立て：この枠は対象外の見込み</h3><p>承継予定があることが前提の制度のためです。甲子園への挑戦や、他の制度の検討とは別の話です。</p>';
+  } else if (fin === 'no') {
+    html += '<h3>補助金の見立て：3期分の決算がまだの場合は使えません</h3><p>まず会社の決算状況を確認してみてください。満たせない場合も、省力化投資補助金など他の制度があります。</p>';
+  } else if (succ === 'yes') {
+    html += '<h3>補助金の見立て：承継の見通しは良さそうです</h3><p>決算の状況（Q4）がわかれば、入口要件の見立てまで出せます。</p>';
+  } else {
+    html += '<p class="muted">補助金の見立て（任意のQ3・Q4）は、未回答のままで大丈夫です。気になったときに準備室でいつでも確認できます。</p>';
+  }
+  html += '<p>結果はこの端末に保存済みです。<a href="workspace.html">現在地のページで全体を見る →</a></p>';
+  html += '<p class="muted">この判定は簡易チェックです。適用可否は各制度の公募要領原文が常に優先します。</p>';
+  var r = document.getElementById('result');
+  r.innerHTML = html; r.hidden = false; r.scrollIntoView({behavior:'smooth'});
+  try { localStorage.setItem('shinseider_check', JSON.stringify({age:age,pos:pos,succ:succ,fin:fin,ts:new Date().toISOString()})); } catch(_) {}
+});
+</script>

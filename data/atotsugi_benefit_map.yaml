@@ -1,0 +1,120 @@
+schema_version: 2.0-poc
+event:
+  id: atotsugi_koshien
+  name: アトツギ甲子園
+  round: 7
+  official_url: https://atotsugi-koshien.go.jp/
+  organizer: 中小企業庁
+  eligibility:
+    summary: 39歳以下（1987年4月以降生まれ）で代表権を持たない後継予定者
+    details:
+    - 親族外承継も対象
+    - 家業と別法人の代表でも可（ただし家業承継予定か、家業の経営資源活用が必須）
+    note: 公式文言は「後継予定者」。承継を決めていない人が出られるかは公式に明言がなく、
+      サイト上で「継ぐと決める前でも出られる」とは書かないこと（2026-08-15にFAQまで確認して言い過ぎと判断、文言撤回）
+    provenance:
+      source_url: https://www.meti.go.jp/press/2026/07/20260715003.html
+      accessed: '2026-08-06'
+      confidence: verified
+      also:
+      - source_url: https://atotsugi-koshien.go.jp/about
+        accessed: '2026-08-15'
+        note: 挑戦資格の注釈原文（代表権を持つ前・親族外含む・別法人代表の条件）を確認
+  schedule:
+    entry_period:
+      start: '2026-08-03'
+      end: 2026-11-25T18:00+09:00
+      provenance:
+        source_url: https://www.meti.go.jp/press/2026/07/20260715003.html
+        accessed: '2026-08-06'
+        confidence: verified
+    document_deadline:
+      value: 2026-11-27T12:00+09:00
+      provenance:
+        source_url: https://www.meti.go.jp/press/2026/07/20260715003.html
+        accessed: '2026-08-06'
+        confidence: verified
+    regional_qualifiers:
+      start: '2027-01-19'
+      end: '2027-02-08'
+      provenance:
+        source_url: https://www.meti.go.jp/press/2026/07/20260715003.html
+        accessed: '2026-08-06'
+        confidence: verified
+    final:
+      date: '2027-02-26'
+      provenance:
+        source_url: https://www.meti.go.jp/press/2026/07/20260715003.html
+        accessed: '2026-08-06'
+        confidence: verified
+  application_process:
+    steps:
+    - 会員登録のうえ、公式エントリーフォームに基本情報とエントリーにあたっての質問事項を入力（〜11/25 18:00）
+    - エントリー完了後、事務局から応募書類のサンプルフォーマットがメールで届く
+    - 応募書類をフォーマットで作成し、PDFに変換してメール提出。プロフィール写真も提出（〜11/27 12:00）
+    notes:
+    - 応募書類は受付期間内であれば出し直し可
+    - 推薦エントリーの締切は11/20 12:00
+    - 書類審査は提出した応募書類をもとに有識者が実施（公式FAQ）
+    - エントリーフォーム内の設問文面は会員登録後のみ閲覧可能なため未確認（実エントリー時に確認する）
+    provenance:
+      source_url: https://atotsugi-koshien.go.jp/entry_flow
+      accessed: '2026-08-12'
+      confidence: verified
+benefit_ladder:
+- status: entry
+  label: エントリー
+  unlocks:
+  - type: exposure
+    detail: 公式サイト特設ページへの掲載
+    comment: これだけで、自分の会社、事業が人目に触れる可能性が増します。
+- status: document_submitted
+  label: 書類提出
+  unlocks:
+  - type: feedback
+    detail: 審査委員からのコメント・アドバイス
+    comment: 自分の事業構想に対して忖度のないコメントがもらえます。
+- status: regional_qualifier
+  label: 地方大会出場（書類審査通過）
+  unlocks:
+  - type: subsidy_preference
+    subsidy_id: jigyo_shokei_ma
+    effect: 優遇措置（要領の加点事由に明記）
+  - type: subsidy_preference
+    subsidy_id: shoryokuka_ippan
+    subsidy_name: 中小企業省力化投資補助金（一般型）
+    effect: 優遇措置
+  - type: subsidy_preference
+    subsidy_id: gotech_rd_support
+    subsidy_name: Go-Tech事業（成長型中小企業等研究開発支援事業）
+    effect: 優遇措置
+- status: finalist
+  label: ファイナリスト・準ファイナリスト
+  unlocks:
+  - type: subsidy_preference
+    subsidy_id: jizokuka
+    subsidy_name: 小規模事業者持続化補助金
+    effect: 加点措置
+  - type: subsidy_preference
+    subsidy_id: jigyo_shokei_ma
+    effect: 重加点措置
+  - type: opportunity
+    detail: SusHi Tech Tokyo 2027への出展機会（予定）
+conditions_and_notes:
+- 各補助金の優遇を受けるには、アトツギ甲子園にエントリーした会社名又は事業者名での申請が必要（公式FAQ）
+- 特典ページ（優遇＝地方大会出場者）と15次公募要領の加点条項（出場者=地方予選含む）で表現が異なる。適用境界は各公募回の要領原文が正であり、公募回ごとに再確認が必要
+- 第7回出場者のステータス確定は書類審査通過時（推定2026年末〜2027年1月）。その後に申請受付が始まる公募回（事業承継・M&A補助金17次以降相当）で加点が使える見込み
+provenance:
+- scope: benefit_ladder
+  source_url: https://atotsugi-koshien.go.jp/about/
+  source_title: アトツギ甲子園 開催概要（特典）
+  accessed: '2026-08-06'
+  confidence: verified
+- scope: conditions_and_notes[0]
+  source_url: https://atotsugi-koshien.go.jp/faq/
+  accessed: '2026-08-06'
+  confidence: verified
+- scope: conditions_and_notes[1]
+  source_url: https://shoukei-mahojokin.go.jp/assets/documents/r7h/15-succession/requirements_succession_15.pdf
+  accessed: '2026-08-06'
+  confidence: verified

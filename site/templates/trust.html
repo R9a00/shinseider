@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}情報の確かさについて | {{ site_name }}{% endblock %}
+{% block main %}
+<article>
+<h1>情報の確かさについて</h1>
+<p class="lead">ここに載っている期日・金額・要件が「いつの、何にもとづく情報か」を、いつでも確かめられるようにしています。</p>
+
+<h2>掲載の原則</h2>
+<ul>
+  <li>情報は公式サイト・公募要領などの一次資料から取り、各ページに出典へのリンクと確認日を書いています</li>
+  <li>もし掲載内容と公式の記載が食い違っていたら、常に公式の公募要領が正しい方です</li>
+  <li>募集の時期や内容は変わっていくものなので、取得元の更新を定期的に確認し、締切・金額・要件に関わる変更は内容を確かめてから反映しています</li>
+</ul>
+
+<h2>扱っているデータと出典</h2>
+<div class="src-list">
+{% for d in datasets %}
+  <div class="src-item">
+    <b>{{ d.name }}</b>
+    <p>{{ d.how }}。<span class="muted">最終確認 {{ d.accessed }}</span></p>
+    <p class="src-links">{% for l in d.links %}<a href="{{ l.url }}" {% if l.url.startswith('http') %}rel="noopener"{% endif %}>{{ l.label }}</a>{% if not loop.last %} ／ {% endif %}{% endfor %}</p>
+  </div>
+{% endfor %}
+</div>
+
+<h2>更新履歴</h2>
+<ul class="commit-log">
+{% for u in updates %}
+  <li><span class="muted">{{ u.date }}</span> {{ u.text }}</li>
+{% endfor %}
+</ul>
+
+<h2>このサイトにできないこと</h2>
+<ul>
+  <li>採択の保証・確約はできません</li>
+  <li>申請代行は行いません（無償の自己作成支援です）</li>
+  <li>掲載情報より公募要領原文が常に優先します</li>
+  <li>重要な判断は認定経営革新等支援機関・専門家にご相談ください</li>
+</ul>
+
+<h2>データの扱い</h2>
+<p>チェックやエントリー文の入力は、あなたの端末のブラウザ内にのみ保存されます。入力内容がサイト側に送信されることはありません。</p>
+<p>どのページが読まれているかを知るため、アクセス解析に <a href="https://www.goatcounter.com/" rel="noopener">GoatCounter</a> を利用しています。閲覧ページのURL・参照元・ブラウザの種類などが送信されますが、Cookieは使わず、個人を特定する情報は収集していません。</p>
+</article>
+{% endblock %}

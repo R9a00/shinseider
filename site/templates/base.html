@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ site_name }}{% endblock %}</title>
+<meta name="description" content="{% block desc %}アトツギ甲子園への挑戦から、承継を機にした成長投資までを、正確な情報で支えるアトツギのための準備室{% endblock %}">
+<link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+{% if preview %}
+<div class="preview-banner">プレビュー版（公開前の確認用） — 数値・期日は必ず公式の公募要領でご確認ください</div>
+{% endif %}
+<div class="site-head-wrap">
+  <header class="site-header">
+    <a class="brand" href="index.html"><img class="brand-logo" src="static/logo.png" alt="シンセイダー"><span class="brand-sub">アトツギのための準備室</span></a>
+    <nav aria-label="サイト内">
+      {# 前半=やること（行動順）、区切りの後=知ること。現在地は .on で表示 #}
+      <a href="check.html" {% if page == 'check' %}class="on" aria-current="page"{% endif %}>出られるか</a>
+      <a href="schedule.html" {% if page == 'schedule' %}class="on" aria-current="page"{% endif %}>間に合うか</a>
+      <a href="entry.html" {% if page == 'entry' %}class="on" aria-current="page"{% endif %}>エントリー文</a>
+      <a href="ambassadors.html" {% if page == 'ambassadors' %}class="on" aria-current="page"{% endif %}>相談先</a>
+      <a href="workspace.html" {% if page == 'workspace' %}class="on" aria-current="page"{% endif %}>現在地</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="news.html" {% if page == 'news' %}class="on" aria-current="page"{% endif %}>動き</a>
+      <a href="subsidy.html" {% if page == 'subsidy' %}class="on" aria-current="page"{% endif %}>補助金</a>
+      <a href="trust.html" {% if page == 'trust' %}class="on" aria-current="page"{% endif %}>情報の確かさ</a>
+    </nav>
+    <a class="days-chip" href="schedule.html" title="今日から始める場合の道筋">締切まで<b class="days-left" data-deadline="{{ entry_deadline }}">—</b>日</a>
+  </header>
+</div>
+<main>
+{% block main %}{% endblock %}
+</main>
+<footer class="site-footer">
+  <p>本サイトは、中小企業庁が任命するアトツギ甲子園アンバサダーが運営する非公式・無償の申請支援ツールです。申請の成否・情報の完全性を保証するものではありません。必ず<a href="https://atotsugi-koshien.go.jp/" rel="noopener">アトツギ甲子園公式</a>・各補助金の公募要領原文をご確認ください。</p>
+  <p class="muted">ビルド: {{ built_at }} ／ 掲載情報には取得日と出典を付記しています。<a href="trust.html">データの信頼性について</a> ／ <a href="about.html">運営者と方針</a></p>
+</footer>
+<script>
+document.querySelectorAll('.days-left').forEach(function(el){
+  var d = new Date(el.getAttribute('data-deadline'));
+  var n = Math.ceil((d - new Date()) / 86400000);
+  el.textContent = Math.max(0, n);
+});
+</script>
+<script data-goatcounter="https://shinseider.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

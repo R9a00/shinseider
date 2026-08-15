@@ -1,0 +1,37 @@
+datasets:
+- name: アトツギ甲子園の日程・応募の流れ
+  how: 公式サイトと経済産業省の発表から取得。応募方法はエントリー・推薦の流れのページで確認
+  accessed: '2026-08-12'
+  links:
+  - label: 公式サイト（エントリー・推薦の流れ）
+    url: https://atotsugi-koshien.go.jp/entry_flow
+  - label: 経産省発表（第7回）
+    url: https://www.meti.go.jp/press/2026/07/20260715003.html
+- name: 事業承継・M&A補助金〈促進枠〉の金額・要件・加点
+  how: 15次公募要領の原文から取得。金額・要件・加点事由は原文の該当箇所を引用
+  accessed: '2026-08-06'
+  links:
+  - label: 公募要領（中小企業庁 補助金サイト）
+    url: https://shoukei-mahojokin.go.jp/
+- name: 地域アンバサダーの名簿（第7回・第6回）
+  how: 任命発表のプレスリリースから作成。同姓・似た氏名は運営者が本人確認して区別
+  accessed: '2026-08-14'
+  links:
+  - label: 第7回任命（2026年7月15日）
+    url: https://kyodonewsprwire.jp/release/202607132419
+  - label: 第6回任命（2025年7月30日）
+    url: https://kyodonewsprwire.jp/release/202507302938
+- name: アンバサダーの出場歴
+  how: 第1回〜第6回の地方大会・決勝大会に関する公式発表と全員を照合。地方大会出場以上を記載
+  accessed: '2026-08-15'
+  links:
+  - label: 出典の一覧は相談先ページ末尾に記載
+    url: ambassadors.html
+- name: 第7回のイベント・期日とニュース
+  how: 公式サイトのイベントページと中小企業庁・経済産業省の発表から取得。開催日時・会場は各ページの原文で確認
+  accessed: '2026-08-15'
+  links:
+  - label: 公式イベント一覧
+    url: https://atotsugi-koshien.go.jp/event/
+  - label: 中小企業庁 発表（2026-08-03）
+    url: https://www.chusho.meti.go.jp/zaimu/shoukei/2026/260803.html

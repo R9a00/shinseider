@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}動き — 第7回の日程と公式発表 | {{ site_name }}{% endblock %}
+{% block desc %}第7回アトツギ甲子園の公式イベント・締切・地方大会の日程と、公式発表の記録。カレンダー登録用の書き出しつき。{% endblock %}
+{% block main %}
+<h1>動き — 第7回の日程と公式発表</h1>
+<p class="lead">公式に発表されたイベントと期日、発表そのものの記録です。各項目に出典を付けています。締切や大会日程は、下のリンクからお使いのカレンダーに登録できます。</p>
+
+<h2 class="tight" style="margin-top:2.4rem">この先の日程</h2>
+<p class="muted">各行の「カレンダーに追加」で、その日程を自分のGoogleカレンダーに入れられます。<a href="koshien7.ics" download>まとめて追加（.ics）</a>はApple・Outlook等のカレンダー向けです（今日以降の全日程入り）。</p>
+<ol class="evlist">
+  {% for e in events %}
+  <li class="ev" data-date="{{ e.end | default(e.start) }}"{% if e.past %} hidden{% endif %}>
+    <span class="ev-date">{{ e.date_disp }}</span>
+    <div class="ev-body">
+      <b>{{ e.title }}</b>{% if e.time %}<span class="ev-time">{{ e.time }}</span>{% endif %}
+      <span class="ev-meta">
+        {%- if e.venue %}{{ e.venue }}{% elif e.format %}{{ e.format }}{% endif -%}
+        {%- if e.note %}{% if e.venue or e.format %}／{% endif %}{{ e.note }}{% endif -%}
+      </span>
+      <span class="ev-links"><a href="{{ e.gcal_url }}" target="_blank" rel="noopener">カレンダーに追加</a>・<a href="{{ e.source_url }}" rel="noopener">出典</a></span>
+    </div>
+  </li>
+  {% endfor %}
+</ol>
+
+<h2>カレンダーで見る</h2>
+<div class="calwrap" id="calwrap">
+  <p class="cal-nav">
+    <button class="linklike" id="cal-prev" type="button">← 前の月</button>
+    <span class="cal-title" id="cal-title"></span>
+    <button class="linklike" id="cal-next" type="button">次の月 →</button>
+  </p>
+  {% for mo in months %}
+  <table class="calgrid" data-ym="{{ mo.y }}-{{ '%02d' | format(mo.m) }}" data-title="{{ mo.y }}年{{ mo.m }}月" hidden>
+    <thead><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr></thead>
+    <tbody>
+      {% for wk in mo.weeks %}
+      <tr>
+        {% for d in wk %}
+        <td class="{% if not d.in_month %}out{% endif %}" data-iso="{{ d.iso }}">
+          {% if d.in_month %}
+          <span class="cal-num">{{ d.day }}</span>
+          {% for e in d.events %}
+          <span class="cal-ev k-{{ e.kind }}" title="{{ e.title }}{% if e.time %}（{{ e.time }}）{% endif %}">{{ e.label }}</span>
+          {% endfor %}
+          {% endif %}
+        </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endfor %}
+  <p class="cal-legend muted"><span class="cal-ev k-deadline">締切</span>／<span class="cal-ev k-taikai">地方大会（都市名）</span>／<span class="cal-ev k-final">決勝</span>／<span class="cal-ev k-briefing">説明会など</span>。今日の日付は枠で囲んで表示。</p>
+</div>
+
+<h2>発表の記録</h2>
+<ul class="newslist">
+  {% for n in news %}
+  <li><span class="news-date">{{ n.date[:4] }}.{{ n.date[5:7] }}.{{ n.date[8:10] }}</span> {{ n.title }} <a href="{{ n.source_url }}" rel="noopener">出典 ↗</a></li>
+  {% endfor %}
+</ul>
+
+<div class="note">
+  <p>{{ ev_note }}。新しい発表は、公式サイト・中小企業庁/経済産業省の発表を確認のうえ追記します。</p>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+(function(){
+  // 終わった日程は表示しない（ビルド時のhiddenに加え、閲覧時にも再判定）
+  var today = new Date(); today.setHours(0,0,0,0);
+  var visible = 0;
+  document.querySelectorAll('.ev').forEach(function(li){
+    var d = new Date(li.getAttribute('data-date') + 'T23:59:59');
+    if (d < today) { li.hidden = true; } else { visible++; }
+  });
+  if (!visible) {
+    var done = document.createElement('p');
+    done.className = 'muted';
+    done.textContent = '第7回の日程はすべて終了しました。次の発表があり次第、ここに載せます。';
+    document.querySelector('.evlist').after(done);
+  }
+  // 月めくり: プリレンダ済みの月を1つずつ表示。初期表示は今日の月（範囲外なら最初/最後）
+  var grids = Array.prototype.slice.call(document.querySelectorAll('.calgrid'));
+  if (!grids.length) return;
+  var ym = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+  var idx = grids.findIndex(function(g){ return g.getAttribute('data-ym') === ym; });
+  if (idx === -1) idx = (ym < grids[0].getAttribute('data-ym')) ? 0 : grids.length - 1;
+  var title = document.getElementById('cal-title');
+  function show(i){
+    idx = Math.max(0, Math.min(grids.length - 1, i));
+    grids.forEach(function(g, j){ g.hidden = (j !== idx); });
+    title.textContent = grids[idx].getAttribute('data-title');
+    document.getElementById('cal-prev').disabled = (idx === 0);
+    document.getElementById('cal-next').disabled = (idx === grids.length - 1);
+  }
+  document.getElementById('cal-prev').addEventListener('click', function(){ show(idx - 1); });
+  document.getElementById('cal-next').addEventListener('click', function(){ show(idx + 1); });
+  // 今日のセルに印
+  var iso = ym + '-' + String(today.getDate()).padStart(2, '0');
+  var cell = document.querySelector('.calgrid td[data-iso="' + iso + '"]');
+  if (cell) cell.classList.add('today');
+  show(idx);
+})();
+</script>
+{% endblock %}

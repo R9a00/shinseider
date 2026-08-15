@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}事業承継・M&A補助金〈事業承継促進枠〉 | {{ site_name }}{% endblock %}
+{% block main %}
+<article>
+<h1>事業承継・M&A補助金〈事業承継促進枠〉</h1>
+<p class="lead">{{ track.target_persona }}。アトツギ甲子園の特典が最も強く効く補助金（唯一、出場＝優遇・ファイナリスト＝重加点の2階層）。</p>
+<p class="note">本ページは15次公募要領（2026年8月6日取得）に基づいています。申請にあたっては、必ず最新の公募要領原文をご確認ください。</p>
+
+<h2>金額・補助率</h2>
+<table>
+<tr><th>補助下限</th><td>{{ "{:,}".format(track.amount.min_yen) }}円</td></tr>
+<tr><th>補助上限（基本）</th><td>{{ "{:,}".format(track.amount.max_yen) }}円</td></tr>
+<tr><th>補助上限（賃上げ要件達成時）</th><td>{{ "{:,}".format(track.amount.max_yen_with_wage_raise) }}円 <span class="muted">（給与支給総額3%以上上昇）</span></td></tr>
+<tr><th>廃業費上乗せ（併用時）</th><td>{{ "{:,}".format(track.amount.haigyo_addon_max_yen) }}円以内</td></tr>
+<tr><th>補助率</th><td>小規模事業者等 {{ track.subsidy_rate.small_business }} ／ その他 {{ track.subsidy_rate.default }}</td></tr>
+</table>
+
+<h2>主な要件（落とすと申請不可のもの）</h2>
+<ul class="req-list">
+{% for r in s.requirements['items'] if r.severity == 'block' %}
+  <li><strong>{{ r.label }}</strong>{% if r.note %} <span class="muted">— {{ r.note }}</span>{% endif %}</li>
+{% endfor %}
+</ul>
+
+<h2>加点事由（アトツギ甲子園はここに載っている）</h2>
+<ol class="bonus-list">
+{% for b in s.scoring.bonus_points %}
+  <li{% if b.id == 'atotsugi_koshien' %} class="highlight"{% endif %}>
+    {{ b.name }}
+    {% if b.id == 'atotsugi_koshien' %}
+      <blockquote class="evidence small">「{{ b.requirement_quote }}」<br>
+      <span class="muted">証憑: {{ b.evidence }} ／ ファイナリストは{{ b.finalist_treatment }}</span></blockquote>
+    {% endif %}
+  </li>
+{% endfor %}
+</ol>
+
+<h2>審査の4観点（＝事業計画の章立て）</h2>
+<ul>
+{% for a in s.scoring.evaluation_axes %}
+  <li><strong>{{ a.name }}</strong> — {{ a.gist }}</li>
+{% endfor %}
+</ul>
+
+<h2>公募スケジュール</h2>
+<ul>
+{% for r in s.rounds %}
+  <li>第{{ r.number }}次:
+    {% if r.status == 'closed' %}受付終了（{{ r.application_period.start }}〜{{ r.application_period.end[:10] }}）
+    {% elif r.status == 'expected' %}未発表 <span class="muted">— {{ r.note }}</span>
+    {% else %}{{ r.status }}{% endif %}
+  </li>
+{% endfor %}
+</ul>
+<p class="note">15次実績では公募開始から締切まで約1か月。<strong>公募が開いてから準備を始めると間に合いません。</strong>今のうちに要件と書類を揃えておくことに、このサイトの意味があります。</p>
+
+<h2>出典</h2>
+<ul class="sources">
+  <li><a href="{{ s.tracks[0].provenance.source_url }}" rel="noopener">{{ s.tracks[0].provenance.source_title }}</a>（取得: {{ s.tracks[0].provenance.accessed }}）</li>
+  <li><a href="{{ s.portal_url }}" rel="noopener">公式ポータル</a></li>
+</ul>
+</article>
+{% endblock %}

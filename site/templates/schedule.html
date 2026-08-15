@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}今日から始める道筋 | {{ site_name }}{% endblock %}
+{% block main %}
+<h1>今日から始める道筋</h1>
+<p class="lead">第7回アトツギ甲子園のエントリー締切は 2026年11月25日 18:00（書類提出は 11/27 12:00）。今日から始めた場合の現実的な進め方を、残り日数から逆算して表示しています。</p>
+
+<div class="card">
+  {% include "_pace.html" %}
+</div>
+
+<section>
+  <h2>フェーズごとの中身</h2>
+  <ol class="ladder">
+    <li class="ladder-step">
+      <div class="ladder-status">現経営者との対話</div>
+      <p>エントリーは会社名・事業者名で行うため、いずれ必ず通る話です。「アトツギ甲子園に出てみたい」という切り出し方なら、承継の話を自然に始められます。</p>
+    </li>
+    <li class="ladder-step">
+      <div class="ladder-status">エントリー文の骨子をつくる</div>
+      <p><a href="entry.html">「エントリー文をつくる」機能</a>から、骨格となる部分を作成可能です。ご自身のAIを使ってまとめていくプロセスを提供しています。1〜2日あれば形になります。</p>
+    </li>
+    <li class="ladder-step">
+      <div class="ladder-status">申請書の磨き上げ</div>
+      <p>自分でなんども読み直す、現経営者や周りの人に見せる。<a href="entry.html#rehearsal">複数のAIで提出前チェックをする</a>。<a href="ambassadors.html">アンバサダー</a>にチェックを依頼するなど、様々な方法で申請書の磨き上げができます。</p>
+    </li>
+    <li class="ladder-step">
+      <div class="ladder-status">申請書の送信</div>
+      <p><a href="https://atotsugi-koshien.go.jp/" rel="noopener">公式サイト</a>から。<a href="https://form.atotsugi-koshien.go.jp/register" rel="noopener">会員登録</a>が必要なので時間のある時に登録だけ済ませておきましょう。エントリー（〜11/25 18:00）と応募書類のPDF提出（〜11/27 12:00）は別の手続きです。</p>
+    </li>
+  </ol>
+</section>
+
+<section>
+  <h2>エントリー後の日程</h2>
+  <p>11月25日は最初の締切です。日程は書類審査、地方大会、決勝へと続き、補助金の加点はその後の公募で使います。</p>
+  <ol class="roadmap">
+    <li>
+      <span class="rm-when">いま<br>〜 11/25</span>
+      <div class="rm-body">
+        <strong>準備とエントリー</strong>
+        <p>出られるかの確認、現経営者との対話、<a href="entry.html">エントリー文づくり</a>、と進めてエントリーへ。ふだん使っているAIと相談しながらで構いません。<span class="muted">エントリー締切 11/25 18:00・書類提出 11/27 12:00</span></p>
+      </div>
+    </li>
+    <li>
+      <span class="rm-when">12月<br>〜 1月</span>
+      <div class="rm-body">
+        <strong>書類審査</strong>
+        <p>提出した全員に、審査委員からコメントが届きます。通過すれば地方大会へ。この時点で事業承継・M&A補助金の加点対象になります。</p>
+      </div>
+    </li>
+    <li>
+      <span class="rm-when">2027<br>1/19–2/8</span>
+      <div class="rm-body">
+        <strong>地方大会</strong>
+        <p>全国のブロックごとのピッチです。勝ち上がってファイナリストになると、持続化補助金の加点と、事業承継・M&A補助金の重加点が加わります。</p>
+      </div>
+    </li>
+    <li>
+      <span class="rm-when">2027<br>2/26</span>
+      <div class="rm-body">
+        <strong>決勝大会</strong>
+        <p>ファイナリストによる全国決勝です。大会テーマは「実現したい未来を語れ」。</p>
+      </div>
+    </li>
+    <li>
+      <span class="rm-when">その先</span>
+      <div class="rm-body">
+        <strong>大会の後</strong>
+        <p>書いた事業計画と大会の加点を、承継にともなう補助金申請に使う段階です。このサイトの補助金ページは、その申請を想定しています。</p>
+      </div>
+    </li>
+  </ol>
+</section>
+
+<section>
+  <h2>まだ出られるか確かめていない場合</h2>
+  <p><a href="check.html">30秒の確認</a>で、応募資格（39歳以下・後継予定者）と、その先の補助金の見立てがわかります。</p>
+</section>
+{% endblock %}

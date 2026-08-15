@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block main %}
+<div class="status-strip">
+  <span>第7回アトツギ甲子園 エントリー受付中</span>
+  <span class="sep">｜</span>
+  <span>締切 11/25 18:00（あと<strong class="days-left" data-deadline="{{ entry_end }}">—</strong>日）</span>
+  <span class="sep">｜</span>
+  <span>書類提出 11/27 12:00</span>
+  <span class="sep">｜</span>
+  <a href="schedule.html">道筋 →</a>
+</div>
+
+<section class="tool-head">
+  <h1>現在地<span class="ws-tag">試作版</span></h1>
+  <p class="lead">ここまでの進み具合と、11/25までにやることをまとめた画面です。入力はあなたの端末にだけ保存されます。当サイトは一切のデータを取得しません。</p>
+</section>
+
+<div class="card ws-status" id="ws-status" hidden>
+  <h2 class="tight">チェックの結果</h2>
+  <p id="ws-status-text"></p>
+  <p class="muted"><a href="#ws-check">チェックをやり直す</a></p>
+</div>
+
+<div class="card ws-entry" id="ws-entry" data-total="{{ entry_total }}">
+  <h3 class="tight">甲子園エントリー文</h3>
+  <p id="ws-entry-text" class="muted">まだ始めていません。5つの問いに答えるだけです。</p>
+  <a href="entry.html">エントリー文をつくる →</a>
+</div>
+
+<section class="card tool-card" id="ws-check">
+  <h2 class="tight">出られるか、30秒で確認</h2>
+  <p class="muted">未回答ならここから。回答に応じて、見立てと次の一歩が変わります。</p>
+  {% include "_checkform.html" %}
+</section>
+
+<section>
+  <h2>制度の事実</h2>
+  <div class="fact-grid">
+    <div class="card">
+      <h3 class="tight">出場すると加点される</h3>
+      <p class="small-quote">「公募申請時点で、申請者の代表者（予定を含む。）が『アトツギ甲子園』の出場者（地方予選を含む。）であること」</p>
+      <p class="muted">事業承継・M&A補助金 15次公募要領・加点事由⑧（2026-08-06確認）</p>
+    </div>
+    <div class="card">
+      <h3 class="tight">特典は段階式</h3>
+      <table class="compact">
+        <tr><td>エントリー</td><td>公式サイト掲載</td></tr>
+        <tr><td>書類提出</td><td>審査委員コメント</td></tr>
+        <tr><td><strong>地方大会出場</strong></td><td>事業承継・M&A／省力化／Go-Tech 優遇</td></tr>
+        <tr><td><strong>ファイナリスト</strong></td><td>持続化 加点／事業承継・M&A <strong>重加点</strong></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3 class="tight">本命の枠</h3>
+      <p>事業承継促進枠：上限800万円（賃上げで1,000万円）・補助率最大2/3。5年以内に承継予定の後継者の成長投資が対象。<span class="muted">（15次要領・8/6確認）</span></p>
+      <a href="subsidy.html">要件・加点・審査観点 →</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>11/25までの道筋</h2>
+  <ol class="timeline">
+    <li><strong>いま</strong> — 出られるかを確かめ、現経営者と承継の話を始める</li>
+    <li><strong>〜10月</strong> — エントリー文をつくり、読み合わせて磨く</li>
+    <li><strong>〜11/25 18:00</strong> — エントリー（<a href="https://atotsugi-koshien.go.jp/" rel="noopener">公式サイト</a>）</li>
+    <li><strong>2027/1/19–2/8</strong> — 地方大会。ここまで進むと補助金審査の加点対象</li>
+    <li><strong>2027年公募〜</strong> — 加点を持って事業承継・M&A補助金へ</li>
+  </ol>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+document.querySelectorAll('.days-left').forEach(function(el){
+  var d = new Date(el.getAttribute('data-deadline'));
+  el.textContent = Math.max(0, Math.ceil((d - new Date()) / 86400000));
+});
+// 前回チェック結果の復元（この端末のブラウザ内のみ）
+try {
+  var s = JSON.parse(localStorage.getItem('shinseider_check') || 'null');
+  if (s && s.ts) {
+    var kg = (s.age === 'yes') && (s.pos === 'yes' || s.pos === 'alt');
+    var parts = [];
+    parts.push('アトツギ甲子園: ' + (kg ? '適合の見込み' : '要件の確認が必要'));
+    if (s.succ === 'yes' && s.fin === 'yes') parts.push('事業承継促進枠: 入口要件を満たす見込み');
+    else if (s.succ === 'maybe') parts.push('次の一歩: 現経営者との対話（承継の意思と時期）');
+    else if (s.fin === 'no') parts.push('促進枠は3期分の決算が前提');
+    var d2 = new Date(s.ts);
+    document.getElementById('ws-status-text').textContent =
+      parts.join(' ／ ') + '（' + (d2.getMonth()+1) + '/' + d2.getDate() + ' チェック）';
+    document.getElementById('ws-status').hidden = false;
+  }
+} catch (_) {}
+// エントリー骨子の進捗
+try {
+  var pj = JSON.parse(localStorage.getItem('shinseider_project') || 'null');
+  if (pj && pj.entry && pj.entry.sections) {
+    var n = 0, secs = pj.entry.sections;
+    Object.keys(secs).forEach(function(k){ if ((secs[k] || '').trim()) n++; });
+    if (n > 0) {
+      var total = document.getElementById('ws-entry').getAttribute('data-total');
+      document.getElementById('ws-entry-text').textContent = '骨子 ' + n + '/' + total + ' 節が埋まっています。続きから再開できます。';
+    }
+  }
+} catch (_) {}
+</script>
+{% endblock %}

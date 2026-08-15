@@ -1,0 +1,11 @@
+# Render Blueprint — シンセイダーを静的サイトとして配信する定義
+# 同じURL（https://shinseider.onrender.com）を使い続けるための前提:
+#   このリポジトリの内容を GitHub の R9a00/shinseider に置き、
+#   Render側でサービス名を "shinseider" にする（詳細は docs/DEPLOY.md）
+services:
+  - type: web
+    name: shinseider
+    runtime: static
+    buildCommand: pip install --quiet pyyaml jinja2 && python3 site/build.py
+    staticPublishPath: site/dist
+    autoDeploy: true

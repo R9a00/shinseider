@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}相談できる人 — 地域アンバサダー | {{ site_name }}{% endblock %}
+{% block desc %}アトツギ甲子園の地域アンバサダー（各都道府県の先輩アトツギ）を地図と一覧から探せます。歴代の名簿も。{% endblock %}
+{% block main %}
+<h1>相談できる人 — 地域アンバサダー</h1>
+<p class="lead">アトツギ甲子園の過去ファイナリストを中心に、中小企業庁が任命した各地の先輩アトツギです。地域で後継者向けのセミナーやトークセッションを開いていて、エントリー前の相談相手になります。</p>
+
+<h2 class="tight" style="margin-top:2.5rem">地図から</h2>
+<p class="muted">色の付いた都道府県に現任のアンバサダーがいます。押すと一覧に移動します。</p>
+<div class="jpmap" role="navigation" aria-label="都道府県からアンバサダーを探す">
+{{ jmap_svg | safe }}
+</div>
+<p class="muted map-credit">地図: <a href="https://github.com/geolonia/japanese-prefectures" rel="noopener">Geolonia japanese-prefectures</a>（原典: Wikipedia 日本地図.svg）を配色・構成調整して使用。沖縄県は枠内に表示、鹿児島県の一部離島（トカラ・奄美）は省略しています。</p>
+
+<h2>第{{ meta.current_round }}回のアンバサダー（{{ cur.count }}名・都道府県順）</h2>
+<p class="muted">地域の区分は、大会の地方大会ブロック（例: 新潟・山梨・長野・静岡は関東ブロック）に合わせています。</p>
+<p class="kb-legend">
+  <span><span class="kb kb-gp"></span>グランプリ</span>
+  <span><span class="kb kb-prize"></span>受賞</span>
+  <span><span class="kb kb-final"></span>決勝出場</span>
+  <span><span class="kb kb-semi"></span>準ファイナリスト</span>
+  <span><span class="kb kb-reg"></span>地方大会出場</span>
+  <span class="muted">数字は大会の回。会社名のリンクは各社のウェブサイト。</span>
+</p>
+{% for region in regions %}
+<section class="amb-region">
+  <h3 class="amb-region-name">{{ region.name }}</h3>
+  {% for p in region.prefs %}
+  <div class="amb-pref" id="p-{{ p.pref }}">
+    <span class="amb-pref-name">{{ p.pref }}</span>
+    <ul class="amb-people">
+      {% for a in p.people %}
+      <li>
+        <b>{{ a.name }}</b>
+        {% if a.site %}<a class="amb-company" href="{{ a.site }}" target="_blank" rel="noopener">{{ a.company }} ↗</a>
+        {% else %}<span class="amb-company">{{ a.company }}</span>{% endif %}
+        {% for k in a.koshien %}<span class="kb kb-{{ k.badge }}" title="第{{ k.round }}回 {{ k.result }}" aria-label="第{{ k.round }}回 {{ k.result }}">{{ k.round }}</span>{% endfor %}
+        {% if a.terms | length > 1 %}<span class="amb-term">第{{ a.terms | min }}回から</span>{% endif %}
+        {% if a.operator %}<span class="amb-op">当サイト運営者 — <a href="about.html">運営者と方針</a></span>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</section>
+{% endfor %}
+
+<h2>歴代のアンバサダー</h2>
+<p>過去の回で任命された人の記録です。</p>
+{% for r in past_rounds %}
+<p class="muted">第{{ r.round }}回（{{ r.appointed[:4] }}年{{ r.appointed[5:7] | int }}月任命・{{ r.count }}名）のうち、現任に続いていない{{ alumni_count }}名:</p>
+{% endfor %}
+{% for region in alumni_regions %}
+<section class="amb-region amb-region--past">
+  <h3 class="amb-region-name">{{ region.name }}</h3>
+  {% for p in region.prefs %}
+  <div class="amb-pref">
+    <span class="amb-pref-name">{{ p.pref }}</span>
+    <ul class="amb-people">
+      {% for a in p.people %}
+      <li>
+        <b>{{ a.name }}</b>
+        {% if a.site %}<a class="amb-company" href="{{ a.site }}" target="_blank" rel="noopener">{{ a.company }} ↗</a>
+        {% else %}<span class="amb-company">{{ a.company }}</span>{% endif %}
+        {% for k in a.koshien %}<span class="kb kb-{{ k.badge }}" title="第{{ k.round }}回 {{ k.result }}" aria-label="第{{ k.round }}回 {{ k.result }}">{{ k.round }}</span>{% endfor %}
+        <span class="amb-term">第{{ a.terms | join('・第') }}回</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</section>
+{% endfor %}
+
+<h2>どう連絡すれば良いか</h2>
+<p>多くのアンバサダーは、SNS（特にFacebookのDM）で連絡がつきます。どこに声をかければいいか迷う場合は、<a href="about.html">当サイトの運営者（2026年度の長野県アンバサダー 羽生田大陸）</a>から、お近くのアンバサダーを紹介することもできますので、お気軽にご連絡ください。</p>
+
+<div class="note">
+  <p>名簿の出典: <a href="{{ cur.source.url }}" rel="noopener">第7回任命（2026年7月15日・42名）</a>／{% for r in past_rounds %}<a href="{{ r.source.url }}" rel="noopener">第{{ r.round }}回任命（{{ r.appointed[:4] }}年・{{ r.count }}名）</a>{% endfor %}</p>
+  <p>出場歴の出典: {% for k in meta.koshien_sources %}<a href="{{ k.url }}" rel="noopener">{{ k.label }}</a>{% if not loop.last %}／{% endif %}{% endfor %}（各回の地方大会・決勝大会の公式発表。2026年8月確認）</p>
+</div>
+{% endblock %}

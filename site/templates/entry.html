@@ -1,0 +1,347 @@
+{% extends "base.html" %}
+{% block title %}エントリー文をつくる | {{ site_name }}{% endblock %}
+{% block main %}
+<h1>甲子園エントリー文をつくる</h1>
+<p class="lead">アトツギ甲子園は、公式フォームの質問に答えてエントリーし、その後に事務局から届くフォーマットで応募書類を作ってPDFで提出します。書類審査はこの応募書類で行われます。このページで作る文章は、その両方の元になる中身です。フォーマットが届いてから慌てて書かずに済むよう、先に仕上げておきます。</p>
+<p class="lead">書くのはあなたです。このページが受け持つのは、問いの用意と、抜けの確認と、書いたものの保存です。<strong>入力はあなたの端末にだけ保存されます。当サイトは一切のデータを取得しません。</strong></p>
+
+<ol class="flow">
+  <li><b>中身をつくる</b><span>5つの問いに、AIと答える（このページ）</span></li>
+  <li><b>試す</b><span>AIを審査員役にして、指摘をもらう（このページ）</span></li>
+  <li><b>エントリーする</b><span>公式フォームから（〜11/25 18:00）。完了すると応募書類のフォーマットが届く</span></li>
+  <li><b>書類を出す</b><span>中身をフォーマットに移して、PDFで提出（〜11/27 12:00）</span></li>
+</ol>
+{% set pace_compact = true %}
+{% include "_pace.html" %}
+
+<div class="phase">
+  <span class="phase-kicker">つくる</span>
+
+  <section class="step">
+    <h2>話すことは5つ</h2>
+    <p>提出文に必要な中身を、5つの問いに分けてあります。まだ答えが固まっていなくて構いません。</p>
+    <ol class="entry-themes">
+    {% for s in sections %}
+      <li>
+        <strong>{{ s.title }}</strong> — {{ s.question }}
+        <p class="muted">{{ s.hint }}</p>
+      </li>
+    {% endfor %}
+    </ol>
+    <details class="prompt-view sample-view">
+      <summary>書き方の見本を見る（架空の会社の例）</summary>
+      <div class="sample-body">
+        {% for s in sample.sections %}
+        <p><b>{{ s.title }}</b> — {{ s.body }}</p>
+        {% endfor %}
+        <p class="muted">{{ sample.note }}</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="step">
+    <h2>AIに聞き役をやってもらう</h2>
+    <p>5つをいきなり文章にする必要はありません。ふだん使っているAIを押すと、インタビュー用の指示文がコピーされ、そのAIが開きます。貼り付けて送信すると、AIが1問ずつ聞いてくれるので、話し言葉で答えていくだけです。</p>
+    <p>答え終わると、AIが「## 見出し」付きの清書にまとめてくれます。それを下の欄に貼り戻せば、骨子のできあがりです。</p>
+    <div class="ai-grid">
+      {% for t in ai_targets %}
+      <button class="ai-card" type="button" data-open="{{ t.url_filled }}">
+        <span class="ai-head"><img src="https://www.google.com/s2/favicons?domain={{ t.favicon_domain }}&sz=64" alt="" onerror="this.hidden=true">{{ t.name }}</span>
+        {% if t.note %}<span class="ai-note">{{ t.note }}</span>{% endif %}
+      </button>
+      {% endfor %}
+    </div>
+    <p class="ai-other">スマホのAIアプリや、上にないAIで進める場合は
+      <button class="btn small" id="copy-prompt" type="button">指示文をコピー</button>
+      して貼り付けてください。</p>
+    <details id="prompt-view" class="prompt-view">
+      <summary>AIに渡す指示文の全文を見る</summary>
+      <pre>{{ prompt_text }}</pre>
+    </details>
+  </section>
+
+  <section class="step">
+    <h2>仕上がった文章をここに戻す</h2>
+    <p>AIが最後に出してくれた「## 見出し」付きの清書を、そのまま貼り付けてください。</p>
+    <textarea id="paste-area" rows="8" placeholder="## 現業と自分&#10;……"></textarea>
+    <div class="cta-row">
+      <button class="btn primary" id="import-btn" type="button">取り込む</button>
+    </div>
+    <p id="import-msg" class="muted"></p>
+  </section>
+
+  <section class="step">
+    <h2>骨子の状態</h2>
+    <div id="sections-area">
+    {% for s in sections %}
+      <div class="entry-section card" data-id="{{ s.id }}" data-title="{{ s.title }}">
+        <h3 class="tight">{{ s.title }} <span class="sec-status muted"></span></h3>
+        <textarea rows="5" class="sec-text" placeholder="（未入力。上で取り込むか、ここに直接書いてもOK）"></textarea>
+        <p class="sec-hints muted"></p>
+      </div>
+    {% endfor %}
+    </div>
+  </section>
+</div>
+
+<div class="phase">
+  <span class="phase-kicker">試す</span>
+
+  <section class="step" id="rehearsal">
+    <div class="review-panel">
+      <h2>予行審査 — 忖度なしで見てもらう</h2>
+      <p>AIを、身内ではない審査員役に切り替える指示文です。骨子ごと渡すので、弱いところが提出前にわかります。</p>
+      <div class="ai-row">
+        {% for t in ai_targets %}
+        <button class="ai-chip" type="button" data-home="{{ t.home_url }}" data-name="{{ t.name }}">
+          <img src="https://www.google.com/s2/favicons?domain={{ t.favicon_domain }}&sz=64" alt="" onerror="this.hidden=true">{{ t.name }}
+        </button>
+        {% endfor %}
+        <button class="ai-chip" id="copy-review" type="button">コピーだけ</button>
+      </div>
+      <p class="review-hint">押すと審査員用の指示文（骨子入り）がコピーされ、そのAIが開きます。貼り付けるだけです。</p>
+      <p id="review-msg" class="review-msg"></p>
+      <textarea id="review-notes" rows="4" placeholder="返ってきた指摘のメモ（あなたの端末にだけ保存されます）"></textarea>
+      <p class="review-note">これは予行です。本物の審査委員のコメントは、エントリーして書類を出した人に届きます。</p>
+    </div>
+  </section>
+</div>
+
+<div class="phase">
+  <span class="phase-kicker">出す</span>
+
+  <section class="step">
+    <h2>提出前チェック</h2>
+    <ul class="checklist" id="entry-checklist">
+    {% for c in checklist %}
+      <li><label><input type="checkbox" data-i="{{ loop.index0 }}"> {{ c }}</label></li>
+    {% endfor %}
+    </ul>
+    <p class="muted">エントリーは<a href="https://atotsugi-koshien.go.jp/" rel="noopener">公式サイト</a>から。締切 11/25 18:00・書類提出 11/27 12:00。</p>
+  </section>
+
+  <section class="step">
+    <h2>保存と持ち出し</h2>
+    <p>入力はあなたの端末に自動保存されています。ファイルとして持ち出す場合:</p>
+    <div class="save-row">
+      <button class="btn small" id="dl-md" type="button">エントリー文を保存（.md）</button>
+      <span class="save-links">途中経過の控え（.json）を
+        <button class="linklike" id="dl-project" type="button">書き出す</button> ／
+        <label class="linklike" for="up-project">読み込む</label>
+      </span>
+      <input type="file" id="up-project" accept=".json" hidden>
+    </div>
+    <p class="muted">.md は、届いた書類フォーマットに転記するときの元原稿になります。.json は手元のAIに読ませて、続きを頼むときの受け渡しにも使えます。</p>
+    <p id="save-msg" class="muted"></p>
+  </section>
+</div>
+
+<script type="application/json" id="entry-data">{{ entry_json | safe }}</script>
+{% endblock %}
+{% block scripts %}
+<script>
+(function(){
+  var DATA = JSON.parse(document.getElementById('entry-data').textContent);
+  var KEY = 'shinseider_project';
+
+  function loadProject(){
+    try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {version:1, entry:{sections:{}, checklist:{}}}; }
+    catch(_) { return {version:1, entry:{sections:{}, checklist:{}}}; }
+  }
+  function saveProject(p){
+    p.updated = new Date().toISOString();
+    try { localStorage.setItem(KEY, JSON.stringify(p)); } catch(_) {}
+    var el = document.getElementById('save-msg');
+    if (el) el.textContent = '自動保存済み（あなたの端末のみ・' + new Date().toLocaleTimeString('ja-JP') + '）';
+  }
+  var project = loadProject();
+
+  // ---- 骨子セクションの描画・検証 ----
+  function validateSection(text){
+    var msgs = [];
+    var t = (text || '').trim();
+    if (!t) return {status: '未入力', msgs: []};
+    if (t.length < DATA.validation.min_chars) msgs.push('少し短いかもしれません（' + t.length + '字）');
+    if (DATA.validation.want_numbers && !/[0-9０-９]/.test(t)) msgs.push('数字がひとつ入ると具体的になります');
+    return {status: msgs.length ? '要確認' : 'OK', msgs: msgs};
+  }
+  function refresh(){
+    var filled = 0;
+    document.querySelectorAll('.entry-section').forEach(function(box){
+      var id = box.getAttribute('data-id');
+      var ta = box.querySelector('.sec-text');
+      var text = project.entry.sections[id] || '';
+      if (ta.value !== text) ta.value = text;
+      var v = validateSection(text);
+      if (v.status !== '未入力') filled++;
+      box.querySelector('.sec-status').textContent = '— ' + v.status;
+      box.querySelector('.sec-hints').textContent = v.msgs.join(' ／ ');
+    });
+    document.querySelectorAll('#entry-checklist input').forEach(function(cb){
+      cb.checked = !!project.entry.checklist[cb.getAttribute('data-i')];
+    });
+    return filled;
+  }
+
+  document.querySelectorAll('.entry-section .sec-text').forEach(function(ta){
+    ta.addEventListener('input', function(){
+      var id = ta.closest('.entry-section').getAttribute('data-id');
+      project.entry.sections[id] = ta.value;
+      saveProject(project); refresh();
+    });
+  });
+  document.querySelectorAll('#entry-checklist input').forEach(function(cb){
+    cb.addEventListener('change', function(){
+      project.entry.checklist[cb.getAttribute('data-i')] = cb.checked;
+      saveProject(project);
+    });
+  });
+
+  // ---- プロンプトコピー ----
+  document.getElementById('copy-prompt').addEventListener('click', function(){
+    navigator.clipboard.writeText(DATA.prompt).then(function(){
+      document.getElementById('copy-prompt').textContent = 'コピーしました';
+      setTimeout(function(){ document.getElementById('copy-prompt').textContent = '指示文をコピー'; }, 1800);
+    });
+  });
+  // コピーしてから開く方式のAI（Gemini等）
+  // 注意: window.openはクリック処理の同期部分で呼ぶこと（非同期後はポップアップブロックされる）
+  document.querySelectorAll('.ai-card[data-open]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var url = btn.getAttribute('data-open');
+      var note = btn.querySelector('.ai-note');
+      var orig = note ? note.textContent : '';
+      window.open(url, '_blank', 'noopener');
+      navigator.clipboard.writeText(DATA.prompt).then(function(){
+        if (note) {
+          note.textContent = 'コピーしました — 開いた画面に貼り付けて送信';
+          setTimeout(function(){ note.textContent = orig; }, 5000);
+        }
+      }).catch(function(){
+        if (note) note.textContent = 'コピーできませんでした — 下の「指示文の全文」からコピーしてください';
+        var d = document.getElementById('prompt-view');
+        if (d) d.open = true;
+      });
+    });
+  });
+
+  // ---- 予行審査: 骨子を審査員プロンプトに差し込んでコピー ----
+  function buildReviewPrompt(msgEl){
+    var draft = '';
+    DATA.sections.forEach(function(s){
+      var t = (project.entry.sections[s.id] || '').trim();
+      if (t) draft += '## ' + s.title + '\n' + t + '\n\n';
+    });
+    if (!draft) {
+      msgEl.textContent = '骨子がまだ空です。まず上の「つくる」で骨子を作ってから戻ってきてください。';
+      return null;
+    }
+    return DATA.review_prompt.replace('{draft}', draft);
+  }
+  document.querySelectorAll('.review-panel .ai-chip[data-home]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var msgEl = document.getElementById('review-msg');
+      var prompt = buildReviewPrompt(msgEl);
+      if (!prompt) return;
+      window.open(btn.getAttribute('data-home'), '_blank', 'noopener');
+      navigator.clipboard.writeText(prompt).then(function(){
+        msgEl.textContent = 'コピーしました。開いた' + btn.getAttribute('data-name') + 'に貼り付けてください（新しい会話がおすすめです）。';
+      }).catch(function(){
+        msgEl.textContent = 'コピーできませんでした。「コピーだけ」を試してください。';
+      });
+    });
+  });
+  document.getElementById('copy-review').addEventListener('click', function(){
+    var msgEl = document.getElementById('review-msg');
+    var prompt = buildReviewPrompt(msgEl);
+    if (!prompt) return;
+    navigator.clipboard.writeText(prompt).then(function(){
+      msgEl.textContent = 'コピーしました。AIに貼り付けてください（新しい会話がおすすめです）。';
+    }).catch(function(){
+      msgEl.textContent = 'コピーできませんでした。';
+    });
+  });
+  var rn = document.getElementById('review-notes');
+  rn.value = project.entry.review_notes || '';
+  rn.addEventListener('input', function(){
+    project.entry.review_notes = rn.value;
+    saveProject(project);
+  });
+
+  // ---- 貼り戻しパーサ（## 見出しベース） ----
+  document.getElementById('import-btn').addEventListener('click', function(){
+    var raw = document.getElementById('paste-area').value;
+    var msg = document.getElementById('import-msg');
+    if (!raw.trim()) { msg.textContent = '貼り付け欄が空です。'; return; }
+    var parts = raw.split(/^##\s*/m).filter(function(x){ return x.trim(); });
+    var got = 0, unknown = [];
+    parts.forEach(function(part){
+      var nl = part.indexOf('\n');
+      var head = (nl === -1 ? part : part.slice(0, nl)).trim();
+      var body = (nl === -1 ? '' : part.slice(nl + 1)).trim();
+      var hit = DATA.sections.find(function(s){
+        return head === s.title || head.indexOf(s.title) !== -1 || s.title.indexOf(head) !== -1;
+      });
+      if (hit && body) { project.entry.sections[hit.id] = body; got++; }
+      else if (head) { unknown.push(head); }
+    });
+    saveProject(project);
+    var filled = refresh();
+    var missing = DATA.sections.length - filled;
+    msg.textContent = got + '件の見出しを取り込みました。'
+      + (missing > 0 ? ' 未入力が' + missing + '件あります。' : ' 5つそろいました。')
+      + (unknown.length ? ' 対応しない見出し: ' + unknown.join('、') : '');
+    if (got > 0) {
+      var next = document.createElement('a');
+      next.href = '#rehearsal';
+      next.textContent = '次は、予行審査で指摘をもらう →';
+      msg.appendChild(document.createTextNode(' '));
+      msg.appendChild(next);
+    }
+  });
+
+  // ---- 出力 ----
+  function download(name, text, type){
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], {type: type}));
+    a.download = name; a.click(); URL.revokeObjectURL(a.href);
+  }
+  document.getElementById('dl-md').addEventListener('click', function(){
+    var md = '# アトツギ甲子園 エントリー文（下書き）\n\n';
+    DATA.sections.forEach(function(s){
+      md += '## ' + s.title + '\n\n' + (project.entry.sections[s.id] || '（未入力）') + '\n\n';
+    });
+    md += '---\n作成: シンセイダー（下書き支援）／エントリーは公式サイトから。公募要領・エントリー要領の原文が常に優先します。\n';
+    download('entry_draft.md', md, 'text/markdown');
+  });
+  document.getElementById('dl-project').addEventListener('click', function(){
+    var check = null;
+    try { check = JSON.parse(localStorage.getItem('shinseider_check') || 'null'); } catch(_) {}
+    download('shinseider_project.json',
+      JSON.stringify({version: 1, exported: new Date().toISOString(), profile: check, entry: project.entry}, null, 2),
+      'application/json');
+  });
+  document.getElementById('up-project').addEventListener('change', function(e){
+    var file = e.target.files[0]; if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      try {
+        var d = JSON.parse(reader.result);
+        if (!d.entry) throw new Error('形式が違います');
+        project.entry = d.entry;
+        if (d.profile) { try { localStorage.setItem('shinseider_check', JSON.stringify(d.profile)); } catch(_) {} }
+        saveProject(project); refresh();
+        var rn2 = document.getElementById('review-notes');
+        if (rn2) rn2.value = project.entry.review_notes || '';
+        document.getElementById('save-msg').textContent = 'プロジェクトファイルを読み込みました。';
+      } catch(err) {
+        document.getElementById('save-msg').textContent = '読み込めませんでした: ' + err.message;
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  refresh();
+})();
+</script>
+{% endblock %}

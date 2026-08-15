@@ -1,0 +1,230 @@
+# =============================================================
+# 政策系譜データベース（policy lineage） v2
+#
+# 構造の訂正（2026-08-06、指摘による）:
+# (1) L0「世界の現実・情勢」は特定ドメインに属さない普遍層であり、
+#     データベース全体で【一つだけ】存在し、全補助金・全ドメインの系譜が共有参照する。
+#     事業承継の統計のような「ドメインの状態観測」はL0ではない。
+# (2) ドメイン固有の指標（後継者不在率など）は新設の domain_state 層に置く。
+#     これは「L0の力がそのドメインでどう現れているかの計測値」であり、
+#     L0の駆動因（driven_by）と施策の影響（moved_by_policy）の合成結果である。
+#
+# 原則: fact と interpretation の分離。解釈は interpretations のみに置く。
+# =============================================================
+schema_version: "2.2-poc"
+updated: "2026-08-06"
+
+# =============================================================
+# 上流構造 v2.2（指摘による精緻化）:
+#   基底: 世界の現実（構造的な力）＋時事（events）
+#   規範の連鎖: 世界の指針 → 関連深い先進国の指針 → 我が国の方針(L1) → 省庁施策(L2) → …
+# 我が国の方針は独立の頂点ではなく、世界の指針・先進国の指針・現実への「応答」である。
+# いずれも全ドメイン共有（このDBに一つだけ）。
+# =============================================================
+
+# ---- 世界の指針と時事（全ドメイン共有） ----
+global_frameworks_and_events:
+  frameworks:   # 世界の指針: 国際的な規範・枠組み。各国方針の参照元
+    - id: GF_sdgs_esg
+      name: SDGs・ESG・人的資本開示の国際潮流（ISSB等）
+      evidence_of_reach: >-
+        国内の加点体系に末端実装が観測される：健康経営・えるぼし/くるみん（人的資本）、
+        BCP（事業継続）、サイバーセキュリティ——15次要領の加点群は国際規範潮流の国内末端とみなせる
+      confidence: interpretation_grounded   # 到達の解釈。枠組み一次文書の取得はtodo
+    - id: GF_climate
+      name: 気候・エネルギー枠組み（パリ協定→各国GX政策の参照元）
+      status: 一次文書取得todo
+    - id: GF_trade_rules
+      name: 通商秩序（WTO体制とその動揺・経済安全保障の台頭）
+      status: 取得todo
+  events:       # 時事: 規範より速く動く出来事。制度への到達が最も速い流路
+    - id: EV_us_tariff
+      name: 米国関税措置（2025-26）
+      evidence_of_reach: 15次公募要領・加点⑬「米国関税措置による影響」として国内制度の末端に到達済み
+      source: {title: 事業承継促進枠15次公募要領, accessed: "2026-08-06", confidence: verified}
+      note: 時事→制度末端の伝播実例。伝播ラグの計測サンプルとしても価値がある
+
+# ---- 関連深い先進国の指針（全ドメイン共有） ----
+peer_nation_policies:
+  note: >-
+    我が国の中小企業・産業政策が参照する先進国の政策。日本の方針の先行指標として観測する。
+    確証なく断定しない——観測対象の選定と一次資料取得はこれからの調査項目【todo】
+  candidates_to_research:
+    - {id: PN_de_mittelstand, name: ドイツ・ミッテルシュタント政策と事業承継(Nachfolge)支援, relevance: 事業承継ドメインの直接の参照候補}
+    - {id: PN_eu_sme, name: EUの中小企業戦略・規制動向, relevance: 制度設計の参照元候補}
+    - {id: PN_us_industrial, name: 米国の産業政策・中小企業支援(SBA), relevance: 産業補助金の潮流}
+  confidence: unconfirmed
+
+# =============================================================
+# 世界の現実（構造的な力）—— 全ドメイン共有の基底層（このDBに一つだけ）
+# 指針も時事も、最終的にはこの構造的な力への応答である。
+# =============================================================
+world_model:
+  L0_demographics:
+    name: 人口動態（少子高齢化・生産年齢人口の減少）
+    reaches: [事業承継, 省力化, 人材関連の全施策]
+    observation_sources: [人口推計（総務省・社人研）]
+    status: 取得todo（一次統計）
+  L0_social_norms:
+    name: 社会規範の変化（家業観・職業選択の多様化・家族構造の変化）
+    reaches: [事業承継（脱ファミリー化の駆動因）, 労働市場]
+    status: 観測手段の設計todo
+  L0_technology:
+    name: 技術潮流（AI・自動化・デジタル化）
+    reaches: [省力化, ものづくり, 事業承継（承継後の成長手段）]
+    status: 取得todo
+  L0_geopolitics_trade:
+    name: 地政学・通商（米中対立・関税措置・サプライチェーン再編）
+    reaches: [輸出入企業全般。15次要領の加点⑬として事業承継ドメインの末端まで到達済み（実証済みの伝播例）]
+    source: {title: 事業承継促進枠15次公募要領・加点⑬, accessed: "2026-08-06", confidence: verified}
+  L0_macro_wage_price:
+    name: 物価・賃金のマクロ動向（インフレ・実質賃金・賃上げ圧力）
+    reaches: [全補助金の賃上げ特例・加点として末端到達済み]
+    source: {title: 15次要領の賃上げ特例・骨太2026, accessed: "2026-08-06", confidence: verified}
+  L0_labor_supply:
+    name: 労働供給制約（L0_demographicsの経済全域への現れ。骨太2026が「労働供給制約社会」と公式呼称）
+    driven_by: [L0_demographics]
+    source: {title: 骨太の方針2026, url: "https://www5.cao.go.jp/keizai-shimon/kaigi/cabinet/honebuto/2026/2026_basicpolicies_ja.pdf", accessed: "2026-08-06", confidence: verified}
+
+# =============================================================
+# domain_state —— ドメイン「事業承継」の状態観測（L0と施策の合成結果の計測値）
+# =============================================================
+domain_state:
+  domain: 事業承継
+  indicators:
+    - id: DS_fuzairitsu
+      name: 後継者不在率
+      value: "50.1%（2025年、前年比-2.0pt、7年連続改善。ピークは2017年66.5%）"
+      driven_by: [L0_demographics, L0_social_norms]
+      moved_by_policy: true   # 相談窓口整備・税制・支援センター等の施策効果も合成されている
+      source: {title: TDB 全国「後継者不在率」動向調査(2025年・約27万社), url: "https://www.tdb.co.jp/report/economic/20251121-successor25y/", accessed: "2026-08-06", confidence: verified}
+      note: 施策のアウトカム指標でもあるため、「世界の現実」と混同しないこと（今回の分類訂正の対象）
+    - id: DS_defamily
+      name: 承継類型の構造変化（脱ファミリー化）
+      value: "内部昇格36.1%が同族承継32.3%を初逆転（2025年速報）。M&Aほか20.6%、外部招聘7.6%"
+      driven_by: [L0_social_norms, L0_demographics]
+      moved_by_policy: true
+      source: {title: 同上TDB調査, accessed: "2026-08-06", confidence: verified}
+    - id: DS_keieisha_age
+      name: 経営者の高齢化
+      value: 取得todo（白書・TSR/TDBの経営者平均年齢統計）
+      driven_by: [L0_demographics]
+    - id: DS_haigyo
+      name: 休廃業・解散件数
+      value: 取得todo
+      driven_by: [L0_demographics, L0_macro_wage_price]
+
+# =============================================================
+# L1〜L5 —— 政策側の系譜（事業承継ドメイン）
+# =============================================================
+layers:
+  L1_national_policy:
+    name: 我が国の方針（世界の指針・先進国の指針・現実への応答としての国家方針）
+    upstream: [global_frameworks_and_events, peer_nation_policies, world_model, domain_state]
+    nodes:
+      - id: L1_crisis_estimate_2017
+        fact: >-
+          【政策側の危機認識の起点・歴史文書】2025年までに経営者70歳超が約245万人・
+          うち約半数の約127万社が後継者未定、放置すればGDP約22兆円・雇用約650万人喪失の恐れ
+          （2017年頃・経産省系試算）。※これは当時のdomain_state予測に基づく政府解釈であり、
+          最新のDS_fuzairitsu（改善傾向）と併記して扱うこと
+        source: {title: 二次資料で確認（一次資料の直接確認todo）, url: "https://newswitch.jp/p/11076", accessed: "2026-08-06", confidence: extracted_unreviewed}
+      - id: L1_honebuto2026_shoryokuka
+        fact: 骨太2026「『省力化投資促進プラン』を着実に実行するとともに、更なる充実・拡充を図り、『稼ぐ力』の強化と賃上げの好循環を実現する」（第2章(3)強い地域経済の構築）
+        source: {title: 経済財政運営と改革の基本方針2026（閣議決定・令和8年7月21日）, url: "https://www5.cao.go.jp/keizai-shimon/kaigi/cabinet/honebuto/2026/2026_basicpolicies_ja.pdf", accessed: "2026-08-06", confidence: verified}
+      - id: L1_kaseguchikara
+        fact: 骨太2026は「労働供給制約社会における中堅・中小企業の『稼ぐ力』強化戦略」に基づく支援を明記
+        source: {title: 同上, accessed: "2026-08-06", confidence: verified}
+      - id: L1_honebuto2026_shokei_absence
+        fact: 【不在の記録】骨太2026には事業承継・M&Aに特化した記述が見当たらない（間接記述のみ）
+        source: {title: 同上, accessed: "2026-08-06", confidence: verified, note: 全文精読での再確認todo}
+  L2_ministry_programs:
+    name: 省庁施策
+    nodes:
+      - id: L2_atotsugi_program
+        fact: >-
+          中小企業庁「現経営者、後継者ともに、事業承継を進める上で、1番の課題・懸念点として
+          『後継者の経営能力』を挙げている」。新規事業挑戦を通じた戦略立案力・発信力・実行力の
+          育成施策としてアトツギ甲子園（2020年度開始）を運営
+        source: {title: 中小企業庁 アトツギ甲子園・後継者育成, url: "https://www.chusho.meti.go.jp/zaimu/shoukei/atotsugi-koshien.html", accessed: "2026-08-06", confidence: verified}
+      - id: L2_succession_ecosystem
+        fact: 施策群＝事業承継税制・事業承継・引継ぎ支援センター・M&A支援機関登録制度・後継者育成（甲子園・アンバサダー・コンソーシアム）
+        source: {title: 中小企業庁サイト群, accessed: "2026-08-06", confidence: verified}
+  L3_budget_programs:
+    name: 予算事業（国が「何を成果と数えるか」）
+    nodes:
+      - id: L3_seisansei_kakumei
+        fact: >-
+          中小企業生産性革命推進事業の全体目標「従業員一人当たり付加価値額を5年間で5%向上」。
+          構成補助金のKPIは付加価値額年率3%・給与支給総額年率1.5%（ものづくり）等、
+          一貫して「付加価値と賃金」で成果を測る設計（令和3年時点資料）
+        source: {title: 中小企業生産性革命推進事業について（中小企業庁・令和3年5月）, url: "https://www.meti.go.jp/information_2/publicoffer/review2021/kokai/overview5.pdf", accessed: "2026-08-06", confidence: verified}
+        note: 事業承継・M&A補助金の現行予算事業上の位置づけとKPIは令和7年度行政事業レビューシートで要取得【todo・最優先】
+  L4_program_design:
+    name: 制度設計（公募要領）
+    nodes:
+      - id: L4_shokei_ma_15
+        fact: 事業承継促進枠15次公募要領を構造化済み（審査4観点・加点13種・賃上げ特例・要件台帳）
+        source: {ref: data/jigyo_shokei_ma.yaml, confidence: 抽出済み・一部extracted_unreviewed}
+      - id: L4_atotsugi_7th
+        fact: >-
+          第7回アトツギ甲子園：39歳以下（1987年4月以降生まれ）・代表権を持たない後継予定者。
+          親族外承継可、家業と別法人の代表も可（家業承継予定または経営資源活用が必須）。
+          エントリー2026-08-03〜11-25 18:00、書類提出11-27 12:00、地方大会2027-01-19〜02-08、決勝2027-02-26
+        source: {title: METI発表(2026-07-15), url: "https://www.meti.go.jp/press/2026/07/20260715003.html", accessed: "2026-08-06", confidence: verified}
+  L5_execution:
+    name: 執行実績
+    nodes:
+      - id: L5_adoption
+        fact: 事業承継・M&A補助金の採択率は約6割（11〜13次・支援業者集計）
+        source: {url: "https://www.11consul.com/2026/01/19/mahojyokin/", accessed: "2026-08-06", confidence: extracted_unreviewed, note: 事務局公表データでの裏取りtodo}
+
+# ---- 解釈: 根拠ノードを列挙。反証があれば status に記録 ----
+interpretations:
+  - id: I1
+    claim: 国が期待する後継者像は「守る人」ではなく「相続した経営資源で新しい価値を作る経営者」
+    grounds: [L2_atotsugi_program, L4_atotsugi_7th]
+    status: 補強された（第7回資格「経営資源活用必須」が直接支持）
+  - id: I2
+    claim: 甲子園（育成）と補助金（資金）は一つの政策パッケージ。加点はその結合装置
+    grounds: [L2_succession_ecosystem, L4_shokei_ma_15]
+    status: 維持
+  - id: I3
+    claim: 評価される物語は「承継を契機とした成長投資」。延命投資は要件充足でも評価されない
+    grounds: [L3_seisansei_kakumei, L4_shokei_ma_15]
+    status: 補強された（KPIが付加価値と賃金で設計されている事実）
+  - id: I4
+    claim: 賃上げ・省力化・地域維持は制度横断で強化方向の潮流
+    grounds: [L1_honebuto2026_shoryokuka, L1_kaseguchikara, L4_shokei_ma_15]
+    status: 強く補強された
+  - id: I5
+    claim: 2026年の政策文脈では、承継は「目的」でなく「稼ぐ力強化・賃上げの手段」として語るのが適合的
+    grounds: [L1_honebuto2026_shokei_absence, L1_kaseguchikara, L3_seisansei_kakumei]
+    status: 新規
+  - id: I6
+    claim: >-
+      「大廃業危機」の物語（2017年試算）は、最新のdomain_state（7年連続改善・脱ファミリー化）により
+      部分的に反証された。コンテンツは最新の構造変化を踏まえた語りに更新すべき
+    grounds: [DS_fuzairitsu, DS_defamily, L1_crisis_estimate_2017]
+    status: 新規（domain_state観測が政策側の古い物語を上書きした実例）
+  - id: I7
+    claim: >-
+      我が国の方針は「世界の指針・先進国の指針」の遅行指標である。ゆえに国際枠組みと
+      先進国政策の観測は、骨太より早い先読みを与える（例：ESG・人的資本の国際潮流が
+      国内加点体系の末端に到達している観測。時事では関税→加点⑬が最速の伝播実例）
+    grounds: [GF_sdgs_esg, EV_us_tariff]
+    status: 検証仮説（先進国指針→国内方針の伝播事例を体系的に収集して検証する【todo】）
+
+# ---- 申請支援への接続 ----
+drafting_directives:
+  - 計画の成果は「付加価値」と「賃金」の数値で語る（L3のKPI体系に一致させる）
+  - 承継は手段として位置づけ、「承継を機にした稼ぐ力強化」を主軸にする（I5）
+  - 人手不足・省力化・賃上げへの接続を最低1つ入れる（I4・L0_labor_supply）
+  - 現場の実感（採用難・技能承継・取引構造の変化）をL0駆動因・domain_state統計と対にして書く（両端接続）
+  - 「大廃業危機」を引用する場合は2017年試算と明記し、最新の改善傾向（DS_fuzairitsu）と併記する（I6）
+
+# ---- このv2構造が可能にすること（設計メモ） ----
+architecture_notes:
+  - world_model（L0）はDB全体で唯一。省力化・持続化・Go-Tech等、他の補助金の系譜も同じL0ノード群を参照する
+  - これによりL0の変化（例：新たな通商措置）が起きたとき「どのドメイン・どの補助金に伝播しうるか」を逆向きに問える
+  - domain_stateはドメインごとに持ち、L0（駆動因）と施策効果の合成計測値として扱う。施策のアウトカム指標と世界の現実を混同しない
