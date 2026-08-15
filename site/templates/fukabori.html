@@ -249,13 +249,26 @@
         msg.textContent = ai.getAttribute('data-name') + 'が指示文入りで開きます。そのまま送信してください。';
         return;
       }
-      // 長文はURLに載らないため、開いた画面に「貼り付けてください」の案内だけをURLで入れておく
-      var helper = '※案内: 長い指示文がクリップボードにコピーされています。この案内文を消して、貼り付け（Cmd+V / 長押し→ペースト）してから送信してください。もしこの案内文のまま送信された場合は「コピーされている指示文を貼り付けてください」とだけ返答してください。';
+      // 長文はURLに載らない: 指示文をmdファイルにして渡す（クリップボードにも保険で入れておく）
+      copied.catch(function(){});
+      var fname = 'fukabori_' + (ch === 'critique' ? 'kensan' : 'dai' + (+ch + 1) + 'sho') + '.md';
+      var file = new File([prompt], fname, {type: 'text/markdown'});
+      // スマホ等は共有シートからAIアプリへファイルごと渡せる
+      if (navigator.canShare && navigator.canShare({files: [file]})) {
+        navigator.share({files: [file], title: 'フカボリ指示文'}).then(function(){
+          msg.textContent = '共有先でAIのアプリを選ぶと、指示文ファイルごと渡せます。';
+        }).catch(function(){
+          msg.textContent = '共有を中止しました。もう一度押すか、「指示文を見る」からコピーしてください。';
+        });
+        return;
+      }
+      dl(fname, prompt, 'text/markdown');
+      var helper = '※案内: 指示文ファイル「' + fname + '」がいまダウンロードされました。この案内文を消して、ファイルを添付（この画面にドラッグ、またはクリップのボタン）して送信してください。コピーもされているので、貼り付け（Cmd+V）でも構いません。もしこの案内文のまま送信された場合は「指示文ファイルを添付するか、コピーされている指示文を貼り付けてください」とだけ返答してください。';
       window.open(qbase ? qbase + encodeURIComponent(helper) : ai.getAttribute('data-home'), '_blank', 'noopener');
       copied.then(function(){
-        msg.textContent = '指示文をコピーしました。開いた' + ai.getAttribute('data-name') + 'の入力欄の案内文を消して、貼り付けて送信してください。';
+        msg.textContent = '指示文ファイル（' + fname + '）を保存し、コピーもしました。開いた' + ai.getAttribute('data-name') + 'にファイルをドラッグするか、貼り付けて送信してください。';
       }).catch(function(){
-        msg.textContent = 'コピーできませんでした。「指示文を見る」からコピーして貼り付けてください。';
+        msg.textContent = '指示文ファイル（' + fname + '）を保存しました。開いた' + ai.getAttribute('data-name') + 'にドラッグして送信してください。';
       });
     });
   });
