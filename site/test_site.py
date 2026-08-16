@@ -65,7 +65,7 @@ def main():
         # 2b. 全回答 → 保存 → 準備室で復元
         pg.goto(f"file://{DIST}/check.html")
         pg.check("input[name=q_age][value=yes]"); pg.check("input[name=q_pos][value=yes]")
-        pg.check("input[name=q_succ][value=yes]"); pg.check("input[name=q_fin][value=yes]")
+        pg.check("input[name=q_succ][value=yes]");
         pg.click("button[type=submit]")
         pg.wait_for_selector("#result:not([hidden])", timeout=8000)
         if "進み具合" not in pg.inner_text("#result"):
