@@ -433,6 +433,7 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--ink); }
   border-left: 3px solid var(--accent); background: rgba(165,55,44,.06);
   padding: .55em .9em; margin: 1.1rem 0; }
 .flow-line .sep { color: var(--accent); font-weight: 400; }
+.flow-note { font-size: .82rem; margin-top: -.5rem; }
 
 /* ルート分岐カード（entry冒頭: 速いルート/じっくり版）
    左=紙のカード（いまここ）、右=墨ベタ＋朱のトップライン（フカボリへの誘い） */
