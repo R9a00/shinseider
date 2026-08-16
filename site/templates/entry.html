@@ -114,7 +114,7 @@
         {% endfor %}
         <button class="ai-chip" id="copy-review" type="button">コピーだけ</button>
       </div>
-      <p class="review-hint">押すと審査員用の指示文（骨子入り）ごとそのAIが開きます。ClaudeとChatGPTは入力された状態で開き、それ以外はコピーされるので貼り付けてください。</p>
+      <p class="review-hint">押すと審査員用の指示文（骨子入り）ごとそのAIが開きます。骨子が長い場合は指示文ファイル（.md）が保存されるので、開いた画面にドラッグして渡してください。</p>
       <p id="review-msg" class="review-msg"></p>
       <textarea id="review-notes" rows="4" placeholder="返ってきた指摘のメモ（あなたの端末にだけ保存されます）"></textarea>
       <p class="review-note">これは予行です。本物の審査委員のコメントは、エントリーして書類を出した人に届きます。</p>
@@ -274,14 +274,21 @@
         msgEl.textContent = btn.getAttribute('data-name') + 'が骨子入りの指示文が入力された状態で開きます。そのまま送信してください。';
         return;
       }
-      // 長文はURLに載らないため、開いた画面に「貼り付けてください」の案内だけをURLで入れておく
-      var helper = '※案内: 長い指示文がクリップボードにコピーされています。この案内文を消して、貼り付け（Cmd+V / 長押し→ペースト）してから送信してください。もしこの案内文のまま送信された場合は「コピーされている指示文を貼り付けてください」とだけ返答してください。';
+      // 長い骨子はmdファイルで渡す（フカボリと同じ方式。コピーも保険で済み）
+      copied.catch(function(){});
+      var file = new File([prompt], 'yokoshinsa.md', {type: 'text/markdown'});
+      if (navigator.canShare && navigator.canShare({files: [file]})) {
+        navigator.share({files: [file], title: '予行審査の指示文'}).then(function(){
+          msgEl.textContent = '共有先でAIのアプリを選ぶと、骨子入りの指示文ファイルごと渡せます。';
+        }).catch(function(){
+          msgEl.textContent = '共有を中止しました。もう一度押すか、「コピーだけ」を試してください。';
+        });
+        return;
+      }
+      download('yokoshinsa.md', prompt, 'text/markdown');
+      var helper = '※案内: 骨子入りの審査指示文ファイル「yokoshinsa.md」がいまダウンロードされました。この案内文を消して、ファイルを添付（この画面にドラッグ）して送信してください。コピーもされているので、貼り付け（Cmd+V）でも構いません。もしこの案内文のまま送信された場合は「指示文ファイルを添付するか、コピーされている指示文を貼り付けてください」とだけ返答してください。';
       window.open(qbase ? qbase + encodeURIComponent(helper) : btn.getAttribute('data-home'), '_blank', 'noopener');
-      copied.then(function(){
-        msgEl.textContent = '指示文をコピーしました。開いた' + btn.getAttribute('data-name') + 'の入力欄の案内文を消して、貼り付けて送信してください。';
-      }).catch(function(){
-        msgEl.textContent = 'コピーできませんでした。「コピーだけ」を試してください。';
-      });
+      msgEl.textContent = '指示文ファイル（yokoshinsa.md）を保存し、コピーもしました。開いた' + btn.getAttribute('data-name') + 'にファイルをドラッグするか、貼り付けて送信してください。';
     });
   });
   document.getElementById('copy-review').addEventListener('click', function(){
