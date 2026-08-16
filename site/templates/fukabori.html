@@ -269,7 +269,7 @@
       }
       // 長文はURLに載らない: 指示文をmdファイルにして渡す（クリップボードにも保険で入れておく）
       copied.catch(function(){});
-      var fname = 'fukabori_' + (ch === 'critique' ? 'kensan' : 'dai' + (+ch + 1) + 'sho') + '.md';
+      var fname = 'fukabori_' + (ch === 'critique' ? 'kensan' : 'dai' + (+ch + 1) + 'sho') + '_' + stamp() + '.md';
       var file = new File([prompt], fname, {type: 'text/markdown'});
       // スマホ等は共有シートからAIアプリへファイルごと渡せる
       if (navigator.canShare && navigator.canShare({files: [file]})) {
@@ -376,6 +376,12 @@
     a.download = name; a.click();
     setTimeout(function(){ URL.revokeObjectURL(a.href); }, 5000);
   }
+  // ダウンロードフォルダで見分けられるよう、ファイル名に日時（例: 260816_0932）を入れる
+  function stamp(){
+    var d = new Date();
+    function p(n){ return (n < 10 ? '0' : '') + n; }
+    return String(d.getFullYear()).slice(2) + p(d.getMonth() + 1) + p(d.getDate()) + '_' + p(d.getHours()) + p(d.getMinutes());
+  }
   // 控え = 読める下書き + 末尾にセーブデータ（1ファイルで転記元と再開の両方を担う）
   document.getElementById('fk-dl-md').addEventListener('click', function(){
     var body = promptFor('critique').split('# ユーザー下書き（24ブロック）')[1] || '';
@@ -384,7 +390,7 @@
     var md = '# フカボリ 控え\n' + body +
       '\n---\n\n## セーブデータ\n「控えを読み込む」でこのファイルを選ぶと、この時点から再開できます。下のコードは編集しないでください。\n\n```json\n' +
       JSON.stringify({version: 1, exported: new Date().toISOString(), profile: check, entry: project.entry, fukabori: project.fukabori}) + '\n```\n';
-    dl('fukabori_hikae.md', md, 'text/markdown');
+    dl('fukabori_hikae_' + stamp() + '.md', md, 'text/markdown');
   });
   document.getElementById('fk-dl-prompts').addEventListener('click', function(){
     var md = '# フカボリ 指示文セット\n\nシンセイダーのフカボリ（https://shinseider.onrender.com/fukabori.html）で使う、章別インタビューと検算の指示文一式です。\n1章ずつAIに渡して使います。章が終わるとAIがコード（セーブデータ）を出すので、フカボリのページで取り込んでください。\n';
@@ -392,7 +398,7 @@
       md += '\n---\n\n# 第' + (i + 1) + '章 ' + ch.title + '\n\n' + ch.prompt + '\n';
     });
     md += '\n---\n\n# 仕上げ（検算・ダメ出し）\n\n' + PROMPTS.critique + '\n\n※この指示文のあとに「# ユーザー下書き（24ブロック）」として、フカボリの「控えを保存」の中身（セーブデータの前まで）を貼って使います。\n';
-    dl('fukabori_prompts.md', md, 'text/markdown');
+    dl('fukabori_prompts_' + stamp() + '.md', md, 'text/markdown');
   });
   document.getElementById('fk-up-json').addEventListener('change', function(e){
     var f = e.target.files[0];
