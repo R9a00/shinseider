@@ -32,7 +32,7 @@
     var dT = Math.max(1, Math.ceil((target - now) / 86400000));
     function fmt(d){ return (d.getMonth() + 1) + '/' + d.getDate(); }
     function plus(n){ var x = new Date(now); x.setDate(x.getDate() + n); return x; }
-    var entryLink = '<a href="entry.html">エントリー文をつくる</a>';
+    var entryLink = '<a href="entry.html">申請書の準備</a>';
     var steps;
     if (dT <= 3) {
       steps = [
