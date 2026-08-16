@@ -427,6 +427,19 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--ink); }
 /* 工程（つくる→鍛える→出す）: 見出し肩の朱の字 */
 .phase { margin: 2.3rem 0 0; }
 
+/* トップのヒーロー: 右余白に日本地図の淡い姿を敷く
+   （全国6ブロックの地方大会＝この大会の土俵。相談できる人ページの実測SVGを再利用） */
+@media (min-width: 1180px) {
+  body { overflow-x: hidden; }
+  .hero { position: relative; }
+  .hero::after {
+    content: ""; position: absolute; top: 2.5rem; left: 100%; margin-left: 2rem;
+    width: 27rem; height: calc(100% - 5rem);
+    background: url("japan-map.svg") no-repeat top center / contain;
+    opacity: .34; pointer-events: none;
+  }
+}
+
 /* 手順ピル（番号が順序を語る。矢印なしなので折り返しても崩れない） */
 .flow-steps { list-style: none; counter-reset: fs; display: flex; flex-wrap: wrap;
   gap: .45rem .5rem; padding: 0; margin: 1.2rem 0 .5rem; }
