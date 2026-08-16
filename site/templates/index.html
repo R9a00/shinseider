@@ -39,13 +39,14 @@
 
 <aside class="hero-side">
   <figure class="hero-map">
-    <img src="static/japan-blocks.svg" alt="地方大会6ブロックの塗り分け地図" loading="lazy">
     <figcaption>
-      <span class="hero-map-title">地方大会は全国6ブロック（2027年）</span>
-      <span class="hero-legend">
-        {% for b in hero_blocks %}<span class="lg"><i style="background:{{ b.color }}"></i>{{ b.city }} {{ b.date }}</span>{% endfor %}
-      </span>
+      <span class="hero-map-title">地方大会は、全国6ブロックで開催</span>
+      <span class="hero-map-sub">2027年1月〜2月。出場（地方大会）から補助金審査の加点対象になります</span>
     </figcaption>
+    <img src="static/japan-blocks.svg" alt="地方大会6ブロックの塗り分け地図" loading="lazy">
+    <span class="hero-legend">
+      {% for b in hero_blocks %}<span class="lg"><i style="background:{{ b.color }}"></i>{{ b.city }} {{ b.date }}</span>{% endfor %}
+    </span>
   </figure>
   <div class="hero-stats">
     <div class="stat"><b>39<i>歳以下</i></b><span>挑戦資格。1987年4月以降生まれの後継予定者</span></div>

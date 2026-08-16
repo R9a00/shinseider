@@ -440,9 +440,10 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--ink); }
 @media (max-width: 1179.9px) { .hero-side { margin-top: 2.5rem; } }
 .hero-map { margin: 0; border: 1px solid var(--line); background: #fffdf7; padding: 1rem 1rem .7rem; }
 .hero-map img { width: 100%; height: auto; display: block; }
-.hero-map figcaption { font-size: .76rem; color: var(--ink-soft); margin-top: .5rem; letter-spacing: .02em; }
-.hero-map-title { display: block; font-weight: 700; margin-bottom: .3rem; }
-.hero-legend { display: flex; flex-wrap: wrap; gap: .2rem .75rem; }
+.hero-map figcaption { margin: 0 0 .7rem; }
+.hero-map-title { display: block; font-family: var(--serif); font-size: 1.1rem; font-weight: 600; letter-spacing: .02em; }
+.hero-map-sub { display: block; font-size: .76rem; color: var(--ink-soft); margin-top: .2rem; }
+.hero-legend { display: flex; flex-wrap: wrap; gap: .2rem .75rem; font-size: .76rem; color: var(--ink-soft); margin-top: .5rem; }
 .hero-legend .lg { display: inline-flex; align-items: center; gap: .35em; white-space: nowrap; }
 .hero-legend i { width: .72em; height: .72em; border-radius: 2px; display: inline-block; }
 .hero-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: .9rem; }
