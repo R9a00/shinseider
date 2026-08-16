@@ -427,6 +427,13 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--ink); }
 /* 工程（つくる→鍛える→出す）: 見出し肩の朱の字 */
 .phase { margin: 2.3rem 0 0; }
 
+/* 一行フロー（手順の帯） */
+.flow-line { display: flex; flex-wrap: wrap; gap: .25em .5em; align-items: center;
+  font-weight: 600; font-size: .92rem; letter-spacing: .01em;
+  border-left: 3px solid var(--accent); background: rgba(165,55,44,.06);
+  padding: .55em .9em; margin: 1.1rem 0; }
+.flow-line .sep { color: var(--accent); font-weight: 400; }
+
 /* ルート分岐カード（entry冒頭: 速いルート/じっくり版）
    左=紙のカード（いまここ）、右=墨ベタ＋朱のトップライン（フカボリへの誘い） */
 .route-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.6rem 0; }

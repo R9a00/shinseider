@@ -36,6 +36,7 @@
     <h2>AIを有効に使う</h2>
     <p>最近は業務に広くAIを使う人も増えていると思いますが、一番有用な使い方は「時短」と「網羅性を上げる」方向性であると思います。アトツギ甲子園についても、忙しいみなさんは時間を「浪費」しないよう取り組んだほうが良い。そこで、AI(LLM)を使って骨子をまとめる仕組みを用意しましたのでご利用下さい。</p>
     <p>指示はシンプルなプロンプト（どんな役割で何をさせるかを示す文）ですが、現在のモデルならこのくらいでも、十分に役割を果たしてくれるはずです。</p>
+    <p class="flow-line"><span>① AIを押す</span><span class="sep">→</span><span>② 送信</span><span class="sep">→</span><span>③ 話し言葉で答える</span><span class="sep">→</span><span>④ 最後の清書をコピー</span><span class="sep">→</span><span>⑤ 下の欄に貼って「取り込む」</span></p>
     <div class="ai-grid">
       {% for t in ai_targets %}
       <button class="ai-card" type="button" data-open="{{ t.url_filled }}" data-mode="{{ t.mode }}">
