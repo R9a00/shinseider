@@ -27,6 +27,12 @@
   <a href="entry.html">エントリー文をつくる →</a>
 </div>
 
+<div class="card ws-entry" id="ws-fukabori" data-total="{{ fk_total }}">
+  <h3 class="tight">フカボリ（じっくり版）</h3>
+  <p id="ws-fk-text" class="muted">まだ始めていません。AIと章ごとに深掘りする丁寧なルートです。</p>
+  <a href="fukabori.html">フカボリへ →</a>
+</div>
+
 <section class="card tool-card" id="ws-check">
   <h2 class="tight">出られるか、30秒で確認</h2>
   <p class="muted">未回答ならここから。回答に応じて、見立てと次の一歩が変わります。</p>
@@ -88,6 +94,11 @@ try {
     document.getElementById('ws-status-text').textContent =
       parts.join(' ／ ') + '（' + (d2.getMonth()+1) + '/' + d2.getDate() + ' チェック）';
     document.getElementById('ws-status').hidden = false;
+    // 回答済みならチェックフォームは畳む（「やり直す」で再表示）
+    document.getElementById('ws-check').hidden = true;
+    document.querySelector('#ws-status a[href="#ws-check"]').addEventListener('click', function(){
+      document.getElementById('ws-check').hidden = false;
+    });
   }
 } catch (_) {}
 // エントリー骨子の進捗
@@ -99,6 +110,16 @@ try {
     if (n > 0) {
       var total = document.getElementById('ws-entry').getAttribute('data-total');
       document.getElementById('ws-entry-text').textContent = '骨子 ' + n + '/' + total + ' 節が埋まっています。続きから再開できます。';
+    }
+  }
+  if (pj && pj.fukabori && pj.fukabori.blocks) {
+    var fkN = 0, bl = pj.fukabori.blocks;
+    Object.keys(bl).forEach(function(bk){
+      Object.keys(bl[bk] || {}).forEach(function(fk){ if ((bl[bk][fk] || '').trim()) fkN++; });
+    });
+    if (fkN > 0) {
+      var fkTotal = document.getElementById('ws-fukabori').getAttribute('data-total');
+      document.getElementById('ws-fk-text').textContent = fkN + '/' + fkTotal + ' 欄が埋まっています。続きから再開できます。';
     }
   }
 } catch (_) {}

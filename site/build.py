@@ -396,7 +396,11 @@ def main():
             "benefit": benefit, "subsidy": subsidy, "track": track,
             "entry_end": entry_end,
         }),
-        "workspace.html": ("workspace.html", {"entry_end": entry_end, "entry_total": len(entry_def["entry_sections"])}),
+        "workspace.html": ("workspace.html", {
+            "entry_end": entry_end,
+            "entry_total": len(entry_def["entry_sections"]),
+            "fk_total": sum(len(b["fields"]) for g in fukabori["groups"] for b in g["blocks"]),
+        }),
         "schedule.html": ("schedule.html", {}),
         "cool.html": ("cool.html", {}),
         "entry.html": ("entry.html", {
