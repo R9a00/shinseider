@@ -37,10 +37,13 @@
   <p class="muted">ビルド: {{ built_at }} ／ 掲載情報には取得日と出典を付記しています。<a href="trust.html">情報源について</a> ／ <a href="about.html">運営者と方針</a></p>
 </footer>
 <script>
+// 残り日数はJSTの暦日で数える（時刻での切り上げだと1日多く出る）
+function daysLeftJst(v){
+  var f = function(x){ return new Date(new Date(x).toLocaleDateString('en-US', {timeZone: 'Asia/Tokyo'})); };
+  return Math.round((f(v) - f(Date.now())) / 86400000);
+}
 document.querySelectorAll('.days-left').forEach(function(el){
-  var d = new Date(el.getAttribute('data-deadline'));
-  var n = Math.ceil((d - new Date()) / 86400000);
-  el.textContent = Math.max(0, n);
+  el.textContent = Math.max(0, daysLeftJst(el.getAttribute('data-deadline')));
 });
 </script>
 <script data-goatcounter="https://shinseider.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>

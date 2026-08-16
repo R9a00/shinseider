@@ -78,10 +78,7 @@
 {% endblock %}
 {% block scripts %}
 <script>
-document.querySelectorAll('.days-left').forEach(function(el){
-  var d = new Date(el.getAttribute('data-deadline'));
-  el.textContent = Math.max(0, Math.ceil((d - new Date()) / 86400000));
-});
+// .days-left はbase側のスクリプト（JST暦日カウント）が埋める
 // 前回チェック結果の復元（この端末のブラウザ内のみ）
 try {
   var s = JSON.parse(localStorage.getItem('shinseider_check') || 'null');

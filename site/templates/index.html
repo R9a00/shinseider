@@ -115,8 +115,7 @@
 <script>
 (function(){
   var el = document.getElementById('countdown');
-  var d = new Date(el.getAttribute('data-deadline'));
-  var days = Math.max(0, Math.ceil((d - new Date()) / 86400000));
+  var days = Math.max(0, daysLeftJst(el.getAttribute('data-deadline')));
   document.getElementById('countdown-days').textContent = days;
 })();
 </script>

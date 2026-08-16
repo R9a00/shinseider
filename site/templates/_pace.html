@@ -18,8 +18,9 @@
     root.setAttribute('data-pace-done', '1');
     var D = JSON.parse(root.querySelector('script.pace-data').textContent);
     var now = new Date();
-    var deadline = new Date(D.entry_deadline);
-    var days = Math.ceil((deadline - now) / 86400000);
+    // JSTの暦日で数える（プレビュー等、base外で動く場合に備えて自前定義）
+    var jd = function(x){ return new Date(new Date(x).toLocaleDateString('en-US', {timeZone: 'Asia/Tokyo'})); };
+    var days = Math.round((jd(D.entry_deadline) - jd(now)) / 86400000);
     var msgEl = root.querySelector('.pace-message');
     if (!msgEl) return;
     if (days < 0) { msgEl.textContent = D.closed_message; return; }
@@ -29,7 +30,7 @@
     var wrap = root.querySelector('.pace-plan-wrap');
     if (!wrap) return;
     var target = new Date(D.submit_target + 'T23:59:00+09:00');
-    var dT = Math.max(1, Math.ceil((target - now) / 86400000));
+    var dT = Math.max(1, Math.round((jd(target) - jd(now)) / 86400000));
     function fmt(d){ return (d.getMonth() + 1) + '/' + d.getDate(); }
     function plus(n){ var x = new Date(now); x.setDate(x.getDate() + n); return x; }
     var entryLink = '<a href="entry.html">申請書の準備</a>';
