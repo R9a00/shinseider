@@ -103,27 +103,24 @@
 <section class="step">
   <h2>進んだ使い方</h2>
   <ul>
-    <li><b>指示文セットを持ち出す</b> — 下の「指示文セットを保存」で、全4章と検算の指示文が1つの.mdになります。ふだんのAIのプロジェクト機能（Claude・ChatGPTとも）にこのファイルと控えの.jsonを入れておくと、章をまたいで文脈がつながる常設の相談相手になります。</li>
+    <li><b>指示文セットを持ち出す</b> — 下の「指示文セットを保存」で、全4章と検算の指示文が1つの.mdになります。ふだんのAIのプロジェクト機能（Claude・ChatGPTとも）にこのファイルと控えファイルを入れておくと、章をまたいで文脈がつながる常設の相談相手になります。</li>
     <li><b>声で答える</b> — インタビューは話すだけなので、スマホの音声入力と相性がよいです。</li>
     <li><b>数字はリサーチ機能で取る</b> — 市場規模や業界の数字は、AIのWeb検索（リサーチ機能）をオンにして出典つきで取り、出典も一緒に控えてください。</li>
     <li><b>検算は2つのAIで</b> — 同じ内容をClaudeとChatGPTの両方に検算させて突き合わせると、指摘の偏りが消えます。</li>
-    <li><b>エージェントAIに任せる</b> — Claude CodeのようなエージェントAIを使っている人は、指示文セットと.jsonを渡せば、まとめて進めてもらえます。</li>
+    <li><b>エージェントAIに任せる</b> — Claude CodeのようなエージェントAIを使っている人は、指示文セットと控えファイルを渡せば、まとめて進めてもらえます。</li>
   </ul>
 </section>
 
 <section class="step">
   <h2>保存と持ち出し</h2>
-  <p>入力は書くそばからこのブラウザに自動保存されますが、ブラウザのデータ削除や端末の変更で消えることがあります。<strong>章の区切りごとに .json を書き出して、控えを残しておくのが確実です</strong>。別の端末でも、読み込めば続きから再開できます:</p>
+  <p>入力は書くそばからこのブラウザに自動保存されますが、ブラウザのデータ削除や端末の変更で消えることがあります。<strong>章の区切りごとに「控えを保存」を押して、ファイルを残しておくのが確実です。</strong></p>
   <div class="save-row">
-    <button class="btn small" id="fk-dl-md" type="button">下書きを保存（.md）</button>
-    <button class="btn small" id="fk-dl-prompts" type="button">指示文セットを保存（.md）</button>
-    <span class="save-links">途中経過の控え（.json）を
-      <button class="linklike" id="fk-dl-json" type="button">書き出す</button> ／
-      <label class="linklike" for="fk-up-json">読み込む</label>
-    </span>
-    <input type="file" id="fk-up-json" accept=".json" hidden>
+    <button class="btn small" id="fk-dl-md" type="button">控えを保存</button>
+    <button class="btn small" id="fk-dl-prompts" type="button">指示文セットを保存</button>
+    <span class="save-links"><label class="linklike" for="fk-up-json">控えを読み込む</label></span>
+    <input type="file" id="fk-up-json" accept=".md,.json,.txt" hidden>
   </div>
-  <p class="muted">.json はエントリー文の控えと同じ入れ物です。読み込めば、その時点の状態から再開できます。</p>
+  <p class="muted">控えは、そのまま読める下書きです。別の端末でも、読み込めば保存した時点から再開できます（申請書の準備の中身も一緒に入ります）。</p>
   <p id="fk-save-msg" class="muted"></p>
 </section>
 </article>
@@ -336,6 +333,7 @@
     var obj;
     try { obj = extractJson(raw); }
     catch(_) { pmsg.textContent = 'コードとして読めませんでした。AIの回答のうち、コードのかたまりを含む部分をそのまま貼ってください。'; return; }
+    if (!obj.blocks && (obj.entry || obj.fukabori)) { pmsg.textContent = 'これは控えファイルです。ページ下の「控えを読み込む」から選んでください。'; return; }
     var blocks = obj.blocks || obj;
     var applied = 0;
     Object.keys(blocks).forEach(function(bk){
@@ -378,32 +376,38 @@
     a.download = name; a.click();
     setTimeout(function(){ URL.revokeObjectURL(a.href); }, 5000);
   }
+  // 控え = 読める下書き + 末尾にセーブデータ（1ファイルで転記元と再開の両方を担う）
   document.getElementById('fk-dl-md').addEventListener('click', function(){
-    dl('fukabori_draft.md', promptFor('critique').split('# ユーザー下書き（24ブロック）')[1] || '', 'text/markdown');
+    var body = promptFor('critique').split('# ユーザー下書き（24ブロック）')[1] || '';
+    var check = null;
+    try { check = JSON.parse(localStorage.getItem('shinseider_check') || 'null'); } catch(_) {}
+    var md = '# フカボリ 控え\n' + body +
+      '\n---\n\n## セーブデータ\n「控えを読み込む」でこのファイルを選ぶと、この時点から再開できます。下のコードは編集しないでください。\n\n```json\n' +
+      JSON.stringify({version: 1, exported: new Date().toISOString(), profile: check, entry: project.entry, fukabori: project.fukabori}) + '\n```\n';
+    dl('fukabori_hikae.md', md, 'text/markdown');
   });
   document.getElementById('fk-dl-prompts').addEventListener('click', function(){
     var md = '# フカボリ 指示文セット\n\nシンセイダーのフカボリ（https://shinseider.onrender.com/fukabori.html）で使う、章別インタビューと検算の指示文一式です。\n1章ずつAIに渡して使います。章が終わるとAIがコード（セーブデータ）を出すので、フカボリのページで取り込んでください。\n';
     PROMPTS.chapters.forEach(function(ch, i){
       md += '\n---\n\n# 第' + (i + 1) + '章 ' + ch.title + '\n\n' + ch.prompt + '\n';
     });
-    md += '\n---\n\n# 仕上げ（検算・ダメ出し）\n\n' + PROMPTS.critique + '\n\n※この指示文のあとに「# ユーザー下書き（24ブロック）」として、フカボリの「下書きを保存（.md）」の中身を貼って使います。\n';
+    md += '\n---\n\n# 仕上げ（検算・ダメ出し）\n\n' + PROMPTS.critique + '\n\n※この指示文のあとに「# ユーザー下書き（24ブロック）」として、フカボリの「控えを保存」の中身（セーブデータの前まで）を貼って使います。\n';
     dl('fukabori_prompts.md', md, 'text/markdown');
-  });
-  document.getElementById('fk-dl-json').addEventListener('click', function(){
-    dl('shinseider_project.json', JSON.stringify(project, null, 1), 'application/json');
   });
   document.getElementById('fk-up-json').addEventListener('change', function(e){
     var f = e.target.files[0];
     if (!f) return;
     var r = new FileReader();
     r.onload = function(){
-      try {
-        var p = JSON.parse(r.result);
-        localStorage.setItem(KEY, JSON.stringify(p));
-        location.reload();
-      } catch(_) {
-        document.getElementById('fk-save-msg').textContent = '読み込めませんでした（.jsonの形式が不正です）。';
-      }
+      var d = null;
+      try { d = extractJson(String(r.result)); } catch(_) {}
+      var msgEl = document.getElementById('fk-save-msg');
+      if (!d || (!d.entry && !d.fukabori)) { msgEl.textContent = '読み込めませんでした。「控えを保存」で作ったファイルを選んでください。'; return; }
+      if (d.entry) project.entry = d.entry;
+      if (d.fukabori) project.fukabori = d.fukabori;
+      if (d.profile) { try { localStorage.setItem('shinseider_check', JSON.stringify(d.profile)); } catch(_) {} }
+      saveProject(project); refresh();
+      msgEl.textContent = '控えを読み込みました。';
     };
     r.readAsText(f);
   });

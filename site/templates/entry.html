@@ -137,16 +137,13 @@
 
   <section class="step">
     <h2>保存と持ち出し</h2>
-    <p>入力はこのブラウザに自動保存されますが、ブラウザのデータ削除や端末の変更で消えることがあります。<strong>区切りのいいところで .json を書き出して、控えを残しておくのが確実です</strong>。読み込めばその時点から再開できます:</p>
+    <p>入力はこのブラウザに自動保存されますが、ブラウザのデータ削除や端末の変更で消えることがあります。<strong>区切りのいいところで「控えを保存」を押して、ファイルを残しておくのが確実です。</strong></p>
     <div class="save-row">
-      <button class="btn small" id="dl-md" type="button">エントリー文を保存（.md）</button>
-      <span class="save-links">途中経過の控え（.json）を
-        <button class="linklike" id="dl-project" type="button">書き出す</button> ／
-        <label class="linklike" for="up-project">読み込む</label>
-      </span>
-      <input type="file" id="up-project" accept=".json" hidden>
+      <button class="btn small" id="dl-md" type="button">控えを保存</button>
+      <span class="save-links"><label class="linklike" for="up-project">控えを読み込む</label></span>
+      <input type="file" id="up-project" accept=".md,.json,.txt" hidden>
     </div>
-    <p class="muted">.md は、届いた書類フォーマットに転記するときの元原稿になります。.json は手元のAIに読ませて、続きを頼むときの受け渡しにも使えます。</p>
+    <p class="muted">控えは、そのまま読める下書きです。届いた書類フォーマットに転記するときの元原稿になり、手元のAIに読ませる受け渡しにも使えます。読み込めば保存した時点から再開できます（フカボリの中身も一緒に入ります）。</p>
     <p id="save-msg" class="muted"></p>
   </section>
 </div>
@@ -346,37 +343,37 @@
     a.href = URL.createObjectURL(new Blob([text], {type: type}));
     a.download = name; a.click(); URL.revokeObjectURL(a.href);
   }
+  // 控え = 読める下書き + 末尾にセーブデータ（1ファイルで転記元と再開の両方を担う）
   document.getElementById('dl-md').addEventListener('click', function(){
-    var md = '# アトツギ甲子園 エントリー文（下書き）\n\n';
+    var md = '# アトツギ甲子園 申請書の準備 控え\n\n';
     DATA.sections.forEach(function(s){
       md += '## ' + s.title + '\n\n' + (project.entry.sections[s.id] || '（未入力）') + '\n\n';
     });
     md += '---\n作成: シンセイダー（下書き支援）／エントリーは公式サイトから。公募要領・エントリー要領の原文が常に優先します。\n';
-    download('entry_draft.md', md, 'text/markdown');
-  });
-  document.getElementById('dl-project').addEventListener('click', function(){
     var check = null;
     try { check = JSON.parse(localStorage.getItem('shinseider_check') || 'null'); } catch(_) {}
-    download('shinseider_project.json',
-      JSON.stringify({version: 1, exported: new Date().toISOString(), profile: check, entry: project.entry}, null, 2),
-      'application/json');
+    md += '\n## セーブデータ\n「控えを読み込む」でこのファイルを選ぶと、この時点から再開できます。下のコードは編集しないでください。\n\n```json\n' +
+      JSON.stringify({version: 1, exported: new Date().toISOString(), profile: check, entry: project.entry, fukabori: project.fukabori || null}) + '\n```\n';
+    download('shinseider_hikae.md', md, 'text/markdown');
   });
   document.getElementById('up-project').addEventListener('change', function(e){
     var file = e.target.files[0]; if (!file) return;
     var reader = new FileReader();
     reader.onload = function(){
-      try {
-        var d = JSON.parse(reader.result);
-        if (!d.entry) throw new Error('形式が違います');
-        project.entry = d.entry;
-        if (d.profile) { try { localStorage.setItem('shinseider_check', JSON.stringify(d.profile)); } catch(_) {} }
-        saveProject(project); refresh();
-        var rn2 = document.getElementById('review-notes');
-        if (rn2) rn2.value = project.entry.review_notes || '';
-        document.getElementById('save-msg').textContent = 'プロジェクトファイルを読み込みました。';
-      } catch(err) {
-        document.getElementById('save-msg').textContent = '読み込めませんでした: ' + err.message;
+      var d = null;
+      try { d = JSON.parse(reader.result); } catch(_) {
+        var m = String(reader.result).match(/```json\s*([\s\S]*?)```/);
+        if (m) { try { d = JSON.parse(m[1].trim()); } catch(_) {} }
       }
+      var msg = document.getElementById('save-msg');
+      if (!d || (!d.entry && !d.fukabori)) { msg.textContent = '読み込めませんでした。「控えを保存」で作ったファイルを選んでください。'; return; }
+      if (d.entry) project.entry = d.entry;
+      if (d.fukabori) project.fukabori = d.fukabori;
+      if (d.profile) { try { localStorage.setItem('shinseider_check', JSON.stringify(d.profile)); } catch(_) {} }
+      saveProject(project); refresh();
+      var rn2 = document.getElementById('review-notes');
+      if (rn2) rn2.value = project.entry.review_notes || '';
+      msg.textContent = '控えを読み込みました。';
     };
     reader.readAsText(file);
   });
