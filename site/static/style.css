@@ -429,8 +429,10 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--ink); }
 
 /* フカボリ（24ブロック） */
 .fk-pick-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
-.fk-ai-pick { opacity: .55; }
-.fk-ai-pick.on { opacity: 1; outline: 2px solid var(--accent, #a33); }
+/* ai-chipは黒パネル用の配色なので、明るい背景のフカボリでは色を上書きする */
+.fk-ai-pick { color: var(--ink); border: 1px solid var(--line); background: transparent; opacity: .6; }
+.fk-ai-pick:hover { color: var(--ink); border-color: var(--ink); background: transparent; opacity: 1; }
+.fk-ai-pick.on { opacity: 1; border-color: var(--accent, #a33); outline: 1px solid var(--accent, #a33); }
 .fk-steps { margin: 1.2rem 0; }
 .fk-step { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem;
   border: 1px solid var(--line); border-radius: 6px; padding: .7rem .9rem; margin: .5rem 0; }
