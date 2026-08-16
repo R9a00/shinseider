@@ -427,6 +427,17 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--ink); }
 /* 工程（つくる→鍛える→出す）: 見出し肩の朱の字 */
 .phase { margin: 2.3rem 0 0; }
 
+/* ルート分岐カード（entry冒頭: 速いルート/じっくり版） */
+.route-row { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin: 1.4rem 0; }
+@media (max-width: 640px) { .route-row { grid-template-columns: 1fr; } }
+.route-card { border: 1px solid var(--line); padding: .9rem 1.1rem .8rem; }
+.route-card p { margin: .25em 0; }
+.route-kicker { font-size: .76rem; font-weight: 700; letter-spacing: .06em; color: var(--ink-soft); }
+.route-card.here { background: rgba(221,214,200,.18); }
+a.route-card { display: block; color: inherit; text-decoration: none; }
+a.route-card:hover { border-color: var(--accent); }
+a.route-card .route-kicker { color: var(--accent); }
+
 /* フカボリ（24ブロック） */
 .fk-pick-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
 /* ai-chipは黒パネル用の配色なので、明るい背景のフカボリでは色を上書きする */
