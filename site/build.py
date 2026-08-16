@@ -155,6 +155,36 @@ def build_japan_blocks_svg():
     (DIST / "static" / "japan-blocks.svg").write_bytes(ET.tostring(root))
 
 
+def events_jsonld(ev_data):
+    """イベントページ用のEvent構造化データ（schema.org）。行事のみ
+    （説明会・キャンプ・地方大会・決勝）。締切・受付開始は行事ではないため含めない。"""
+    import re as _re
+    items = []
+    for e in ev_data["events"]:
+        if e.get("kind") not in ("briefing", "camp", "taikai", "final"):
+            continue
+        start = str(e["start"])
+        m = _re.search(r"(\d{1,2}:\d{2})", str(e.get("time", "")))
+        if m:
+            start += f"T{m.group(1)}:00+09:00"
+        item = {
+            "@type": "Event",
+            "name": "第7回アトツギ甲子園 " + e["title"],
+            "startDate": start,
+            "endDate": str(e.get("end", e["start"])),
+            "eventStatus": "https://schema.org/EventScheduled",
+            "organizer": {"@type": "GovernmentOrganization", "name": "中小企業庁"},
+            "url": e.get("source_url", SITE_URL + "/news.html"),
+        }
+        if e.get("venue"):
+            item["location"] = {"@type": "Place", "name": e["venue"]}
+        elif "オンライン" in str(e.get("format", "")):
+            item["eventAttendanceMode"] = "https://schema.org/OnlineEventAttendanceMode"
+            item["location"] = {"@type": "VirtualLocation", "url": e.get("source_url", "")}
+        items.append(item)
+    return json.dumps({"@context": "https://schema.org", "@graph": items}, ensure_ascii=False)
+
+
 def group_by_region(people):
     """人のリストを地域→県→人に組む（載っている県だけ）"""
     return [
@@ -507,7 +537,7 @@ def main():
         }),
         "about.html": ("about.html", {}),
         "ambassadors.html": ("ambassadors.html", ambassadors_ctx(amb)),
-        "news.html": ("news.html", events_ctx(ev_data, news_data)),
+        "news.html": ("news.html", {**events_ctx(ev_data, news_data), "ev_jsonld": events_jsonld(ev_data)}),
     }
     # 古いビルドの残骸を掃除（定義にないHTMLをdistに残さない）
     for stale in DIST.glob("*.html"):
@@ -530,9 +560,24 @@ def main():
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         + "".join(f"  <url><loc>{u}</loc><lastmod>{_today}</lastmod></url>\n" for u in _urls)
         + "</urlset>\n", encoding="utf-8")
+    # 出たくない理由ページ: 本文の問い/答えからFAQ構造化データを自動生成（二重管理を避ける）
+    import re as _re
+    _cool = (DIST / "cool.html").read_text(encoding="utf-8")
+    _qas = _re.findall(r'<div class="objection">\s*<h2>(.*?)</h2>\s*<p>(.*?)</p>', _cool, _re.S)
+    if _qas:
+        _faq = {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+            {"@type": "Question",
+             "name": _re.sub(r"<[^>]+>", "", q).strip("「」").replace("&amp;", "&"),
+             "acceptedAnswer": {"@type": "Answer",
+                                "text": _re.sub(r"<[^>]+>", "", a).replace("&amp;", "&")}}
+            for q, a in _qas]}
+        _cool = _cool.replace("</head>", '<script type="application/ld+json">'
+                              + json.dumps(_faq, ensure_ascii=False) + "</script>\n</head>")
+        (DIST / "cool.html").write_text(_cool, encoding="utf-8")
+
     (DIST / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml\n", encoding="utf-8")
-    (DIST / "favicon.ico").write_bytes((SITE / "static" / "logo.png").read_bytes())
+    (DIST / "favicon.ico").write_bytes((SITE / "static" / "favicon.png").read_bytes())
 
     print(f"→ {DIST}")
 
