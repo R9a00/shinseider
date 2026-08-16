@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block main %}
 <section class="hero">
+<div class="hero-main">
   <p class="kicker">第7回アトツギ甲子園 エントリー受付中</p>
   <h1><span class="hl-box">その構想、誰かに<br>本気で見てもらったことはありますか。</span></h1>
   <p class="lead">親は何も言わないか、否定をする。社員は何も言えないか、忖度をする。自分をよく知る人ほど評価は甘くなり、知らない人は真剣に聞いてくれない。あなたの描く事業構想は、まだ一度も本気の批評に触れていないのかもしれません。</p>
@@ -30,6 +31,22 @@
     「公募申請時点で、申請者の代表者（予定を含む。）が『アトツギ甲子園』の出場者（地方予選を含む。）であること」
     <cite>— 事業承継・M&A補助金（事業承継促進枠）15次公募要領・加点事由⑧（2026-08-06確認）</cite>
   </blockquote>
+  <div class="cta-row">
+    <a class="btn primary" href="check.html">出られるか、30秒で確認する</a>
+    <a class="btn" href="https://atotsugi-koshien.go.jp/" rel="noopener">公式サイトでエントリー</a>
+  </div>
+</div>
+
+<aside class="hero-side">
+  <figure class="hero-map">
+    <img src="static/japan-map.svg" alt="地方大会6ブロックの地図" loading="lazy">
+    <figcaption>地方大会は全国6ブロック — 仙台・東京・名古屋・大阪・高松・熊本（2027年1月〜2月）</figcaption>
+  </figure>
+  <div class="hero-stats">
+    <div class="stat"><b>39<i>歳以下</i></b><span>挑戦資格。1987年4月以降生まれの後継予定者</span></div>
+    <div class="stat"><b>1,000<i>万円</i></b><span>事業承継・M&A補助金の補助上限（賃上げ達成時）</span></div>
+    <div class="stat"><b>6<i>ブロック</i></b><span>全国の地方大会。出場から補助金審査の加点対象</span></div>
+  </div>
   <div class="count-block" id="countdown" data-deadline="{{ entry_end }}">
     <div class="countdown">
       <span class="countdown-label">第7回エントリー締切<br>2026年11月25日 18:00 まで</span>
@@ -37,10 +54,7 @@
     </div>
     <p class="countdown-more"><a href="schedule.html">いまから始めても間に合う？ 今日から始める場合の道筋 →</a></p>
   </div>
-  <div class="cta-row">
-    <a class="btn primary" href="check.html">出られるか、30秒で確認する</a>
-    <a class="btn" href="https://atotsugi-koshien.go.jp/" rel="noopener">公式サイトでエントリー</a>
-  </div>
+</aside>
 </section>
 
 <section>
