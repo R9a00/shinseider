@@ -23,6 +23,7 @@ SITE = ROOT / "site"
 DIST = SITE / "dist"
 
 PREVIEW = True  # 公開ゲート6項目クリアで False にする
+SITE_URL = "https://shinseider.onrender.com"
 
 
 def load(name):
@@ -375,6 +376,7 @@ def main():
         trim_blocks=True, lstrip_blocks=True,
     )
     env.globals.update({
+        "site_url": SITE_URL,
         "preview": PREVIEW,
         "built_at": dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).strftime("%Y-%m-%d %H:%M JST"),
         "site_name": "シンセイダー",
@@ -519,6 +521,18 @@ def main():
         ctx.setdefault("page", out.rsplit(".", 1)[0])  # ナビの現在地表示用
         (DIST / out).write_text(env.get_template(tpl).render(**ctx), encoding="utf-8")
         print("built", out)
+
+    # 検索エンジン向け: sitemap / robots / favicon（旧Reactサイトの索引残像を早く置き換えるため）
+    _today = dt.date.today().isoformat()
+    _urls = [SITE_URL + "/"] + [SITE_URL + "/" + out for out in pages if out != "index.html"]
+    (DIST / "sitemap.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + "".join(f"  <url><loc>{u}</loc><lastmod>{_today}</lastmod></url>\n" for u in _urls)
+        + "</urlset>\n", encoding="utf-8")
+    (DIST / "robots.txt").write_text(
+        f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml\n", encoding="utf-8")
+    (DIST / "favicon.ico").write_bytes((SITE / "static" / "logo.png").read_bytes())
 
     print(f"→ {DIST}")
 
