@@ -435,7 +435,6 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--ink); }
     display: grid; grid-template-columns: minmax(0, 44rem) minmax(0, 1fr);
     gap: 3.5rem; align-items: start;
   }
-  .hero-side { position: sticky; top: 5.5rem; }
 }
 .hero-side { display: grid; gap: .9rem; align-content: start; }
 @media (max-width: 1179.9px) { .hero-side { margin-top: 2.5rem; } }
