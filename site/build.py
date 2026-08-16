@@ -90,6 +90,69 @@ REGIONS = [
     ("九州・沖縄", ["福岡県", "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県"]),
 ]
 
+# トップの塗り分け地図用: (ブロック名, 塗り色, 開催都市, 開催日)。
+# 日程の根拠は中企庁8/3プレス（data/events.yamlと同一）。REGIONSと同順であること
+BLOCK_META = [
+    ("北海道・東北", "#adc3cf", "仙台", "1/19"),
+    ("関東", "#d3a08e", "東京・品川", "1/25"),
+    ("中部", "#cfc08d", "名古屋", "1/28"),
+    ("近畿", "#c2a3b4", "大阪", "2/1"),
+    ("中国・四国", "#a9c0a4", "高松", "2/4"),
+    ("九州・沖縄", "#d9b98f", "熊本", "2/8"),
+]
+
+
+def build_japan_blocks_svg():
+    """トップ用: 地方大会6ブロックで塗り分けた日本地図を dist/static に書き出す。
+    <img>単体で表示するためfillはインラインで持つ。構図の組み替え3手順は
+    build_japan_svgと同じ（境界線除去・鹿児島の転置離島省略・沖縄インセット）。"""
+    import xml.etree.ElementTree as ET
+    NS = "http://www.w3.org/2000/svg"
+    ET.register_namespace("", NS)
+    tree = ET.parse(SITE / "static" / "japan-map.svg")
+    root = tree.getroot()
+    svg_map = root.find(f"{{{NS}}}g[@class='svg-map']")
+    boundary = svg_map.find(f"{{{NS}}}g[@class='boundary-line']")
+    assert boundary is not None, "japan-map.svg: boundary-line が見つからない"
+    svg_map.remove(boundary)
+    prefs_g = svg_map.find(f"{{{NS}}}g[@class='prefectures']")
+    kago = next(g for g in prefs_g if "kagoshima" in (g.get("class") or ""))
+    kago_polys = [el for el in kago if el.tag == f"{{{NS}}}polygon"]
+    assert len(kago_polys) == 15, "鹿児島のpolygon数が想定と違う"
+    for el in kago_polys[8:]:
+        kago.remove(el)
+    oki = next(g for g in prefs_g if "okinawa" in (g.get("class") or ""))
+    oki.set("transform", "translate(71.32, 41.12) scale(1.25)")
+    frame = ET.SubElement(root, f"{{{NS}}}g", {})
+    ET.SubElement(frame, f"{{{NS}}}rect", {
+        "x": "14", "y": "14", "width": "420", "height": "206",
+        "fill": "none", "stroke": "#ddd6c8"})
+    label = ET.SubElement(frame, f"{{{NS}}}text", {
+        "x": "422", "y": "204", "text-anchor": "end",
+        "fill": "#7a7466", "font-size": "13"})
+    label.text = "沖縄県"
+
+    color_by_pref = {}
+    for (rname, prefs), (bname, color, _city, _date) in zip(REGIONS, BLOCK_META):
+        assert rname == bname, "REGIONSとBLOCK_METAの順序が食い違っている"
+        for p in prefs:
+            color_by_pref[p] = color
+
+    def walk(parent):
+        for child in list(parent):
+            code = child.get("data-code")
+            if code is not None and "prefecture" in (child.get("class") or ""):
+                pref = PREF_BY_CODE[int(code)]
+                for attr in ("fill", "stroke", "stroke-width"):
+                    child.attrib.pop(attr, None)
+                child.set("fill", color_by_pref[pref])
+                child.set("stroke", "#faf8f3")
+                child.set("stroke-width", "0.8")
+            else:
+                walk(child)
+    walk(prefs_g)
+    (DIST / "static" / "japan-blocks.svg").write_bytes(ET.tostring(root))
+
 
 def group_by_region(people):
     """人のリストを地域→県→人に組む（載っている県だけ）"""
@@ -322,6 +385,7 @@ def main():
     # CSS/JSコピー
     for f in (SITE / "static").glob("*"):
         (DIST / "static" / f.name).write_bytes(f.read_bytes())
+    build_japan_blocks_svg()
 
     track = next(t for t in subsidy["tracks"] if t["id"] == "succession_promotion")
     entry_end = benefit["event"]["schedule"]["entry_period"]["end"]  # ISO文字列
@@ -395,6 +459,8 @@ def main():
         "index.html": ("index.html", {
             "benefit": benefit, "subsidy": subsidy, "track": track,
             "entry_end": entry_end,
+            "hero_blocks": [{"name": n, "color": c, "city": city, "date": d}
+                            for n, c, city, d in BLOCK_META],
         }),
         "workspace.html": ("workspace.html", {
             "entry_end": entry_end,
