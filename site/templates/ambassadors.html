@@ -46,7 +46,7 @@
 {% endfor %}
 
 <h2>歴代のアンバサダー</h2>
-<p>過去の回で任命された人の記録です。</p>
+<p>過去の回で任命された方の記録です。</p>
 {% for r in past_rounds %}
 <p class="muted">第{{ r.round }}回（{{ r.appointed[:4] }}年{{ r.appointed[5:7] | int }}月任命・{{ r.count }}名）のうち、現任に続いていない{{ alumni_count }}名:</p>
 {% endfor %}
