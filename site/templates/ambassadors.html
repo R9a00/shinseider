@@ -48,7 +48,7 @@
 <h2>歴代のアンバサダー</h2>
 <p>過去の回で任命された方の記録です。</p>
 {% for r in past_rounds %}
-<p class="muted">第{{ r.round }}回（{{ r.appointed[:4] }}年{{ r.appointed[5:7] | int }}月任命・{{ r.count }}名）のうち、現任に続いていない{{ alumni_count }}名:</p>
+<p class="muted">第{{ r.round }}回（{{ r.appointed[:4] }}年{{ r.appointed[5:7] | int }}月任命・{{ r.count }}名）のうち、第7回の名簿に記載のない方（{{ alumni_count }}名）:</p>
 {% endfor %}
 {% for region in alumni_regions %}
 <section class="amb-region amb-region--past">
