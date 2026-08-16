@@ -22,13 +22,14 @@ sections = [
     ("トップ", "index.html"),
     ("出られるか（30秒確認）", "check.html"),
     ("間に合うか（道筋）", "schedule.html"),
-    ("冷めたまま出る、という選択", "cool.html"),
-    ("エントリー文をつくる", "entry.html"),
-    ("相談先（地域アンバサダー）", "ambassadors.html"),
-    ("現在地（試作）", "workspace.html"),
+    ("出たくない理由", "cool.html"),
+    ("申請書の準備", "entry.html"),
+    ("フカボリ（じっくり版）", "fukabori.html"),
+    ("相談できる人（地域アンバサダー）", "ambassadors.html"),
+    ("進み具合（試作）", "workspace.html"),
+    ("イベント（日程と公式発表）", "news.html"),
     ("補助金詳細", "subsidy.html"),
-    ("国の狙い", "policy.html"),
-    ("情報の確かさ", "trust.html"),
+    ("情報源", "trust.html"),
     ("運営者と方針", "about.html"),
 ]
 
@@ -59,7 +60,7 @@ for label, fn in sections:
     m = re.search(r"<main>(.*?)</main>", html, re.S).group(1)
     # エントリー文と準備室は、実物と同じ動作にするため末尾のスクリプトも取り込む
     # （これを怠るとプレビューでGeminiボタン等が無反応になる＝実地で検出された問題）
-    if fn in ("entry.html", "workspace.html"):
+    if fn in ("entry.html", "workspace.html", "news.html"):
         tail = html.split("</main>", 1)[1]
         for sc in re.findall(r"<script>.*?</script>", tail, re.S):
             m += sc

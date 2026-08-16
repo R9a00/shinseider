@@ -1,12 +1,34 @@
 {% extends "base.html" %}
-{% block title %}事業承継・M&A補助金〈事業承継促進枠〉 | {{ site_name }}{% endblock %}
+{% block title %}アトツギ甲子園で優遇がある補助金 | {{ site_name }}{% endblock %}
 {% block main %}
 <article>
-<h1>事業承継・M&A補助金〈事業承継促進枠〉</h1>
-<p class="lead">{{ track.target_persona }}。アトツギ甲子園の特典が最も強く効く補助金（唯一、出場＝優遇・ファイナリスト＝重加点の2階層）。</p>
-<p class="note">本ページは15次公募要領（2026年8月6日取得）に基づいています。申請にあたっては、必ず最新の公募要領原文をご確認ください。</p>
+<h1>アトツギ甲子園で優遇がある補助金</h1>
+<p class="lead">出場の段階に応じて、申請時の優遇・加点が公式に示されている制度の一覧です。</p>
+<table>
+<tr><th>制度</th><th>優遇（どの段階で何が）</th></tr>
+{% for r in subsidy_rows %}
+<tr>
+  <td>
+    {% if r.detail_on_site %}<a href="#shokei-detail">{{ r.name }}</a> <span class="muted">— このページで詳述</span>
+    {% else %}<a href="{{ r.official_url }}" rel="noopener">{{ r.name }}</a>{% endif %}
+    {% if r.gist %}<br><span class="muted">{{ r.gist }}</span>{% endif %}
+  </td>
+  <td>{% for p in r.perks %}{{ p.stage }}で{{ p.effect }}{% if not loop.last %}<br>{% endif %}{% endfor %}</td>
+</tr>
+{% endfor %}
+</table>
+<ul class="note-list">
+{% for n in benefit_notes %}
+  <li class="muted">{{ n }}</li>
+{% endfor %}
+</ul>
+<p class="note">この一覧のうち、要件まで分解できているのは下の事業承継・M&A補助金だけです。ほかの3制度の金額・要件は各公式サイトで確認してください。</p>
 
-<h2>金額・補助率</h2>
+<h2 id="shokei-detail">詳細 — 事業承継・M&A補助金〈事業承継促進枠〉</h2>
+<p class="lead">{{ track.target_persona }}。アトツギ甲子園の特典が最も強く効く補助金（唯一、出場＝優遇・ファイナリスト＝重加点の2階層）。</p>
+<p class="note">以下は15次公募要領（2026年8月6日取得）に基づいています。申請にあたっては、必ず最新の公募要領原文をご確認ください。</p>
+
+<h3>金額・補助率</h3>
 <table>
 <tr><th>補助下限</th><td>{{ "{:,}".format(track.amount.min_yen) }}円</td></tr>
 <tr><th>補助上限（基本）</th><td>{{ "{:,}".format(track.amount.max_yen) }}円</td></tr>
@@ -15,14 +37,14 @@
 <tr><th>補助率</th><td>小規模事業者等 {{ track.subsidy_rate.small_business }} ／ その他 {{ track.subsidy_rate.default }}</td></tr>
 </table>
 
-<h2>主な要件（落とすと申請不可のもの）</h2>
+<h3>主な要件（落とすと申請不可のもの）</h3>
 <ul class="req-list">
 {% for r in s.requirements['items'] if r.severity == 'block' %}
   <li><strong>{{ r.label }}</strong>{% if r.note %} <span class="muted">— {{ r.note }}</span>{% endif %}</li>
 {% endfor %}
 </ul>
 
-<h2>加点事由（アトツギ甲子園はここに載っている）</h2>
+<h3>加点事由（アトツギ甲子園はここに載っている）</h3>
 <ol class="bonus-list">
 {% for b in s.scoring.bonus_points %}
   <li{% if b.id == 'atotsugi_koshien' %} class="highlight"{% endif %}>
@@ -35,14 +57,14 @@
 {% endfor %}
 </ol>
 
-<h2>審査の4観点（＝事業計画の章立て）</h2>
+<h3>審査の4観点（＝事業計画の章立て）</h3>
 <ul>
 {% for a in s.scoring.evaluation_axes %}
   <li><strong>{{ a.name }}</strong> — {{ a.gist }}</li>
 {% endfor %}
 </ul>
 
-<h2>公募スケジュール</h2>
+<h3>公募スケジュール</h3>
 <ul>
 {% for r in s.rounds %}
   <li>第{{ r.number }}次:
@@ -56,8 +78,10 @@
 
 <h2>出典</h2>
 <ul class="sources">
-  <li><a href="{{ s.tracks[0].provenance.source_url }}" rel="noopener">{{ s.tracks[0].provenance.source_title }}</a>（取得: {{ s.tracks[0].provenance.accessed }}）</li>
-  <li><a href="{{ s.portal_url }}" rel="noopener">公式ポータル</a></li>
+  <li><a href="{{ benefit_src.source_url }}" rel="noopener">{{ benefit_src.source_title }}</a>（取得: {{ benefit_src.accessed }}）— 一覧の優遇段階</li>
+  <li>各制度の公式サイト（一覧内リンク、取得: 2026-08-16）</li>
+  <li><a href="{{ s.tracks[0].provenance.source_url }}" rel="noopener">{{ s.tracks[0].provenance.source_title }}</a>（取得: {{ s.tracks[0].provenance.accessed }}）— 詳細欄</li>
+  <li><a href="{{ s.portal_url }}" rel="noopener">事業承継・M&A補助金 公式ポータル</a></li>
 </ul>
 </article>
 {% endblock %}

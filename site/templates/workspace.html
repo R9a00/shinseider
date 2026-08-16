@@ -11,8 +11,8 @@
 </div>
 
 <section class="tool-head">
-  <h1>現在地<span class="ws-tag">試作版</span></h1>
-  <p class="lead">ここまでの進み具合と、11/25までにやることをまとめた画面です。入力はあなたの端末にだけ保存されます。当サイトは一切のデータを取得しません。</p>
+  <h1>進み具合<span class="ws-tag">試作版</span></h1>
+  <p class="lead">ここまでの進み具合と、11/25までにやることをまとめた画面です。入力はあなたの端末にだけ保存され、サイト側に送信されることはありません。</p>
 </section>
 
 <div class="card ws-status" id="ws-status" hidden>
@@ -22,14 +22,20 @@
 </div>
 
 <div class="card ws-entry" id="ws-entry" data-total="{{ entry_total }}">
-  <h3 class="tight">甲子園エントリー文</h3>
+  <h3 class="tight">申請書の準備</h3>
   <p id="ws-entry-text" class="muted">まだ始めていません。5つの問いに答えるだけです。</p>
-  <a href="entry.html">エントリー文をつくる →</a>
+  <a href="entry.html">申請書の準備へ →</a>
+</div>
+
+<div class="card ws-entry" id="ws-fukabori" data-total="{{ fk_total }}">
+  <h3 class="tight">フカボリ（じっくり版）</h3>
+  <p id="ws-fk-text" class="muted">まだ始めていません。AIと章ごとに深掘りする丁寧なルートです。</p>
+  <a href="fukabori.html">フカボリへ →</a>
 </div>
 
 <section class="card tool-card" id="ws-check">
   <h2 class="tight">出られるか、30秒で確認</h2>
-  <p class="muted">まずここから。いまの立ち位置で、道筋が変わります。</p>
+  <p class="muted">未回答ならここから。回答に応じて、見立てと次の一歩が変わります。</p>
   {% include "_checkform.html" %}
 </section>
 
@@ -55,11 +61,6 @@
       <p>事業承継促進枠：上限800万円（賃上げで1,000万円）・補助率最大2/3。5年以内に承継予定の後継者の成長投資が対象。<span class="muted">（15次要領・8/6確認）</span></p>
       <a href="subsidy.html">要件・加点・審査観点 →</a>
     </div>
-    <div class="card">
-      <h3 class="tight">なぜ国が応援するのか</h3>
-      <p>甲子園にも補助金にも、つくられた理由があります。理由をたどると、審査で何が読まれるかが見えてきます。</p>
-      <a href="policy.html">背景を読む →</a>
-    </div>
   </div>
 </section>
 
@@ -68,7 +69,8 @@
   <ol class="timeline">
     <li><strong>いま</strong> — 出られるかを確かめ、現経営者と承継の話を始める</li>
     <li><strong>〜10月</strong> — エントリー文をつくり、読み合わせて磨く</li>
-    <li><strong>〜11/25 18:00</strong> — エントリー（<a href="https://atotsugi-koshien.go.jp/" rel="noopener">公式サイト</a>）</li>
+    <li><strong>〜11/25 18:00</strong> — エントリー（<a href="https://atotsugi-koshien.go.jp/" rel="noopener">公式サイト</a>）。完了すると応募書類フォーマットが届く</li>
+    <li><strong>〜11/27 12:00</strong> — ここまでに作った材料をフォーマットに転記して、応募書類を提出</li>
     <li><strong>2027/1/19–2/8</strong> — 地方大会。ここまで進むと補助金審査の加点対象</li>
     <li><strong>2027年公募〜</strong> — 加点を持って事業承継・M&A補助金へ</li>
   </ol>
@@ -76,10 +78,7 @@
 {% endblock %}
 {% block scripts %}
 <script>
-document.querySelectorAll('.days-left').forEach(function(el){
-  var d = new Date(el.getAttribute('data-deadline'));
-  el.textContent = Math.max(0, Math.ceil((d - new Date()) / 86400000));
-});
+// .days-left はbase側のスクリプト（JST暦日カウント）が埋める
 // 前回チェック結果の復元（この端末のブラウザ内のみ）
 try {
   var s = JSON.parse(localStorage.getItem('shinseider_check') || 'null');
@@ -87,13 +86,17 @@ try {
     var kg = (s.age === 'yes') && (s.pos === 'yes' || s.pos === 'alt');
     var parts = [];
     parts.push('アトツギ甲子園: ' + (kg ? '適合の見込み' : '要件の確認が必要'));
-    if (s.succ === 'yes' && s.fin === 'yes') parts.push('事業承継促進枠: 入口要件を満たす見込み');
+    if (s.succ === 'yes') parts.push('事業承継促進枠: 入口要件を満たす見込み');
     else if (s.succ === 'maybe') parts.push('次の一歩: 現経営者との対話（承継の意思と時期）');
-    else if (s.fin === 'no') parts.push('促進枠は3期分の決算が前提');
     var d2 = new Date(s.ts);
     document.getElementById('ws-status-text').textContent =
       parts.join(' ／ ') + '（' + (d2.getMonth()+1) + '/' + d2.getDate() + ' チェック）';
     document.getElementById('ws-status').hidden = false;
+    // 回答済みならチェックフォームは畳む（「やり直す」で再表示）
+    document.getElementById('ws-check').hidden = true;
+    document.querySelector('#ws-status a[href="#ws-check"]').addEventListener('click', function(){
+      document.getElementById('ws-check').hidden = false;
+    });
   }
 } catch (_) {}
 // エントリー骨子の進捗
@@ -105,6 +108,16 @@ try {
     if (n > 0) {
       var total = document.getElementById('ws-entry').getAttribute('data-total');
       document.getElementById('ws-entry-text').textContent = '骨子 ' + n + '/' + total + ' 節が埋まっています。続きから再開できます。';
+    }
+  }
+  if (pj && pj.fukabori && pj.fukabori.blocks) {
+    var fkN = 0, bl = pj.fukabori.blocks;
+    Object.keys(bl).forEach(function(bk){
+      Object.keys(bl[bk] || {}).forEach(function(fk){ if ((bl[bk][fk] || '').trim()) fkN++; });
+    });
+    if (fkN > 0) {
+      var fkTotal = document.getElementById('ws-fukabori').getAttribute('data-total');
+      document.getElementById('ws-fk-text').textContent = fkN + '/' + fkTotal + ' 欄が埋まっています。続きから再開できます。';
     }
   }
 } catch (_) {}

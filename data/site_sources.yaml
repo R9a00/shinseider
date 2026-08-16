@@ -22,14 +22,16 @@ datasets:
   - label: 第6回任命（2025年7月30日）
     url: https://kyodonewsprwire.jp/release/202507302938
 - name: アンバサダーの出場歴
-  how: 第1回〜第6回の決勝大会に関する公式発表と全員を照合。決勝級（ファイナリスト・準ファイナリスト・受賞）のみ記載
+  how: 第1回〜第6回の地方大会・決勝大会に関する公式発表と全員を照合。地方大会出場以上を記載
   accessed: '2026-08-15'
   links:
-  - label: 出典の一覧は相談先ページ末尾に記載
+  - label: 出典の一覧は「相談できる人」ページ末尾に記載
     url: ambassadors.html
-- name: 政策の背景（なぜ国は応援するのか）
-  how: 白書・審議会資料など一次資料から。事実と解釈を分けて記載（解釈には「私たちの解釈です」と明記）
-  accessed: '2026-08-06'
+- name: 第7回のイベント・期日とニュース
+  how: 公式サイトのイベントページと中小企業庁・経済産業省の発表から取得。開催日時・会場は各ページの原文で確認
+  accessed: '2026-08-15'
   links:
-  - label: 国の狙いページ（本文に出典付記）
-    url: policy.html
+  - label: 公式イベント一覧
+    url: https://atotsugi-koshien.go.jp/event/
+  - label: 中小企業庁 発表（2026-08-03）
+    url: https://www.chusho.meti.go.jp/zaimu/shoukei/2026/260803.html
