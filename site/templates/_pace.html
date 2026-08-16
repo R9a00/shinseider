@@ -4,7 +4,6 @@
   <div class="pace-plan-wrap" id="pace-plan-wrap" hidden>
     <p class="muted pace-plan-head">今日から始めるなら:</p>
     <ol class="pace-plan" id="pace-plan"></ol>
-    <p class="muted pace-note">※現経営者に対してどう対話を切り出したらいいか、エントリーしたいが説得が難しいなど、ございましたら<a href="ambassadors.html">アンバサダー</a>にご相談ください。</p>
   </div>
   {% endif %}
   <script type="application/json" class="pace-data">{{ pace_json | safe }}</script>
@@ -18,9 +17,8 @@
     root.setAttribute('data-pace-done', '1');
     var D = JSON.parse(root.querySelector('script.pace-data').textContent);
     var now = new Date();
-    // JSTの暦日で数える（プレビュー等、base外で動く場合に備えて自前定義）
-    var jd = function(x){ return new Date(new Date(x).toLocaleDateString('en-US', {timeZone: 'Asia/Tokyo'})); };
-    var days = Math.round((jd(D.entry_deadline) - jd(now)) / 86400000);
+    var deadline = new Date(D.entry_deadline);
+    var days = Math.ceil((deadline - now) / 86400000);
     var msgEl = root.querySelector('.pace-message');
     if (!msgEl) return;
     if (days < 0) { msgEl.textContent = D.closed_message; return; }
@@ -30,10 +28,10 @@
     var wrap = root.querySelector('.pace-plan-wrap');
     if (!wrap) return;
     var target = new Date(D.submit_target + 'T23:59:00+09:00');
-    var dT = Math.max(1, Math.round((jd(target) - jd(now)) / 86400000));
+    var dT = Math.max(1, Math.ceil((target - now) / 86400000));
     function fmt(d){ return (d.getMonth() + 1) + '/' + d.getDate(); }
     function plus(n){ var x = new Date(now); x.setDate(x.getDate() + n); return x; }
-    var entryLink = '<a href="entry.html">申請書の準備</a>';
+    var entryLink = '<a href="entry.html">エントリー文をつくる</a>';
     var steps;
     if (dT <= 3) {
       steps = [

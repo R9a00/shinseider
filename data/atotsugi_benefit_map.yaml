@@ -10,16 +10,10 @@ event:
     details:
     - 親族外承継も対象
     - 家業と別法人の代表でも可（ただし家業承継予定か、家業の経営資源活用が必須）
-    note: 公式文言は「後継予定者」。承継を決めていない人が出られるかは公式に明言がなく、
-      サイト上で「継ぐと決める前でも出られる」とは書かないこと（2026-08-15にFAQまで確認して言い過ぎと判断、文言撤回）
     provenance:
       source_url: https://www.meti.go.jp/press/2026/07/20260715003.html
       accessed: '2026-08-06'
       confidence: verified
-      also:
-      - source_url: https://atotsugi-koshien.go.jp/about
-        accessed: '2026-08-15'
-        note: 挑戦資格の注釈原文（代表権を持つ前・親族外含む・別法人代表の条件）を確認
   schedule:
     entry_period:
       start: '2026-08-03'
@@ -67,13 +61,11 @@ benefit_ladder:
   unlocks:
   - type: exposure
     detail: 公式サイト特設ページへの掲載
-    comment: これだけで、自分の会社、事業が人目に触れる可能性が増します。
 - status: document_submitted
   label: 書類提出
   unlocks:
   - type: feedback
     detail: 審査委員からのコメント・アドバイス
-    comment: 自分の事業構想に対して忖度のないコメントがもらえます。
 - status: regional_qualifier
   label: 地方大会出場（書類審査通過）
   unlocks:
@@ -100,35 +92,6 @@ benefit_ladder:
     effect: 重加点措置
   - type: opportunity
     detail: SusHi Tech Tokyo 2027への出展機会（予定）
-# 補助金ページの一覧表示用。優遇がどの段階で効くかは benefit_ladder が正で、
-# ここは各制度の名称・一行説明・公式リンクだけを持つ
-subsidy_directory:
-- id: jigyo_shokei_ma
-  name: 事業承継・M&A補助金〈事業承継促進枠〉
-  detail_on_site: true
-- id: shoryokuka_ippan
-  name: 中小企業省力化投資補助金（一般型）
-  gist: 人手不足に悩む中小企業等の省力化投資を支援（公式サイトの事業目的より）
-  official_url: https://shoryokuka.smrj.go.jp/
-  provenance:
-    accessed: '2026-08-16'
-    confidence: verified
-- id: gotech_rd_support
-  name: Go-Tech事業（成長型中小企業等研究開発支援事業）
-  gist: 大学・公設試等と連携して行う研究開発とその事業化を支援
-  official_url: https://www.chusho.meti.go.jp/sapoin/
-  provenance:
-    accessed: '2026-08-16'
-    confidence: verified
-    note: 公式「Go-Techナビ」。サイトがbot経由の取得を遮断するため、実在は検索結果のタイトルで確認
-- id: jizokuka
-  name: 小規模事業者持続化補助金
-  gist: 小規模事業者の販路開拓等の取組を支援
-  official_url: https://r6.jizokukahojokin.info/
-  provenance:
-    accessed: '2026-08-16'
-    confidence: verified
-    note: 商工会議所地区〈一般型 通常枠〉の公式サイト。商工会地区は別サイト
 conditions_and_notes:
 - 各補助金の優遇を受けるには、アトツギ甲子園にエントリーした会社名又は事業者名での申請が必要（公式FAQ）
 - 特典ページ（優遇＝地方大会出場者）と15次公募要領の加点条項（出場者=地方予選含む）で表現が異なる。適用境界は各公募回の要領原文が正であり、公募回ごとに再確認が必要

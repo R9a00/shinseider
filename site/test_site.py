@@ -17,7 +17,7 @@ LEAK_WORDS = [
     "解錠", "逆引き", "ステータスの階段", "Tier",
     "世界の現実", "事実の系譜", "政策の末端", "ドメイン", "作戦室",
 ]
-PAGES = ["index", "workspace", "check", "entry", "schedule", "cool", "subsidy", "trust", "about", "ambassadors", "news"]
+PAGES = ["index", "workspace", "check", "entry", "schedule", "cool", "subsidy", "policy", "trust", "about", "ambassadors"]
 
 SAMPLE_ENTRY = """## 現業と自分
 金属加工の会社で営業を5年やっています。年商3億円、従業員20名。
@@ -65,11 +65,11 @@ def main():
         # 2b. 全回答 → 保存 → 準備室で復元
         pg.goto(f"file://{DIST}/check.html")
         pg.check("input[name=q_age][value=yes]"); pg.check("input[name=q_pos][value=yes]")
-        pg.check("input[name=q_succ][value=yes]");
+        pg.check("input[name=q_succ][value=yes]"); pg.check("input[name=q_fin][value=yes]")
         pg.click("button[type=submit]")
         pg.wait_for_selector("#result:not([hidden])", timeout=8000)
-        if "進み具合" not in pg.inner_text("#result"):
-            failures.append("チェック結果に進み具合ページへの導線がない")
+        if "現在地" not in pg.inner_text("#result"):
+            failures.append("チェック結果に現在地ページへの導線がない")
         pg.goto(f"file://{DIST}/workspace.html")
         try:
             pg.wait_for_selector("#ws-status:not([hidden])", timeout=5000)

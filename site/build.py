@@ -129,50 +129,12 @@ PREF_BY_CODE = {
 
 def build_japan_svg(has_prefs):
     """日本地図SVG（geolonia/japanese-prefectures map-polygon, GFDL）を読み、
-    アンバサダーのいる県をリンク化して返す。色はCSSに任せる。
-
-    原典は南西諸島を本州北西の海上に斜めに並べる構図（境界線2本で区切る）。
-    全県同色なら成立するが、当サイトは在任県を濃色にするため、鹿児島の
-    トカラ・奄美が沖縄のすぐ隣に濃色で浮かび「沖縄がずれている」ように読める。
-    そこで構図だけ組み替える（形状データは無加工・手描き座標は使わない）:
-      1. 境界線2本を除去
-      2. 鹿児島のうち北西海上に転置されていた離島7個（トカラ・奄美ほか）を省略
-         （本土と種子・屋久・甑島は実位置のまま残る）
-      3. 沖縄県は左上に移動し、細枠+「沖縄県」で通常の囲み表示にする
-    """
+    アンバサダーのいる県をリンク化して返す。色はCSSに任せる"""
     import xml.etree.ElementTree as ET
     NS = "http://www.w3.org/2000/svg"
     ET.register_namespace("", NS)
     tree = ET.parse(SITE / "static" / "japan-map.svg")
     root = tree.getroot()
-
-    svg_map = root.find(f"{{{NS}}}g[@class='svg-map']")
-    # 1. 斜め構図用の境界線を除去
-    boundary = svg_map.find(f"{{{NS}}}g[@class='boundary-line']")
-    assert boundary is not None, "japan-map.svg: boundary-line が見つからない（原典が変わった）"
-    svg_map.remove(boundary)
-
-    prefs_g = svg_map.find(f"{{{NS}}}g[@class='prefectures']")
-    # 2. 鹿児島の転置離島（文書順で9〜15個目のpolygon）を省略
-    kago = next(g for g in prefs_g if "kagoshima" in (g.get("class") or ""))
-    kago_polys = [el for el in kago if el.tag == f"{{{NS}}}polygon"]
-    assert len(kago_polys) == 15, f"鹿児島のpolygonが{len(kago_polys)}個（15のはず）— 原典が変わったので転置離島の位置を再測定すること"
-    for el in kago_polys[8:]:  # 実測: 8個目までが本土・種子屋久・甑島、以降が北西海上のトカラ・奄美
-        kago.remove(el)
-
-    # 3. 沖縄県を左上の囲みへ移動し、1.25倍で描く（島が小さく、等倍では読めないため。
-    #    囲み内の拡大は一般的な地図の作法）。
-    #    実測: 沖縄のグループ内容はローカル(0,0)-(309,133)。親の matrix(s=1.028807) を挟むので
-    #    最終座標 = s*(k*local + translate + (6,18)) + (-47.544,-28.807)。
-    #    k=1.25, translate(71.32,41.12) → 内容は最終(32,32)-(430,203)、枠(14,14,420,206)に収まる。
-    oki = next(g for g in prefs_g if "okinawa" in (g.get("class") or ""))
-    assert oki.get("transform") == "translate(52.000000, 193.000000)", "沖縄のtransformが想定と違う — 原典が変わったので移動量を再計算すること"
-    oki.set("transform", "translate(71.32, 41.12) scale(1.25)")
-
-    frame = ET.SubElement(root, f"{{{NS}}}g", {"class": "inset"})
-    ET.SubElement(frame, f"{{{NS}}}rect", {"x": "14", "y": "14", "width": "420", "height": "206", "class": "inset-frame"})
-    label = ET.SubElement(frame, f"{{{NS}}}text", {"x": "422", "y": "204", "text-anchor": "end", "class": "inset-label"})
-    label.text = "沖縄県"
 
     def walk(parent):
         for i, child in enumerate(list(parent)):
@@ -192,87 +154,6 @@ def build_japan_svg(has_prefs):
 
     walk(root)
     return ET.tostring(root, encoding="unicode")
-
-
-WEEKDAY_JA = ["月", "火", "水", "木", "金", "土", "日"]
-
-
-def events_ctx(ev_data, news_data):
-    """「動き」ページ: 時系列リスト+月グリッド+カレンダー登録リンク。
-    月グリッドはシーズン範囲（2026-08〜2027-02）を全部プリレンダし、表示切替はクライアント側"""
-    import calendar as calmod
-    import urllib.parse
-
-    events = []
-    for e in ev_data["events"]:
-        d0 = dt.date.fromisoformat(str(e["start"]))
-        d1 = dt.date.fromisoformat(str(e.get("end", e["start"])))
-        wd = f"{WEEKDAY_JA[d0.weekday()]}"
-        if d1 != d0:
-            date_disp = f"{d0.month}/{d0.day}（{wd}）〜{d1.month}/{d1.day}（{WEEKDAY_JA[d1.weekday()]}）"
-        else:
-            date_disp = f"{d0.month}/{d0.day}（{wd}）"
-        # Googleカレンダー登録リンク（終日形式・時刻はタイトルに含める。個人情報は載せない）
-        gtitle = e["title"] + ("（" + e["time"] + "）" if e.get("time") else "") + "｜アトツギ甲子園"
-        q = urllib.parse.urlencode({
-            "action": "TEMPLATE",
-            "text": gtitle,
-            "dates": d0.strftime("%Y%m%d") + "/" + (d1 + dt.timedelta(days=1)).strftime("%Y%m%d"),
-            "details": "出典: " + e["source_url"],
-            "location": e.get("venue", e.get("format", "")),
-        })
-        events.append({**e, "d0": d0.isoformat(), "date_disp": date_disp,
-                       "past": d1 < dt.date.today(),  # ビルド時点の判定。閲覧時はJSが再判定
-                       "gcal_url": "https://calendar.google.com/calendar/render?" + q})
-
-    by_date = {}
-    for e in events:
-        d = dt.date.fromisoformat(e["d0"])
-        d1 = dt.date.fromisoformat(str(e.get("end", e["start"])))
-        while d <= d1:
-            by_date.setdefault(d, []).append(e)
-            d += dt.timedelta(days=1)
-
-    cal = calmod.Calendar(firstweekday=6)  # 日曜はじまり
-    months, (y, m) = [], (2026, 8)
-    while (y, m) <= (2027, 2):
-        weeks = [[{"day": d.day, "in_month": d.month == m, "iso": d.isoformat(),
-                   "events": by_date.get(d, []) if d.month == m else []}
-                  for d in wk]
-                 for wk in cal.monthdatescalendar(y, m)]
-        months.append({"y": y, "m": m, "weeks": weeks})
-        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
-
-    news = sorted(news_data["items"], key=lambda n: n["date"], reverse=True)
-    return {"events": events, "months": months, "news": news, "ev_note": ev_data["meta"]["note"]}
-
-
-def build_ics(ev_data):
-    """主要日程の .ics（終日形式・時刻はタイトルに併記。今日以降のみ）"""
-    today = dt.date.today()
-    stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    lines = ["BEGIN:VCALENDAR", "VERSION:2.0",
-             "PRODID:-//shinseider//koshien7//JA", "CALSCALE:GREGORIAN"]
-    def esc(s):
-        return s.replace("\\", "\\\\").replace(",", "\\,").replace(";", "\\;")
-    for e in ev_data["events"]:
-        d0 = dt.date.fromisoformat(str(e["start"]))
-        d1 = dt.date.fromisoformat(str(e.get("end", e["start"])))
-        if d1 < today:
-            continue
-        title = e["title"] + ("（" + e["time"] + "）" if e.get("time") else "") + "｜アトツギ甲子園"
-        lines += ["BEGIN:VEVENT",
-                  f"UID:{e['id']}-r7@shinseider",
-                  f"DTSTAMP:{stamp}",
-                  f"DTSTART;VALUE=DATE:{d0.strftime('%Y%m%d')}",
-                  f"DTEND;VALUE=DATE:{(d1 + dt.timedelta(days=1)).strftime('%Y%m%d')}",
-                  f"SUMMARY:{esc(title)}",
-                  f"DESCRIPTION:{esc('出典: ' + e['source_url'])}"]
-        if e.get("venue"):
-            lines.append(f"LOCATION:{esc(e['venue'])}")
-        lines.append("END:VEVENT")
-    lines.append("END:VCALENDAR")
-    return "\r\n".join(lines) + "\r\n"
 
 
 def ambassadors_ctx(amb):
@@ -302,9 +183,6 @@ def main():
     lineage = load("policy_lineage.yaml")
     entry_def = load("koshien_entry.yaml")
     amb = load("ambassadors.yaml")
-    fukabori = load("fukabori.yaml")
-    ev_data = load("events.yaml")
-    news_data = load("news.yaml")
 
     env = Environment(
         loader=FileSystemLoader(SITE / "templates"),
@@ -325,17 +203,6 @@ def main():
 
     track = next(t for t in subsidy["tracks"] if t["id"] == "succession_promotion")
     entry_end = benefit["event"]["schedule"]["entry_period"]["end"]  # ISO文字列
-
-    # 補助金ページの一覧: 制度（subsidy_directory）×優遇段階（benefit_ladderが正）を結合
-    def perks_for(sid):
-        return [
-            {"stage": step["label"], "effect": u["effect"]}
-            for step in benefit["benefit_ladder"]
-            for u in step.get("unlocks", [])
-            if u.get("subsidy_id") == sid
-        ]
-    subsidy_rows = [{**e, "perks": perks_for(e["id"])} for e in benefit["subsidy_directory"]]
-    assert all(r["perks"] for r in subsidy_rows), "directoryの制度がladderに見当たらない"
     env.globals["entry_deadline"] = entry_end  # ヘッダーの締切チップ用（全ページ）
 
     # インタビュー指示文: テーマ×要素（旧システム53項目の蒸留）をデータから組み立てる
@@ -344,31 +211,6 @@ def main():
         for i, s in enumerate(entry_def["entry_sections"], 1)
     ]
     prompt_text = entry_def["prompt_template"].replace("{theme_elements}", "\n".join(theme_lines))
-    # プリフィルURLが長すぎるとAI側で受け取れない・途中で切れる。上限8000字を超えたらビルドを止める
-    for t in entry_def["ai_targets"]:
-        if t.get("mode") == "prefill":
-            _u = t["url"].replace("{prompt}", urllib.parse.quote(prompt_text))
-            assert len(_u) <= 8000, f"プリフィルURLが上限超過({len(_u)}字): {t['id']}。prompt_templateを圧縮すること"
-
-    # フカボリ: 章単位のインタビュー指示文。器の定義はgroupsから生成（単一ソース）。
-    # 1章=1会話に区切ることで指示文を短くし、URL渡し（押したら入っている）を成立させる
-    fk_chapters = [
-        {
-            "title": g["title"],
-            "prompt": fukabori["chapter_prompt"]
-            .replace("{chapter_no}", str(gi + 1))
-            .replace("{chapter_title}", g["title"])
-            .replace("{structure}", "\n".join(
-                f"- {b['key']}「{b['title']}」:" + "/".join(
-                    f"{f['key']}={f['label']}" + ("" if f.get("required") else "*")
-                    for f in b["fields"])
-                for b in g["blocks"])),
-        }
-        for gi, g in enumerate(fukabori["groups"])
-    ]
-    for _ch in fk_chapters:
-        _u = "https://claude.ai/new?q=" + urllib.parse.quote(_ch["prompt"])
-        assert len(_u) <= 8000, f"フカボリ章プロンプトが上限超過({len(_u)}字): {_ch['title']}"
 
     # 「間に合うか」メッセージと逆算プラン（データ駆動）
     pace = entry_def["pace"]
@@ -396,11 +238,7 @@ def main():
             "benefit": benefit, "subsidy": subsidy, "track": track,
             "entry_end": entry_end,
         }),
-        "workspace.html": ("workspace.html", {
-            "entry_end": entry_end,
-            "entry_total": len(entry_def["entry_sections"]),
-            "fk_total": sum(len(b["fields"]) for g in fukabori["groups"] for b in g["blocks"]),
-        }),
+        "workspace.html": ("workspace.html", {"entry_end": entry_end, "entry_total": len(entry_def["entry_sections"])}),
         "schedule.html": ("schedule.html", {}),
         "cool.html": ("cool.html", {}),
         "entry.html": ("entry.html", {
@@ -412,7 +250,6 @@ def main():
                 {**t, "url_filled": t["url"].replace("{prompt}", urllib.parse.quote(prompt_text))}
                 for t in entry_def["ai_targets"]
             ],
-            # プリフィルURLが長すぎるとAI側で受け取れない（8000字を上限とする。超えたらビルドを止める）
             "entry_json": json.dumps({
                 "sections": [{"id": s["id"], "title": s["title"]} for s in entry_def["entry_sections"]],
                 "validation": entry_def["validation"],
@@ -420,18 +257,9 @@ def main():
                 "review_prompt": entry_def["review_prompt_template"],
             }, ensure_ascii=False).replace("<", "\\u003c"),
         }),
-        "fukabori.html": ("fukabori.html", {
-            "groups": fukabori["groups"],
-            "ai_targets": entry_def["ai_targets"],
-            "fk_prompts_json": json.dumps(
-                {"chapters": fk_chapters, "critique": fukabori["companion_prompt"]},
-                ensure_ascii=False),
-        }),
-        "subsidy.html": ("subsidy.html", {"s": subsidy, "track": track,
-                                          "subsidy_rows": subsidy_rows,
-                                          "benefit_notes": benefit["conditions_and_notes"],
-                                          "benefit_src": benefit["provenance"][0]}),
+        "subsidy.html": ("subsidy.html", {"s": subsidy, "track": track}),
         "check.html": ("check.html", {}),
+        "policy.html": ("policy.html", {"lin": lineage}),
         # 信頼面: 内部語彙（confidence値・git生ログ）は出さず、人の言葉の更新履歴のみ
         "trust.html": ("trust.html", {
             "updates": load("site_updates.yaml")["updates"],
@@ -439,15 +267,12 @@ def main():
         }),
         "about.html": ("about.html", {}),
         "ambassadors.html": ("ambassadors.html", ambassadors_ctx(amb)),
-        "news.html": ("news.html", events_ctx(ev_data, news_data)),
     }
     # 古いビルドの残骸を掃除（定義にないHTMLをdistに残さない）
     for stale in DIST.glob("*.html"):
         if stale.name not in pages:
             stale.unlink()
             print("removed stale", stale.name)
-
-    (DIST / "koshien7.ics").write_text(build_ics(ev_data), encoding="utf-8")
 
     for out, (tpl, ctx) in pages.items():
         ctx.setdefault("page", out.rsplit(".", 1)[0])  # ナビの現在地表示用

@@ -21,10 +21,9 @@ body {
   line-height: 2; font-size: 15.5px; font-feature-settings: "palt";
 }
 ::selection { background: var(--ink); color: var(--paper); }
-[id] { scroll-margin-top: 4.6rem; }  /* 追従ヘッダーの下に頭が隠れないように（ページ内ジャンプ全般） */
 main { max-width: var(--maxw); margin: 0 auto; padding: 1.5rem 1.5rem 5rem; }
 h1, h2, h3 { font-family: var(--serif); font-weight: 600; letter-spacing: .02em; }
-h1 { font-size: 2.1rem; line-height: 1.7; margin: .85em 0 .5em; }
+h1 { font-size: 2.1rem; line-height: 1.7; margin: 1.4em 0 .7em; }
 h2 { font-size: 1.3rem; line-height: 1.8; margin: 3.2rem 0 .8rem; padding-top: 2rem; border-top: 1px solid var(--hair); }
 h3 { font-size: 1.05rem; margin: 1.6em 0 .4em; }
 h2.tight, h3.tight { border: 0; padding-top: 0; margin-top: 0; }
@@ -70,15 +69,8 @@ em { font-style: normal; color: var(--accent); }
 
 .hero { padding-top: 2.6rem; }
 .kicker { color: var(--accent); font-weight: 600; font-size: .8rem; letter-spacing: .3em; margin: 0 0 1.4rem; }
-.hero h1 { font-size: 2.25rem; margin: 0 0 .8em; line-height: 1.82; }
-.hero h1 .hl-box {
-  background: var(--accent); color: var(--paper);
-  padding: .1em .32em .13em;
-  box-decoration-break: clone; -webkit-box-decoration-break: clone;
-}
+.hero h1 { font-size: 2.5rem; margin: 0 0 .7em; }
 .lead { font-size: .98rem; line-height: 2.2; color: var(--ink-lead); }
-.standing { margin: 1.7rem 0 0; font-size: .8rem; color: var(--ink-faint); letter-spacing: .02em; }
-.standing a { color: inherit; }
 
 /* 価値の目次（トップ4項: 罫線と番号の組版） */
 .vals { list-style: none; counter-reset: v; margin: 2.8rem 0; padding: 0; border-top: 1px solid var(--hair); }
@@ -142,7 +134,6 @@ blockquote.evidence.small { font-size: .9rem; margin: 1.2em 0; }
 .ladder-unlocks { grid-column: 2; list-style: none; margin: 0; padding: 0; font-size: .9rem; line-height: 2; color: var(--ink-soft); }
 .ladder-unlocks li { margin: .3em 0; padding-left: 1.2em; text-indent: -1.2em; }
 .ladder-unlocks li::before { content: "— "; color: var(--ink-faint); }
-.unlock-comment { display: block; font-size: .84em; color: var(--ink-faint); padding-left: 0; text-indent: 0; }
 /* 補助金の優遇が始まる段: データ側の印(has-pref)で暖色の帯にする */
 .ladder-step.has-pref { background: #f6efdd; margin: 0 -1.25rem; padding-left: 1.25rem; padding-right: 1.25rem; border-bottom-color: #e8dcba; }
 .ladder-step.has-pref::before { color: var(--gold); }
@@ -316,42 +307,10 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--ink); }
 .review-hint { font-size: .78rem; color: #948c7c; margin: .2em 0 .4em; }
 
 /* 日本地図（相談先: 実測の県形。いる県は墨で押せる、いない県は淡い紙色） */
-/* 動き: 時系列イベント */
-.evlist { list-style: none; margin: 1.4rem 0 2rem; padding: 0; border-top: 1px solid var(--hair); }
-.evlist .ev { display: grid; grid-template-columns: 9.5rem 1fr; column-gap: 1.1rem;
-  padding: .95rem 0; border-bottom: 1px solid var(--hair); margin: 0; }
-.ev-date { font-family: var(--serif); font-size: .95rem; color: var(--ink-soft); }
-.ev-body b { font-size: .98rem; }
-.ev-time { margin-left: .7em; font-size: .82rem; color: var(--ink-soft); }
-.ev-meta { display: block; font-size: .8rem; color: var(--ink-faint); line-height: 1.9; }
-.ev-links { display: block; font-size: .78rem; margin-top: .15em; }
-@media (max-width: 640px) { .evlist .ev { grid-template-columns: 1fr; row-gap: .15rem; } }
-/* 動き: 月グリッド */
-.calwrap { margin: 1.4rem 0 2rem; }
-.cal-nav { display: flex; align-items: baseline; gap: 1.2rem; margin: 0 0 .6rem; }
-.cal-title { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; }
-.cal-nav .linklike:disabled { opacity: .3; cursor: default; text-decoration: none; }
-.calgrid { width: 100%; border-collapse: collapse; table-layout: fixed; }
-.calgrid th { font-size: .72rem; font-weight: 400; color: var(--ink-faint); padding: .3em 0; border-bottom: 1px solid var(--line); }
-.calgrid td { vertical-align: top; height: 4.6em; border-bottom: 1px solid var(--hair); padding: .25em .3em; }
-.calgrid td.out { background: none; }
-.calgrid td.today { outline: 1.5px solid var(--accent); outline-offset: -1.5px; }
-.cal-num { font-size: .72rem; color: var(--ink-faint); }
-.cal-ev { display: block; font-size: .68rem; line-height: 1.5; color: var(--ink-soft); letter-spacing: .02em; }
-.k-deadline { color: var(--accent); font-weight: 600; }
-.k-taikai { color: var(--gold); font-weight: 600; }
-.k-final { color: var(--accent); font-weight: 700; }
-.cal-legend .cal-ev { display: inline; font-size: .78em; }
-/* 動き: 発表の記録 */
-.newslist { list-style: none; margin: 1rem 0; padding: 0; }
-.newslist li { padding: .55em 0; border-bottom: 1px solid var(--hair); font-size: .93rem; margin: 0; }
-.news-date { font-family: var(--serif); color: var(--ink-faint); margin-right: .8em; font-size: .88em; }
-
 .jpmap { margin: 1.2rem 0 .4rem; }
 .jpmap svg { display: block; width: 100%; max-width: 33rem; height: auto; }
-.jpmap .prefecture path, .jpmap .prefecture polygon { fill: #ded6bf; stroke: var(--paper); stroke-width: 1.2; }
-.jpmap .inset-frame { fill: none; stroke: var(--line); stroke-width: 2; }
-.jpmap .inset-label { fill: var(--ink-faint); font-size: 26px; letter-spacing: .12em; }
+.jpmap .prefecture path, .jpmap .prefecture polygon { fill: #e9e4d5; stroke: var(--paper); stroke-width: 1.2; }
+.jpmap .boundary-line { stroke: var(--line); fill: none; }
 .jpmap g.has path, .jpmap g.has polygon { fill: var(--ink); }
 .jpmap a:hover g.has path, .jpmap a:hover g.has polygon { fill: var(--accent); }
 .map-credit { font-size: .72rem; margin-bottom: 1.6rem; }
@@ -425,65 +384,7 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--ink); }
 .objection p { margin: .2em 0 0; font-size: .95rem; }
 
 /* 工程（つくる→鍛える→出す）: 見出し肩の朱の字 */
-.phase { margin: 2.3rem 0 0; }
-
-/* 手順ピル（番号が順序を語る。矢印なしなので折り返しても崩れない） */
-.flow-steps { list-style: none; counter-reset: fs; display: flex; flex-wrap: wrap;
-  gap: .45rem .5rem; padding: 0; margin: 1.2rem 0 .5rem; }
-.flow-steps li { counter-increment: fs; display: inline-flex; align-items: center; gap: .5em;
-  border: 1px solid var(--line); background: #fffdf7;
-  padding: .3em .85em .3em .35em; font-size: .87rem; font-weight: 600; border-radius: 999px; }
-.flow-steps li::before { content: counter(fs); display: inline-grid; place-items: center;
-  width: 1.55em; height: 1.55em; border-radius: 50%;
-  background: var(--accent); color: var(--paper); font-size: .8em; font-weight: 700; }
-.flow-note { font-size: .82rem; margin-top: 0; }
-
-/* ルート分岐カード（entry冒頭: 速いルート/じっくり版）
-   左=紙のカード（いまここ）、右=墨ベタ＋朱のトップライン（フカボリへの誘い） */
-.route-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.6rem 0; }
-@media (max-width: 640px) { .route-row { grid-template-columns: 1fr; } }
-.route-card { position: relative; padding: 1.1rem 1.2rem 1rem; border: 1px solid var(--line); border-top: 3px solid var(--ink-faint); }
-.route-card p { margin: .2em 0; }
-.route-time {
-  display: inline-block; font-size: .7rem; font-weight: 700; letter-spacing: .1em;
-  border: 1px solid currentColor; border-radius: 999px; padding: .12em .7em;
-  color: var(--ink-soft); margin-bottom: .5em;
-}
-.route-name { font-family: var(--serif); font-size: 1.12rem; font-weight: 600; letter-spacing: .02em; }
-.route-here { font-size: .68rem; font-weight: 700; letter-spacing: .1em; color: var(--ink-faint);
-  border: 1px solid var(--line); padding: .1em .5em; vertical-align: .15em; margin-left: .4em; }
-.route-desc { font-size: .92rem; color: var(--ink-lead); }
-a.route-card {
-  display: block; text-decoration: none;
-  background: var(--ink); border-color: var(--ink); border-top: 3px solid var(--accent);
-  color: #efe9dc;
-}
-a.route-card .route-name { color: var(--paper); }
-a.route-card .route-desc { color: #cfc8b8; }
-a.route-card .route-time { color: #e5b1a8; }
-.route-arrow { position: absolute; right: 1.1rem; bottom: .8rem; font-size: 1.25rem; color: #e5b1a8; transition: transform .15s; }
-a.route-card:hover .route-arrow { transform: translateX(.25em); }
-a.route-card:hover { border-top-color: #e5b1a8; }
-
-/* フカボリ（24ブロック） */
-.fk-pick-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
-/* ai-chipは黒パネル用の配色なので、明るい背景のフカボリでは色を上書きする */
-.fk-ai-pick { color: var(--ink); border: 1px solid var(--line); background: transparent; opacity: .6; }
-.fk-ai-pick:hover { color: var(--ink); border-color: var(--ink); background: transparent; opacity: 1; }
-.fk-ai-pick.on { opacity: 1; border-color: var(--accent, #a33); outline: 1px solid var(--accent, #a33); }
-.fk-steps { margin: 1.2rem 0; }
-.fk-step { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem;
-  border: 1px solid var(--line); border-radius: 6px; padding: .7rem .9rem; margin: .5rem 0; }
-.fk-step.next { border-color: var(--accent, #a33); box-shadow: 0 0 0 1px var(--accent, #a33); }
-.fk-step-no { font-size: .75rem; font-weight: 700; border: 1px solid var(--line); padding: .1em .5em; border-radius: 3px; }
-.fk-step-actions { margin-left: auto; display: flex; gap: .8rem; align-items: center; }
-.fk-step-purpose { flex-basis: 100%; font-size: .88em; }
-.fk-group { margin: 1rem 0; border-top: 1px solid var(--line); }
-.fk-group > summary { cursor: pointer; font-weight: 600; padding: .7em 0; }
-.fk-block { margin: 1.1rem 0; }
-.fk-label { display: block; margin: .7em 0 .15em; font-size: .9rem; font-weight: 600; }
-.fk-label .muted { font-weight: 400; }
-.fk-id { font-size: .75em; border: 1px solid var(--line); padding: 0 .35em; border-radius: 3px; }
+.phase { margin: 3.4rem 0 0; }
 .phase-kicker {
   display: flex; align-items: center; gap: .9em;
   font-size: .76rem; font-weight: 600; letter-spacing: .38em;
