@@ -77,6 +77,14 @@ em { font-style: normal; color: var(--accent); }
   box-decoration-break: clone; -webkit-box-decoration-break: clone;
 }
 .lead { font-size: .98rem; line-height: 2.2; color: var(--ink-lead); }
+/* リード冒頭: 周囲の「声」を1文1行の対句で見せ、結びを独立させる */
+.lead-voices {
+  font-family: var(--serif); font-size: 1.04rem; line-height: 2.05;
+  margin: 2.2rem 0 0; padding-left: 1.2em; border-left: 2px solid var(--line);
+}
+.lead-voices .voice { display: block; }
+.lead-close { margin: 1.5rem 0 0; font-family: var(--serif); font-size: 1.04rem; color: var(--ink); }
+.hero .lead-close + .lead { margin-top: 2.4rem; }
 .standing { margin: 1.7rem 0 0; font-size: .8rem; color: var(--ink-faint); letter-spacing: .02em; }
 .standing a { color: inherit; }
 
