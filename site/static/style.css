@@ -373,8 +373,14 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--ink); }
 .jpmap .prefecture path, .jpmap .prefecture polygon { fill: #ded6bf; stroke: var(--paper); stroke-width: 1.2; }
 .jpmap .inset-frame { fill: none; stroke: var(--line); stroke-width: 2; }
 .jpmap .inset-label { fill: var(--ink-faint); font-size: 26px; letter-spacing: .12em; }
-.jpmap g.has path, .jpmap g.has polygon { fill: var(--ink); }
-.jpmap a:hover g.has path, .jpmap a:hover g.has polygon { fill: var(--accent); }
+.jpmap g.has path, .jpmap g.has polygon { fill: var(--accent); }
+.jpmap a:hover g.has path, .jpmap a:hover g.has polygon { fill: var(--ink); }
+.map-legend { margin: .2rem 0 .6rem; font-size: .82rem; }
+.map-legend span + span { margin-left: 1.4em; }
+.map-legend .swatch { display: inline-block; width: .8em; height: .8em; border-radius: 2px;
+  margin-right: .4em; vertical-align: -.05em; }
+.map-legend .swatch.has { background: var(--accent); }
+.map-legend .swatch.none { background: #ded6bf; }
 .map-credit { font-size: .72rem; margin-bottom: 1.6rem; }
 
 /* 相談先の一覧（地域→県→人） */

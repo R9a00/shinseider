@@ -6,10 +6,11 @@
 <p class="lead">アトツギ甲子園の過去ファイナリストを中心に、中小企業庁が任命した各地の経験者です。地域で後継者向けのセミナーやトークセッションを開いていて、エントリー前の相談相手になります。</p>
 
 <h2 class="tight" style="margin-top:2.5rem">地図から</h2>
-<p class="muted">色の付いた都道府県に現任のアンバサダーがいます。押すと一覧に移動します。</p>
+<p class="muted">朱色の都道府県に現任のアンバサダーがいます。押すと一覧に移動します。</p>
 <div class="jpmap" role="navigation" aria-label="都道府県からアンバサダーを探す">
 {{ jmap_svg | safe }}
 </div>
+<p class="muted map-legend"><span><span class="swatch has" aria-hidden="true"></span>現任のアンバサダーがいる県</span><span><span class="swatch none" aria-hidden="true"></span>いない県</span></p>
 <p class="muted map-credit">地図: <a href="https://github.com/geolonia/japanese-prefectures" rel="noopener">Geolonia japanese-prefectures</a>（原典: Wikipedia 日本地図.svg）を配色・構成調整して使用。沖縄県は枠内に表示、鹿児島県の一部離島（トカラ・奄美）は省略しています。</p>
 
 <h2>第{{ meta.current_round }}回のアンバサダー（{{ cur.count }}名・都道府県順）</h2>
