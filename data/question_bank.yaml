@@ -1,0 +1,678 @@
+meta:
+  name: シンセイダー質問バンク
+  purpose: 良い申請書が満たすべき条件の展開形。①絞り出し（対話で素材を引き出す） ②執筆（申請書5テーマへ編成） ③DR（申請書から各問いへの逆写像照合）の3方向で同じ体系を使う。進行の台本ではなく裏の座標系であり、深掘りは利用者が要望したときだけ行う。
+  provenance: 旧attgアプリ DeepDive.js の24ブロック78項目（2026-08-19発掘）＋ fukabori.yaml companion_prompt のDoD ＋ business_analysis_system_spec.md
+    の宿題システム設計を正規化
+  research_policy: internal=本人しか知らない（対話で引き出す） / external=LLMが外部調査で補える / mixed=両方。sources_required=true
+    の数値は出典と取得日必須、出典が無い数字は（仮）と明示する。
+cross_checks:
+- id: money_consistency
+  blocks:
+  - q6_market
+  - q8_bm
+  - q10_budget
+  rule: 市場規模・ビジネスモデル・必要資金の数字が矛盾なく連結していること（単価×数量↔収益式↔投資回収）
+- id: env_strength_fit
+  blocks:
+  - pest_p
+  - pest_e
+  - pest_s
+  - pest_t
+  - ff_new
+  - ff_sup
+  - ff_riv
+  - ff_buy
+  - ff_sub
+  - strength_1
+  - strength_2
+  - strength_3
+  - q3_idea
+  rule: 外部環境・競争構造の機会/脅威と、強み・アイデアの筋が噛み合っていること
+blocks:
+- id: roots
+  group: 足元
+  title: 自社のルーツ
+  subtitle: 創業から現在までの歴史
+  dod: 主要年代3点＋各項目になぜ1行
+  min_required_fields: 5
+  research: internal
+  sources_required: false
+  entry_themes:
+  - 現業と自分
+  review_axes:
+  - 承継の物語
+  fields:
+  - key: when
+    label: いつ（年表）
+    required: true
+    example: 例）1985年：父が町工場を創業。旋盤1台からスタート / 2010年：息子が入社、CNC機械導入 / 2020年：コロナ禍で医療機器部品に参入 / 2024年：事業承継完了、DXに本格着手
+  - key: who
+    label: 誰が（人物）
+    required: true
+    example: 例）創業者（父）：職人気質で品質に妥協なし、地域の信頼が厚い / 現代表（息子）：工学部出身、効率化とデジタル化を推進 / 古参職人2名：30年の経験、技術伝承の要
+  - key: why
+    label: なぜ（動機・背景）
+    required: true
+    example: 例）父の代は職人の勘と経験が頼りだったが、受注増加で属人化が限界に。品質を保ちつつ生産性を上げるため、データ化・標準化が急務となった
+  - key: what
+    label: 何を（行動・取り組み）
+    required: true
+    example: 例）作業手順書のデジタル化 / 品質検査データのDB管理 / 受注から納期までの進捗可視化システム導入 / 若手育成プログラムの体系化
+  - key: goal_heritage
+    label: 継承すべき価値観
+    required: false
+    example: 例）職人の誇りと品質へのこだわりは変えずに、デジタル技術で次世代に継承できる仕組みを作る
+- id: philosophy
+  group: 足元
+  title: 企業理念
+  subtitle: ミッション・ビジョン・バリュー
+  dod: ミッション・ビジョン・バリューすべて記入＋事例3件
+  min_required_fields: 5
+  research: internal
+  sources_required: false
+  entry_themes:
+  - 実現したい未来
+  review_axes:
+  - 承継の物語
+  fields:
+  - key: mission
+    label: ミッション（使命・目的）
+    required: true
+    example: 例）地域の製造業を支える精密部品づくりで、社会インフラを下支えする
+  - key: vision
+    label: ビジョン（将来像・目標）
+    required: true
+    example: 例）職人技術とDXが融合した、次世代町工場のモデルケースになる
+  - key: values
+    label: バリュー（行動指針・価値観）
+    required: true
+    example: 例）品質第一 - 妥協のないものづくり / 改善継続 - 小さな工夫を積み重ねる / 地域共創 - 同業他社とも協力して業界全体を発展させる
+  - key: manifestations
+    label: 理念の具現化（事例）
+    required: false
+    example: 例）不良品率0.01%以下の維持 / 月1回の改善提案会議 / 地域工場との技術交流会を主催 / 工業高校生のインターンシップ受け入れ
+  - key: interpretation
+    label: 理念の解釈・背景
+    required: false
+    example: 例）先代から受け継いだ品質への執念と地域への恩返しの想いを、現代の技術で実現する。理想論より現場で回る実践を重視
+- id: strength_1
+  group: 足元
+  title: '真の強み #1'
+  subtitle: 競合にない独自の強みを分析
+  dod: 主張＋エビデンス（固有名詞or数値）＋独自性＋価値連関
+  min_required_fields: 4
+  research: internal
+  sources_required: false
+  entry_themes:
+  - 家業の経営資源の活用
+  review_axes:
+  - 独自性
+  fields:
+  - key: claim
+    label: 何が強みか
+    required: true
+    example: 例）0.01mm精度の高精度加工技術
+  - key: evidence
+    label: 証拠・根拠
+    required: true
+    example: 例）医療機器部品で3年間不良品ゼロを達成。大手メーカー2社から指定工場認定を取得。品質監査で最高評価AAランク継続
+  - key: why_unique
+    label: なぜ独自なのか
+    required: true
+    example: 例）30年のベテラン職人2名の技術を若手にマニュアル化して継承。他社にない独自治具の開発と温度・湿度管理システム
+  - key: value_link
+    label: 価値との連関
+    required: false
+    example: 例）高品質により単価20%アップの案件を獲得。リピート率95%で安定受注を実現
+- id: strength_2
+  group: 足元
+  title: '真の強み #2'
+  subtitle: 競合にない独自の強みを分析
+  dod: 主張＋エビデンス（固有名詞or数値）＋独自性＋価値連関
+  min_required_fields: 4
+  research: internal
+  sources_required: false
+  entry_themes:
+  - 家業の経営資源の活用
+  review_axes:
+  - 独自性
+  fields:
+  - key: claim
+    label: 何が強みか
+    required: true
+    example: 例）1週間以内の超短納期対応力
+  - key: evidence
+    label: 証拠・根拠
+    required: true
+    example: 例）通常1ヶ月の案件を1週間で納品した実績が年10件以上。夜間・休日対応で緊急案件に100%対応
+  - key: why_unique
+    label: なぜ独自なのか
+    required: true
+    example: 例）24時間稼働可能な設備配置と、職人の多能工化により柔軟なシフト編成を実現。近隣協力工場3社との連携体制
+  - key: value_link
+    label: 価値との連関
+    required: false
+    example: 例）短納期プレミアムで通常単価の150%を実現。新規顧客の60%がリピーター化
+- id: strength_3
+  group: 足元
+  title: '真の強み #3'
+  subtitle: 競合にない独自の強みを分析
+  dod: 主張＋エビデンス（固有名詞or数値）＋独自性＋価値連関
+  min_required_fields: 4
+  research: internal
+  sources_required: false
+  entry_themes:
+  - 家業の経営資源の活用
+  review_axes:
+  - 独自性
+  fields:
+  - key: claim
+    label: 何が強みか
+    required: true
+    example: 例）地域製造業のハブとしての信頼関係
+  - key: evidence
+    label: 証拠・根拠
+    required: true
+    example: 例）同業者5社と相互協力体制を構築。月1回の技術交流会を15年継続。地域工業会の副会長を3期務める
+  - key: why_unique
+    label: なぜ独自なのか
+    required: true
+    example: 例）競合他社とも情報共有し業界全体の底上げを図る姿勢。若手育成への積極的な取り組みで地域から評価
+  - key: value_link
+    label: 価値との連関
+    required: false
+    example: 例）協力体制により大型案件（1000万円以上）を年3件受注。工業高校から毎年2名の新卒採用を実現
+- id: pest_p
+  group: 外部環境
+  title: 'PEST: Politics'
+  subtitle: 政治的要因の分析
+  dod: 事実3・機会2・脅威2・時間軸
+  min_required_fields: 4
+  research: external
+  sources_required: true
+  entry_themes:
+  - 現場で感じている課題
+  review_axes:
+  - 波及
+  fields:
+  - key: facts
+    label: 政治的事実
+    required: true
+    example: 例）ものづくり補助金で最大1,250万円の設備投資支援 / 電子帳簿保存法で2024年から義務化 / カーボンニュートラル政策で省エネ設備への税制優遇
+  - key: opps
+    label: 機会
+    required: true
+    example: 例）補助金を活用してCNC機械を追加導入予定 / 電子化対応で事務作業30%削減を目標 / 省エネ設備導入で電気代20%カット見込み
+  - key: threats
+    label: 脅威
+    required: true
+    example: 例）補助金申請の事務負担増加 / 電子化対応の初期コスト100万円 / 環境規制強化でコンプライアンス体制整備が必要
+  - key: horizon
+    label: 時間軸
+    required: false
+    example: 例）短期（1年以内）：電子帳簿対応完了 / 中期（3年）：補助金でライン自動化 / 長期（5年）：カーボンニュートラル工場実現
+- id: pest_e
+  group: 外部環境
+  title: 'PEST: Economy'
+  subtitle: 経済的要因の分析
+  dod: 事実3・機会2・脅威2・時間軸
+  min_required_fields: 4
+  research: external
+  sources_required: true
+  entry_themes:
+  - 現場で感じている課題
+  review_axes:
+  - 波及
+  fields:
+  - key: facts
+    label: 経済的事実
+    required: true
+    example: 例）鋼材価格が2年で40%上昇 / 円安で輸入材料費が高騰 / 人件費上昇圧力（最低賃金年3%上昇）
+  - key: opps
+    label: 機会
+    required: true
+    example: 例）材料高を価格転嫁で売上15%増 / 高付加価値製品へのシフトで粗利率向上 / 自動化投資で人件費率を抑制
+  - key: threats
+    label: 脅威
+    required: true
+    example: 例）価格転嫁の遅れで粗利率低下 / 小規模案件の採算悪化 / 資金繰り悪化のリスク
+  - key: horizon
+    label: 時間軸
+    required: false
+    example: 例）短期：四半期ごとの価格見直し制度導入 / 中期：高付加価値製品比率を70%まで向上 / 長期：安定したキャッシュフロー確立
+- id: pest_s
+  group: 外部環境
+  title: 'PEST: Society'
+  subtitle: 社会的要因の分析
+  dod: 事実3・機会2・脅威2・時間軸
+  min_required_fields: 4
+  research: external
+  sources_required: true
+  entry_themes:
+  - 現場で感じている課題
+  review_axes:
+  - 波及
+  fields:
+  - key: facts
+    label: 社会的事実
+    required: true
+    example: 例）製造業の人手不足率35%（地域平均） / 働き方改革で残業時間削減圧力 / 技能継承の高齢化問題（熟練工の65%が60歳以上）
+  - key: opps
+    label: 機会
+    required: true
+    example: 例）DXで働きやすさアピールし若手採用強化 / 技能のマニュアル化で教育期間短縮 / 地域連携で人材シェアリング
+  - key: threats
+    label: 脅威
+    required: true
+    example: 例）熟練工の大量退職リスク / 若手確保の競争激化 / 残業制限で繁忙期の対応力低下
+  - key: horizon
+    label: 時間軸
+    required: false
+    example: 例）短期：技能継承マニュアル完成 / 中期：若手3名採用・育成 / 長期：地域製造業の人材育成拠点化
+- id: pest_t
+  group: 外部環境
+  title: 'PEST: Technology'
+  subtitle: 技術的要因の分析
+  dod: 事実3・機会2・脅威2・時間軸
+  min_required_fields: 4
+  research: external
+  sources_required: true
+  entry_themes:
+  - 現場で感じている課題
+  review_axes:
+  - 波及
+  fields:
+  - key: facts
+    label: 技術的事実
+    required: true
+    example: 例）IoT機器の低価格化進行 / 5G通信で工場内リアルタイム監視が可能 / AIによる品質管理システムが実用レベルに
+  - key: opps
+    label: 機会
+    required: true
+    example: 例）機械稼働データをスマホで監視し効率向上 / AI品質チェックで検査時間半減 / 3Dプリンターで治具製作コスト削減
+  - key: threats
+    label: 脅威
+    required: true
+    example: 例）技術投資の初期費用負担 / サイバーセキュリティリスク / 技術変化への対応遅れ
+  - key: horizon
+    label: 時間軸
+    required: false
+    example: 例）短期：IoTセンサー導入でデータ収集開始 / 中期：AI品質管理システム実装 / 長期：完全自動化ラインの構築
+- id: ff_new
+  group: 競争構造
+  title: '5Forces: 新規参入'
+  subtitle: 新規参入の脅威
+  dod: 強度(1-5)＋根拠＋打ち手2＋指標
+  min_required_fields: 4
+  research: mixed
+  sources_required: false
+  entry_themes:
+  - やりたい新規事業
+  review_axes:
+  - 独自性
+  fields:
+  - key: strength
+    label: 脅威の強度（1-5）
+    required: true
+    example: 例）強度：3（中程度の脅威） - 設備投資300万円あれば小規模工場でも参入可能だが、顧客の品質要求は厳しい
+  - key: drivers
+    label: 要因・ドライバー
+    required: true
+    example: 例）要因：中古機械市場の充実 / 小ロット・短納期ニーズの拡大 / ネット受注プラットフォームの普及
+  - key: moves
+    label: 対応策
+    required: true
+    example: 例）対応策：特殊材料加工に特化 / 既存顧客との関係強化 / 品質認証取得で差別化
+  - key: metrics
+    label: 測定指標
+    required: false
+    example: 例）監視指標：地域内の新規参入企業数 / 平均受注単価の推移 / 既存顧客の発注継続率
+- id: ff_sup
+  group: 競争構造
+  title: '5Forces: 供給業者'
+  subtitle: 供給業者の交渉力
+  dod: 強度(1-5)＋根拠＋打ち手2＋指標
+  min_required_fields: 4
+  research: mixed
+  sources_required: false
+  entry_themes:
+  - 家業の経営資源の活用
+  review_axes:
+  - 実現性
+  fields:
+  - key: strength
+    label: 交渉力の強度（1-5）
+    required: true
+    example: 例）強度：2（低い脅威） - 材料商社3社との取引実績があり、価格交渉力を維持
+  - key: drivers
+    label: 要因・ドライバー
+    required: true
+    example: 例）要因：材料の標準化・汎用化 / 複数供給元の存在 / 物流コストの透明性向上
+  - key: moves
+    label: 対応策
+    required: true
+    example: 例）対応策：長期契約で価格安定化 / 複数商社との関係維持 / 材料使用量の最適化
+  - key: metrics
+    label: 測定指標
+    required: false
+    example: 例）監視指標：材料仕入価格の変動率 / 調達リードタイム / 在庫回転率
+- id: ff_riv
+  group: 競争構造
+  title: '5Forces: 既存競合'
+  subtitle: 既存競合の脅威
+  dod: 強度(1-5)＋根拠＋打ち手2＋指標
+  min_required_fields: 4
+  research: mixed
+  sources_required: false
+  entry_themes:
+  - やりたい新規事業
+  review_axes:
+  - 独自性
+  fields:
+  - key: strength
+    label: 競争の激しさ（1-5）
+    required: true
+    example: 例）強度：4（高い脅威） - 同業他社20社が半径10km圏内に存在し、価格競争が激化
+  - key: drivers
+    label: 要因・ドライバー
+    required: true
+    example: 例）要因：技術の標準化 / 設備の汎用化 / 顧客の相見積文化
+  - key: moves
+    label: 対応策
+    required: true
+    example: 例）対応策：高精度・短納期での差別化 / 顧客との長期パートナーシップ構築 / 独自技術の開発
+  - key: metrics
+    label: 測定指標
+    required: false
+    example: 例）監視指標：受注競合率 / 既存顧客の流出率 / 新規案件の獲得率
+- id: ff_buy
+  group: 競争構造
+  title: '5Forces: 買い手'
+  subtitle: 買い手の交渉力
+  dod: 強度(1-5)＋根拠＋打ち手2＋指標
+  min_required_fields: 4
+  research: mixed
+  sources_required: false
+  entry_themes:
+  - やりたい新規事業
+  review_axes:
+  - 事業価値
+  fields:
+  - key: strength
+    label: 交渉力の強度（1-5）
+    required: true
+    example: 例）強度：4（高い脅威） - 大手製造業3社が売上の60%を占め、価格決定権が顧客側にある
+  - key: drivers
+    label: 要因・ドライバー
+    required: true
+    example: 例）要因：顧客の調達一元化 / 相見積の常態化 / コスト削減圧力の継続
+  - key: moves
+    label: 対応策
+    required: true
+    example: 例）対応策：顧客業務への深い関与 / 設計段階からの提案参加 / 品質・納期での差別化
+  - key: metrics
+    label: 測定指標
+    required: false
+    example: 例）監視指標：主要顧客への依存度 / 価格改定の受け入れ率 / 新規顧客開拓数
+- id: ff_sub
+  group: 競争構造
+  title: '5Forces: 代替品'
+  subtitle: 代替品の脅威
+  dod: 強度(1-5)＋根拠＋打ち手2＋指標
+  min_required_fields: 4
+  research: mixed
+  sources_required: false
+  entry_themes:
+  - 現場で感じている課題
+  review_axes:
+  - 独自性
+  fields:
+  - key: strength
+    label: 脅威の強度（1-5）
+    required: true
+    example: 例）強度：3（中程度の脅威） - 3Dプリンターや海外調達など代替手段の選択肢が増加
+  - key: drivers
+    label: 要因・ドライバー
+    required: true
+    example: 例）要因：3Dプリンター技術の向上 / 海外工場との直接取引増加 / 内製化の進展
+  - key: moves
+    label: 対応策
+    required: true
+    example: 例）対応策：3Dプリンターでは難しい精密加工に集中 / アフターサービスの充実 / 短納期対応力の強化
+  - key: metrics
+    label: 測定指標
+    required: false
+    example: 例）監視指標：代替品採用による失注率 / 3Dプリンター導入企業数 / 平均案件サイズの変化
+- id: q1_whyus
+  group: 新事業10問
+  title: 1. なぜ自社がやるのか
+  subtitle: 自社が取り組む理由
+  dod: 設問に対し最小3行の具体（数値または固有名詞を1つ以上）
+  min_required_fields: 2
+  research: internal
+  sources_required: false
+  entry_themes:
+  - 実現したい未来
+  - 現業と自分
+  review_axes:
+  - 承継の物語
+  fields:
+  - key: story
+    label: ストーリー・背景
+    required: true
+    example: 例）我々は30年の技術蓄積と地域ネットワークを活かし、他社が諦める高精度・短納期案件を実現します。ベテランの技術を若手に継承する仕組みと、最新設備への投資により、品質と効率の両立を図っています
+  - key: fit
+    label: 自社との適合性
+    required: true
+    example: 例）創業時からの品質第一主義がDXと融合。職人技術を標準化・マニュアル化することで、属人化を解消しつつ品質を保持。地域との共創で業界全体を発展させる理念も一致
+- id: q2_whose
+  group: 新事業10問
+  title: 2. 誰のどんなニーズか
+  subtitle: ターゲット顧客のニーズ
+  dod: 設問に対し最小3行の具体（数値または固有名詞を1つ以上）
+  min_required_fields: 2
+  research: mixed
+  sources_required: false
+  entry_themes:
+  - やりたい新規事業
+  review_axes:
+  - 事業価値
+  - 波及
+  fields:
+  - key: persona
+    label: ペルソナ（誰が）
+    required: true
+    example: 例）自動車部品メーカーの設計部門：試作品を1-5個、2週間以内に製作したい企業 / 医療機器メーカー：薬事承認用サンプルを高精度で製作したい企業
+  - key: needs
+    label: ニーズ（何を求める）
+    required: true
+    example: 例）従来の外注は納期1ヶ月以上で設計検証が遅れる / 品質のばらつきで再製作が発生 / 図面修正時の迅速な対応ができない / コストが読めない
+- id: q3_idea
+  group: 新事業10問
+  title: 3. 具体的アイデア
+  subtitle: 事業の具体的内容
+  dod: 設問に対し最小3行の具体（数値または固有名詞を1つ以上）
+  min_required_fields: 2
+  research: internal
+  sources_required: false
+  entry_themes:
+  - やりたい新規事業
+  review_axes:
+  - 事業価値
+  fields:
+  - key: details
+    label: 詳細内容
+    required: true
+    example: 例）高精度加工技術を活かした「試作品特化サービス」：図面受領後48時間で見積回答→1週間で初回サンプル納品→修正要望に3日以内で対応する一貫体制を構築
+  - key: scope
+    label: スコープ（対象・非対象）
+    required: true
+    example: 例）対象：精密試作品（1-10個）の設計～加工～検査～納品。対象外：量産品・材料調達・設計業務（パートナー連携で対応）
+- id: q4_onlyus
+  group: 新事業10問
+  title: 4. なぜ自社だけ可能
+  subtitle: 独自性と参入障壁
+  dod: 設問に対し最小3行の具体（数値または固有名詞を1つ以上）
+  min_required_fields: 2
+  research: internal
+  sources_required: false
+  entry_themes:
+  - 家業の経営資源の活用
+  review_axes:
+  - 独自性
+  fields:
+  - key: assets
+    label: 自社の資産・強み
+    required: true
+    example: 例）0.01mm精度の加工技術とノウハウ / 30年の業界実績と信頼関係 / 地域工場5社との協力ネットワーク / 品質管理システムと検査設備
+  - key: moat
+    label: 参入障壁・堀
+    required: true
+    example: 例）技術継承マニュアル化により品質を標準化 / 地域連携による24時間対応体制 / 顧客との長期パートナーシップ（平均取引5年以上）
+- id: q5_success
+  group: 新事業10問
+  title: 5. 成功後と次課題
+  subtitle: 成功時の実現と課題
+  dod: 設問に対し最小3行の具体（数値または固有名詞を1つ以上）
+  min_required_fields: 2
+  research: internal
+  sources_required: false
+  entry_themes:
+  - 実現したい未来
+  review_axes:
+  - 波及
+  - 実現性
+  fields:
+  - key: good
+    label: 成功時の実現
+    required: true
+    example: 例）試作リードタイム50%短縮で顧客の開発速度向上 / 不良率0.01%で再製作コストを削減 / 24時間対応で顧客満足度95%達成 / 単価15%向上で収益性改善
+  - key: bad
+    label: 次の課題・リスク
+    required: true
+    example: 例）設備投資の初期負担大 / 人材育成コストと時間 / 短納期対応による現場負荷 / 顧客依存度の高まり
+- id: q6_market
+  group: 新事業10問
+  title: 6. 市場規模
+  subtitle: TAM・SAM・SOMの算出
+  dod: 設問に対し最小3行の具体（数値または固有名詞を1つ以上）
+  min_required_fields: 2
+  research: external
+  sources_required: true
+  entry_themes:
+  - やりたい新規事業
+  review_axes:
+  - 事業価値
+  fields:
+  - key: tam_sam_som
+    label: TAM・SAM・SOM（式と例）
+    required: true
+    example: "市場規模の計算例）\nTAM（日本全体）= 製造業企業20万社 × 年間試作案件10件 × 平均単価8万円 = 1,600億円\nSAM（関東圏）= 対象企業3万社 × 年間試作10件\
+      \ × 平均8万円 = 240億円  \nSOM（初年度目標）= 顧客100社 × 年間案件8件 × 平均8万円 = 6,400万円"
+  - key: assumptions
+    label: 前提条件
+    required: true
+    example: 前提条件：製造業の70%が年10件程度の試作を外注 / 平均単価8万円（材料費込み） / 当社シェア0.4%を目標 / 関東圏集中でスタート
+- id: q7_comp
+  group: 新事業10問
+  title: 7. 競合
+  subtitle: 競合他社と差別化
+  dod: 設問に対し最小3行の具体（数値または固有名詞を1つ以上）
+  min_required_fields: 2
+  research: external
+  sources_required: true
+  entry_themes:
+  - 家業の経営資源の活用
+  review_axes:
+  - 独自性
+  fields:
+  - key: players
+    label: 競合プレイヤー
+    required: true
+    example: 例）大手試作専門会社（プロトラブズ等）：高価格・標準品中心 / 地域工場：個別対応・品質バラツキ / オンライン試作サービス：低価格・品質不安
+  - key: diff
+    label: 差別化ポイント
+    required: true
+    example: 例）高精度×短納期×適正価格のポジショニング / 顧客との直接対話による技術提案 / 地域連携による柔軟な対応力
+- id: q8_bm
+  group: 新事業10問
+  title: 8. ビジネスモデル
+  subtitle: 収益構造とユニット経済
+  dod: 設問に対し最小3行の具体（数値または固有名詞を1つ以上）
+  min_required_fields: 2
+  research: mixed
+  sources_required: false
+  entry_themes:
+  - やりたい新規事業
+  review_axes:
+  - 事業価値
+  fields:
+  - key: formula
+    label: 収益式と例
+    required: true
+    example: '収益モデルの例）
+
+      売上 = 月間案件数 × 平均単価
+
+      50件/月 × 8万円 = 400万円/月（4,800万円/年）
+
+
+      利益 = 売上 - 原価 - 固定費
+
+      原価率60%、固定費200万円/月の場合
+
+      利益 = 400万円 - 240万円 - 200万円 = △40万円/月（受注拡大が必要）'
+  - key: unit
+    label: ユニット経済（ARPU・LTV・CAC）
+    required: true
+    example: '顧客単価の例）
+
+      月次ARPU = 8万円 × 6件/年 ÷ 12ヶ月 = 4万円/月
+
+      LTV = 4万円 × 継続年数3年 = 12万円/顧客
+
+      CAC = 営業コスト月50万円 ÷ 新規獲得10社 = 5万円/顧客
+
+      LTV/CAC = 12万円 ÷ 5万円 = 2.4（健全性あり）'
+- id: q9_team
+  group: 新事業10問
+  title: 9. チーム
+  subtitle: チーム編成と人材
+  dod: 設問に対し最小3行の具体（数値または固有名詞を1つ以上）
+  min_required_fields: 2
+  research: internal
+  sources_required: false
+  entry_themes:
+  - 家業の経営資源の活用
+  review_axes:
+  - 実現性
+  fields:
+  - key: roles
+    label: 役割・ポジション
+    required: true
+    example: 例）現在の体制：代表1名（営業・管理） / 製造技術者3名 / 事務1名（パート）= 合計5名体制
+  - key: gaps
+    label: 不足・ギャップ
+    required: true
+    example: 例）必要な追加人材：Webマーケティング担当1名 / 品質管理専任1名 / 若手技術者2名（将来の技術継承のため）
+- id: q10_budget
+  group: 新事業10問
+  title: 10. 必要資金
+  subtitle: 初期投資と運営費
+  dod: 設問に対し最小3行の具体（数値または固有名詞を1つ以上）
+  min_required_fields: 2
+  research: mixed
+  sources_required: false
+  entry_themes:
+  - 家業の経営資源の活用
+  review_axes:
+  - 実現性
+  fields:
+  - key: capex
+    label: 初期投資（CAPEX）
+    required: true
+    example: 例）初期投資：新規設備導入800万円（ものづくり補助金で半額） / 品質管理システム200万円 / Webサイト・システム開発100万円 = 合計1,100万円
+  - key: opex
+    label: 運営費（OPEX）
+    required: true
+    example: 例）月次運営費：人件費250万円 / 設備償却・保守60万円 / 材料費（売上の40%）160万円 / その他30万円 = 合計500万円/月（売上400万円では赤字のため受注拡大が急務）
