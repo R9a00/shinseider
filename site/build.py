@@ -480,6 +480,7 @@ def main():
         "birth_cutoff": "1987-04-01",
         "entry_deadline": entry_end,
         "pace_buckets": sorted(pace["check_buckets"], key=lambda b: -b["min_days"]),
+        "closed_message": pace["closed_message"],
         "requirements": [
             {"id": r["id"], "label": r["label"], "severity": r["severity"]}
             for r in subsidy["requirements"]["items"]

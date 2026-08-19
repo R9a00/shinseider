@@ -55,8 +55,16 @@ function daysLeftJst(v){
   var f = function(x){ return new Date(new Date(x).toLocaleDateString('en-US', {timeZone: 'Asia/Tokyo'})); };
   return Math.round((f(v) - f(Date.now())) / 86400000);
 }
+// 締切時刻（ISOに+09:00と18:00を含む）を過ぎたかの厳密判定
+function entryClosed(v){ return Date.now() > new Date(v).getTime(); }
 document.querySelectorAll('.days-left').forEach(function(el){
-  el.textContent = Math.max(0, daysLeftJst(el.getAttribute('data-deadline')));
+  var v = el.getAttribute('data-deadline');
+  if (entryClosed(v)) {
+    var wrap = el.closest('.days-chip, .deadline-line');
+    if (wrap) { wrap.textContent = '第7回の受付は終了しました'; } else { el.textContent = '0'; }
+  } else {
+    el.textContent = Math.max(0, daysLeftJst(v));
+  }
 });
 </script>
 <script data-goatcounter="https://shinseider.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>

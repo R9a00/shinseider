@@ -141,8 +141,12 @@
 <script>
 (function(){
   var el = document.getElementById('countdown');
-  var days = Math.max(0, daysLeftJst(el.getAttribute('data-deadline')));
-  document.getElementById('countdown-days').textContent = days;
+  var v = el.getAttribute('data-deadline');
+  if (entryClosed(v)) {
+    el.innerHTML = '<p class="muted">第7回のエントリー受付は終了しました。</p>';
+    return;
+  }
+  document.getElementById('countdown-days').textContent = Math.max(0, daysLeftJst(v));
 })();
 </script>
 {% endblock %}
