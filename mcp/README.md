@@ -24,6 +24,10 @@ Claude Desktop の場合は `claude_desktop_config.json` に:
                                "args": ["<絶対パス>/mcp/server.py"]}}}
 ```
 
+MCPは共通規格なので、他のローカルMCP対応クライアント（Cursor / VS Code /
+Gemini CLI 等）でも、stdio型サーバーとして同じ `command` と `args` を各アプリの
+MCP設定に登録すれば使えます（動作確認済みは Claude Code のみ）。
+
 ## 提供するもの
 
 - **Tools**: `get_deadlines`（二段階締切と現在段階）/ `check_eligibility`（30秒チェック同一ロジック）/
