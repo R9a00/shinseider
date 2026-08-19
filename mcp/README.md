@@ -5,19 +5,24 @@
 
 ## セットアップ
 
+必要なもの: git と Python 3.10 以上。
+
+まずこのリポジトリを手元に取得してから、`mcp/` の中に環境を作ります:
+
 ```bash
-cd mcp
+git clone https://github.com/R9a00/shinseider.git
+cd shinseider/mcp
 python3 -m venv .venv
 .venv/bin/pip install "mcp[cli]" pyyaml
 ```
 
-Claude Code への登録:
+Claude Code への登録（上と同じ `mcp/` ディレクトリの中で実行すれば、そのままコピペで通ります）:
 
 ```bash
-claude mcp add shinseider -- <絶対パス>/mcp/.venv/bin/python <絶対パス>/mcp/server.py
+claude mcp add -s user shinseider -- "$(pwd)/.venv/bin/python" "$(pwd)/server.py"
 ```
 
-Claude Desktop の場合は `claude_desktop_config.json` に:
+Claude Desktop の場合は `claude_desktop_config.json` に（`<絶対パス>` は `mcp/` で `pwd` を実行した結果に読み替え）:
 
 ```json
 {"mcpServers": {"shinseider": {"command": "<絶対パス>/mcp/.venv/bin/python",
