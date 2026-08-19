@@ -5,7 +5,7 @@
 <article>
 <h1>フカボリ<span class="ws-tag">試作版</span></h1>
 <p class="lead">アトツギ甲子園のかつての優勝者が使っていたフレームを用いて作られた「時間はかかるが丁寧に仕上げるルート」です。会社の来歴から新しい事業の数字まで、順に深掘って聞いていきます。</p>
-<p class="lead">4つの章をAIと10〜20分ずつ。章が終わるごとにセーブされるので、途中でやめても続きから再開できます。<strong>入力はあなたの端末にだけ保存され、サイト側に送信されることはありません。</strong></p>
+<p class="lead">4つの章をAIと10〜20分ずつ。章が終わるごとにセーブされるので、途中でやめても続きから再開できます。<strong>入力はあなたのパソコンやスマホにだけ保存され、サイト側に送信されることはありません。</strong></p>
 <p>ここで掘った材料は、エントリー文の下地になり、エントリー後に届く応募書類——さらにその先の補助金申請——を書くときの手持ちになります。</p>
 
 <div class="phase">
@@ -114,14 +114,14 @@
 
 <section class="step">
   <h2>保存と持ち出し</h2>
-  <p>入力は書くそばからこのブラウザに自動保存されますが、ブラウザのデータ削除や端末の変更で消えることがあります。<strong>章の区切りごとに「控えを保存」を押して、ファイルを残しておくのが確実です。</strong></p>
+  <p>入力は書くそばからこのブラウザに自動保存されますが、ブラウザのデータ削除や、パソコン・スマホの買い替えで消えることがあります。<strong>章の区切りごとに「控えを保存」を押して、ファイルを残しておくのが確実です。</strong></p>
   <div class="save-row">
     <button class="btn small" id="fk-dl-md" type="button">控えを保存</button>
     <button class="btn small" id="fk-dl-prompts" type="button">指示文セットを保存</button>
     <span class="save-links"><label class="linklike" for="fk-up-json">控えを読み込む</label></span>
     <input type="file" id="fk-up-json" accept=".md,.json,.txt" hidden>
   </div>
-  <p class="muted">控えは、そのまま読める下書きです。別の端末でも、読み込めば保存した時点から再開できます（申請書の準備の中身も一緒に入ります）。</p>
+  <p class="muted">控えは、そのまま読める下書きです。別のパソコンやスマホでも、読み込めば保存した時点から再開できます（申請書の準備の中身も一緒に入ります）。</p>
   <p id="fk-save-msg" class="muted"></p>
 </section>
 </article>
@@ -142,7 +142,7 @@
     p.updated = new Date().toISOString();
     try { localStorage.setItem(KEY, JSON.stringify(p)); } catch(_) {}
     var el = document.getElementById('fk-save-msg');
-    if (el) el.textContent = '自動保存済み（あなたの端末のみ・' + new Date().toLocaleTimeString('ja-JP') + '）';
+    if (el) el.textContent = '自動保存済み（このブラウザのみ・' + new Date().toLocaleTimeString('ja-JP') + '）';
   }
   var project = loadProject();
   project.fukabori = project.fukabori || {blocks:{}};

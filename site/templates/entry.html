@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block title %}アトツギ甲子園エントリーの方向性を固める | {{ site_name }}{% endblock %}
-{% block desc %}アトツギ甲子園のエントリー文・応募書類の骨子を、AIに聞き役を任せて作れます。入力は端末にのみ保存され、送信されません。{% endblock %}
+{% block desc %}アトツギ甲子園のエントリー文・応募書類の骨子を、AIに聞き役を任せて作れます。入力はあなたのパソコンやスマホにのみ保存され、送信されません。{% endblock %}
 {% block main %}
 <h1>アトツギ甲子園エントリーの方向性を固める</h1>
-<p class="lead">ここでは、申請書を作成するための骨子を明確にし、そのレベルでの穴がない状態に整理してから、実際の申請書を作成するところへ進めるように準備できます。作った文章は、エントリーフォームの回答と応募書類の両方の元になります。<strong>入力はあなたの端末にだけ保存され、サイト側に送信されることはありません。</strong></p>
+<p class="lead">ここでは、申請書を作成するための骨子を明確にし、そのレベルでの穴がない状態に整理してから、実際の申請書を作成するところへ進めるように準備できます。作った文章は、エントリーフォームの回答と応募書類の両方の元になります。<strong>入力はあなたのパソコンやスマホにだけ保存され、サイト側に送信されることはありません。</strong></p>
 <details class="prompt-view">
   <summary>エントリーから提出までの流れを確認する</summary>
   <p>アトツギ甲子園は、公式フォームの質問に答えてエントリーし、その後に事務局から届くフォーマットで応募書類を作ってPDFで提出します。書類審査はこの応募書類で行われます。フォーマットが届いてから慌てて書かずに済むよう、先に中身を仕上げておきます。書くのはあなたです。このページが受け持つのは、問いの用意と、抜けの確認と、書いたものの保存です。</p>
@@ -79,16 +79,12 @@
 
   <section class="step" id="ai-mcp">
     <h2>MCPから利用する — AI経由でシンセイダーを利用する</h2>
-    <p>MCP（AIアプリ共通の接続規格）でシンセイダーをつなぐと、いつものAIとの会話の中で「締切はいつ？」「自分は出られる？」「今日から何をすればいい？」に正確な答えが返るようになり、質問に答えながら構想を掘り下げたり、書いたものに審査員役の指摘をもらったりも、そのまま続けられます。このページとのコピペの往復は要りません。記録はあなたの端末にだけ保存されます（このページと同じ方針です）。</p>
-    <p>設定はAIに任せられます。下のボタンで指示文をコピーして、お使いのAIに貼り付ければ、そのまま設定が始まります。</p>
+    <p>MCP（AIアプリ共通の接続規格）でシンセイダーをつなぐと、いつものAIとの会話の中で「締切はいつ？」「自分は出られる？」「今日から何をすればいい？」に正確な答えが返るようになり、質問に答えながら構想を掘り下げたり、書いたものに審査員役の指摘をもらったりも、そのまま続けられます。このページとのコピペの往復は要りません。記録はあなたのパソコンの中にだけ保存され、どこかへ送信されることはありません。</p>
+    <p>設定はAIに任せられます。下のボタンで指示文をコピーして、お使いのAIに貼って送信してください。AIがそのまま設定を進めてくれます。AIが自分で作業を完了できない場合も、「次にやること」を1つずつ教えてくれるので、そのとおりに進めれば数分で終わります。</p>
     <div class="cta-row cta-first">
       <button class="btn primary" id="mcp-setup-copy" type="button">AI用セットアップ指示文をコピー</button>
     </div>
-    <ul>
-      <li>コマンドを実行できるAI（Claude Code・Codex CLI・Cursorなど）: 環境づくりから登録・確認まで、そのまま仕上げてくれます。</li>
-      <li>チャットのAI（ChatGPT・Claudeのアプリなど）: 1コマンドずつ案内してくれるので、表示されたとおりにターミナルへ貼って進めれば完了します。</li>
-    </ul>
-    <p class="muted">対応アプリ: ChatGPTのデスクトップアプリ・Claude Desktop・Claude Code・Cursor・VS Code・Gemini CLIなど。動作確認はいまのところClaudeで行っています（実験的な提供です）。手順を自分で確かめたい方は、<a href="mcp-setup.md">セットアップ手順の全文</a>（AIに渡すものと同じ内容です）をどうぞ。</p>
+    <p class="muted">ChatGPTやClaudeのデスクトップアプリ、Cursor・VS Code・Gemini CLIなど、MCPに対応したAIアプリで使えます。手順の中身を先に見ておきたい方は、<a href="mcp-setup.md">セットアップ手順の全文</a>を確認できます。うまくいかないときは、<a href="about.html">運営者と方針</a>にある連絡先へ気軽にどうぞ。</p>
   </section>
 
   <section class="step">
@@ -133,7 +129,7 @@
       </div>
       <p class="review-hint">押すと審査員用の指示文（骨子入り）ごとそのAIが開きます。骨子が長い場合は指示文ファイル（.md）が保存されるので、開いた画面にドラッグして渡してください。</p>
       <p id="review-msg" class="review-msg"></p>
-      <textarea id="review-notes" rows="4" placeholder="返ってきた指摘のメモ（あなたの端末にだけ保存されます）"></textarea>
+      <textarea id="review-notes" rows="4" placeholder="返ってきた指摘のメモ（あなたのパソコンやスマホにだけ保存されます）"></textarea>
       <p class="review-note">これは予行です。本物の審査委員のコメントは、エントリーして書類を出した人に届きます。</p>
     </div>
   </section>
@@ -154,7 +150,7 @@
 
   <section class="step">
     <h2>保存と持ち出し</h2>
-    <p>入力はこのブラウザに自動保存されますが、ブラウザのデータ削除や端末の変更で消えることがあります。<strong>区切りのいいところで「控えを保存」を押して、ファイルを残しておくのが確実です。</strong></p>
+    <p>入力はこのブラウザに自動保存されますが、ブラウザのデータ削除や、パソコン・スマホの買い替えで消えることがあります。<strong>区切りのいいところで「控えを保存」を押して、ファイルを残しておくのが確実です。</strong></p>
     <div class="save-row">
       <button class="btn small" id="dl-md" type="button">控えを保存</button>
       <span class="save-links"><label class="linklike" for="up-project">控えを読み込む</label></span>
@@ -181,7 +177,7 @@
     p.updated = new Date().toISOString();
     try { localStorage.setItem(KEY, JSON.stringify(p)); } catch(_) {}
     var el = document.getElementById('save-msg');
-    if (el) el.textContent = '自動保存済み（あなたの端末のみ・' + new Date().toLocaleTimeString('ja-JP') + '）';
+    if (el) el.textContent = '自動保存済み（このブラウザのみ・' + new Date().toLocaleTimeString('ja-JP') + '）';
   }
   var project = loadProject();
 
