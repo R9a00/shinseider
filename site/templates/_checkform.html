@@ -6,7 +6,7 @@
   </fieldset>
   <fieldset>
     <legend>Q2. 立場</legend>
-    <label><input type="radio" name="q_pos" value="yes" required> 家業があり、自分はまだ代表者ではない</label>
+    <label><input type="radio" name="q_pos" value="yes" required> 家業があり、代表ではない</label>
     <label><input type="radio" name="q_pos" value="alt"> 家業と別法人の代表だが、家業の承継予定または経営資源の活用がある</label>
     <label><input type="radio" name="q_pos" value="no"> どちらでもない</label>
   </fieldset>
@@ -48,10 +48,12 @@ document.getElementById('check-form').addEventListener('submit', function(e){
       html += '<h2>アトツギ甲子園：エントリー資格を満たしています</h2>';
     } else {
       html += '<h2>アトツギ甲子園：エントリー資格に適合の見込み</h2>' +
-        '<p>年齢と立場は要件に合っています。残る確認は、家業が中小企業の定義（Q3の目安）にあてはまるかどうかだけです。</p>';
+        '<p>年齢と立場は要件に合っています。残る確認は、家業が中小企業の定義にあてはまるかどうかです。「アトツギ甲子園の出場を検討している」と切り出せば、現在の代表に会社のことを聞く良い機会になります。</p>' +
+        '<p class="muted">目安（中小企業基本法）: 製造業・建設業・運輸業などは資本金3億円以下または従業員300人以下、卸売業は1億円以下または100人以下、サービス業は5,000万円以下または100人以下、小売業は5,000万円以下または50人以下。</p>';
     }
-    html += '<p>締切（11/25 18:00）まで<strong>' + (days > 0 ? 'あと' + days + '日' : '本日18:00まで') + '</strong>。出場（地方予選含む）まで進むと、事業承継・M&A補助金の審査で加点の対象になります。</p>' +
-      '<p>次の一歩: <a href="entry.html">申請書の準備を始める</a>（30分から）</p>';
+    var pb = (data.pace_buckets || []).find(function(x){ return days >= x.min_days; });
+    html += '<p>締切（11/25 18:00）まで<strong>' + (days > 0 ? 'あと' + days + '日' : '本日18:00まで') + '</strong>。' + (pb ? pb.message : '') + '</p>' +
+      '<p>次の一歩は: <a href="entry.html">申請書の準備を始める</a>（30分〜）</p>';
   } else {
     html += '<h2>アトツギ甲子園：資格要件に合わない可能性</h2><p>年齢・立場・企業規模の要件は公式のエントリー要領で必ず確認してください（例外や詳細条件があります）。</p>';
   }
@@ -64,8 +66,8 @@ document.getElementById('check-form').addEventListener('submit', function(e){
   } else {
     html += '<p class="muted">補助金の見立て（任意のQ3）は、未回答のままで大丈夫です。気になったときに準備室でいつでも確認できます。</p>';
   }
-  html += '<p>結果はこの端末に保存済みです。<a href="workspace.html">進み具合のページで全体を見る →</a></p>';
-  html += '<p class="muted">この判定は簡易チェックです。適用可否は各制度の公募要領原文が常に優先します。</p>';
+  html += '<p>結果はあなたのブラウザ上に保存済みです。<a href="workspace.html">進み具合のページで全体を見る →</a></p>';
+  html += '<p class="muted">※この判定は簡易チェックです。適用可否は各制度の公募要領原文が常に優先します。</p>';
   var r = document.getElementById('result');
   r.innerHTML = html; r.hidden = false; r.scrollIntoView({behavior:'smooth'});
   try { localStorage.setItem('shinseider_check', JSON.stringify({age:age,pos:pos,sme:sme,succ:succ,ts:new Date().toISOString()})); } catch(_) {}

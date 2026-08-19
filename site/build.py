@@ -479,6 +479,7 @@ def main():
     check_data = {
         "birth_cutoff": "1987-04-01",
         "entry_deadline": entry_end,
+        "pace_buckets": sorted(pace["buckets"], key=lambda b: -b["min_days"]),
         "requirements": [
             {"id": r["id"], "label": r["label"], "severity": r["severity"]}
             for r in subsidy["requirements"]["items"]
