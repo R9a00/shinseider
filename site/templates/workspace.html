@@ -85,9 +85,9 @@
 try {
   var s = JSON.parse(localStorage.getItem('shinseider_check') || 'null');
   if (s && s.ts) {
-    var kg = (s.age === 'yes') && (s.pos === 'yes' || s.pos === 'alt');
+    var kg = (s.age === 'yes') && (s.pos === 'yes' || s.pos === 'alt') && (s.sme !== 'no');
     var parts = [];
-    parts.push('アトツギ甲子園: ' + (kg ? 'エントリー資格を満たしています' : '要件の確認が必要'));
+    parts.push('アトツギ甲子園: ' + (kg ? (s.sme === 'yes' ? 'エントリー資格を満たしています' : 'エントリー資格に適合の見込み') : '要件の確認が必要'));
     if (s.succ === 'yes') parts.push('事業承継促進枠: 入口要件を満たす見込み');
     else if (s.succ === 'maybe') parts.push('次の一歩: 現経営者との対話（承継の意思と時期）');
     var d2 = new Date(s.ts);
