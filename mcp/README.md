@@ -29,6 +29,17 @@ Claude Desktop の場合は `claude_desktop_config.json` に（`<絶対パス>` 
                                "args": ["<絶対パス>/mcp/server.py"]}}}
 ```
 
+ChatGPT（デスクトップアプリ）/ Codex への登録（設定は `~/.codex/config.toml` で共有。
+`mcp/` の中で実行すればそのままコピペで通ります）:
+
+```bash
+codex mcp add shinseider -- "$(pwd)/.venv/bin/python" "$(pwd)/server.py"
+```
+
+ChatGPTアプリの設定画面（設定 → MCPサーバー → 追加）から登録する場合は、
+タイプ「STDIO」、起動用コマンドに `<絶対パス>/.venv/bin/python`、引数に
+`<絶対パス>/server.py` を指定してください。
+
 MCPは共通規格なので、他のローカルMCP対応クライアント（Cursor / VS Code /
 Gemini CLI 等）でも、stdio型サーバーとして同じ `command` と `args` を各アプリの
 MCP設定に登録すれば使えます（動作確認済みは Claude Code のみ）。
