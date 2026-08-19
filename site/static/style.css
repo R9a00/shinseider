@@ -135,6 +135,7 @@ blockquote.evidence.small { font-size: .9rem; margin: 1.2em 0; }
 .btn.primary:hover { background: #443e34; }
 .btn.small { font-size: .82rem; padding: .6em 1.1em; }
 .btn.big { font-size: 1.02rem; padding: 1.05em 1.8em; }
+.cta-row.cta-first { margin: 1.6rem 0 2rem; }
 
 /* 段（はしご）: 大きく淡い番号。積むほど増える構造を罫線で見せる */
 .ladder { list-style: none; padding: 0; margin: 1.6rem 0; counter-reset: step; border-top: 1px solid var(--hair); }
