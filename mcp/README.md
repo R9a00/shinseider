@@ -5,7 +5,11 @@
 
 ## セットアップ
 
-必要なもの: git と Python 3.10 以上。
+**AIに任せる場合**: [mcp-setup.md](mcp-setup.md)（サイトでは
+`https://shinseider.onrender.com/mcp-setup.md`）をAIアシスタントに渡すと、
+実行できる環境なら代行、チャットのみの環境なら1コマンドずつ案内してくれます。
+
+手動でやる場合、必要なもの: git と Python 3.10 以上。
 
 まずこのリポジトリを手元に取得してから、`mcp/` の中に環境を作ります:
 

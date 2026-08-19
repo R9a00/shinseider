@@ -586,6 +586,8 @@ def main():
     (DIST / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml\n", encoding="utf-8")
     (DIST / "favicon.ico").write_bytes((SITE / "static" / "favicon.png").read_bytes())
+    # MCPセットアップ指示書（正本は mcp/、/mcp-setup.md で配信してAIに取得させる）
+    (DIST / "mcp-setup.md").write_bytes((ROOT / "mcp" / "mcp-setup.md").read_bytes())
 
     print(f"→ {DIST}")
 

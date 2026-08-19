@@ -65,7 +65,14 @@
     <details class="prompt-view">
       <summary>MCP対応のAIアプリで使う — シンセイダーMCP（実験的）</summary>
       <p>シンセイダーの中身を、AIのツールとして直接使えるMCPサーバーを公開しています。登録すると、締切の確認・出場資格の判定・逆算プラン・質問バンクでの深掘り・予行審査までを、コピペの往復なしで会話の中から呼び出せます。記録はあなたの端末のフォルダにだけ保存されます（このページと同じ方針です）。</p>
-      <p>MCPは特定の会社に依存しない共通規格で、手元で動くMCPに対応したアプリ（ChatGPTのデスクトップアプリ・Claude Desktop・Claude Code・Cursor・VS Code・Gemini CLIなど）から登録できます。動作確認はいまのところClaudeで行っています。セットアップはPython環境の準備が必要な開発者向けの手順で、<a href="https://github.com/R9a00/shinseider/tree/main/mcp" rel="noopener">GitHubの説明</a>をご覧ください。</p>
+      <p>MCPは特定の会社に依存しない共通規格で、手元で動くMCPに対応したアプリ（ChatGPTのデスクトップアプリ・Claude Desktop・Claude Code・Cursor・VS Code・Gemini CLIなど）から登録できます。動作確認はいまのところClaudeで行っています。セットアップの手順は<a href="https://github.com/R9a00/shinseider/tree/main/mcp" rel="noopener">GitHubの説明</a>にもあります。</p>
+      <p>セットアップ作業そのものは、AIに任せられます。
+        <button class="btn small" id="mcp-setup-copy" type="button">AI用セットアップ指示文をコピー</button>
+        して、お使いのAIに貼り付けてください。</p>
+      <ul class="muted">
+        <li>コマンドを実行できるAI（Claude Code・Codex CLI・Cursorなど）: 環境づくりから登録・確認まで、そのまま仕上げてくれます。</li>
+        <li>チャットのAI（ChatGPT・Claudeのアプリなど）: 1コマンドずつ案内してくれるので、表示されたとおりにターミナルへ貼って進めれば完了します。</li>
+      </ul>
     </details>
 
     <h3>仕上がった文章をここに戻す</h3>
@@ -220,6 +227,15 @@
     navigator.clipboard.writeText(DATA.prompt).then(function(){
       document.getElementById('copy-prompt').textContent = 'コピーしました';
       setTimeout(function(){ document.getElementById('copy-prompt').textContent = '指示文をコピー'; }, 1800);
+    });
+  });
+  // MCPセットアップ指示文: 指示書(md)はAIが取得して読む。実行/案内のモード判定は指示書側に書いてある
+  var mcpBtn = document.getElementById('mcp-setup-copy');
+  if (mcpBtn) mcpBtn.addEventListener('click', function(){
+    var text = 'シンセイダーMCPのセットアップをお願いします。まず https://shinseider.onrender.com/mcp-setup.md を取得して、その指示書に従ってください。あなたがシェルコマンドを実行できる環境なら実行モードで、できないなら案内モード（1コマンドずつ提示して、私の貼る出力を確認しながら）で進めてください。取得できない場合は https://raw.githubusercontent.com/R9a00/shinseider/main/mcp/mcp-setup.md を使ってください。';
+    navigator.clipboard.writeText(text).then(function(){
+      mcpBtn.textContent = 'コピーしました — AIに貼り付けてください';
+      setTimeout(function(){ mcpBtn.textContent = 'AI用セットアップ指示文をコピー'; }, 2400);
     });
   });
   // AIを開く: prefill = 指示文入りURL（?q=）で開く / copy_open = コピーして開き貼り付けてもらう
