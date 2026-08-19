@@ -39,7 +39,7 @@
       <a href="subsidy.html" {% if page == 'subsidy' %}class="on" aria-current="page"{% endif %}>補助金</a>
       <a href="trust.html" {% if page == 'trust' %}class="on" aria-current="page"{% endif %}>情報源</a>
     </nav>
-    <a class="days-chip" href="schedule.html" title="今日から始める場合の道筋">締切まで<b class="days-left" data-deadline="{{ entry_deadline }}">—</b>日</a>
+    <a class="days-chip" href="schedule.html" title="今日から始める場合の道筋">エントリー締切まで<b class="days-left" data-deadline="{{ entry_deadline }}" data-docs-deadline="{{ docs_deadline }}">—</b>日</a>
   </header>
 </div>
 <main>
@@ -61,7 +61,10 @@ document.querySelectorAll('.days-left').forEach(function(el){
   var v = el.getAttribute('data-deadline');
   if (entryClosed(v)) {
     var wrap = el.closest('.days-chip, .deadline-line');
-    if (wrap) { wrap.textContent = '第7回の受付は終了しました'; } else { el.textContent = '0'; }
+    var docs = el.getAttribute('data-docs-deadline');
+    if (wrap) {
+      wrap.textContent = (docs && !entryClosed(docs)) ? '書類提出は11/27 12:00まで' : '第7回の受付は終了しました';
+    } else { el.textContent = '0'; }
   } else {
     el.textContent = Math.max(0, daysLeftJst(v));
   }

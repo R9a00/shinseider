@@ -421,6 +421,7 @@ def main():
 
     track = next(t for t in subsidy["tracks"] if t["id"] == "succession_promotion")
     entry_end = benefit["event"]["schedule"]["entry_period"]["end"]  # ISO文字列
+    docs_end = benefit["event"]["schedule"]["document_deadline"]["value"]  # 書類提出締切（ISO文字列）
 
     # 補助金ページの一覧: 制度（subsidy_directory）×優遇段階（benefit_ladderが正）を結合
     def perks_for(sid):
@@ -433,6 +434,7 @@ def main():
     subsidy_rows = [{**e, "perks": perks_for(e["id"])} for e in benefit["subsidy_directory"]]
     assert all(r["perks"] for r in subsidy_rows), "directoryの制度がladderに見当たらない"
     env.globals["entry_deadline"] = entry_end  # ヘッダーの締切チップ用（全ページ）
+    env.globals["docs_deadline"] = docs_end    # 書類提出締切（チップ・カウントダウンの第二段階表示用）
 
     # インタビュー指示文: テーマ×要素（旧システム53項目の蒸留）をデータから組み立てる
     theme_lines = [
@@ -470,9 +472,11 @@ def main():
     pace = entry_def["pace"]
     env.globals["pace_json"] = json.dumps({
         "entry_deadline": entry_end,
+        "docs_deadline": docs_end,
         "submit_target": pace["submit_target"],
         "buckets": sorted(pace["buckets"], key=lambda b: -b["min_days"]),
         "closed_message": pace["closed_message"],
+        "closed_message_docs": pace["closed_message_docs"],
     }, ensure_ascii=False).replace("<", "\\u003c")
 
     # 適合チェック用データ（YAML→JSON埋め込み。ロジックのフロント直書きをしない）
@@ -480,7 +484,9 @@ def main():
         "birth_cutoff": "1987-04-01",
         "entry_deadline": entry_end,
         "pace_buckets": sorted(pace["check_buckets"], key=lambda b: -b["min_days"]),
+        "docs_deadline": docs_end,
         "closed_message": pace["closed_message"],
+        "closed_message_docs": pace["closed_message_docs"],
         "requirements": [
             {"id": r["id"], "label": r["label"], "severity": r["severity"]}
             for r in subsidy["requirements"]["items"]

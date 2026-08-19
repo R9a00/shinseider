@@ -23,7 +23,11 @@
     var days = Math.round((jd(D.entry_deadline) - jd(now)) / 86400000);
     var msgEl = root.querySelector('.pace-message');
     if (!msgEl) return;
-    if (days < 0 || Date.now() > new Date(D.entry_deadline).getTime()) { msgEl.textContent = D.closed_message; return; }
+    if (days < 0 || Date.now() > new Date(D.entry_deadline).getTime()) {
+      var docsOpen = D.docs_deadline && Date.now() <= new Date(D.docs_deadline).getTime();
+      msgEl.textContent = docsOpen ? D.closed_message_docs : D.closed_message;
+      return;
+    }
     var b = D.buckets.find(function(x){ return days >= x.min_days; });
     msgEl.textContent = b ? b.message : '';
 

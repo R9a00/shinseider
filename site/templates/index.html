@@ -58,7 +58,7 @@
     <div class="stat"><b>4<i>制度</i></b><span>出場で審査優遇される国の補助金（事業承継・M&A／省力化／Go-Tech／持続化）</span></div>
     <div class="stat"><b>6<i>ブロック</i></b><span>全国の地方大会。出場から補助金審査の加点対象</span></div>
   </div>
-  <div class="count-block" id="countdown" data-deadline="{{ entry_end }}">
+  <div class="count-block" id="countdown" data-deadline="{{ entry_end }}" data-docs-deadline="{{ docs_deadline }}">
     <div class="countdown">
       <span class="countdown-label">第7回エントリー締切<br>2026年11月25日 18:00 まで</span>
       <span class="countdown-num" id="countdown-days">—</span><span class="countdown-unit">日</span>
@@ -143,7 +143,10 @@
   var el = document.getElementById('countdown');
   var v = el.getAttribute('data-deadline');
   if (entryClosed(v)) {
-    el.innerHTML = '<p class="muted">第7回のエントリー受付は終了しました。</p>';
+    var docs = el.getAttribute('data-docs-deadline');
+    el.innerHTML = '<p class="muted">' + ((docs && !entryClosed(docs))
+      ? 'エントリー受付は終了しました。エントリー済みの方は、応募書類の提出を11/27 12:00までに。'
+      : '第7回の受付は終了しました。') + '</p>';
     return;
   }
   document.getElementById('countdown-days').textContent = Math.max(0, daysLeftJst(v));

@@ -54,10 +54,11 @@ document.getElementById('check-form').addEventListener('submit', function(e){
         '<p class="muted">目安（中小企業基本法）: 製造業・建設業・運輸業などは資本金3億円以下または従業員300人以下、卸売業は1億円以下または100人以下、サービス業は5,000万円以下または100人以下、小売業は5,000万円以下または50人以下。</p>';
     }
     if (closed) {
-      html += '<p>' + (data.closed_message || '第7回のエントリー受付は終了しました。') + '</p>';
+      var docsOpen = data.docs_deadline && Date.now() <= new Date(data.docs_deadline).getTime();
+      html += '<p>' + (docsOpen ? data.closed_message_docs : data.closed_message) + '</p>';
     } else {
       var pb = (data.pace_buckets || []).find(function(x){ return days >= x.min_days; });
-      html += '<p>締切（11/25 18:00）まで<strong>' + (days > 0 ? 'あと' + days + '日' : '本日18:00まで') + '</strong>。' + (pb ? pb.message : '') + '</p>' +
+      html += '<p>エントリー締切（11/25 18:00）まで<strong>' + (days > 0 ? 'あと' + days + '日' : '本日18:00まで') + '</strong>。' + (pb ? pb.message : '') + '</p>' +
         '<p>次の一歩は: <a href="entry.html">申請書の準備を始める</a>（30分〜）</p>';
     }
   } else {
