@@ -173,6 +173,17 @@ th, td { text-align: left; padding: .75em .9em .75em 0; border-bottom: 1px solid
 th { font-weight: 600; white-space: nowrap; padding-right: 1.6em; }
 table.compact { font-size: .85rem; }
 table.compact td { padding-top: .5em; padding-bottom: .5em; }
+/* ラベル｜値の台帳組み（損得表など）: ラベルは小さく淡く、値を主役に */
+table.ledger th { font-size: .8rem; font-weight: 600; color: var(--ink-soft); letter-spacing: .06em; padding-top: 1.05em; }
+table.ledger td { line-height: 1.9; }
+@media (max-width: 640px) {
+  /* 幅超過する表はページを広げず表内で横スクロール */
+  table { display: block; overflow-x: auto; }
+  /* 台帳組みはラベルを値の上に積む */
+  table.ledger tbody, table.ledger tr, table.ledger th, table.ledger td { display: block; }
+  table.ledger th { white-space: normal; border-bottom: 0; padding: 1.1em 0 0; }
+  table.ledger td { padding: .1em 0 1.1em; }
+}
 table.compact td:first-child { white-space: nowrap; }
 
 .badge {
