@@ -545,6 +545,12 @@ a.route-card:hover { border-top-color: #e5b1a8; }
 }
 .phase-kicker::before { content: ""; width: 2.2rem; height: 1px; background: var(--accent); }
 .phase .step h2 { padding-top: 1.2em; margin-top: 1.6em; }
+/* 見出し横にボタンを置く行（h2の罫・余白は行側が受け持つ） */
+.step-head { display: flex; align-items: baseline; justify-content: space-between; gap: .6rem 1rem;
+  flex-wrap: wrap; border-top: 1px solid var(--hair); margin: 3.2rem 0 .8rem; padding-top: 2rem; }
+.phase .step .step-head { padding-top: 1.56rem; margin-top: 2.08rem; }
+.step-head h2 { border: 0; padding-top: 0; margin: 0; }
+.step-head .btn { flex: none; }
 .phase .step:first-of-type h2 { border-top: 0; padding-top: .8em; margin-top: 1em; }
 
 /* 予行審査: サイトで唯一の暗い面（審査席）。朱の罫から入る */

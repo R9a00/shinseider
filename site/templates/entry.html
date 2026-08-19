@@ -34,7 +34,10 @@
   <span class="phase-kicker">つくる</span>
 
   <section class="step" id="ai-help">
-    <h2>AIを有効に使う</h2>
+    <div class="step-head">
+      <h2>AIを有効に使う</h2>
+      <a class="btn small" href="#ai-mcp">MCPから利用する →</a>
+    </div>
     <p>最近は業務に広くAIを使う人も増えていると思いますが、一番有用な使い方は「時短」と「網羅性を上げる」方向性であると思います。アトツギ甲子園についても、忙しいみなさんは時間を「浪費」しないよう取り組んだほうが良い。そこで、AI(LLM)を使って骨子をまとめる仕組みを用意しましたのでご利用下さい。</p>
     <p>指示はシンプルなプロンプト（どんな役割で何をさせるかを示す文）ですが、現在のモデルならこのくらいでも、十分に役割を果たしてくれるはずです。</p>
     <ol class="flow-steps" aria-label="使い方">
@@ -62,20 +65,6 @@
       <summary>AIに渡す指示文の全文を見る</summary>
       <pre>{{ prompt_text }}</pre>
     </details>
-    <details class="prompt-view">
-      <summary>MCP対応のAIアプリで使う — シンセイダーMCP（実験的）</summary>
-      <p>シンセイダーの中身を、AIのツールとして直接使えるMCPサーバーを公開しています。登録すると、締切の確認・出場資格の判定・逆算プラン・質問バンクでの深掘り・予行審査までを、コピペの往復なしで会話の中から呼び出せます。記録はあなたの端末のフォルダにだけ保存されます（このページと同じ方針です）。</p>
-      <p>MCPは特定の会社に依存しない共通規格で、手元で動くMCPに対応したアプリ（ChatGPTのデスクトップアプリ・Claude Desktop・Claude Code・Cursor・VS Code・Gemini CLIなど）から登録できます。動作確認はいまのところClaudeで行っています。</p>
-      <p>セットアップ作業そのものは、AIに任せられます。
-        <button class="btn small" id="mcp-setup-copy" type="button">AI用セットアップ指示文をコピー</button>
-        して、お使いのAIに貼り付けてください。</p>
-      <ul class="muted">
-        <li>コマンドを実行できるAI（Claude Code・Codex CLI・Cursorなど）: 環境づくりから登録・確認まで、そのまま仕上げてくれます。</li>
-        <li>チャットのAI（ChatGPT・Claudeのアプリなど）: 1コマンドずつ案内してくれるので、表示されたとおりにターミナルへ貼って進めれば完了します。</li>
-      </ul>
-      <p class="muted">手順を自分で確かめたい方は、<a href="mcp-setup.md">セットアップ手順の全文</a>（AIに渡すものと同じ内容です）をどうぞ。</p>
-    </details>
-
     <h3>仕上がった文章をここに戻す</h3>
     <p>AIが最後に出してくれた「## 見出し」付きの清書を、そのまま貼り付けてください。取り込むと下の5つの欄に入ります。</p>
     <textarea id="paste-area" rows="8" placeholder="## 現業と自分&#10;……"></textarea>
@@ -86,6 +75,20 @@
 
     <p>もっと時間をかけて丁寧にやるなら、<a href="fukabori.html">フカボリ（じっくり版）</a>へ。ルーツ・強み・市場規模・収益の数字・実現性まで、24ブロックでAIと詰められます。</p>
     <p>もしも、AIで物足りなくなったり、具体的に困ったことがあればお気軽にご相談ください（連絡先は<a href="about.html">運営者と方針</a>のページに）。</p>
+  </section>
+
+  <section class="step" id="ai-mcp">
+    <h2>MCPから利用する — AIにシンセイダーを直接持たせる</h2>
+    <p>MCP（AIアプリ共通の接続規格）でシンセイダーをつなぐと、締切の確認・出場資格の判定・逆算プラン・質問バンクでの深掘り・予行審査までを、コピペの往復なしにAIとの会話から直接使えます。記録はあなたの端末にだけ保存されます（このページと同じ方針です）。</p>
+    <p>設定はAIに任せられます。下のボタンで指示文をコピーして、お使いのAIに貼り付ければ、そのまま設定が始まります。</p>
+    <div class="cta-row cta-first">
+      <button class="btn primary" id="mcp-setup-copy" type="button">AI用セットアップ指示文をコピー</button>
+    </div>
+    <ul>
+      <li>コマンドを実行できるAI（Claude Code・Codex CLI・Cursorなど）: 環境づくりから登録・確認まで、そのまま仕上げてくれます。</li>
+      <li>チャットのAI（ChatGPT・Claudeのアプリなど）: 1コマンドずつ案内してくれるので、表示されたとおりにターミナルへ貼って進めれば完了します。</li>
+    </ul>
+    <p class="muted">対応アプリ: ChatGPTのデスクトップアプリ・Claude Desktop・Claude Code・Cursor・VS Code・Gemini CLIなど。動作確認はいまのところClaudeで行っています（実験的な提供です）。手順を自分で確かめたい方は、<a href="mcp-setup.md">セットアップ手順の全文</a>（AIに渡すものと同じ内容です）をどうぞ。</p>
   </section>
 
   <section class="step">
