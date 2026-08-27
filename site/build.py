@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
 DIST = SITE / "dist"
 
-PREVIEW = True  # 公開ゲート6項目クリアで False にする
+PREVIEW = False  # True でページ上部に「最終確認作業中です」バナーを表示
 SITE_URL = "https://shinseider.onrender.com"
 
 
