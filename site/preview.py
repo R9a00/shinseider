@@ -40,6 +40,7 @@ _missing = _dist_pages - _preview_pages
 if _missing:
     raise SystemExit(f"プレビュー未収載のページがある: {sorted(_missing)} — sectionsに追加すること")
 
+store_js = (DIST / "static" / "project-store.js").read_text(encoding="utf-8")
 css = (DIST / "static" / "style.css").read_text(encoding="utf-8")
 logo64 = base64.b64encode((DIST / "static" / "logo.png").read_bytes()).decode()
 
@@ -91,7 +92,7 @@ doc = f"""<!DOCTYPE html>
 .pv-label {{ background: var(--accent); color: #fff; display: inline-block; font-size: .78rem;
   font-weight: 700; padding: .3em .9em; margin: 0 0 0 1rem; letter-spacing: .08em; }}
 .pv-section main {{ padding-bottom: 3rem; }}
-</style></head><body>
+</style><script>{store_js}</script></head><body>
 <div class="pv-topbar"><strong>プレビュー</strong>{nav}</div>
 {"".join(f'{p}' for p in parts)}
 <footer class="site-footer"><p>プレビュー（{dt.date.today()}生成）。各ページを実物のヘッダー込みで縦に並べています。実物ではヘッダーは画面上部に追従します。ページ間リンクはページ内アンカーに変換済み。</p></footer>

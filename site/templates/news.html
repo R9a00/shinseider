@@ -7,7 +7,7 @@
 <p class="lead">公式に発表されたイベントと期日、発表そのものの記録です。各項目に出典を付けています。締切や大会日程は、下のリンクからお使いのカレンダーに登録できます。</p>
 
 <h2 class="tight" style="margin-top:2.4rem">この先の日程</h2>
-<p class="muted">各行の「カレンダーに追加」で、その日程を自分のGoogleカレンダーに入れられます。<a href="koshien7.ics" download>まとめて追加（.ics）</a>はApple・Outlook等のカレンダー向けです（今日以降の全日程入り）。</p>
+<p class="muted">各行の「カレンダーに追加」で、その日程を自分のGoogleカレンダーに入れられます。<a href="koshien7.ics" download>まとめて追加（.ics）</a>はApple・Outlook等のカレンダー向けです（{{ built_at }} のビルド時点で終了していない日程を収録。閲覧日より前の日程を含む場合があります）。</p>
 <ol class="evlist">
   {% for e in events %}
   <li class="ev" data-date="{{ e.end | default(e.start) }}"{% if e.past %} hidden{% endif %}>

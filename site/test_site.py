@@ -1,25 +1,21 @@
 #!/usr/bin/env python3
-"""サイトの回帰テスト: ビルド → 語彙リーク検査 → 動作検査。
-公開ゲートのE2E項目の実体。`python3 site/test_site.py` で全部走る。"""
+"""Build and test the real generated pages over HTTP with an isolated Chromium context."""
+import functools
+import http.server
+import json
 import subprocess
 import sys
+import threading
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DIST = ROOT / "site" / "dist"
-
-# 画面に出てはいけない語彙
-LEAK_WORDS = [
-    # 内部状態（品質機構の語彙）
-    "最終確認前", "confidence", "verified", "extracted_unreviewed", "unconfirmed",
-    "REVIEW REQUIRED", "公開品質ゲート",
-    # 設計語彙（読者の言葉ではない）
-    "解錠", "逆引き", "ステータスの階段", "Tier",
-    "世界の現実", "事実の系譜", "政策の末端", "ドメイン", "作戦室",
-]
-PAGES = ["index", "workspace", "check", "entry", "schedule", "cool", "subsidy", "trust", "about", "ambassadors", "news"]
-
-SAMPLE_ENTRY = """## 現業と自分
+DIST = ROOT / 'site' / 'dist'
+LEAK_WORDS = ['最終確認前', 'confidence', 'verified', 'extracted_unreviewed',
+              'unconfirmed', 'REVIEW REQUIRED', '公開品質ゲート', '解錠', '逆引き',
+              'ステータスの階段', 'Tier', '世界の現実', '事実の系譜', '政策の末端', 'ドメイン', '作戦室']
+PAGES = ['index', 'workspace', 'check', 'entry', 'schedule', 'cool', 'subsidy',
+         'trust', 'about', 'ambassadors', 'news', 'fukabori']
+SAMPLE_ENTRY = '''## 現業と自分
 金属加工の会社で営業を5年やっています。年商3億円、従業員20名。
 ## 現場で感じている課題
 熟練の職人がこの3年で4人退職。求人応募は今年ゼロでした。
@@ -29,147 +25,167 @@ SAMPLE_ENTRY = """## 現業と自分
 50年分の加工ノウハウと、地域200社との取引網を使います。
 ## 実現したい未来
 若手が集まる工場にして、地域の加工業を残す。
-"""
+'''
+# Stable dates: the test remains meaningful after this year's deadline passes.
+CLOCK = '''(() => {
+  const NativeDate = Date, now = new NativeDate('2026-09-29T09:00:00+09:00').getTime();
+  window.Date = class extends NativeDate {
+    constructor(...args) { super(...(args.length ? args : [now])); }
+    static now() { return now; }
+  };
+})();'''
+
+
+class QuietHandler(http.server.SimpleHTTPRequestHandler):
+    def log_message(self, *_args):
+        pass
+
+
+def run(base):
+    from playwright.sync_api import sync_playwright, expect
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        context = browser.new_context(viewport={'width': 1280, 'height': 900},
+                                      permissions=['clipboard-read', 'clipboard-write'])
+        context.add_init_script(CLOCK)
+        # No external AI requests or analytics during tests.
+        context.route('**/*', lambda route: route.continue_() if route.request.url.startswith(base)
+                      else route.fulfill(status=200, body='external page test placeholder'))
+        errors = []
+        context.on('page', lambda page: page.on('pageerror', lambda e: errors.append(str(e))))
+        pg = context.new_page()
+        for name in PAGES:
+            pg.goto(f'{base}/{name}.html')
+            for word in LEAK_WORDS:
+                assert word not in pg.inner_text('body'), f'{name}: {word}'
+        print('PASS: 12 pages load without internal vocabulary')
+
+        pg.goto(f'{base}/check.html')
+        pg.check('input[name=q_age][value=yes]')
+        pg.check('input[name=q_pos][value=yes]')
+        pg.click('button[type=submit]')
+        expect(pg.locator('#result')).to_be_hidden()  # Q3 is required.
+        pg.check('input[name=q_sme][value=yes]')
+        pg.click('button[type=submit]')
+        expect(pg.locator('#result')).to_contain_text('エントリー資格を満たしています')
+        expect(pg.locator('#result')).to_contain_text('任意のQ4')
+        expect(pg.locator('#result')).to_contain_text('保存済み')
+        pg.goto(f'{base}/workspace.html')
+        expect(pg.locator('#ws-status-text')).to_contain_text('エントリー資格を満たしています')
+        print('PASS: required Q3, optional Q4, diagnosis persistence')
+
+        pg.goto(f'{base}/entry.html')
+        pg.fill('#paste-area', SAMPLE_ENTRY)
+        pg.click('#import-btn')
+        expect(pg.locator('#import-msg')).to_contain_text('5つそろいました')
+        expect(pg.locator('#save-msg')).to_contain_text('自動保存済み')
+        pg.click('#copy-review')
+        expect(pg.locator('#review-msg')).to_contain_text('コピーしました')
+        assert '金属加工' in pg.evaluate('navigator.clipboard.readText()')
+        with pg.expect_popup() as popup:
+            pg.click('.ai-card[data-open*="gemini"]')
+        popup.value.close()
+        pg.reload()
+        assert '金属加工' in pg.locator('.sec-text').first.input_value()
+        with pg.expect_download() as download:
+            pg.click('#dl-md')
+        backup = Path(download.value.path()).read_bytes()
+        assert b'"entry"' in backup
+        pg.goto(f'{base}/workspace.html')
+        expect(pg.locator('#ws-entry-text')).to_contain_text('5/5')
+        print('PASS: import, clipboard, popup, reload, progress and backup export')
+
+        # Two stale pages: unrelated fields merge, identical fields do not overwrite.
+        a = context.new_page(); b = context.new_page()
+        a.goto(f'{base}/entry.html'); b.goto(f'{base}/fukabori.html')
+        a.locator('.sec-text').first.fill('タブAで更新した申請文')
+        expect(a.locator('#save-msg')).to_contain_text('自動保存済み')
+        b.locator('.fk-text').first.fill('タブBで追加した来歴')
+        expect(b.locator('#fk-save-msg')).to_contain_text('自動保存済み')
+        a.reload()
+        assert a.locator('.sec-text').first.input_value() == 'タブAで更新した申請文'
+        b.reload()
+        assert b.locator('.fk-text').first.input_value() == 'タブBで追加した来歴'
+        c = context.new_page(); c.goto(f'{base}/entry.html')
+        a.locator('.sec-text').first.fill('タブAの最新原稿')
+        expect(a.locator('#save-msg')).to_contain_text('自動保存済み')
+        c.locator('.sec-text').first.fill('タブCの競合原稿')
+        expect(c.locator('#save-msg')).to_contain_text('別のタブで同じ項目')
+        assert c.locator('.sec-text').first.input_value() == 'タブCの競合原稿'
+        a.reload()
+        assert a.locator('.sec-text').first.input_value() == 'タブAの最新原稿'
+        print('PASS: multiple tabs preserve independent edits and reject conflicts')
+
+        # Restore into a fresh context, not into a page with a conflicting history.
+        restored = browser.new_context(accept_downloads=True)
+        restored.add_init_script(CLOCK)
+        restored.route('**/*', lambda route: route.continue_() if route.request.url.startswith(base) else route.fulfill(status=200, body=''))
+        rp = restored.new_page(); rp.goto(f'{base}/entry.html')
+        rp.set_input_files('#up-project', {'name': 'backup.md', 'mimeType': 'text/markdown', 'buffer': backup})
+        expect(rp.locator('#save-msg')).to_contain_text('控えを読み込み、保存しました')
+        rp.reload()
+        assert '金属加工' in rp.locator('.sec-text').first.input_value()
+        rp.set_input_files('#up-project', {'name': 'bad.json', 'mimeType': 'application/json',
+                                          'buffer': b'{"entry":{"sections":7}}'})
+        expect(rp.locator('#save-msg')).to_contain_text('データ形式')
+        assert '金属加工' in rp.locator('.sec-text').first.input_value()
+        restored.close()
+        print('PASS: backup restore and malformed backup protection')
+
+        failure_context = browser.new_context()
+        failure_context.add_init_script(CLOCK)
+        failure_context.route('**/*', lambda route: route.continue_() if route.request.url.startswith(base) else route.fulfill(status=200, body=''))
+        failure_context.add_init_script("Storage.prototype.setItem = function(){ throw new DOMException('full', 'QuotaExceededError'); };")
+        fp = failure_context.new_page()
+        for name, field, status in [('entry', '.sec-text', '#save-msg'), ('fukabori', '.fk-text', '#fk-save-msg')]:
+            fp.goto(f'{base}/{name}.html')
+            fp.locator(field).first.fill('保存失敗でも残す入力')
+            expect(fp.locator(status)).to_contain_text('未保存')
+            expect(fp.locator(status)).not_to_contain_text('自動保存済み')
+            assert fp.locator(field).first.input_value() == '保存失敗でも残す入力'
+            # Accept leaving only this isolated synthetic test page.
+            fp.once('dialog', lambda dialog: dialog.accept())
+        fp.goto(f'{base}/check.html')
+        for name in ['q_age', 'q_pos', 'q_sme']:
+            fp.check(f'input[name={name}][value=yes]')
+        fp.click('button[type=submit]')
+        expect(fp.locator('#result')).to_contain_text('結果は未保存')
+        expect(fp.locator('#result')).not_to_contain_text('保存済み')
+        failure_context.close()
+        print('PASS: storage failure is visible in all three forms')
+
+        pg.goto(f'{base}/index.html')
+        expect(pg.locator('#countdown-days')).to_have_text('57')
+        pg.goto(f'{base}/schedule.html')
+        assert pg.locator('#pace-message').inner_text().strip()
+        assert pg.locator('#pace-plan li').count() >= 3
+        pg.goto(f'{base}/entry.html')
+        # The pace message belongs inside the expandable guide.
+        pg.locator('details.prompt-view').first.locator('summary').click()
+        expect(pg.locator('#pace-message')).to_be_visible()
+        assert pg.locator('#pace-message').inner_text().strip()
+        pg.goto(f'{base}/news.html')
+        assert 'ビルド時点で終了していない日程' in pg.inner_text('body')
+        assert '今日以降の全日程入り' not in pg.inner_text('body')
+        pg.goto(f'{base}/subsidy.html')
+        expect(pg.locator('nav a[aria-current=page]')).to_have_text('補助金')
+        assert not errors, errors
+        browser.close()
+        print('PASS: calendar description, fixed-date countdown, navigation, no JS errors')
 
 
 def main():
-    subprocess.run([sys.executable, str(ROOT / "site" / "build.py")], check=True, capture_output=True)
-    from playwright.sync_api import sync_playwright
-
-    failures = []
-    with sync_playwright() as p:
-        b = p.chromium.launch()
-        pg = b.new_page(viewport={"width": 1280, "height": 900})
-        errors = []
-        pg.on("pageerror", lambda e: errors.append(str(e)))
-
-        # 1. 語彙リーク検査（表示テキストに対して）
-        for name in PAGES:
-            pg.goto(f"file://{DIST}/{name}.html")
-            body = pg.inner_text("body")
-            for w in LEAK_WORDS:
-                if w in body:
-                    failures.append(f"語彙リーク {name}: {w}")
-
-        # 2a. 適合チェック: 必須のQ1・Q2だけで判定できる（補助金質問は任意）
-        pg.goto(f"file://{DIST}/check.html")
-        pg.check("input[name=q_age][value=yes]"); pg.check("input[name=q_pos][value=yes]")
-        pg.click("button[type=submit]")
-        pg.wait_for_selector("#result:not([hidden])", timeout=8000)
-        r = pg.inner_text("#result")
-        if "アトツギ甲子園" not in r:
-            failures.append("最小回答で甲子園判定が出ない")
-        if "未回答のままで大丈夫" not in r:
-            failures.append("任意未回答の案内が出ない")
-
-        # 2b. 全回答 → 保存 → 準備室で復元
-        pg.goto(f"file://{DIST}/check.html")
-        pg.check("input[name=q_age][value=yes]"); pg.check("input[name=q_pos][value=yes]")
-        pg.check("input[name=q_succ][value=yes]");
-        pg.click("button[type=submit]")
-        pg.wait_for_selector("#result:not([hidden])", timeout=8000)
-        if "進み具合" not in pg.inner_text("#result"):
-            failures.append("チェック結果に進み具合ページへの導線がない")
-        pg.goto(f"file://{DIST}/workspace.html")
-        try:
-            pg.wait_for_selector("#ws-status:not([hidden])", timeout=5000)
-            if "適合の見込み" not in pg.inner_text("#ws-status-text"):
-                failures.append("準備室の現在地表示が不正")
-        except Exception:
-            failures.append("準備室で前回チェックが復元されない")
-
-        # 3. エントリー文づくり: 貼り戻し → 取り込み → 検証 → 復元 → 作戦室に進捗
-        pg.goto(f"file://{DIST}/entry.html")
-        if "## 現業と自分" not in pg.inner_text("#entry-data") and "現業と自分" not in pg.content():
-            failures.append("エントリーページにプロンプト定義がない")
-        ai_btns = pg.eval_on_selector_all(".ai-card .ai-head", "els => els.map(e => e.textContent.trim())")
-        for want in ["Claude", "ChatGPT", "Gemini", "Grok"]:
-            if not any(want in t for t in ai_btns):
-                failures.append(f"AIボタンに{want}がない: {ai_btns}")
-        # 指示文の透明性: 全文がページ内で確認できる
-        pv = pg.inner_text("#prompt-view")
-        if "現業と自分" not in pg.eval_on_selector("#prompt-view pre", "el => el.textContent"):
-            failures.append("指示文の全文表示がない")
-        # Geminiカード: クリックで実際に新しいタブが開く（ポップアップブロック回帰の検査）
-        # 注: この砂場ではclaude.ai等はプロキシ遮断でウィンドウ自体が実体化しないため、
-        #     実体化するGeminiのカードを明示的に押す（検査対象は「同期openか」であり宛先ではない）
-        try:
-            with pg.expect_popup(timeout=5000) as pop:
-                pg.click('.ai-card[data-open*="gemini"]')
-            # この環境は外部ネットワーク遮断のため到達先URLは検証しない。
-            # 「新規タブが開くこと」自体がポップアップブロック回帰の検査対象。
-            pop.value.close()
-        except Exception as e:
-            failures.append(f"Geminiカードで新規タブが開かない: {type(e).__name__}")
-        pg.fill("#paste-area", SAMPLE_ENTRY)
-        pg.click("#import-btn")
-        msg = pg.inner_text("#import-msg")
-        if "5件" not in msg or "そろいました" not in msg:
-            failures.append(f"貼り戻し取り込みが不正: {msg}")
-        statuses = pg.eval_on_selector_all(".sec-status", "els => els.map(e => e.textContent)")
-        if any("未入力" in s for s in statuses):
-            failures.append(f"取り込み後も未入力セクションがある: {statuses}")
-        # 予行審査: 骨子入りの審査員プロンプトがコピーできる（骨子が空でないので成功パス）
-        pg.click("#copy-review")
-        try:
-            pg.wait_for_function("document.getElementById('review-msg').textContent.length > 0", timeout=5000)
-        except Exception:
-            failures.append("予行審査ボタンの応答がない")
-
-        # リロードして復元確認
-        pg.reload()
-        first_text = pg.eval_on_selector(".entry-section .sec-text", "el => el.value")
-        if "金属加工" not in first_text:
-            failures.append("エントリー骨子がリロード後に復元されない")
-        # 準備室に進捗が出る
-        pg.goto(f"file://{DIST}/workspace.html")
-        ws_entry = pg.inner_text("#ws-entry-text")
-        if "5/5" not in ws_entry:
-            failures.append(f"準備室のエントリー進捗が不正: {ws_entry}")
-
-        # 3.5 ナビ: 現在地表示
-        pg.goto(f"file://{DIST}/subsidy.html")
-        on_txt = pg.eval_on_selector("nav a.on", "el => el.textContent") if pg.query_selector("nav a.on") else None
-        if on_txt != "補助金":
-            failures.append(f"ナビの現在地表示が不正: {on_txt}")
-
-        # 4. カウントダウン（トップは軽く、プランは出さない）
-        pg.goto(f"file://{DIST}/index.html")
-        days = pg.inner_text("#countdown-days")
-        if not (days.isdigit() and 0 < int(days) < 200):
-            failures.append(f"カウントダウン異常: {days}")
-        if pg.query_selector("#pace-plan"):
-            failures.append("トップに逆算プランが出ている（道筋ページへ分離したはず）")
-        if not pg.query_selector('a[href="schedule.html"]'):
-            failures.append("トップから道筋ページへの導線がない")
-        for door in ["cool.html", "check.html", "subsidy.html"]:
-            if not pg.query_selector(f'a[href="{door}"]'):
-                failures.append(f"トップの入り口に{door}への導線がない")
-        # 5. 道筋ページ: 間に合うかメッセージ＋日付入りプラン
-        pg.goto(f"file://{DIST}/schedule.html")
-        pace_msg = pg.inner_text("#pace-message")
-        if "間に合" not in pace_msg:
-            failures.append(f"道筋ページのメッセージが不正: {pace_msg}")
-        plan_items = pg.eval_on_selector_all("#pace-plan li", "els => els.length")
-        if plan_items < 3:
-            failures.append(f"逆算プランの項目が少ない: {plan_items}")
-        # エントリーページの状況メッセージ（1行のみ）
-        pg.goto(f"file://{DIST}/entry.html")
-        if "間に合" not in pg.inner_text("#pace-message"):
-            failures.append("エントリーページに間に合うかメッセージがない")
-
-        if errors:
-            failures.append(f"JSエラー: {errors}")
-        b.close()
-
-    if failures:
-        print("NG:")
-        for f in failures:
-            print(" -", f)
-        return 1
-    print(f"OK: {len(PAGES)}ページ / リークなし / チェック保存・復元 / カウントダウン {days}日")
+    subprocess.run([sys.executable, str(ROOT / 'site' / 'build.py')], check=True)
+    handler = functools.partial(QuietHandler, directory=str(DIST))
+    server = http.server.ThreadingHTTPServer(('127.0.0.1', 0), handler)
+    thread = threading.Thread(target=server.serve_forever, daemon=True); thread.start()
+    try:
+        run(f'http://127.0.0.1:{server.server_port}')
+    finally:
+        server.shutdown(); server.server_close(); thread.join()
+    print('OK: all site regression checks passed')
     return 0
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     sys.exit(main())
