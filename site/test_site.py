@@ -50,7 +50,7 @@ def run(base):
         context.add_init_script(CLOCK)
         # No external AI requests or analytics during tests.
         context.route('**/*', lambda route: route.continue_() if route.request.url.startswith(base)
-                      else route.fulfill(status=200, body='external page test placeholder'))
+                      else route.fulfill(status=200, body=''))
         errors = []
         context.on('page', lambda page: page.on('pageerror', lambda e: errors.append(str(e))))
         pg = context.new_page()
