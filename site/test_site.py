@@ -100,6 +100,7 @@ def run(base):
         a.goto(f'{base}/entry.html'); b.goto(f'{base}/fukabori.html')
         a.locator('.sec-text').first.fill('タブAで更新した申請文')
         expect(a.locator('#save-msg')).to_contain_text('自動保存済み')
+        b.locator('details.fk-group > summary').first.click()
         b.locator('.fk-text').first.fill('タブBで追加した来歴')
         expect(b.locator('#fk-save-msg')).to_contain_text('自動保存済み')
         a.reload()
@@ -139,6 +140,8 @@ def run(base):
         fp = failure_context.new_page()
         for name, field, status in [('entry', '.sec-text', '#save-msg'), ('fukabori', '.fk-text', '#fk-save-msg')]:
             fp.goto(f'{base}/{name}.html')
+            if name == 'fukabori':
+                fp.locator('details.fk-group > summary').first.click()
             fp.locator(field).first.fill('保存失敗でも残す入力')
             expect(fp.locator(status)).to_contain_text('未保存')
             expect(fp.locator(status)).not_to_contain_text('自動保存済み')
