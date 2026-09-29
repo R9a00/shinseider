@@ -18,6 +18,10 @@ python3 site/build.py
 
 旧システム（React + FastAPI版）のコードは `archive/v1` ブランチにあります。
 
+## 問い合わせ導線
+
+「相談できる人」ページの紹介文直後に「問い合わせ先」リンクを置き、運営者ページの `about.html#contact` に直接移動します。連絡先は同ページに掲載するX・Facebook・会社サイトです。
+
 ## 検証と保存仕様
 
 ```bash
