@@ -4,6 +4,7 @@
 {% block main %}
 <article>
 <h1>フカボリ<span class="ws-tag">試作版</span></h1>
+<p id="fk-save-msg" class="save-status muted"></p>
 <p class="lead">アトツギ甲子園のかつての優勝者が使っていたフレームを用いて作られた「時間はかかるが丁寧に仕上げるルート」です。会社の来歴から新しい事業の数字まで、順に深掘って聞いていきます。</p>
 <p class="lead">4つの章をAIと10〜20分ずつ。章が終わるごとにセーブされるので、途中でやめても続きから再開できます。<strong>入力はあなたのパソコンやスマホにだけ保存され、サイト側に送信されることはありません。</strong></p>
 <p>ここで掘った材料は、エントリー文の下地になり、エントリー後に届く応募書類——さらにその先の補助金申請——を書くときの手持ちになります。</p>
@@ -122,7 +123,7 @@
     <input type="file" id="fk-up-json" accept=".md,.json,.txt" hidden>
   </div>
   <p class="muted">控えは、そのまま読める下書きです。別のパソコンやスマホでも、読み込めば保存した時点から再開できます（申請書の準備の中身も一緒に入ります）。</p>
-  <p id="fk-save-msg" class="muted"></p>
+
 </section>
 </article>
 
@@ -132,19 +133,9 @@
 <script>
 (function(){
   var PROMPTS = JSON.parse(document.getElementById('fk-prompts').textContent);
-  var KEY = 'shinseider_project';
-
-  function loadProject(){
-    try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {version:1, entry:{sections:{}, checklist:{}}}; }
-    catch(_) { return {version:1, entry:{sections:{}, checklist:{}}}; }
-  }
-  function saveProject(p){
-    p.updated = new Date().toISOString();
-    try { localStorage.setItem(KEY, JSON.stringify(p)); } catch(_) {}
-    var el = document.getElementById('fk-save-msg');
-    if (el) el.textContent = '自動保存済み（このブラウザのみ・' + new Date().toLocaleTimeString('ja-JP') + '）';
-  }
-  var project = loadProject();
+  var store = ShinseiderStore.open('fk-save-msg');
+  var project = store.project;
+  function saveProject(p) { return store.save(p); }
   project.fukabori = project.fukabori || {blocks:{}};
 
   function fieldValue(bk, fk){ return (project.fukabori.blocks[bk] || {})[fk] || ''; }
@@ -213,14 +204,15 @@
     });
     return md;
   }
-  function promptFor(ch){
+  function promptFor(ch, snapshot){
     if (ch === 'critique') {
       var full = '';
       document.querySelectorAll('.fk-block').forEach(function(box){
         full += '\n## ' + box.querySelector('h3').firstChild.textContent.trim() + '（ID: ' + box.getAttribute('data-block') + '）\n';
         box.querySelectorAll('.fk-text').forEach(function(ta){
           var label = ta.previousElementSibling.textContent.replace('（任意）','').trim();
-          var v = ta.value.trim();
+          var fields = snapshot && snapshot.fukabori.blocks[box.getAttribute('data-block')];
+          var v = snapshot ? ((fields || {})[ta.getAttribute('data-field')] || '').trim() : ta.value.trim();
           full += '- ' + label + '（' + ta.getAttribute('data-field') + '）: ' + (v ? v.replace(/\n/g, ' ／ ') : '（未入力）') + '\n';
         });
       });
@@ -385,12 +377,13 @@
   }
   // 控え = 読める下書き + 末尾にセーブデータ（1ファイルで転記元と再開の両方を担う）
   document.getElementById('fk-dl-md').addEventListener('click', function(){
-    var body = promptFor('critique').split('# ユーザー下書き（24ブロック）')[1] || '';
+    var backup = store.snapshot(project);
+    var body = promptFor('critique', backup).split('# ユーザー下書き（24ブロック）')[1] || '';
     var check = null;
     try { check = JSON.parse(localStorage.getItem('shinseider_check') || 'null'); } catch(_) {}
     var md = '# フカボリ 控え\n' + body +
       '\n---\n\n## セーブデータ\n「控えを読み込む」でこのファイルを選ぶと、この時点から再開できます。下のコードは編集しないでください。\n\n```json\n' +
-      JSON.stringify({version: 1, exported: new Date().toISOString(), profile: check, entry: project.entry, fukabori: project.fukabori}) + '\n```\n';
+      JSON.stringify({version: 1, exported: new Date().toISOString(), profile: check, entry: backup.entry, fukabori: backup.fukabori}) + '\n```\n';
     dl('fukabori_hikae_' + stamp() + '.md', md, 'text/markdown');
   });
   document.getElementById('fk-dl-prompts').addEventListener('click', function(){
@@ -405,16 +398,24 @@
     var f = e.target.files[0];
     if (!f) return;
     var r = new FileReader();
-    r.onload = function(){
+    r.onload = async function(){
       var d = null;
       try { d = extractJson(String(r.result)); } catch(_) {}
       var msgEl = document.getElementById('fk-save-msg');
       if (!d || (!d.entry && !d.fukabori)) { msgEl.textContent = '読み込めませんでした。「控えを保存」で作ったファイルを選んでください。'; return; }
-      if (d.entry) project.entry = d.entry;
-      if (d.fukabori) project.fukabori = d.fukabori;
-      if (d.profile) { try { localStorage.setItem('shinseider_check', JSON.stringify(d.profile)); } catch(_) {} }
-      saveProject(project); refresh();
-      msgEl.textContent = '控えを読み込みました。';
+      try { d = ShinseiderStore.normalize({version: d.version, entry: d.entry || project.entry, fukabori: d.fukabori || project.fukabori, profile: d.profile}); } catch (_) {
+        msgEl.textContent = '読み込めませんでした。控えのデータ形式を確認してください。'; return;
+      }
+      project.entry = d.entry;
+      project.fukabori = d.fukabori;
+      var saved = await saveProject(project);
+      var profileSaved = true;
+      if (saved && d.profile) {
+        try { localStorage.setItem('shinseider_check', JSON.stringify(d.profile)); } catch (_) { profileSaved = false; }
+      }
+      refresh();
+      if (saved && profileSaved) msgEl.textContent = '控えを読み込み、保存しました。';
+      else if (saved) msgEl.textContent = '申請内容は保存しましたが、診断結果は未保存です。控えファイルを保管してください。';
     };
     r.readAsText(f);
   });

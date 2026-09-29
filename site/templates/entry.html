@@ -3,6 +3,7 @@
 {% block desc %}アトツギ甲子園のエントリー文・応募書類の骨子を、AIに聞き役を任せて作れます。入力はあなたのパソコンやスマホにのみ保存され、送信されません。{% endblock %}
 {% block main %}
 <h1>アトツギ甲子園エントリーの方向性を固める</h1>
+<p id="save-msg" class="save-status muted"></p>
 <p class="lead">ここでは、申請書を作成するための骨子を明確にし、概要の段階でロジックに穴がない状態を整理してから実際の申請書作成へ進める準備ができます。以下、用意したプロンプトを使って普段使っているAI（LLM）のブラウザアプリで作成する方法と、<a href="#ai-mcp">MCPを経由して利用する方法</a>を用意しています。<strong>入力はあなたのパソコンやスマホにだけ保存され、サイト側に送信されることはありません。</strong></p>
 <details class="prompt-view">
   <summary>エントリーから提出までの流れを確認する</summary>
@@ -157,7 +158,7 @@
       <input type="file" id="up-project" accept=".md,.json,.txt" hidden>
     </div>
     <p class="muted">控えは、そのまま読める下書きです。届いた書類フォーマットに転記するときの元原稿になり、手元のAIに読ませる受け渡しにも使えます。読み込めば保存した時点から再開できます（フカボリの中身も一緒に入ります）。</p>
-    <p id="save-msg" class="muted"></p>
+
   </section>
 </div>
 
@@ -167,19 +168,9 @@
 <script>
 (function(){
   var DATA = JSON.parse(document.getElementById('entry-data').textContent);
-  var KEY = 'shinseider_project';
-
-  function loadProject(){
-    try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {version:1, entry:{sections:{}, checklist:{}}}; }
-    catch(_) { return {version:1, entry:{sections:{}, checklist:{}}}; }
-  }
-  function saveProject(p){
-    p.updated = new Date().toISOString();
-    try { localStorage.setItem(KEY, JSON.stringify(p)); } catch(_) {}
-    var el = document.getElementById('save-msg');
-    if (el) el.textContent = '自動保存済み（このブラウザのみ・' + new Date().toLocaleTimeString('ja-JP') + '）';
-  }
-  var project = loadProject();
+  var store = ShinseiderStore.open('save-msg');
+  var project = store.project;
+  function saveProject(p) { return store.save(p); }
 
   // ---- 骨子セクションの描画・検証 ----
   function validateSection(text){
@@ -374,21 +365,22 @@
   }
   // 控え = 読める下書き + 末尾にセーブデータ（1ファイルで転記元と再開の両方を担う）
   document.getElementById('dl-md').addEventListener('click', function(){
+    var backup = store.snapshot(project);
     var md = '# アトツギ甲子園 申請書の準備 控え\n\n';
     DATA.sections.forEach(function(s){
-      md += '## ' + s.title + '\n\n' + (project.entry.sections[s.id] || '（未入力）') + '\n\n';
+      md += '## ' + s.title + '\n\n' + (backup.entry.sections[s.id] || '（未入力）') + '\n\n';
     });
     md += '---\n作成: シンセイダー（下書き支援）／エントリーは公式サイトから。公募要領・エントリー要領の原文が常に優先します。\n';
     var check = null;
     try { check = JSON.parse(localStorage.getItem('shinseider_check') || 'null'); } catch(_) {}
     md += '\n## セーブデータ\n「控えを読み込む」でこのファイルを選ぶと、この時点から再開できます。下のコードは編集しないでください。\n\n```json\n' +
-      JSON.stringify({version: 1, exported: new Date().toISOString(), profile: check, entry: project.entry, fukabori: project.fukabori || null}) + '\n```\n';
+      JSON.stringify({version: 1, exported: new Date().toISOString(), profile: check, entry: backup.entry, fukabori: backup.fukabori}) + '\n```\n';
     download('shinseider_hikae_' + stamp() + '.md', md, 'text/markdown');
   });
   document.getElementById('up-project').addEventListener('change', function(e){
     var file = e.target.files[0]; if (!file) return;
     var reader = new FileReader();
-    reader.onload = function(){
+    reader.onload = async function(){
       var d = null;
       try { d = JSON.parse(reader.result); } catch(_) {
         var m = String(reader.result).match(/```json\s*([\s\S]*?)```/);
@@ -396,13 +388,21 @@
       }
       var msg = document.getElementById('save-msg');
       if (!d || (!d.entry && !d.fukabori)) { msg.textContent = '読み込めませんでした。「控えを保存」で作ったファイルを選んでください。'; return; }
-      if (d.entry) project.entry = d.entry;
-      if (d.fukabori) project.fukabori = d.fukabori;
-      if (d.profile) { try { localStorage.setItem('shinseider_check', JSON.stringify(d.profile)); } catch(_) {} }
-      saveProject(project); refresh();
+      try { d = ShinseiderStore.normalize({version: d.version, entry: d.entry || project.entry, fukabori: d.fukabori || project.fukabori, profile: d.profile}); } catch (_) {
+        msg.textContent = '読み込めませんでした。控えのデータ形式を確認してください。'; return;
+      }
+      project.entry = d.entry;
+      project.fukabori = d.fukabori;
+      var saved = await saveProject(project);
+      var profileSaved = true;
+      if (saved && d.profile) {
+        try { localStorage.setItem('shinseider_check', JSON.stringify(d.profile)); } catch (_) { profileSaved = false; }
+      }
+      refresh();
       var rn2 = document.getElementById('review-notes');
       if (rn2) rn2.value = project.entry.review_notes || '';
-      msg.textContent = '控えを読み込みました。';
+      if (saved && profileSaved) msg.textContent = '控えを読み込み、保存しました。';
+      else if (saved) msg.textContent = '申請内容は保存しましたが、診断結果は未保存です。控えファイルを保管してください。';
     };
     reader.readAsText(file);
   });

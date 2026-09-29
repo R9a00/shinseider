@@ -17,3 +17,15 @@ python3 site/build.py
 ```
 
 旧システム（React + FastAPI版）のコードは `archive/v1` ブランチにあります。
+
+## 検証と保存仕様
+
+```bash
+pip install -r site/requirements-test.txt
+python -m playwright install chromium
+node --test site/tests/*.test.cjs
+python -m unittest discover -s site/tests -p 'test_*.py'
+python site/test_site.py
+```
+
+GitHub Actionsで同じ回帰検査を実行します。保存の成功・失敗、複数タブでの競合、控えの扱いは [ブラウザー保存の仕様](site/STORAGE.md) を参照してください。
