@@ -20,7 +20,7 @@
 3. お使いのAIアプリにMCPサーバーとして登録する
 4. 接続を確認する
 
-所要は数分。撤去はいつでもできます（最後に方法を案内します）。シンセイダーは非公式・無償のツールで、入力・記録は利用者のパソコンにだけ保存され、外部に送信されません。
+所要は数分。撤去はいつでもできます（最後に方法を案内します）。シンセイダーは非公式・無償のツールで、記録ファイルは利用者のパソコンに保存されます。AIに渡す入力やツール結果はAI事業者が処理します。シンセイダー運営者には送信されません。
 
 ## 手順
 
@@ -42,7 +42,7 @@ python3 --version
 git clone https://github.com/R9a00/shinseider.git ~/shinseider
 cd ~/shinseider/mcp
 python3 -m venv .venv
-.venv/bin/pip install "mcp[cli]" pyyaml
+.venv/bin/pip install "mcp[cli]==2.3.0" "pyyaml==6.0.2"
 ```
 
 - すでに `~/shinseider` がある場合: 中身を確認し、以前のcloneなら `git pull` に切り替える。無関係のディレクトリなら別の場所を利用者と決める。
@@ -93,3 +93,5 @@ CLIが入っていなければ、ChatGPTアプリの 設定 → MCPサーバー 
 - pipのインストール失敗: `.venv/bin/pip --version` でvenvが正しく作られているか確認する。
 - 接続エラー・一覧に出ない: `<python> <server>` を直接実行し、起動時エラーの原文（依存不足・パス誤り）を確認する。
 - 解決しないときは無理に進めず、エラー原文を控えて [シンセイダーの連絡先](https://shinseider.onrender.com/about.html) へ。
+
+OpenAIのローカルMCP設定の出典: https://learn.chatgpt.com/docs/extend/mcp （2026-10-29照合）。Web版の接続とは区別してください。

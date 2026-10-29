@@ -3,7 +3,7 @@
 {% block desc %}チェックの結果・エントリー文・フカボリの進み具合をまとめて確認できます。入力はあなたのパソコンやスマホにのみ保存されます。{% endblock %}
 {% block main %}
 <div class="status-strip">
-  <span>第7回アトツギ甲子園 エントリー受付中</span>
+  <span class="entry-status" data-deadline="{{ entry_end }}">第7回アトツギ甲子園 エントリー受付中</span>
   <span class="sep">｜</span>
   <span class="deadline-line">エントリー締切 11/25 18:00（あと<strong class="days-left" data-deadline="{{ entry_end }}" data-docs-deadline="{{ docs_deadline }}">—</strong>日）</span>
   <span class="sep">｜</span>
@@ -55,7 +55,7 @@
         <tr><td>エントリー</td><td>公式サイト掲載</td></tr>
         <tr><td>書類提出</td><td>審査委員コメント</td></tr>
         <tr><td><strong>地方大会出場</strong></td><td>事業承継・M&A／省力化／Go-Tech 優遇</td></tr>
-        <tr><td><strong>ファイナリスト</strong></td><td>持続化 加点／事業承継・M&A <strong>重加点</strong></td></tr>
+        <tr><td><strong>ファイナリスト・準ファイナリスト</strong></td><td>持続化 加点／事業承継・M&A <strong>重加点</strong></td></tr>
       </table>
     </div>
     <div class="card">
@@ -74,12 +74,14 @@
     <li><strong>〜11/25 18:00</strong> — エントリー（<a href="https://atotsugi-koshien.go.jp/" rel="noopener">公式サイト</a>）。完了すると応募書類フォーマットが届く</li>
     <li><strong>〜11/27 12:00</strong> — ここまでに作った材料をフォーマットに転記して、応募書類を提出</li>
     <li><strong>2027/1/19–2/8</strong> — 地方大会。ここまで進むと補助金審査の加点対象</li>
-    <li><strong>2027年公募〜</strong> — 加点を持って事業承継・M&A補助金へ</li>
+    <li><strong>2027年公募〜</strong> — 各公募の要領で加点の適用条件を確認して補助金を検討</li>
   </ol>
 </section>
 {% endblock %}
 {% block scripts %}
+<script type="application/json" id="progress-data">{{ progress_json | safe }}</script>
 <script>
+var progressFields = JSON.parse(document.getElementById("progress-data").textContent);
 // .days-left はbase側のスクリプト（JST暦日カウント）が埋める
 // 前回チェック結果の復元（この端末のブラウザ内のみ）
 try {
@@ -87,8 +89,8 @@ try {
   if (s && s.ts) {
     var kg = (s.age === 'yes') && (s.pos === 'yes' || s.pos === 'alt') && (s.sme !== 'no');
     var parts = [];
-    parts.push('アトツギ甲子園: ' + (kg ? (s.sme === 'yes' ? 'エントリー資格を満たしています' : 'エントリー資格に適合の見込み') : '要件の確認が必要'));
-    if (s.succ === 'yes') parts.push('事業承継促進枠: 入口要件を満たす見込み');
+    parts.push('アトツギ甲子園: ' + (kg ? (s.sme === 'yes' ? '年齢・立場・規模は適合の見込み' : 'エントリー資格に適合の見込み') : '要件の確認が必要'));
+    if (s.succ === 'yes') parts.push('事業承継促進枠: 承継時期の目安に合う（他の要件は未判定）');
     else if (s.succ === 'maybe') parts.push('次の一歩: 現経営者との対話（承継の意思と時期）');
     var d2 = new Date(s.ts);
     document.getElementById('ws-status-text').textContent =
@@ -106,7 +108,7 @@ try {
   var pj = JSON.parse(localStorage.getItem('shinseider_project') || 'null');
   if (pj && pj.entry && pj.entry.sections) {
     var n = 0, secs = pj.entry.sections;
-    Object.keys(secs).forEach(function(k){ if ((secs[k] || '').trim()) n++; });
+    progressFields.entry.forEach(function(k){ if (typeof secs[k] === 'string' && secs[k].trim()) n++; });
     if (n > 0) {
       var total = document.getElementById('ws-entry').getAttribute('data-total');
       document.getElementById('ws-entry-text').textContent = '骨子 ' + n + '/' + total + ' 節が埋まっています。続きから再開できます。';
@@ -114,8 +116,8 @@ try {
   }
   if (pj && pj.fukabori && pj.fukabori.blocks) {
     var fkN = 0, bl = pj.fukabori.blocks;
-    Object.keys(bl).forEach(function(bk){
-      Object.keys(bl[bk] || {}).forEach(function(fk){ if ((bl[bk][fk] || '').trim()) fkN++; });
+    Object.keys(progressFields.fukabori).forEach(function(bk){
+      progressFields.fukabori[bk].forEach(function(fk){ if (bl[bk] && typeof bl[bk][fk] === 'string' && bl[bk][fk].trim()) fkN++; });
     });
     if (fkN > 0) {
       var fkTotal = document.getElementById('ws-fukabori').getAttribute('data-total');

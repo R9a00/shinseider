@@ -4,11 +4,8 @@
 =====================================
 data/*.yaml（正本）→ site/dist/ の静的HTML。
 
-公開ゲートのビルド組込み:
-- 全ページのフッターにビルド日時とデータ最終確認日を自動表示
-- confidence が verified 以外のフィールドには「最終確認前」バッジを必ず付ける
-  （バッジなしで unreviewed データを表示するテンプレートを書けない構造にする）
-- サイト全体に PREVIEW バナー（公開ゲート6項目クリアまで externally 公開しない）
+ビルド日時と出典を表示する。confidenceの公開可否を強制する機構は未実装。
+PREVIEWは表示切替であり、検証・公開承認の代わりではない。
 """
 import datetime as dt
 import json
@@ -506,6 +503,10 @@ def main():
             "entry_end": entry_end,
             "entry_total": len(entry_def["entry_sections"]),
             "fk_total": sum(len(b["fields"]) for g in fukabori["groups"] for b in g["blocks"]),
+            "progress_json": json.dumps({
+                "entry": [s["id"] for s in entry_def["entry_sections"]],
+                "fukabori": {b["key"]: [f["key"] for f in b["fields"]] for g in fukabori["groups"] for b in g["blocks"]}
+            }, ensure_ascii=False).replace("<", "\\u003c"),
         }),
         "schedule.html": ("schedule.html", {}),
         "cool.html": ("cool.html", {}),
@@ -531,7 +532,7 @@ def main():
             "ai_targets": entry_def["ai_targets"],
             "fk_prompts_json": json.dumps(
                 {"chapters": fk_chapters, "critique": fukabori["companion_prompt"]},
-                ensure_ascii=False),
+                ensure_ascii=False).replace("<", "\\u003c"),
         }),
         "subsidy.html": ("subsidy.html", {"s": subsidy, "track": track,
                                           "subsidy_rows": subsidy_rows,

@@ -67,11 +67,11 @@ def run(base):
         expect(pg.locator('#result')).to_be_hidden()  # Q3 is required.
         pg.check('input[name=q_sme][value=yes]')
         pg.click('button[type=submit]')
-        expect(pg.locator('#result')).to_contain_text('エントリー資格を満たしています')
+        expect(pg.locator('#result')).to_contain_text('年齢・立場・規模は適合の見込み')
         expect(pg.locator('#result')).to_contain_text('任意のQ4')
         expect(pg.locator('#result')).to_contain_text('保存済み')
         pg.goto(f'{base}/workspace.html')
-        expect(pg.locator('#ws-status-text')).to_contain_text('エントリー資格を満たしています')
+        expect(pg.locator('#ws-status-text')).to_contain_text('年齢・立場・規模は適合の見込み')
         print('PASS: required Q3, optional Q4, diagnosis persistence')
 
         pg.goto(f'{base}/entry.html')

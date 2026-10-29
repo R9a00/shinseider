@@ -24,7 +24,7 @@
     <p class="route-desc">AIに聞き役を任せて、エントリー文の骨子をつくる。</p>
   </div>
   <a class="route-card" href="fukabori.html">
-    <span class="route-time">30〜60分</span>
+    <span class="route-time">40〜80分（目安）</span>
     <p class="route-name">フカボリ — じっくり版</p>
     <p class="route-desc">かつての優勝者のフレームで、会社の来歴から事業の数字まで深掘りする。</p>
     <span class="route-arrow" aria-hidden="true">→</span>
@@ -80,7 +80,7 @@
 
   <section class="step" id="ai-mcp">
     <h2>MCPから利用する — AI経由でシンセイダーを利用する</h2>
-    <p>MCP（AIアプリ共通の接続規格）でシンセイダーをつなぐと、いつものAIとの会話の中で「締切はいつ？」「自分は出られる？」「今日から何をすればいい？」に正確な答えが返るようになり、質問に答えながら構想を掘り下げたり、書いたものに審査員役の指摘をもらったりも、そのまま続けられます。このページとのコピペの往復は要りません。記録はあなたのパソコンの中にだけ保存され、どこかへ送信されることはありません。</p>
+    <p>MCP（AIアプリ共通の接続規格）でシンセイダーをつなぐと、いつものAIとの会話の中で「締切はいつ？」「自分は出られる？」「今日から何をすればいい？」に正確な答えが返るようになり、質問に答えながら構想を掘り下げたり、書いたものに審査員役の指摘をもらったりも、そのまま続けられます。このページとのコピペの往復は要りません。記録ファイルは手元に保存されます。AIに渡した内容は、選んだAI事業者のサーバーで処理されます。シンセイダー運営者には送信されません。</p>
     <p>設定はAIに任せられます。下のボタンで指示文をコピーして、お使いのAIに貼って送信してください。AIがそのまま設定を進めてくれます。AIが自分で作業を完了できない場合も、「次にやること」を1つずつ教えてくれるので、そのとおりに進めれば数分で終わります。</p>
     <div class="cta-row cta-first">
       <button class="btn primary" id="mcp-setup-copy" type="button">AI用セットアップ指示文をコピー</button>
@@ -179,7 +179,7 @@
     if (!t) return {status: '未入力', msgs: []};
     if (t.length < DATA.validation.min_chars) msgs.push('少し短いかもしれません（' + t.length + '字）');
     if (DATA.validation.want_numbers && !/[0-9０-９]/.test(t)) msgs.push('数字がひとつ入ると具体的になります');
-    return {status: msgs.length ? '要確認' : 'OK', msgs: msgs};
+    return {status: msgs.length ? '要確認' : '文字数・数字の目安を充足（内容は要確認）', msgs: msgs};
   }
   function refresh(){
     var filled = 0;
@@ -218,6 +218,9 @@
     navigator.clipboard.writeText(DATA.prompt).then(function(){
       document.getElementById('copy-prompt').textContent = 'コピーしました';
       setTimeout(function(){ document.getElementById('copy-prompt').textContent = '指示文をコピー'; }, 1800);
+    }).catch(function(){
+      document.getElementById('copy-prompt').textContent = 'コピーできませんでした — 全文からコピーしてください';
+      document.getElementById('prompt-view').open = true;
     });
   });
   // MCPセットアップ指示文: 指示書(md)はAIが取得して読む。実行/案内のモード判定は指示書側に書いてある
@@ -227,7 +230,7 @@
     navigator.clipboard.writeText(text).then(function(){
       mcpBtn.textContent = 'コピーしました — AIに貼り付けてください';
       setTimeout(function(){ mcpBtn.textContent = 'AI用セットアップ指示文をコピー'; }, 2400);
-    });
+    }).catch(function(){ mcpBtn.textContent = 'コピーできませんでした — セットアップ手順の全文をご確認ください'; });
   });
   // AIを開く: prefill = 指示文入りURL（?q=）で開く / copy_open = コピーして開き貼り付けてもらう
   // どちらもクリップボードには入れておく（prefillはAI側の仕様変更に備えた保険）
@@ -355,7 +358,7 @@
   function download(name, text, type){
     var a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([text], {type: type}));
-    a.download = name; a.click(); URL.revokeObjectURL(a.href);
+    a.download = name; a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); }, 5000);
   }
   // ダウンロードフォルダで見分けられるよう、ファイル名に日時（例: 260816_0932）を入れる
   function stamp(){
@@ -383,7 +386,8 @@
     reader.onload = async function(){
       var d = null;
       try { d = JSON.parse(reader.result); } catch(_) {
-        var m = String(reader.result).match(/```json\s*([\s\S]*?)```/);
+        var matches = Array.from(String(reader.result).matchAll(/```json\s*([\s\S]*?)```/g));
+        var m = matches[matches.length - 1];
         if (m) { try { d = JSON.parse(m[1].trim()); } catch(_) {} }
       }
       var msg = document.getElementById('save-msg');

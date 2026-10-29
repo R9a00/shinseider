@@ -311,9 +311,17 @@
     try { return JSON.parse(cand); } catch(_) {}
     var s = cand.indexOf('{');
     if (s < 0) throw new Error('no json');
-    var depth = 0;
+    var depth = 0, inString = false, escaped = false;
     for (var i = s; i < cand.length; i++) {
-      if (cand[i] === '{') depth++;
+      var ch = cand[i];
+      if (inString) {
+        if (escaped) escaped = false;
+        else if (ch === '\\') escaped = true;
+        else if (ch === '"') inString = false;
+        continue;
+      }
+      if (ch === '"') { inString = true; continue; }
+      if (ch === '{') depth++;
       else if (cand[i] === '}') { depth--; if (depth === 0) return JSON.parse(cand.slice(s, i + 1)); }
     }
     throw new Error('unbalanced');
@@ -327,16 +335,18 @@
     var obj;
     try { obj = extractJson(raw); }
     catch(_) { pmsg.textContent = 'コードとして読めませんでした。AIの回答のうち、コードのかたまりを含む部分をそのまま貼ってください。'; return; }
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) { pmsg.textContent = '取り込める内容が見つかりませんでした。'; return; }
     if (!obj.blocks && (obj.entry || obj.fukabori)) { pmsg.textContent = 'これは控えファイルです。ページ下の「控えを読み込む」から選んでください。'; return; }
     var blocks = obj.blocks || obj;
+    if (!blocks || typeof blocks !== 'object' || Array.isArray(blocks)) { pmsg.textContent = '取り込める内容が見つかりませんでした。'; return; }
     var applied = 0;
     Object.keys(blocks).forEach(function(bk){
-      var blockEl = document.querySelector('.fk-block[data-block="' + bk + '"]');
-      if (!blockEl || typeof blocks[bk] !== 'object') return;
+      var blockEl = Array.from(document.querySelectorAll('.fk-block')).find(function(el){ return el.dataset.block === bk; });
+      if (!blockEl || !blocks[bk] || typeof blocks[bk] !== 'object' || Array.isArray(blocks[bk])) return;
       Object.keys(blocks[bk]).forEach(function(fk){
         var v = blocks[bk][fk];
         if (typeof v !== 'string' || !v.trim()) return;
-        if (!blockEl.querySelector('.fk-text[data-field="' + fk + '"]')) return;
+        if (!Array.from(blockEl.querySelectorAll('.fk-text')).some(function(el){ return el.dataset.field === fk; })) return;
         var cur = fieldValue(bk, fk);
         setField(bk, fk, cur.trim() ? cur + '\n\n[AI補強] ' + v : v);
         applied++;
@@ -401,7 +411,10 @@
     var r = new FileReader();
     r.onload = async function(){
       var d = null;
-      try { d = extractJson(String(r.result)); } catch(_) {}
+      try {
+        var matches = Array.from(String(r.result).matchAll(/```json\s*([\s\S]*?)```/g));
+        d = extractJson(matches.length ? matches[matches.length - 1][1] : String(r.result));
+      } catch(_) {}
       var msgEl = document.getElementById('fk-save-msg');
       if (!d || (!d.entry && !d.fukabori)) { msgEl.textContent = '読み込めませんでした。「控えを保存」で作ったファイルを選んでください。'; return; }
       try { d = ShinseiderStore.normalize({version: d.version, entry: d.entry || project.entry, fukabori: d.fukabori || project.fukabori, profile: d.profile}); } catch (_) {

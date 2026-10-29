@@ -35,11 +35,17 @@
     if (!wrap) return;
     var target = new Date(D.submit_target + 'T23:59:00+09:00');
     var dT = Math.max(1, Math.round((jd(target) - jd(now)) / 86400000));
-    function fmt(d){ return (d.getMonth() + 1) + '/' + d.getDate(); }
+    function fmt(d){ return new Date(d).toLocaleDateString('en-US', {timeZone: 'Asia/Tokyo', month: 'numeric', day: 'numeric'}); }
     function plus(n){ var x = new Date(now); x.setDate(x.getDate() + n); return x; }
     var entryLink = '<a href="entry.html">申請書の準備</a>';
     var steps;
-    if (dT <= 3) {
+    if (days <= 1) {
+      steps = [
+        ['今日', '骨子を作り、現経営者と読み合わせて内容を確認する'],
+        ['今日', '公式フォームの必須項目を確認する'],
+        [days === 0 ? '本日18:00まで' : '本日中を目標に', '公式サイトからエントリーする（' + entryLink + '）']
+      ];
+    } else if (dT <= 3) {
       steps = [
         ['今日', 'AIとインタビューして骨子を作る（' + entryLink + '）'],
         ['明日', '声に出して読み合わせ、現経営者に話す'],

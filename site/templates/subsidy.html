@@ -26,19 +26,19 @@
 <p class="note">この一覧のうち、要件まで分解できているのは下の事業承継・M&A補助金だけです。ほかの3制度の金額・要件は各公式サイトで確認してください。</p>
 
 <h2 id="shokei-detail">詳細 — 事業承継・M&A補助金〈事業承継促進枠〉</h2>
-<p class="lead">{{ track.target_persona }}。アトツギ甲子園の特典が最も強く効く補助金（唯一、出場＝優遇・ファイナリスト＝重加点の2階層）。</p>
-<p class="note">以下は15次公募要領（2026年8月6日取得）に基づいています。申請にあたっては、必ず最新の公募要領原文をご確認ください。</p>
+<p class="lead">{{ track.target_persona }}。公式特典では地方大会出場者への優遇と、ファイナリスト・準ファイナリストへの重加点が案内されています。</p>
+<p class="note">以下は受付終了した15次公募の参考情報です（2026年10月29日に金額・賃上げ条件を原文再照合）。16次公募は2026年10月2日〜11月6日17:00の受付です。申請にあたっては、必ず最新の公募要領原文をご確認ください。</p>
 
 <h3>金額・補助率</h3>
 <table>
 <tr><th>補助下限</th><td>{{ "{:,}".format(track.amount.min_yen) }}円</td></tr>
 <tr><th>補助上限（基本）</th><td>{{ "{:,}".format(track.amount.max_yen) }}円</td></tr>
-<tr><th>補助上限（賃上げ要件達成時）</th><td>{{ "{:,}".format(track.amount.max_yen_with_wage_raise) }}円 <span class="muted">（給与支給総額3%以上上昇）</span></td></tr>
+<tr><th>補助上限（賃上げ要件達成時）</th><td>{{ "{:,}".format(track.amount.max_yen_with_wage_raise) }}円 <span class="muted">（従業員1人当たりの給与支給総額3%以上上昇）</span></td></tr>
 <tr><th>廃業費上乗せ（併用時）</th><td>{{ "{:,}".format(track.amount.haigyo_addon_max_yen) }}円以内</td></tr>
-<tr><th>補助率</th><td>小規模事業者等 {{ track.subsidy_rate.small_business }} ／ その他 {{ track.subsidy_rate.default }}</td></tr>
+<tr><th>補助率</th><td>小規模事業者等 {{ track.subsidy_rate.small_business }} ／ その他 {{ track.subsidy_rate.default }}。補助額800万円超〜1,000万円の部分は、小規模事業者等も1/2以内</td></tr>
 </table>
 
-<h3>主な要件（落とすと申請不可のもの）</h3>
+<h3>主な要件（抜粋。例外・詳細は公募要領で確認）</h3>
 <ul class="req-list">
 {% for r in s.requirements['items'] if r.severity == 'block' %}
   <li><strong>{{ r.label }}</strong>{% if r.note %} <span class="muted">— {{ r.note }}</span>{% endif %}</li>
@@ -71,11 +71,12 @@
   <li>第{{ r.number }}次:
     {% if r.status == 'closed' %}受付終了（{{ r.application_period.start }}〜{{ r.application_period.end[:10] }}）
     {% elif r.status == 'expected' %}未発表 <span class="muted">— {{ r.note }}</span>
+    {% elif r.status == 'announced' %}公表済み：{{ r.application_period.start }}〜{{ r.application_period.end | replace('T', ' ') | replace('+09:00', ' JST') }}（<a href="{{ r.guidelines_url }}">公募要領</a>、確認 {{ r.provenance.accessed }}）
     {% else %}{{ r.status }}{% endif %}
   </li>
 {% endfor %}
 </ul>
-<p class="note">15次実績では公募開始から締切まで約1か月。<strong>公募が開いてから準備を始めると間に合いません。</strong>今のうちに要件と書類を揃えておくことに、このサイトの意味があります。</p>
+<p class="note">15次実績では公募開始から締切まで約1か月。<strong>必要書類の準備には時間がかかるため、早めの着手をおすすめします。</strong>今のうちに要件と書類を揃えておくことに、このサイトの意味があります。</p>
 
 <h2>出典</h2>
 <ul class="sources">

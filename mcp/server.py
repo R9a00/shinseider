@@ -106,12 +106,12 @@ def check_eligibility(
     succession_within_5y: str | None = None,
 ) -> dict:
     """アトツギ甲子園のエントリー資格をサイトの30秒チェックと同一ロジックで判定する。
-    position: successor(家業があり代表ではない) / other_company_rep(別法人代表だが承継予定・経営資源活用あり) / neither
+    position: successor(家業を継ぐ予定があり家業の代表権を持っていない) / other_company_rep(別法人代表だが承継予定・経営資源活用あり) / neither
     sme_status: yes(中小企業にあてはまる) / unsure / no
     succession_within_5y: yes / undecided / no / None（補助金の見立て。任意）"""
-    ok = born_1987_04_or_later and position in ("successor", "other_company_rep") and sme_status != "no"
+    ok = born_1987_04_or_later and position in ("successor", "other_company_rep") and sme_status in ("yes", "unsure")
     if ok and sme_status == "yes":
-        verdict = "エントリー資格を満たしています"
+        verdict = "年齢・立場・規模は適合の見込み"
         detail = ""
     elif ok:
         verdict = "エントリー資格に適合の見込み"
@@ -125,7 +125,7 @@ def check_eligibility(
         "卸売業は1億円以下または100人以下、サービス業は5,000万円以下または100人以下、"
         "小売業は5,000万円以下または50人以下。") if sme_status == "unsure" else None}
     if succession_within_5y == "yes":
-        result["subsidy_outlook"] = "事業承継・M&A補助金〈促進枠〉の主要な入口要件を満たしそうです。認定支援機関への相談と投資内容の具体化が次の一歩。"
+        result["subsidy_outlook"] = "事業承継・M&A補助金〈促進枠〉の承継時期の目安に合います。他の要件は未判定です。認定支援機関への相談と投資内容の具体化が次の一歩。"
     elif succession_within_5y == "undecided":
         result["subsidy_outlook"] = "この補助金は『5年以内の承継』を決めないと使えません。甲子園への挑戦は、その話を始めるきっかけと締切になります。"
     elif succession_within_5y == "no":
@@ -150,7 +150,11 @@ def get_pace_plan() -> dict:
     fmt = lambda d: f"{d.month}/{d.day}"
     plus = lambda n: now + timedelta(days=n)
     jround = lambda x: int(x + 0.5)  # JSのMath.roundと同一（.5切り上げ）
-    if d_t <= 3:
+    if days <= 1:
+        steps = [["今日", "骨子を作り、現経営者と読み合わせて内容を確認する"],
+                 ["今日", "公式フォームの必須項目を確認する"],
+                 ["本日18:00まで" if days == 0 else "本日中を目標に", "公式サイトからエントリーする"]]
+    elif d_t <= 3:
         steps = [["今日", "AIとインタビューして骨子を作る"],
                  ["明日", "声に出して読み合わせ、現経営者に話す"],
                  [f"{fmt(target)}まで", "公式サイトから送信（締切は11/25 18:00）"]]
@@ -193,6 +197,9 @@ def workspace_init(path: str) -> dict:
     """作業フォルダを作成し、以後の記録先として登録する。pathは利用者に確認した絶対パス。
     既存フォルダを指定した場合は再開として扱い、現状の一覧を返す。"""
     ws = pathlib.Path(path).expanduser()
+    if not ws.is_absolute():
+        raise ValueError("絶対パスを指定してください")
+    ws = ws.resolve()
     for sub in ("materials", "fukabori", "review"):
         (ws / sub).mkdir(parents=True, exist_ok=True)
     STATE_FILE.write_text(json.dumps({"workspace": str(ws)}, ensure_ascii=False))
@@ -207,13 +214,18 @@ def workspace_record(section: str, content: str, mode: str = "replace") -> dict:
     """ワークスペースへ記録する。section: profile / outline / entry_draft /
     fukabori/<ブロックid> / review/<名前> / materials/<名前>。mode: replace / append。
     利用者の入力・確定事項・成果物は必ずここに記録し、会話にだけ残さないこと。"""
-    ws = _ws()
+    ws = _ws().resolve()
+    if mode not in ("replace", "append"):
+        raise ValueError("mode は replace または append を指定してください")
     if section in SECTIONS:
         target = ws / SECTIONS[section]
     elif re.fullmatch(r"(fukabori|review|materials)/[\w\-\.ぁ-んァ-ヶ一-龠]+", section):
         target = ws / (section + ("" if "." in section.split("/")[1] else ".md"))
     else:
         raise ValueError(f"不正なsection: {section}")
+    target = target.resolve()
+    if not target.is_relative_to(ws):
+        raise ValueError("ワークスペース外への書き込みはできません")
     target.parent.mkdir(parents=True, exist_ok=True)
     if mode == "append" and target.exists():
         target.write_text(target.read_text() + "\n" + content)

@@ -58,6 +58,9 @@ function daysLeftJst(v){
 }
 // 締切時刻（ISOに+09:00と18:00を含む）を過ぎたかの厳密判定
 function entryClosed(v){ return Date.now() > new Date(v).getTime(); }
+document.querySelectorAll('.entry-status').forEach(function(el){
+  if (entryClosed(el.dataset.deadline)) el.textContent = '第7回アトツギ甲子園 エントリー受付終了';
+});
 document.querySelectorAll('.days-left').forEach(function(el){
   var v = el.getAttribute('data-deadline');
   if (entryClosed(v)) {

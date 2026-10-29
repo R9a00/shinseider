@@ -17,7 +17,7 @@
 git clone https://github.com/R9a00/shinseider.git
 cd shinseider/mcp
 python3 -m venv .venv
-.venv/bin/pip install "mcp[cli]" pyyaml
+.venv/bin/pip install "mcp[cli]==2.3.0" "pyyaml==6.0.2"
 ```
 
 Claude Code への登録（上と同じ `mcp/` ディレクトリの中で実行すれば、そのままコピペで通ります）:
@@ -29,8 +29,8 @@ claude mcp add -s user shinseider -- "$(pwd)/.venv/bin/python" "$(pwd)/server.py
 Claude Desktop の場合は `claude_desktop_config.json` に（`<絶対パス>` は `mcp/` で `pwd` を実行した結果に読み替え）:
 
 ```json
-{"mcpServers": {"shinseider": {"command": "<絶対パス>/mcp/.venv/bin/python",
-                               "args": ["<絶対パス>/mcp/server.py"]}}}
+{"mcpServers": {"shinseider": {"command": "<絶対パス>/.venv/bin/python",
+                               "args": ["<絶対パス>/server.py"]}}}
 ```
 
 ChatGPT（デスクトップアプリ）/ Codex への登録（設定は `~/.codex/config.toml` で共有。
@@ -64,3 +64,5 @@ MCP設定に登録すれば使えます（動作確認済みは Claude Code の�
 - 入力・成果物はワークスペース（利用者の手元フォルダ）へ記録。シンセイダー側には何も送信されない。
 - 判定ロジック・文言はサイトのJS実装と同一仕様（乖離させない）。
 - 非公式・無償。適用可否は各制度の公募要領原文が常に優先。
+
+OpenAI側のローカルMCP設定は[公式資料](https://learn.chatgpt.com/docs/extend/mcp)と2026-10-29に照合。デスクトップとWebでは接続方式が異なるため、利用する画面の手順を確認すること。
