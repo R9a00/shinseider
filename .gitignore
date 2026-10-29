@@ -1,0 +1,9 @@
+site/dist/
+site/vendor-src/node_modules/
+__pycache__/
+*.pyc
+mcp/.state.json
+.venv/
+site/shots/
+ops/sessions/*.jsonl.gz
+ops/sessions/*.jsonl

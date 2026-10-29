@@ -13,7 +13,7 @@ DIST = ROOT / 'site' / 'dist'
 LEAK_WORDS = ['最終確認前', 'confidence', 'verified', 'extracted_unreviewed',
               'unconfirmed', 'REVIEW REQUIRED', '公開品質ゲート', '解錠', '逆引き',
               'ステータスの階段', 'Tier', '世界の現実', '事実の系譜', '政策の末端', 'ドメイン', '作戦室']
-PAGES = ['index', 'workspace', 'check', 'entry', 'schedule', 'cool', 'subsidy',
+PAGES = ['application', 'index', 'workspace', 'check', 'entry', 'schedule', 'cool', 'subsidy',
          'trust', 'about', 'ambassadors', 'news', 'fukabori']
 SAMPLE_ENTRY = '''## 現業と自分
 金属加工の会社で営業を5年やっています。年商3億円、従業員20名。
@@ -58,7 +58,7 @@ def run(base):
             pg.goto(f'{base}/{name}.html')
             for word in LEAK_WORDS:
                 assert word not in pg.inner_text('body'), f'{name}: {word}'
-        print('PASS: 12 pages load without internal vocabulary')
+        print('PASS: 13 pages load without internal vocabulary')
 
         pg.goto(f'{base}/check.html')
         pg.check('input[name=q_age][value=yes]')

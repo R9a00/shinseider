@@ -3,6 +3,7 @@
 {% block desc %}アトツギ甲子園のエントリー文・応募書類の骨子を、AIに聞き役を任せて作れます。ブラウザ保存と、AIサービスへ渡す内容を区別して利用できます。{% endblock %}
 {% block main %}
 <h1>アトツギ甲子園エントリーの方向性を固める</h1>
+<p><a class="btn" href="application.html">材料をそろえて応募書類を作る・点検する →</a></p>
 <p id="save-msg" class="save-status muted"></p>
 <p class="lead">ここでは、申請書を作成するための骨子を明確にし、概要の段階で論点や不足を整理してから実際の申請書作成へ進める準備ができます。以下、用意したプロンプトを使って普段使っているAI（LLM）のブラウザアプリで作成する方法と、<a href="#ai-mcp">MCPを経由して利用する方法</a>を用意しています。<strong>このサイトの入力欄に保存した骨子・メモはブラウザ内に保存され、シンセイダーの運営者には送信されません。</strong> AIへ渡す指示文・骨子・会話は、選んだAIサービスで処理されます。機密情報は渡す前に利用条件を確認してください。</p>
 <details class="prompt-view">
@@ -393,7 +394,7 @@
     var check = null;
     try { check = JSON.parse(localStorage.getItem('shinseider_check') || 'null'); } catch(_) {}
     md += '\n## セーブデータ\n「控えを読み込む」でこのファイルを選ぶと、この時点から再開できます。下のコードは編集しないでください。\n\n```json\n' +
-      JSON.stringify({version: 1, exported: new Date().toISOString(), profile: check, entry: backup.entry, fukabori: backup.fukabori}) + '\n```\n';
+      JSON.stringify({version: 1, exported: new Date().toISOString(), profile: check, entry: backup.entry, fukabori: backup.fukabori, application: backup.application}) + '\n```\n';
     download('shinseider_hikae_' + stamp() + '.md', md, 'text/markdown');
   });
   document.getElementById('up-project').addEventListener('change', function(e){
@@ -408,9 +409,10 @@
       }
       var msg = document.getElementById('save-msg');
       if (!d || (!d.entry && !d.fukabori)) { msg.textContent = '読み込めませんでした。「控えを保存」で作ったファイルを選んでください。'; return; }
-      try { d = ShinseiderStore.normalize({version: d.version, entry: d.entry || project.entry, fukabori: d.fukabori || project.fukabori, profile: d.profile}); } catch (_) {
+      try { d = ShinseiderStore.normalize({version: d.version, entry: d.entry || project.entry, fukabori: d.fukabori || project.fukabori, profile: d.profile, application: d.application === undefined ? project.application : d.application}); } catch (_) {
         msg.textContent = '読み込めませんでした。控えのデータ形式を確認してください。'; return;
       }
+      project.application = d.application;
       project.entry = d.entry;
       project.fukabori = d.fukabori;
       var saved = await saveProject(project);

@@ -3,3 +3,4 @@ PyYAML==6.0.2
 playwright==1.55.0
 
 mcp==2.3.0
+pypdf==6.21.4
