@@ -39,6 +39,11 @@ class BrowserBugs(unittest.TestCase):
         self.page.goto(self.base+'/application.html')
     def tearDown(self):
         self.ctx.close();self.tmp.cleanup();self.assertFalse(self.errors,self.errors)
+    def test_cached_legacy_store_without_application_default_can_open_new_page(self):
+        self.page.add_init_script("Object.defineProperty(window,'ShinseiderStore',{configurable:true,set(api){const open=api.open;api.open=(...args)=>{const session=open(...args);delete session.project.application;return session;};Object.defineProperty(window,'ShinseiderStore',{value:api,writable:true,configurable:true});}})")
+        self.page.reload();self.page.locator('#reference').fill('旧版からの初回入力')
+        expect(self.page.locator('#application-save')).to_contain_text('自動保存済み')
+        self.assertEqual(self.page.evaluate('JSON.parse(localStorage.shinseider_project).application.reference'),'旧版からの初回入力')
     def test_quota_failure_never_claims_review_saved(self):
         c=ac.blank();c['files']={k:ac.extract(self.root/'format.pptx') for k in ['template','draft']}
         self.page.locator('#context-file').set_input_files({'name':'context.json','mimeType':'application/json','buffer':json.dumps(c).encode()})

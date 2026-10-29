@@ -25,9 +25,9 @@
 test at site/tests/project-store.test.cjs:134:1
 ✖ an older successful write cannot clear a newer invalid unsaved edit (0.65875ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
-  
+
   false !== true
-  
+
       at TestContext.<anonymous> (/private/tmp/shinseider-bugs-20261030/site/tests/project-store.test.cjs:140:9)
       at async Test.run (node:internal/test_runner/test:1088:7)
       at async Test.processPendingSubtests (node:internal/test_runner/test:763:7) {

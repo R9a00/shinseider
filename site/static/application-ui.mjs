@@ -2,6 +2,8 @@ import {extract, bundle} from './application-files.mjs';
 const C = ApplicationCore;
 const rules = JSON.parse(document.querySelector('#application-rules').textContent);
 const store = ShinseiderStore.open('application-save'), project = store.project;
+// A cached older store may return a legacy project without the new default.
+project.application = project.application || C.blank();
 let context = project.application, originals = {}, stage = '';
 let revision = 0, statusRequest = 0, promptRequest = 0, validationMessage = false;
 const $ = id => document.getElementById(id);

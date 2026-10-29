@@ -1,525 +1,525 @@
-.................[10/30/26 07:40:44] INFO     execute program                 base_events.py:1802
-                             '/private/tmp/shinseider-audit-                    
-                             venv/bin/python':                                  
-                             <_UnixSubprocessTransport                          
-                             pid=74339 running                                  
-                             stdin=<_UnixWritePipeTransport                     
-                             fd=8 idle bufsize=0>                               
-                             stdout=<_UnixReadPipeTransport                     
-                             fd=9 polling>>                                     
-[10/30/26 07:40:45] ERROR    Tool 'application_document_read'      server.py:455
-                             raised an unexpected exception                     
-                             ╭─ Traceback (most recent call last─╮              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/tools/base.py: │              
-                             │ 179 in run                        │              
-                             │                                   │              
-                             │   176 │   │   │   │   │   return  │              
-                             │       else resolved               │              
-                             │   177 │   │   │   │   pass_direct │              
-                             │   178 │   │   │                   │              
-                             │ ❱ 179 │   │   │   result = await  │              
-                             │       pass_directly)              │              
-                             │   180 │   │   │                   │              
-                             │   181 │   │   │   # Registration  │              
-                             │   182 │   │   │   # a body that r │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/utilities/func │              
-                             │ _metadata.py:164 in call_fn       │              
-                             │                                   │              
-                             │   161 │   │   kwargs = arguments  │              
-                             │   162 │   │   if fn_is_async:     │              
-                             │   163 │   │   │   return await fn │              
-                             │ ❱ 164 │   │   return await anyio. │              
-                             │   165 │                           │              
-                             │   166 │   @deprecated(            │              
-                             │   167 │   │   "FuncMetadata.call_ │              
-                             │       3.0; "                      │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/an │              
-                             │ yio/to_thread.py:65 in run_sync   │              
-                             │                                   │              
-                             │   62 │   │   │   stacklevel=2,    │              
-                             │   63 │   │   )                    │              
-                             │   64 │                            │              
-                             │ ❱ 65 │   return await get_async_b │              
-                             │   66 │   │   func, args, abandon_ │              
-                             │   67 │   )                        │              
-                             │   68                              │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/an │              
-                             │ yio/_backends/_asyncio.py:2706 in │              
-                             │ run_sync_in_worker_thread         │              
-                             │                                   │              
-                             │   2703 │   │   │   │   │   worker │              
-                             │   2704 │   │   │   │              │              
-                             │   2705 │   │   │   │   worker.que │              
-                             │ ❱ 2706 │   │   │   │   return awa │              
-                             │   2707 │                          │              
-                             │   2708 │   @classmethod           │              
-                             │   2709 │   def check_cancelled(cl │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/an │              
-                             │ yio/_backends/_asyncio.py:1100 in │              
-                             │ run                               │              
-                             │                                   │              
-                             │   1097 │   │   │   │   │   except │              
-                             │   1098 │   │   │   │   │   thread │              
-                             │   1099 │   │   │   │   │   try:   │              
-                             │ ❱ 1100 │   │   │   │   │   │   re │              
-                             │   1101 │   │   │   │   │   except │              
-                             │   1102 │   │   │   │   │   │   ex │              
-                             │   1103 │   │   │   │   │   finall │              
-                             │                                   │              
-                             │ /var/folders/hd/vw156qnn3vs6kpwjj │              
-                             │ 9cckgrw0000gn/T/tmpfymammzu/mcp/s │              
-                             │ erver.py:371 in                   │              
-                             │ application_document_read         │              
-                             │                                   │              
-                             │   368 │   原本の視覚確認はクライ  │              
-                             │   369 │   if not section.startswi │              
-                             │   370 │   │   raise ValueError('  │              
-                             │ ❱ 371 │   return application.extr │              
-                             │   372                             │              
-                             │   373                             │              
-                             │   374 @app.tool()                 │              
-                             │                                   │              
-                             │ /var/folders/hd/vw156qnn3vs6kpwjj │              
-                             │ 9cckgrw0000gn/T/tmpfymammzu/mcp/s │              
-                             │ erver.py:228 in _workspace_file   │              
-                             │                                   │              
-                             │   225 │   elif re.fullmatch(r"(fu │              
-                             │       section.split("/")[1] not i │              
-                             │   226 │   │   target = ws / (sect │              
-                             │   227 │   else:                   │              
-                             │ ❱ 228 │   │   raise ValueError(f" │              
-                             │   229 │   target = target.resolve │              
-                             │   230 │   if not target.is_relati │              
-                             │   231 │   │   raise ValueError("  │              
-                             ╰───────────────────────────────────╯              
-                             ValueError: 不正なsection:                         
-                             materials/../../outside.pdf                        
-                                                                                
-                             The above exception was the direct                 
-                             cause of the following exception:                  
-                                                                                
-                             ╭─ Traceback (most recent call last─╮              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/server.py:442  │              
-                             │ in _handle_call_tool              │              
-                             │                                   │              
-                             │    439 │   ) -> CallToolResult |  │              
-                             │    440 │   │   context = Context( │              
-                             │        subscriptions=self._subscr │              
-                             │    441 │   │   try:               │              
-                             │ ❱  442 │   │   │   return await s │              
-                             │    443 │   │   except MCPError:   │              
-                             │    444 │   │   │   raise          │              
-                             │    445 │   │   except Exception a │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/server.py:548  │              
-                             │ in call_tool                      │              
-                             │                                   │              
-                             │    545 │   │   """                │              
-                             │    546 │   │   if context is None │              
-                             │    547 │   │   │   context = Cont │              
-                             │ ❱  548 │   │   return await self. │              
-                             │        convert_result=True)       │              
-                             │    549 │                          │              
-                             │    550 │   async def list_resourc │              
-                             │    551 │   │   """List all availa │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/tools/tool_man │              
-                             │ ager.py:87 in call_tool           │              
-                             │                                   │              
-                             │   84 │   │   if not tool:         │              
-                             │   85 │   │   │   raise ToolError( │              
-                             │   86 │   │                        │              
-                             │ ❱ 87 │   │   return await tool.ru │              
-                             │   88                              │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/tools/base.py: │              
-                             │ 213 in run                        │              
-                             │                                   │              
-                             │   210 │   │   │   raise ToolError │              
-                             │   211 │   │   except Exception as │              
-                             │   212 │   │   │   # A crash: the  │              
-                             │ ❱ 213 │   │   │   raise Unexpecte │              
-                             │   214                             │              
-                             ╰───────────────────────────────────╯              
-                             UnexpectedToolError: Error executing               
-                             tool application_document_read                     
+..................[10/30/26 07:42:15] INFO     execute program                 base_events.py:1802
+                             '/private/tmp/shinseider-audit-
+                             venv/bin/python':
+                             <_UnixSubprocessTransport
+                             pid=74462 running
+                             stdin=<_UnixWritePipeTransport
+                             fd=8 idle bufsize=0>
+                             stdout=<_UnixReadPipeTransport
+                             fd=9 polling>>
+[10/30/26 07:42:16] ERROR    Tool 'application_document_read'      server.py:455
+                             raised an unexpected exception
+                             ╭─ Traceback (most recent call last─╮
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/tools/base.py: │
+                             │ 179 in run                        │
+                             │                                   │
+                             │   176 │   │   │   │   │   return  │
+                             │       else resolved               │
+                             │   177 │   │   │   │   pass_direct │
+                             │   178 │   │   │                   │
+                             │ ❱ 179 │   │   │   result = await  │
+                             │       pass_directly)              │
+                             │   180 │   │   │                   │
+                             │   181 │   │   │   # Registration  │
+                             │   182 │   │   │   # a body that r │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/utilities/func │
+                             │ _metadata.py:164 in call_fn       │
+                             │                                   │
+                             │   161 │   │   kwargs = arguments  │
+                             │   162 │   │   if fn_is_async:     │
+                             │   163 │   │   │   return await fn │
+                             │ ❱ 164 │   │   return await anyio. │
+                             │   165 │                           │
+                             │   166 │   @deprecated(            │
+                             │   167 │   │   "FuncMetadata.call_ │
+                             │       3.0; "                      │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/an │
+                             │ yio/to_thread.py:65 in run_sync   │
+                             │                                   │
+                             │   62 │   │   │   stacklevel=2,    │
+                             │   63 │   │   )                    │
+                             │   64 │                            │
+                             │ ❱ 65 │   return await get_async_b │
+                             │   66 │   │   func, args, abandon_ │
+                             │   67 │   )                        │
+                             │   68                              │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/an │
+                             │ yio/_backends/_asyncio.py:2706 in │
+                             │ run_sync_in_worker_thread         │
+                             │                                   │
+                             │   2703 │   │   │   │   │   worker │
+                             │   2704 │   │   │   │              │
+                             │   2705 │   │   │   │   worker.que │
+                             │ ❱ 2706 │   │   │   │   return awa │
+                             │   2707 │                          │
+                             │   2708 │   @classmethod           │
+                             │   2709 │   def check_cancelled(cl │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/an │
+                             │ yio/_backends/_asyncio.py:1100 in │
+                             │ run                               │
+                             │                                   │
+                             │   1097 │   │   │   │   │   except │
+                             │   1098 │   │   │   │   │   thread │
+                             │   1099 │   │   │   │   │   try:   │
+                             │ ❱ 1100 │   │   │   │   │   │   re │
+                             │   1101 │   │   │   │   │   except │
+                             │   1102 │   │   │   │   │   │   ex │
+                             │   1103 │   │   │   │   │   finall │
+                             │                                   │
+                             │ /var/folders/hd/vw156qnn3vs6kpwjj │
+                             │ 9cckgrw0000gn/T/tmphjnebm05/mcp/s │
+                             │ erver.py:371 in                   │
+                             │ application_document_read         │
+                             │                                   │
+                             │   368 │   原本の視覚確認はクライ  │
+                             │   369 │   if not section.startswi │
+                             │   370 │   │   raise ValueError('  │
+                             │ ❱ 371 │   return application.extr │
+                             │   372                             │
+                             │   373                             │
+                             │   374 @app.tool()                 │
+                             │                                   │
+                             │ /var/folders/hd/vw156qnn3vs6kpwjj │
+                             │ 9cckgrw0000gn/T/tmphjnebm05/mcp/s │
+                             │ erver.py:228 in _workspace_file   │
+                             │                                   │
+                             │   225 │   elif re.fullmatch(r"(fu │
+                             │       section.split("/")[1] not i │
+                             │   226 │   │   target = ws / (sect │
+                             │   227 │   else:                   │
+                             │ ❱ 228 │   │   raise ValueError(f" │
+                             │   229 │   target = target.resolve │
+                             │   230 │   if not target.is_relati │
+                             │   231 │   │   raise ValueError("  │
+                             ╰───────────────────────────────────╯
+                             ValueError: 不正なsection:
+                             materials/../../outside.pdf
+
+                             The above exception was the direct
+                             cause of the following exception:
+
+                             ╭─ Traceback (most recent call last─╮
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/server.py:442  │
+                             │ in _handle_call_tool              │
+                             │                                   │
+                             │    439 │   ) -> CallToolResult |  │
+                             │    440 │   │   context = Context( │
+                             │        subscriptions=self._subscr │
+                             │    441 │   │   try:               │
+                             │ ❱  442 │   │   │   return await s │
+                             │    443 │   │   except MCPError:   │
+                             │    444 │   │   │   raise          │
+                             │    445 │   │   except Exception a │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/server.py:548  │
+                             │ in call_tool                      │
+                             │                                   │
+                             │    545 │   │   """                │
+                             │    546 │   │   if context is None │
+                             │    547 │   │   │   context = Cont │
+                             │ ❱  548 │   │   return await self. │
+                             │        convert_result=True)       │
+                             │    549 │                          │
+                             │    550 │   async def list_resourc │
+                             │    551 │   │   """List all availa │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/tools/tool_man │
+                             │ ager.py:87 in call_tool           │
+                             │                                   │
+                             │   84 │   │   if not tool:         │
+                             │   85 │   │   │   raise ToolError( │
+                             │   86 │   │                        │
+                             │ ❱ 87 │   │   return await tool.ru │
+                             │   88                              │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/tools/base.py: │
+                             │ 213 in run                        │
+                             │                                   │
+                             │   210 │   │   │   raise ToolError │
+                             │   211 │   │   except Exception as │
+                             │   212 │   │   │   # A crash: the  │
+                             │ ❱ 213 │   │   │   raise Unexpecte │
+                             │   214                             │
+                             ╰───────────────────────────────────╯
+                             UnexpectedToolError: Error executing
+                             tool application_document_read
                     ERROR    Tool 'application_context_save'       server.py:455
-                             raised an unexpected exception                     
-                             ╭─ Traceback (most recent call last─╮              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/tools/base.py: │              
-                             │ 179 in run                        │              
-                             │                                   │              
-                             │   176 │   │   │   │   │   return  │              
-                             │       else resolved               │              
-                             │   177 │   │   │   │   pass_direct │              
-                             │   178 │   │   │                   │              
-                             │ ❱ 179 │   │   │   result = await  │              
-                             │       pass_directly)              │              
-                             │   180 │   │   │                   │              
-                             │   181 │   │   │   # Registration  │              
-                             │   182 │   │   │   # a body that r │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/utilities/func │              
-                             │ _metadata.py:164 in call_fn       │              
-                             │                                   │              
-                             │   161 │   │   kwargs = arguments  │              
-                             │   162 │   │   if fn_is_async:     │              
-                             │   163 │   │   │   return await fn │              
-                             │ ❱ 164 │   │   return await anyio. │              
-                             │   165 │                           │              
-                             │   166 │   @deprecated(            │              
-                             │   167 │   │   "FuncMetadata.call_ │              
-                             │       3.0; "                      │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/an │              
-                             │ yio/to_thread.py:65 in run_sync   │              
-                             │                                   │              
-                             │   62 │   │   │   stacklevel=2,    │              
-                             │   63 │   │   )                    │              
-                             │   64 │                            │              
-                             │ ❱ 65 │   return await get_async_b │              
-                             │   66 │   │   func, args, abandon_ │              
-                             │   67 │   )                        │              
-                             │   68                              │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/an │              
-                             │ yio/_backends/_asyncio.py:2706 in │              
-                             │ run_sync_in_worker_thread         │              
-                             │                                   │              
-                             │   2703 │   │   │   │   │   worker │              
-                             │   2704 │   │   │   │              │              
-                             │   2705 │   │   │   │   worker.que │              
-                             │ ❱ 2706 │   │   │   │   return awa │              
-                             │   2707 │                          │              
-                             │   2708 │   @classmethod           │              
-                             │   2709 │   def check_cancelled(cl │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/an │              
-                             │ yio/_backends/_asyncio.py:1100 in │              
-                             │ run                               │              
-                             │                                   │              
-                             │   1097 │   │   │   │   │   except │              
-                             │   1098 │   │   │   │   │   thread │              
-                             │   1099 │   │   │   │   │   try:   │              
-                             │ ❱ 1100 │   │   │   │   │   │   re │              
-                             │   1101 │   │   │   │   │   except │              
-                             │   1102 │   │   │   │   │   │   ex │              
-                             │   1103 │   │   │   │   │   finall │              
-                             │                                   │              
-                             │ /var/folders/hd/vw156qnn3vs6kpwjj │              
-                             │ 9cckgrw0000gn/T/tmpfymammzu/mcp/s │              
-                             │ erver.py:354 in                   │              
-                             │ application_context_save          │              
-                             │                                   │              
-                             │   351 │   │   │   else:           │              
-                             │   352 │   │   │   │   matches = e │              
-                             │       == current['context']['revi │              
-                             │   353 │   │   │   if not matches: │              
-                             │ ❱ 354 │   │   │   │   raise       │              
-                             │       ValueError('保存内容または  │              
-                             │       変更を統合してrevisionをexp │              
-                             │   355 │   │   _application_write( │              
-                             │   356 │   │   result = _applicati │              
-                             │   357 │   │   try:                │              
-                             ╰───────────────────────────────────╯              
-                             ValueError:                                        
-                             保存内容または点検記録が変わっていま               
-                             す。application_context_readで読み直               
-                             し、変更を統合してrevisionをexpected_              
-                             revisionへ指定してください                         
-                                                                                
-                             The above exception was the direct                 
-                             cause of the following exception:                  
-                                                                                
-                             ╭─ Traceback (most recent call last─╮              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/server.py:442  │              
-                             │ in _handle_call_tool              │              
-                             │                                   │              
-                             │    439 │   ) -> CallToolResult |  │              
-                             │    440 │   │   context = Context( │              
-                             │        subscriptions=self._subscr │              
-                             │    441 │   │   try:               │              
-                             │ ❱  442 │   │   │   return await s │              
-                             │    443 │   │   except MCPError:   │              
-                             │    444 │   │   │   raise          │              
-                             │    445 │   │   except Exception a │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/server.py:548  │              
-                             │ in call_tool                      │              
-                             │                                   │              
-                             │    545 │   │   """                │              
-                             │    546 │   │   if context is None │              
-                             │    547 │   │   │   context = Cont │              
-                             │ ❱  548 │   │   return await self. │              
-                             │        convert_result=True)       │              
-                             │    549 │                          │              
-                             │    550 │   async def list_resourc │              
-                             │    551 │   │   """List all availa │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/tools/tool_man │              
-                             │ ager.py:87 in call_tool           │              
-                             │                                   │              
-                             │   84 │   │   if not tool:         │              
-                             │   85 │   │   │   raise ToolError( │              
-                             │   86 │   │                        │              
-                             │ ❱ 87 │   │   return await tool.ru │              
-                             │   88                              │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/tools/base.py: │              
-                             │ 213 in run                        │              
-                             │                                   │              
-                             │   210 │   │   │   raise ToolError │              
-                             │   211 │   │   except Exception as │              
-                             │   212 │   │   │   # A crash: the  │              
-                             │ ❱ 213 │   │   │   raise Unexpecte │              
-                             │   214                             │              
-                             ╰───────────────────────────────────╯              
-                             UnexpectedToolError: Error executing               
-                             tool application_context_save                      
-[10/30/26 07:40:45] INFO     <_UnixReadPipeTransport fd=9     unix_events.py:559
-                             polling> was closed by peer                        
+                             raised an unexpected exception
+                             ╭─ Traceback (most recent call last─╮
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/tools/base.py: │
+                             │ 179 in run                        │
+                             │                                   │
+                             │   176 │   │   │   │   │   return  │
+                             │       else resolved               │
+                             │   177 │   │   │   │   pass_direct │
+                             │   178 │   │   │                   │
+                             │ ❱ 179 │   │   │   result = await  │
+                             │       pass_directly)              │
+                             │   180 │   │   │                   │
+                             │   181 │   │   │   # Registration  │
+                             │   182 │   │   │   # a body that r │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/utilities/func │
+                             │ _metadata.py:164 in call_fn       │
+                             │                                   │
+                             │   161 │   │   kwargs = arguments  │
+                             │   162 │   │   if fn_is_async:     │
+                             │   163 │   │   │   return await fn │
+                             │ ❱ 164 │   │   return await anyio. │
+                             │   165 │                           │
+                             │   166 │   @deprecated(            │
+                             │   167 │   │   "FuncMetadata.call_ │
+                             │       3.0; "                      │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/an │
+                             │ yio/to_thread.py:65 in run_sync   │
+                             │                                   │
+                             │   62 │   │   │   stacklevel=2,    │
+                             │   63 │   │   )                    │
+                             │   64 │                            │
+                             │ ❱ 65 │   return await get_async_b │
+                             │   66 │   │   func, args, abandon_ │
+                             │   67 │   )                        │
+                             │   68                              │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/an │
+                             │ yio/_backends/_asyncio.py:2706 in │
+                             │ run_sync_in_worker_thread         │
+                             │                                   │
+                             │   2703 │   │   │   │   │   worker │
+                             │   2704 │   │   │   │              │
+                             │   2705 │   │   │   │   worker.que │
+                             │ ❱ 2706 │   │   │   │   return awa │
+                             │   2707 │                          │
+                             │   2708 │   @classmethod           │
+                             │   2709 │   def check_cancelled(cl │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/an │
+                             │ yio/_backends/_asyncio.py:1100 in │
+                             │ run                               │
+                             │                                   │
+                             │   1097 │   │   │   │   │   except │
+                             │   1098 │   │   │   │   │   thread │
+                             │   1099 │   │   │   │   │   try:   │
+                             │ ❱ 1100 │   │   │   │   │   │   re │
+                             │   1101 │   │   │   │   │   except │
+                             │   1102 │   │   │   │   │   │   ex │
+                             │   1103 │   │   │   │   │   finall │
+                             │                                   │
+                             │ /var/folders/hd/vw156qnn3vs6kpwjj │
+                             │ 9cckgrw0000gn/T/tmphjnebm05/mcp/s │
+                             │ erver.py:354 in                   │
+                             │ application_context_save          │
+                             │                                   │
+                             │   351 │   │   │   else:           │
+                             │   352 │   │   │   │   matches = e │
+                             │       == current['context']['revi │
+                             │   353 │   │   │   if not matches: │
+                             │ ❱ 354 │   │   │   │   raise       │
+                             │       ValueError('保存内容または  │
+                             │       変更を統合してrevisionをexp │
+                             │   355 │   │   _application_write( │
+                             │   356 │   │   result = _applicati │
+                             │   357 │   │   try:                │
+                             ╰───────────────────────────────────╯
+                             ValueError:
+                             保存内容または点検記録が変わっていま
+                             す。application_context_readで読み直
+                             し、変更を統合してrevisionをexpected_
+                             revisionへ指定してください
+
+                             The above exception was the direct
+                             cause of the following exception:
+
+                             ╭─ Traceback (most recent call last─╮
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/server.py:442  │
+                             │ in _handle_call_tool              │
+                             │                                   │
+                             │    439 │   ) -> CallToolResult |  │
+                             │    440 │   │   context = Context( │
+                             │        subscriptions=self._subscr │
+                             │    441 │   │   try:               │
+                             │ ❱  442 │   │   │   return await s │
+                             │    443 │   │   except MCPError:   │
+                             │    444 │   │   │   raise          │
+                             │    445 │   │   except Exception a │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/server.py:548  │
+                             │ in call_tool                      │
+                             │                                   │
+                             │    545 │   │   """                │
+                             │    546 │   │   if context is None │
+                             │    547 │   │   │   context = Cont │
+                             │ ❱  548 │   │   return await self. │
+                             │        convert_result=True)       │
+                             │    549 │                          │
+                             │    550 │   async def list_resourc │
+                             │    551 │   │   """List all availa │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/tools/tool_man │
+                             │ ager.py:87 in call_tool           │
+                             │                                   │
+                             │   84 │   │   if not tool:         │
+                             │   85 │   │   │   raise ToolError( │
+                             │   86 │   │                        │
+                             │ ❱ 87 │   │   return await tool.ru │
+                             │   88                              │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/tools/base.py: │
+                             │ 213 in run                        │
+                             │                                   │
+                             │   210 │   │   │   raise ToolError │
+                             │   211 │   │   except Exception as │
+                             │   212 │   │   │   # A crash: the  │
+                             │ ❱ 213 │   │   │   raise Unexpecte │
+                             │   214                             │
+                             ╰───────────────────────────────────╯
+                             UnexpectedToolError: Error executing
+                             tool application_context_save
+[10/30/26 07:42:16] INFO     <_UnixReadPipeTransport fd=9     unix_events.py:559
+                             polling> was closed by peer
                     INFO     <_UnixSubprocessTransport    base_subprocess.py:236
-                             pid=74339 running                                  
-                             stdin=<_UnixWritePipeTranspo                       
-                             rt closed fd=8 closed>                             
-                             stdout=<_UnixReadPipeTranspo                       
-                             rt closed fd=9 closed>>                            
-                             exited with return code 0                          
+                             pid=74462 running
+                             stdin=<_UnixWritePipeTranspo
+                             rt closed fd=8 closed>
+                             stdout=<_UnixReadPipeTranspo
+                             rt closed fd=9 closed>>
+                             exited with return code 0
                     INFO     execute program                 base_events.py:1802
-                             '/private/tmp/shinseider-audit-                    
-                             venv/bin/python':                                  
-                             <_UnixSubprocessTransport                          
-                             pid=74340 running                                  
-                             stdin=<_UnixWritePipeTransport                     
-                             fd=8 idle bufsize=0>                               
-                             stdout=<_UnixReadPipeTransport                     
-                             fd=9 polling>>                                     
-[10/30/26 07:40:46] ERROR    Tool 'application_review_save' raised server.py:455
-                             an unexpected exception                            
-                             ╭─ Traceback (most recent call last─╮              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/tools/base.py: │              
-                             │ 179 in run                        │              
-                             │                                   │              
-                             │   176 │   │   │   │   │   return  │              
-                             │       else resolved               │              
-                             │   177 │   │   │   │   pass_direct │              
-                             │   178 │   │   │                   │              
-                             │ ❱ 179 │   │   │   result = await  │              
-                             │       pass_directly)              │              
-                             │   180 │   │   │                   │              
-                             │   181 │   │   │   # Registration  │              
-                             │   182 │   │   │   # a body that r │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/utilities/func │              
-                             │ _metadata.py:164 in call_fn       │              
-                             │                                   │              
-                             │   161 │   │   kwargs = arguments  │              
-                             │   162 │   │   if fn_is_async:     │              
-                             │   163 │   │   │   return await fn │              
-                             │ ❱ 164 │   │   return await anyio. │              
-                             │   165 │                           │              
-                             │   166 │   @deprecated(            │              
-                             │   167 │   │   "FuncMetadata.call_ │              
-                             │       3.0; "                      │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/an │              
-                             │ yio/to_thread.py:65 in run_sync   │              
-                             │                                   │              
-                             │   62 │   │   │   stacklevel=2,    │              
-                             │   63 │   │   )                    │              
-                             │   64 │                            │              
-                             │ ❱ 65 │   return await get_async_b │              
-                             │   66 │   │   func, args, abandon_ │              
-                             │   67 │   )                        │              
-                             │   68                              │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/an │              
-                             │ yio/_backends/_asyncio.py:2706 in │              
-                             │ run_sync_in_worker_thread         │              
-                             │                                   │              
-                             │   2703 │   │   │   │   │   worker │              
-                             │   2704 │   │   │   │              │              
-                             │   2705 │   │   │   │   worker.que │              
-                             │ ❱ 2706 │   │   │   │   return awa │              
-                             │   2707 │                          │              
-                             │   2708 │   @classmethod           │              
-                             │   2709 │   def check_cancelled(cl │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/an │              
-                             │ yio/_backends/_asyncio.py:1100 in │              
-                             │ run                               │              
-                             │                                   │              
-                             │   1097 │   │   │   │   │   except │              
-                             │   1098 │   │   │   │   │   thread │              
-                             │   1099 │   │   │   │   │   try:   │              
-                             │ ❱ 1100 │   │   │   │   │   │   re │              
-                             │   1101 │   │   │   │   │   except │              
-                             │   1102 │   │   │   │   │   │   ex │              
-                             │   1103 │   │   │   │   │   finall │              
-                             │                                   │              
-                             │ /var/folders/hd/vw156qnn3vs6kpwjj │              
-                             │ 9cckgrw0000gn/T/tmpfymammzu/mcp/s │              
-                             │ erver.py:379 in                   │              
-                             │ application_review_save           │              
-                             │                                   │              
-                             │   376 │                           │              
-                             │       """現在の文脈に対する点検本 │              
-                             │   377 │   current = application_c │              
-                             │   378 │   if binding != current[' │              
-                             │ ❱ 379 │   │   raise               │              
-                             │       ValueError('対象が一致しな  │              
-                             │   380 │   context = current['cont │              
-                             │   381 │   if not context['files'] │              
-                             │   382 │   │   raise ValueError('  │              
-                             ╰───────────────────────────────────╯              
-                             ValueError:                                        
-                             対象が一致しないか本文が空です。現在               
-                             の資料で再点検してください                         
-                                                                                
-                             The above exception was the direct                 
-                             cause of the following exception:                  
-                                                                                
-                             ╭─ Traceback (most recent call last─╮              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/server.py:442  │              
-                             │ in _handle_call_tool              │              
-                             │                                   │              
-                             │    439 │   ) -> CallToolResult |  │              
-                             │    440 │   │   context = Context( │              
-                             │        subscriptions=self._subscr │              
-                             │    441 │   │   try:               │              
-                             │ ❱  442 │   │   │   return await s │              
-                             │    443 │   │   except MCPError:   │              
-                             │    444 │   │   │   raise          │              
-                             │    445 │   │   except Exception a │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/server.py:548  │              
-                             │ in call_tool                      │              
-                             │                                   │              
-                             │    545 │   │   """                │              
-                             │    546 │   │   if context is None │              
-                             │    547 │   │   │   context = Cont │              
-                             │ ❱  548 │   │   return await self. │              
-                             │        convert_result=True)       │              
-                             │    549 │                          │              
-                             │    550 │   async def list_resourc │              
-                             │    551 │   │   """List all availa │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/tools/tool_man │              
-                             │ ager.py:87 in call_tool           │              
-                             │                                   │              
-                             │   84 │   │   if not tool:         │              
-                             │   85 │   │   │   raise ToolError( │              
-                             │   86 │   │                        │              
-                             │ ❱ 87 │   │   return await tool.ru │              
-                             │   88                              │              
-                             │                                   │              
-                             │ /private/tmp/shinseider-audit-ven │              
-                             │ v/lib/python3.14/site-packages/mc │              
-                             │ p/server/mcpserver/tools/base.py: │              
-                             │ 213 in run                        │              
-                             │                                   │              
-                             │   210 │   │   │   raise ToolError │              
-                             │   211 │   │   except Exception as │              
-                             │   212 │   │   │   # A crash: the  │              
-                             │ ❱ 213 │   │   │   raise Unexpecte │              
-                             │   214                             │              
-                             ╰───────────────────────────────────╯              
-                             UnexpectedToolError: Error executing               
-                             tool application_review_save                       
-[10/30/26 07:40:46] INFO     <_UnixReadPipeTransport fd=9     unix_events.py:559
-                             polling> was closed by peer                        
+                             '/private/tmp/shinseider-audit-
+                             venv/bin/python':
+                             <_UnixSubprocessTransport
+                             pid=74463 running
+                             stdin=<_UnixWritePipeTransport
+                             fd=8 idle bufsize=0>
+                             stdout=<_UnixReadPipeTransport
+                             fd=9 polling>>
+[10/30/26 07:42:17] ERROR    Tool 'application_review_save' raised server.py:455
+                             an unexpected exception
+                             ╭─ Traceback (most recent call last─╮
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/tools/base.py: │
+                             │ 179 in run                        │
+                             │                                   │
+                             │   176 │   │   │   │   │   return  │
+                             │       else resolved               │
+                             │   177 │   │   │   │   pass_direct │
+                             │   178 │   │   │                   │
+                             │ ❱ 179 │   │   │   result = await  │
+                             │       pass_directly)              │
+                             │   180 │   │   │                   │
+                             │   181 │   │   │   # Registration  │
+                             │   182 │   │   │   # a body that r │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/utilities/func │
+                             │ _metadata.py:164 in call_fn       │
+                             │                                   │
+                             │   161 │   │   kwargs = arguments  │
+                             │   162 │   │   if fn_is_async:     │
+                             │   163 │   │   │   return await fn │
+                             │ ❱ 164 │   │   return await anyio. │
+                             │   165 │                           │
+                             │   166 │   @deprecated(            │
+                             │   167 │   │   "FuncMetadata.call_ │
+                             │       3.0; "                      │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/an │
+                             │ yio/to_thread.py:65 in run_sync   │
+                             │                                   │
+                             │   62 │   │   │   stacklevel=2,    │
+                             │   63 │   │   )                    │
+                             │   64 │                            │
+                             │ ❱ 65 │   return await get_async_b │
+                             │   66 │   │   func, args, abandon_ │
+                             │   67 │   )                        │
+                             │   68                              │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/an │
+                             │ yio/_backends/_asyncio.py:2706 in │
+                             │ run_sync_in_worker_thread         │
+                             │                                   │
+                             │   2703 │   │   │   │   │   worker │
+                             │   2704 │   │   │   │              │
+                             │   2705 │   │   │   │   worker.que │
+                             │ ❱ 2706 │   │   │   │   return awa │
+                             │   2707 │                          │
+                             │   2708 │   @classmethod           │
+                             │   2709 │   def check_cancelled(cl │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/an │
+                             │ yio/_backends/_asyncio.py:1100 in │
+                             │ run                               │
+                             │                                   │
+                             │   1097 │   │   │   │   │   except │
+                             │   1098 │   │   │   │   │   thread │
+                             │   1099 │   │   │   │   │   try:   │
+                             │ ❱ 1100 │   │   │   │   │   │   re │
+                             │   1101 │   │   │   │   │   except │
+                             │   1102 │   │   │   │   │   │   ex │
+                             │   1103 │   │   │   │   │   finall │
+                             │                                   │
+                             │ /var/folders/hd/vw156qnn3vs6kpwjj │
+                             │ 9cckgrw0000gn/T/tmphjnebm05/mcp/s │
+                             │ erver.py:379 in                   │
+                             │ application_review_save           │
+                             │                                   │
+                             │   376 │                           │
+                             │       """現在の文脈に対する点検本 │
+                             │   377 │   current = application_c │
+                             │   378 │   if binding != current[' │
+                             │ ❱ 379 │   │   raise               │
+                             │       ValueError('対象が一致しな  │
+                             │   380 │   context = current['cont │
+                             │   381 │   if not context['files'] │
+                             │   382 │   │   raise ValueError('  │
+                             ╰───────────────────────────────────╯
+                             ValueError:
+                             対象が一致しないか本文が空です。現在
+                             の資料で再点検してください
+
+                             The above exception was the direct
+                             cause of the following exception:
+
+                             ╭─ Traceback (most recent call last─╮
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/server.py:442  │
+                             │ in _handle_call_tool              │
+                             │                                   │
+                             │    439 │   ) -> CallToolResult |  │
+                             │    440 │   │   context = Context( │
+                             │        subscriptions=self._subscr │
+                             │    441 │   │   try:               │
+                             │ ❱  442 │   │   │   return await s │
+                             │    443 │   │   except MCPError:   │
+                             │    444 │   │   │   raise          │
+                             │    445 │   │   except Exception a │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/server.py:548  │
+                             │ in call_tool                      │
+                             │                                   │
+                             │    545 │   │   """                │
+                             │    546 │   │   if context is None │
+                             │    547 │   │   │   context = Cont │
+                             │ ❱  548 │   │   return await self. │
+                             │        convert_result=True)       │
+                             │    549 │                          │
+                             │    550 │   async def list_resourc │
+                             │    551 │   │   """List all availa │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/tools/tool_man │
+                             │ ager.py:87 in call_tool           │
+                             │                                   │
+                             │   84 │   │   if not tool:         │
+                             │   85 │   │   │   raise ToolError( │
+                             │   86 │   │                        │
+                             │ ❱ 87 │   │   return await tool.ru │
+                             │   88                              │
+                             │                                   │
+                             │ /private/tmp/shinseider-audit-ven │
+                             │ v/lib/python3.14/site-packages/mc │
+                             │ p/server/mcpserver/tools/base.py: │
+                             │ 213 in run                        │
+                             │                                   │
+                             │   210 │   │   │   raise ToolError │
+                             │   211 │   │   except Exception as │
+                             │   212 │   │   │   # A crash: the  │
+                             │ ❱ 213 │   │   │   raise Unexpecte │
+                             │   214                             │
+                             ╰───────────────────────────────────╯
+                             UnexpectedToolError: Error executing
+                             tool application_review_save
+[10/30/26 07:42:17] INFO     <_UnixReadPipeTransport fd=9     unix_events.py:559
+                             polling> was closed by peer
                     INFO     <_UnixSubprocessTransport    base_subprocess.py:236
-                             pid=74340 running                                  
-                             stdin=<_UnixWritePipeTranspo                       
-                             rt closed fd=8 closed>                             
-                             stdout=<_UnixReadPipeTranspo                       
-                             rt closed fd=9 closed>>                            
-                             exited with return code 0                          
+                             pid=74463 running
+                             stdin=<_UnixWritePipeTranspo
+                             rt closed fd=8 closed>
+                             stdout=<_UnixReadPipeTranspo
+                             rt closed fd=9 closed>>
+                             exited with return code 0
 .                    INFO     execute program                 base_events.py:1802
-                             '/private/tmp/shinseider-audit-                    
-                             venv/bin/python':                                  
-                             <_UnixSubprocessTransport                          
-                             pid=74341 running                                  
-                             stdin=<_UnixWritePipeTransport                     
-                             fd=8 idle bufsize=0>                               
-                             stdout=<_UnixReadPipeTransport                     
-                             fd=9 polling>>                                     
-[10/30/26 07:40:47] INFO     <_UnixReadPipeTransport fd=9     unix_events.py:559
-                             polling> was closed by peer                        
+                             '/private/tmp/shinseider-audit-
+                             venv/bin/python':
+                             <_UnixSubprocessTransport
+                             pid=74464 running
+                             stdin=<_UnixWritePipeTransport
+                             fd=8 idle bufsize=0>
+                             stdout=<_UnixReadPipeTransport
+                             fd=9 polling>>
+[10/30/26 07:42:18] INFO     <_UnixReadPipeTransport fd=9     unix_events.py:559
+                             polling> was closed by peer
                     INFO     <_UnixSubprocessTransport    base_subprocess.py:236
-                             pid=74341 running                                  
-                             stdin=<_UnixWritePipeTranspo                       
-                             rt closed fd=8 closed>                             
-                             stdout=<_UnixReadPipeTranspo                       
-                             rt closed fd=9 closed>>                            
-                             exited with return code 0                          
+                             pid=74464 running
+                             stdin=<_UnixWritePipeTranspo
+                             rt closed fd=8 closed>
+                             stdout=<_UnixReadPipeTranspo
+                             rt closed fd=9 closed>>
+                             exited with return code 0
                     INFO     execute program                 base_events.py:1802
-                             '/private/tmp/shinseider-audit-                    
-                             venv/bin/python':                                  
-                             <_UnixSubprocessTransport                          
-                             pid=74342 running                                  
-                             stdin=<_UnixWritePipeTransport                     
-                             fd=8 idle bufsize=0>                               
-                             stdout=<_UnixReadPipeTransport                     
-                             fd=9 polling>>                                     
+                             '/private/tmp/shinseider-audit-
+                             venv/bin/python':
+                             <_UnixSubprocessTransport
+                             pid=74465 running
+                             stdin=<_UnixWritePipeTransport
+                             fd=8 idle bufsize=0>
+                             stdout=<_UnixReadPipeTransport
+                             fd=9 polling>>
                     INFO     <_UnixReadPipeTransport fd=9     unix_events.py:559
-                             polling> was closed by peer                        
+                             polling> was closed by peer
                     INFO     <_UnixSubprocessTransport    base_subprocess.py:236
-                             pid=74342 running                                  
-                             stdin=<_UnixWritePipeTranspo                       
-                             rt closed fd=8 closed>                             
-                             stdout=<_UnixReadPipeTranspo                       
-                             rt closed fd=9 closed>>                            
-                             exited with return code 0                          
+                             pid=74465 running
+                             stdin=<_UnixWritePipeTranspo
+                             rt closed fd=8 closed>
+                             stdout=<_UnixReadPipeTranspo
+                             rt closed fd=9 closed>>
+                             exited with return code 0
 ....
 ----------------------------------------------------------------------
-Ran 22 tests in 8.498s
+Ran 23 tests in 8.789s
 
 OK

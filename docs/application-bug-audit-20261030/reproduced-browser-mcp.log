@@ -53,7 +53,7 @@ Traceback (most recent call last):
         f"{out_message}\nActual value: {actual} {format_call_log(result.get('log'))}"
     )
 AssertionError: Locator expected to contain text '変更'
-Actual value: 抽出しました。本文と未確認範囲を確認してください。 
+Actual value: 抽出しました。本文と未確認範囲を確認してください。
 Call log:
   - Expect "to_contain_text" with timeout 5000ms
   - waiting for locator("#application-message")
@@ -92,7 +92,7 @@ Traceback (most recent call last):
         f"{out_message}\nActual value: {actual} {format_call_log(result.get('log'))}"
     )
 AssertionError: Locator expected to contain text '変更'
-Actual value: 指示文を作りました。原本入り一式を保存してAIへ渡してください。 
+Actual value: 指示文を作りました。原本入り一式を保存してAIへ渡してください。
 Call log:
   - Expect "to_contain_text" with timeout 5000ms
   - waiting for locator("#application-message")
@@ -131,7 +131,7 @@ Traceback (most recent call last):
         f"{out_message}\nActual value: {actual} {format_call_log(result.get('log'))}"
     )
 AssertionError: Locator expected not to contain text '保存しました'
-Actual value: AIの点検記録を保存しました。指摘と未確認範囲を読み、修正後に再点検してください。 
+Actual value: AIの点検記録を保存しました。指摘と未確認範囲を読み、修正後に再点検してください。
 Call log:
   - Expect "to_contain_text" with timeout 5000ms
   - waiting for locator("#application-message")
