@@ -19,6 +19,7 @@ class MCPStdioTest(unittest.IsolatedAsyncioTestCase):
             (root / 'mcp').mkdir()
             shutil.copy(ROOT / 'mcp/server.py', root / 'mcp/server.py')
             shutil.copy(ROOT / 'preparation.py', root / 'preparation.py')
+            shutil.copy(ROOT / 'application_context.py', root / 'application_context.py')
             shutil.copytree(ROOT / 'data', root / 'data')
             params = StdioServerParameters(command=sys.executable,
                                            args=[str(root / 'mcp/server.py')])
@@ -28,11 +29,11 @@ class MCPStdioTest(unittest.IsolatedAsyncioTestCase):
                         await client.initialize()
                         if not restart:
                             tools = await client.list_tools()
-                            self.assertEqual(len(tools.tools), 10)
+                            self.assertEqual(len(tools.tools), 14)
                             prompts = await client.list_prompts()
-                            self.assertEqual(len(prompts.prompts), 4)
+                            self.assertEqual(len(prompts.prompts), 5)
                             resources = await client.list_resources()
-                            self.assertEqual(len(resources.resources), 5)
+                            self.assertEqual(len(resources.resources), 6)
                             interview = await client.get_prompt('entry_interview')
                             text = '\n'.join(m.content.text for m in interview.messages)
                             self.assertNotIn('{theme_elements}', text)
@@ -64,3 +65,50 @@ class MCPStdioTest(unittest.IsolatedAsyncioTestCase):
                         payload = json.loads(restored.content[0].text)
                         self.assertEqual(payload['content'], 'isolated test record')
                         self.assertIsNone(payload['next_offset'])
+
+
+    async def test_application_context_documents_review_and_restart(self):
+        from application_fixtures import create
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);(root/'mcp').mkdir()
+            for name in ['preparation.py','application_context.py','mcp/server.py']:
+                shutil.copy(ROOT/name,root/name)
+            shutil.copytree(ROOT/'data',root/'data')
+            params=StdioServerParameters(command=sys.executable,args=[str(root/'mcp/server.py')])
+            async def call(client,name,args={}):
+                result=await client.call_tool(name,args)
+                self.assertFalse(result.is_error,str(result))
+                return json.loads(result.content[0].text)
+            for restart in [False,True]:
+                async with stdio_client(params) as (read,write):
+                    async with ClientSession(read,write,read_timeout_seconds=20) as client:
+                        await client.initialize()
+                        if not restart:
+                            await call(client,'workspace_init',{'path':str(root/'workspace')})
+                            create(root/'workspace/materials')
+                            state=await call(client,'application_context_read')
+                            c=state['context'];c['reference']='架空の入力。月額4万円、36か月。'
+                            for key,file in [('template','format.pptx'),('draft','draft.pdf')]:
+                                c['files'][key]=await call(client,'application_document_read',{'section':'materials/'+file})
+                            state=await call(client,'application_context_save',{'context':c})
+                            digest=state['binding']
+                            for stage in ['research','prepare','compose','review']:
+                                p=await client.get_prompt('application_workflow',{'stage':stage})
+                                text='\n'.join(m.content.text for m in p.messages)
+                                self.assertIn(digest,text);self.assertIn('144万円',text)
+                                self.assertIn('note.com',text);self.assertIn('承継予定の会社の経営資源活用',text)
+                            state=await call(client,'application_review_save',{'binding':digest,'result':'テスト記録：完成稿は2ページ。指定の8ページに不足。視覚確認は未実施。'})
+                            self.assertTrue(state['review_current'])
+                            bad=await client.call_tool('application_document_read',{'section':'materials/../../outside.pdf'})
+                            self.assertTrue(bad.is_error)
+                            bad=await client.call_tool('application_context_save',{'context':c,'expected_binding':'stale'})
+                            self.assertTrue(bad.is_error)
+                        else:
+                            state=await call(client,'application_context_read')
+                            self.assertTrue(state['review_current'])
+                            self.assertIn('指定の8ページ',state['context']['review']['result'])
+                            c=state['context'];c['materials'][0]['body']='変更した本人の歩み'
+                            updated=await call(client,'application_context_save',{'context':c,'expected_binding':state['binding']})
+                            self.assertFalse(updated['review_current'])
+                            bad=await client.call_tool('application_review_save',{'binding':state['binding'],'result':'古い資料への評価'})
+                            self.assertTrue(bad.is_error)

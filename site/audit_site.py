@@ -7,7 +7,7 @@ import threading
 from pathlib import Path
 from playwright.sync_api import sync_playwright, expect
 ROOT = Path(__file__).resolve().parent.parent
-PAGES = ['index','check','entry','fukabori','workspace','schedule','news','subsidy','ambassadors','trust','about','cool']
+PAGES = ['application', 'index','check','entry','fukabori','workspace','schedule','news','subsidy','ambassadors','trust','about','cool']
 
 def run(base):
     with sync_playwright() as p:
@@ -23,7 +23,7 @@ def run(base):
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1'), f'overflow: {name} at {width}'
             assert not errors,errors
             ctx.close()
-        print('PASS: 12 pages at mobile/desktop widths, no horizontal overflow or JS errors')
+        print('PASS: 13 pages at mobile/desktop widths, no horizontal overflow or JS errors')
         ctx=browser.new_context()
         ctx.route('**/*',lambda r:r.continue_() if r.request.url.startswith(base) else r.fulfill(status=200,body=''))
         page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))

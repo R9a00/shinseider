@@ -25,6 +25,10 @@
     if (p.fukabori != null && (!object(p.fukabori) || !object(p.fukabori.blocks) ||
         !Object.values(p.fukabori.blocks).every(stringMap) ||
         (p.fukabori.ai !== undefined && typeof p.fukabori.ai !== 'string'))) throw new Error('invalid');
+    if (p.application !== undefined) {
+      var core = typeof module !== "undefined" && module.exports ? require("./application-core.js") : root.ApplicationCore;
+      p.application = core.validate(p.application);
+    }
     p.version = 1;
     p.entry = p.entry || {sections: {}, checklist: {}};
     p.fukabori = p.fukabori || {blocks: {}};

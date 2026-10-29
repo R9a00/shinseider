@@ -1,4 +1,12 @@
 datasets:
+- name: 応募書類の作成要領・経験者の準備の知見
+  how: 公式PDFの6記載項目・5評価を基準とし、経験者の振り返り・対談を準備の参考として区別。採用理由、公開日、確認日を作成・点検ページに掲載
+  accessed: '2026-10-30'
+  links:
+  - label: 応募書類要項（公式PDF）
+    url: https://atotsugi-koshien.go.jp/slp/wpist/wp-content/themes/atotsugi202507/assets/pdf/application_form_requirements.pdf
+  - label: 調査資料と採用理由
+    url: application.html#research
 - name: アトツギ甲子園の日程・応募の流れ
   how: 公式サイトと経済産業省の発表から取得。応募方法はエントリー・推薦の流れのページで確認
   accessed: '2026-08-12'

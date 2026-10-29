@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}応募書類を作る・点検する | {{ site_name }}{% endblock %}
+{% block desc %}公式要項と経験者の知見をもとに材料をそろえ、提出フォーマットに沿った作成と完成稿の品質チェックをAIと進めます。{% endblock %}
+{% block main %}
+<h1>材料をそろえて、応募書類にする</h1>
+<p class="lead">調べる → 材料をそろえる → フォーマットで作る → 完成稿を点検する。準備の文脈を残して、普段のAIと続きを進められます。</p>
+<p>入力とファイルの読込みはこのブラウザ内で行います。検索・文章作成・内容の評価は、指示文と資料を渡した先のAIで行います。AIに渡す内容はダウンロード前に確認できます。</p>
+<p id="application-save" class="save-status"></p><p id="application-message" role="status" aria-live="polite"></p>
+<nav class="app-steps" aria-label="応募書類の準備"><a href="#research">1 調べる</a><a href="#materials">2 材料</a><a href="#documents">3 フォーマット</a><a href="#quality">4 点検</a></nav>
+<section class="card" id="research">
+<h2>1. 調べる・根拠を残す</h2>
+<p>公式要項を基準に、経験者の知見を準備の参考にします。事業固有の市場・競合・顧客の調査は、下の「調べる」指示をAIへ渡して追加します。</p>
+<details><summary>準備に使う出典と、採用した理由（{{ support.checked }}確認）</summary>
+{% for s in support.sources %}<article><h3><a href="{{ s.url }}" target="_blank" rel="noopener">{{ s.title }}</a></h3><p>{{ s.kind }} ／ 公開：{{ s.published }} ／ 確認：{{ s.checked }}</p><p>{{ s.note }}</p></article>{% endfor %}
+</details>
+<p>{{ support.official.format }}</p>
+<div class="app-actions"><button class="btn" data-stage="research">調べる指示を作る</button><button class="btn" id="legacy">骨子・フカボリを参考欄へ取り込む</button></div>
+<label for="reference">本人の情報・既存の記録（参考材料）</label><textarea id="reference" rows="5" placeholder="会社・事業・地域・顧客、既に分かっていること。根拠未確認の情報はその旨を残します。"></textarea>
+<h3>自分の事業の出典・証拠</h3><p>主張を支えるURLや社内資料、顧客の声を記録します。下の材料の「根拠」には出典IDと該当箇所を書いてください。</p>
+<div id="source-list"></div><button class="btn" id="add-source">出典を追加する</button>
+</section>
+<section class="card" id="materials"><h2>2. 公式6項目の材料をそろえる</h2>
+<p>本文と根拠、まだ調べることを分けます。入力が埋まっていても、内容が十分とは限りません。</p>
+<button class="btn" data-stage="prepare">不足を埋める対話の指示を作る</button>
+{% for item in support.official['items'] %}{% set material_index = loop.index0 %}<details class="app-material" {% if loop.first %}open{% endif %}><summary>{{ loop.index }}. {{ item.title }}</summary><p>{{ support.questions[loop.index0] }}</p>
+{% for key,label in [('body','使える本文'),('basis','根拠：出典ID・該当箇所・事実か仮説か'),('gaps','不足・次の質問・調べること'),('visuals','図表・写真の候補')] %}
+<label for="m-{{ material_index }}-{{ key }}">{{ label }}</label><textarea id="m-{{ material_index }}-{{ key }}" data-material-index="{{ material_index }}" data-field="{{ key }}" rows="{{ 4 if key == 'body' else 2 }}"></textarea>
+{% endfor %}</details>{% endfor %}
+</section>
+<section class="card" id="documents"><h2>3. フォーマットに沿って作る</h2><p>届いたフォーマットを選び、抽出された内容を確認してください。PDF・PPTX・DOCX・TXT・MD、各15MBまで。TXT・MDはUTF-8です。画像中の文字と図の意味、レイアウトは自動判定しません。</p>
+<label for="template-file">提出フォーマット</label><input id="template-file" type="file" accept=".pdf,.pptx,.docx,.txt,.md"><pre id="template-preview" class="app-preview">未読込み</pre>
+<button class="btn" data-stage="compose">フォーマットで作る指示を作る</button>
+</section>
+<section class="card" id="quality"><h2>4. 完成稿を点検・修正する</h2><label for="draft-file">出来上がった応募書類</label><input id="draft-file" type="file" accept=".pdf,.pptx,.docx,.txt,.md"><pre id="draft-preview" class="app-preview">未読込み</pre>
+<h3>入力・ファイルの確認</h3><p>以下は空欄や抽出状態の確認です。内容の正確さや審査通過を判定するものではありません。</p><ul id="mechanical"></ul>
+<button class="btn" data-stage="review">品質チェックの指示を作る</button>
+<p>AIには、公式6項目・5評価、ページ構成、数値の検算、出典との一致、読みやすさを、本文の引用と修正案付きで確認してもらいます。</p>
+<label for="review-input">AIから返った点検JSON（binding と result）</label><textarea id="review-input" rows="4" placeholder='{"binding":"…","result":"指摘・修正案・未確認範囲…"}'></textarea><button class="btn" id="import-review">点検結果を保存する</button><p id="review-status"></p><pre id="review-result" class="app-preview"></pre>
+</section>
+<section class="card" id="handoff"><h2>AIへ渡す・続きを保存する</h2><p>上の各段階のボタンで指示文が出ます。「原本入り一式」を保存してAIへ添付してください。ZIPが使えないAIでは展開して添付します。原本は再読込み後に選び直す必要があります。</p><p id="stage-label">段階を選んでください。</p><textarea id="instructions" rows="9" readonly aria-label="AIへ渡す指示文"></textarea>
+<div class="app-actions"><button class="btn" id="copy-instructions">指示文をコピー</button><button class="btn" id="bundle">原本入り一式を保存（ZIP）</button><button class="btn" id="export-context">文脈データの控えを保存（JSON）</button></div>
+<p>AIが更新した context.json や控えを読み込むと、このページの材料・出典・ファイル情報を置き換えます。既存の骨子・フカボリは保持します。読込み前に控えを保存してください。</p><label for="context-file">文脈データを読み込む</label><input id="context-file" type="file" accept=".json">
+<details><summary>MCPで使う</summary><p>同じ文脈データをMCPでも保存・再開できます。application_context_read → application_document_read → application_prompt の順で資料を確認し、更新後は application_context_save へ渡します。<a href="mcp-setup.md">導入手順</a></p></details>
+</section>
+<style>
+.app-steps,.app-actions{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}.app-steps a{padding:8px;border-bottom:2px solid currentColor}.app-material{margin:16px 0;padding:12px;border:1px solid #ccc;border-radius:8px}.app-material summary{font-weight:bold;cursor:pointer}#research label,#materials label,#documents label,#quality label,#handoff label{display:block;margin:12px 0 5px}#research textarea,#materials textarea,#quality textarea,#handoff textarea{box-sizing:border-box;width:100%;font:inherit;padding:10px;min-height:65px}#source-list input,#source-list select{box-sizing:border-box;width:100%;font:inherit;padding:7px}.app-source{border-top:1px solid #ccc;padding:12px 0}.app-source-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.app-preview{white-space:pre-wrap;overflow-wrap:anywhere;max-height:350px;overflow:auto;font:inherit;background:#f7f7f5;padding:12px}input[type=file]{max-width:100%}#application-message{font-weight:bold;overflow-wrap:anywhere}#mechanical{padding-left:24px}@media(max-width:600px){.app-source-grid{grid-template-columns:1fr}.app-actions .btn{white-space:normal}}
+</style>
+{% endblock %}
+{% block scripts %}<script id="application-rules" type="application/json">{{ support_json|safe }}</script><script type="module" src="static/application-ui.mjs"></script>{% endblock %}

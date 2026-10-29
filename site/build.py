@@ -485,7 +485,10 @@ def main():
     # JSONをscriptタグへ安全に埋め込む: autoescapeを外す代わりに < をエスケープ
     env.globals["check_json"] = json.dumps(check_data, ensure_ascii=False).replace("<", "\\u003c")
 
+    support = load("application_support.yaml")
+    support["official"] = entry_def["official_preparation"]
     pages = {
+        "application.html": ("application.html", {"support": support, "support_json": json.dumps(support, ensure_ascii=False).replace("<", "\\u003c")}),
         "index.html": ("index.html", {
             "benefit": benefit, "subsidy": subsidy, "track": track,
             "entry_end": entry_end,

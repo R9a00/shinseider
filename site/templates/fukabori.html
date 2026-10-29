@@ -394,7 +394,7 @@
     try { check = JSON.parse(localStorage.getItem('shinseider_check') || 'null'); } catch(_) {}
     var md = '# フカボリ 控え\n' + body +
       '\n---\n\n## セーブデータ\n「控えを読み込む」でこのファイルを選ぶと、この時点から再開できます。下のコードは編集しないでください。\n\n```json\n' +
-      JSON.stringify({version: 1, exported: new Date().toISOString(), profile: check, entry: backup.entry, fukabori: backup.fukabori}) + '\n```\n';
+      JSON.stringify({version: 1, exported: new Date().toISOString(), profile: check, entry: backup.entry, fukabori: backup.fukabori, application: backup.application}) + '\n```\n';
     dl('fukabori_hikae_' + stamp() + '.md', md, 'text/markdown');
   });
   document.getElementById('fk-dl-prompts').addEventListener('click', function(){
@@ -417,9 +417,10 @@
       } catch(_) {}
       var msgEl = document.getElementById('fk-save-msg');
       if (!d || (!d.entry && !d.fukabori)) { msgEl.textContent = '読み込めませんでした。「控えを保存」で作ったファイルを選んでください。'; return; }
-      try { d = ShinseiderStore.normalize({version: d.version, entry: d.entry || project.entry, fukabori: d.fukabori || project.fukabori, profile: d.profile}); } catch (_) {
+      try { d = ShinseiderStore.normalize({version: d.version, entry: d.entry || project.entry, fukabori: d.fukabori || project.fukabori, profile: d.profile, application: d.application === undefined ? project.application : d.application}); } catch (_) {
         msgEl.textContent = '読み込めませんでした。控えのデータ形式を確認してください。'; return;
       }
+      project.application = d.application;
       project.entry = d.entry;
       project.fukabori = d.fukabori;
       var saved = await saveProject(project);
