@@ -1,0 +1,14 @@
+{
+  "_meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"id\": \"q10_budget\",\n  \"group\": \"新事業10問\",\n  \"title\": \"10. 必要資金\",\n  \"subtitle\": \"初期投資と運営費\",\n  \"dod\": \"設問に対し最小3行の具体（数値または固有名詞を1つ以上）\",\n  \"min_required_fields\": 2,\n  \"research\": \"mixed\",\n  \"sources_required\": false,\n  \"entry_themes\": [\n    \"家業の経営資源の活用\"\n  ],\n  \"review_axes\": [\n    \"実現性\"\n  ],\n  \"fields\": [\n    {\n      \"key\": \"capex\",\n      \"label\": \"初期投資（CAPEX）\",\n      \"required\": true,\n      \"example\": \"初期投資の例（仮定・補助金控除前）：新規設備800万円 / 品質管理システム200万円 / Webサイト・システム100万円 = 合計1,100万円。補助金の採否・対象経費・補助率・入金時期は別途確認する\"\n    },\n    {\n      \"key\": \"opex\",\n      \"label\": \"運営費（OPEX）\",\n      \"required\": true,\n      \"example\": \"月次費用の例（Q8と同じ仮定）：材料費160万円＋外注加工費等80万円 = 原価240万円（売上400万円の60%） / 人件費150万円＋設備償却・保守30万円＋その他20万円 = 固定費200万円 / 合計440万円/月、利益△40万円/月。獲得費用は該当費目に含め、二重計上しない。減価償却と現金支出は区別して資金繰りを確認する\"\n    }\n  ],\n  \"criteria_note\": \"DoD・required・review_axesは本ツール独自の材料整理基準。24ブロック全てが公式必須ではありません。\"\n}",
+      "annotations": null,
+      "_meta": null
+    }
+  ],
+  "structuredContent": null,
+  "isError": false,
+  "resultType": "complete"
+}

@@ -51,7 +51,7 @@ MCP設定に登録すれば使えます（動作確認済みは Claude Code の�
 ## 提供するもの
 
 - **Tools**: `get_deadlines`（二段階締切と現在段階）/ `check_eligibility`（30秒チェック同一ロジック）/
-  `get_pace_plan`（逆算プラン）/ `workspace_init·record·state`（作業フォルダと記録）/
+  `get_pace_plan`（逆算プラン）/ `workspace_init·record·state·read`（作業フォルダと記録）/
   `list_question_blocks·get_question_block·fukabori_coverage`（質問バンクと機械チェック）
 - **Prompts**: `entry_interview`（骨子づくり）/ `mock_review`（予行審査）/
   `dr_review`（引用必須の逆写像DR）/ `fukabori_chapter`（章別深掘り）
@@ -68,3 +68,8 @@ MCP設定に登録すれば使えます（動作確認済みは Claude Code の�
 OpenAI側のローカルMCP設定は[公式資料](https://learn.chatgpt.com/docs/extend/mcp)と2026-10-29に照合。デスクトップとWebでは接続方式が異なるため、利用する画面の手順を確認すること。
 
 このサーバーはローカルSTDIO方式です。公開サイトURLはリモートMCPの接続先ではありません。クライアントの対応方式と設定方法は、利用中の版の公式案内を確認してください。
+
+
+## 保存した作業の再開
+
+別の会話では `workspace_state` で一覧を確認し、`workspace_read(section)` で `profile`・`outline`・`entry_draft` などの本文を読み戻します。長文は返された `next_offset` を次の `offset` に指定します。記録の存在や機械チェックの通過は、内容の正しさ・完成を意味しません。書込み・読込みとも、指定した作業フォルダの外にはアクセスできません。

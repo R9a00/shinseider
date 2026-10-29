@@ -1,0 +1,14 @@
+{
+  "_meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"workspace\": \"/private/tmp/shinseider-mcp-journey-runtime/workspace\",\n  \"files\": {\n    \"outline.md\": 2849,\n    \"journal.jsonl\": 1327,\n    \"entry_draft.md\": 4445,\n    \"profile.md\": 2685,\n    \"materials/fukabori-save.json\": 1742,\n    \"materials/calculations.json\": 582,\n    \"materials/official-outline.md\": 2182,\n    \"review/quality.md\": 6086,\n    \"fukabori/q10_budget.md\": 638,\n    \"fukabori/q8_bm.md\": 956\n  },\n  \"fukabori_done\": [\n    \"q10_budget\",\n    \"q8_bm\"\n  ],\n  \"fukabori_untouched\": [\n    \"roots\",\n    \"philosophy\",\n    \"strength_1\",\n    \"strength_2\",\n    \"strength_3\",\n    \"pest_p\",\n    \"pest_e\",\n    \"pest_s\",\n    \"pest_t\",\n    \"ff_new\",\n    \"ff_sup\",\n    \"ff_riv\",\n    \"ff_buy\",\n    \"ff_sub\",\n    \"q1_whyus\",\n    \"q2_whose\",\n    \"q3_idea\",\n    \"q4_onlyus\",\n    \"q5_success\",\n    \"q6_market\",\n    \"q7_comp\",\n    \"q9_team\"\n  ],\n  \"note\": \"本文はworkspace_readで取得すること。fukabori_doneは記録の存在であり内容の充足・正確性は未検証。未着手ブロックは利用者が要望したときだけ進めること。\"\n}",
+      "annotations": null,
+      "_meta": null
+    }
+  ],
+  "structuredContent": null,
+  "isError": false,
+  "resultType": "complete"
+}

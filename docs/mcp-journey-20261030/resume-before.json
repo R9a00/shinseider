@@ -1,0 +1,14 @@
+{
+  "_meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"workspace\": \"/private/tmp/shinseider-mcp-journey-runtime/workspace\",\n  \"files\": {\n    \"journal.jsonl\": 298,\n    \"entry_draft.md\": 1631,\n    \"profile.md\": 2685\n  },\n  \"fukabori_done\": [],\n  \"fukabori_untouched\": [\n    \"roots\",\n    \"philosophy\",\n    \"strength_1\",\n    \"strength_2\",\n    \"strength_3\",\n    \"pest_p\",\n    \"pest_e\",\n    \"pest_s\",\n    \"pest_t\",\n    \"ff_new\",\n    \"ff_sup\",\n    \"ff_riv\",\n    \"ff_buy\",\n    \"ff_sub\",\n    \"q1_whyus\",\n    \"q2_whose\",\n    \"q3_idea\",\n    \"q4_onlyus\",\n    \"q5_success\",\n    \"q6_market\",\n    \"q7_comp\",\n    \"q8_bm\",\n    \"q9_team\",\n    \"q10_budget\"\n  ],\n  \"note\": \"未着手ブロックは深掘りの候補だが、利用者が要望したときだけ進めること。\"\n}",
+      "annotations": null,
+      "_meta": null
+    }
+  ],
+  "structuredContent": null,
+  "isError": false,
+  "resultType": "complete"
+}

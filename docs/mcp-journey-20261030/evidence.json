@@ -1,0 +1,52 @@
+{
+  "checked_at": "2026-10-29T21:56:54.567789+00:00",
+  "baseline_commit": "24089c8a4ce66684bb18502ccf8dc860542aa2e0",
+  "source_files": {
+    "mcp/server.py": "528a2c6994d8884c01c306e46c194ac6c0ac67556e5ed51e5f8a2b6631cd4cfe",
+    "preparation.py": "1a43749c6bc268730ddec3851a7d6da0d15ddf26bac00798f1b1fb2f964953f6"
+  },
+  "source_status": "workspace_read added during this test; before/after calls in mcp-calls.jsonl",
+  "generation": "This session assistant followed MCP prompts using a synthetic fixed scenario. No external model benchmark or real applicant interview.",
+  "negative_control_findings": 10,
+  "restart_full_text_matches": [
+    "entry-draft.md",
+    "fukabori-save.json",
+    "review.md"
+  ],
+  "artifact_sha256": {
+    "browser-backup.md": "6bad4f2167e240b218136d7c03d7828d9f4116e85c34fa84a3d9748cdbdbe23c",
+    "browser-check.json": "0c71a4505b177f924eea77edc6e33fe585864ff78996f7b0f98571a81ac30d2e",
+    "business-blocks.json": "92b3ab692fab6c8af270c03cc58db2fc23e4e19b87ab4dd59cb682640114be4c",
+    "calculations.json": "598b511a01a7f574409d50e8e3384866cdd4ecb58a9853c48dca2df74c3728d9",
+    "chapter4-prompt.json": "b01313ce0ebb8028e86eb648e996506b71f17f69241675ce05e74995e19e86fd",
+    "corrected-mechanical-check.json": "122a5a28b9411ac7480d7df5aaeb154dde0f14436b7160847d15fda18cb057e9",
+    "deadlines.json": "99845b7a1d685278e2570cfea7c6e84a11b695d5498aa1fb2098c837540be859",
+    "dr-review-prompt.json": "3e80060030a97f7540e6d134fc4b0b3d0749f8c5005c7ab67680a5a6bb78095f",
+    "eligibility.json": "fa7bb1ea596e95c37fd1d3425c11b6dcafe6797f43b8bd25e9455d68173bfeaa",
+    "entry-draft-before.md": "4c2f711170c66f306dd412c7ffe17266c43c497057ec743971357d7ff38c0d71",
+    "entry-draft.md": "2f878958ce966e20c4d1fb18ee25dbfdc89f415f6a040f55c31d7e2cbdb27ab5",
+    "fukabori-save.json": "30fc25bce9cc34abfa27acc613ffe486c88f16175d32bc40cc24dd8adbf792f4",
+    "interview-prompt.json": "4d09e27c8c18a239b322fc19ffa323e959023fed98f3de7c16255ac3fac17d7e",
+    "interview.md": "22a64455f490a8d44fc5deb92706764408e55f6dd761049aaa7131c9af9f8334",
+    "mcp-calls.jsonl": "96c69e661da79d92e938458ec3300284f866e4f33a664a75752dfd075bdd4255",
+    "mock-review-prompt.json": "630200d1c4b1cbae2065d61e97ce42acfb72749f4415f6cb10c9ea7377150c70",
+    "negative-mechanical-check.json": "122a5a28b9411ac7480d7df5aaeb154dde0f14436b7160847d15fda18cb057e9",
+    "official-guide.json": "9a22e8cde36d3f21644c322dc24f7126ce433e775d515896c4183baae6d90242",
+    "official-outline.md": "98b51344ab96db4e51f28a28f965e08318c33c0459c479694f3d77603de76adb",
+    "pace.json": "c5f96ecf3cb1641610173aa795b00bd14db534d28175fb218b081a88176d7e41",
+    "q10-block.json": "9b9c70b67c8cc691613ce7e1a659ca4acd4dc358c971425c9dcf5cf0c7e27e34",
+    "q10_budget.md": "69e61df2485a26bbb46419b14ca859d38ff136273dee3f36ee2800a251968252",
+    "q8-block.json": "47f1fdbd8a610e68251c6cabde6ede59eab56523086941611d705713b3072c96",
+    "q8_bm.md": "0395b747602d0a6b726956c1ab4ed12dd539513e5d926c35864cdade733753ea",
+    "read-after.json": "ab611429132db1c22698cc3fbd01a4d6f6c105baf14fde4a97722036ed40c4d2",
+    "read-before.json": "e4948af0b491dba07eadce369472d13f7460a059afbcb92bd56ef444cb7bd3eb",
+    "read-patch.json": "a6e329881be8da627c806eb12fdbcf63248dcaf064ddf13044f47994c7c58d62",
+    "read-review.json": "b6d411778dfdd52fdd43e0465151e2de76912b28e561f65c85763ebf6add6f66",
+    "resume-after.json": "33221e8d616a88d34f6f8c3e39433c40c553f7436c6ed981c7c660158ca20d46",
+    "resume-before.json": "9fdad7f28dfc36c400592f420b5440aac275e2bb43733d1de891b322b8bd4914",
+    "review.md": "bd2d528bd0c756c4d259ae8699a98a777c61234a90d098dd1179c266eabf3fd5",
+    "scenario.md": "ea069cc42420f3f8690e84baa3d3db6f5208931a21d69fe3b2132fa19ccbe252",
+    "tool-catalog-before.json": "135741406d9a4ef48d3dcf644b9e4864b4625bdb122e376afe9e6cc5801141f7",
+    "verify_browser.py": "99df019ec0bc02f76bcded47b4fc3106b69e4e3cd12729c801cda80baa9da64f"
+  }
+}

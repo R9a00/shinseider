@@ -209,17 +209,12 @@ def workspace_init(path: str) -> dict:
     _journal(ws, {"event": "init"})
     files = sorted(str(p.relative_to(ws)) for p in ws.rglob("*") if p.is_file())
     return {"workspace": str(ws), "files": files,
-            "note": "profile/outline/entry_draft は workspace_record で記録。既存ファイルがあれば読み込んで文脈を復元すること。"}
+            "note": "profile/outline/entry_draft は workspace_record で記録。既存ファイルは workspace_read で読み込み、文脈を復元すること。"}
 
 
-@app.tool()
-def workspace_record(section: str, content: str, mode: str = "replace") -> dict:
-    """ワークスペースへ記録する。section: profile / outline / entry_draft /
-    fukabori/<ブロックid> / review/<名前> / materials/<名前>。mode: replace / append。
-    利用者の入力・確定事項・成果物は必ずここに記録し、会話にだけ残さないこと。"""
+def _workspace_file(section: str) -> pathlib.Path:
+    """読書き共通の名前・作業フォルダ境界。"""
     ws = _ws().resolve()
-    if mode not in ("replace", "append"):
-        raise ValueError("mode は replace または append を指定してください")
     if section in SECTIONS:
         target = ws / SECTIONS[section]
     elif re.fullmatch(r"(fukabori|review|materials)/[\w\-\.ぁ-んァ-ヶ一-龠]+", section):
@@ -228,7 +223,32 @@ def workspace_record(section: str, content: str, mode: str = "replace") -> dict:
         raise ValueError(f"不正なsection: {section}")
     target = target.resolve()
     if not target.is_relative_to(ws):
-        raise ValueError("ワークスペース外への書き込みはできません")
+        raise ValueError("ワークスペース外のファイルにはアクセスできません")
+    return target
+
+
+@app.tool()
+def workspace_read(section: str, offset: int = 0, max_chars: int = 20000) -> dict:
+    """保存本文を読み戻す。sectionはworkspace_recordと同じ名前を指定。
+    再開時はworkspace_stateで一覧を確認し、このツールで本文を取得する。
+    長文はnext_offsetがnullになるまで、その位置をoffsetに指定して続けて読む。"""
+    if offset < 0 or not 1 <= max_chars <= 50000:
+        raise ValueError("offsetは0以上、max_charsは1〜50000で指定してください")
+    text = _workspace_file(section).read_text(encoding="utf-8")
+    end = min(offset + max_chars, len(text))
+    return {"section": section, "content": text[offset:end], "offset": offset,
+            "next_offset": end if end < len(text) else None, "total_chars": len(text)}
+
+
+@app.tool()
+def workspace_record(section: str, content: str, mode: str = "replace") -> dict:
+    """ワークスペースへ記録する。section: profile / outline / entry_draft /
+    fukabori/<ブロックid> / review/<名前> / materials/<名前>。mode: replace / append。
+    利用者の入力・確定事項・成果物は必ずここに記録し、会話にだけ残さないこと。"""
+    if mode not in ("replace", "append"):
+        raise ValueError("mode は replace または append を指定してください")
+    ws = _ws()
+    target = _workspace_file(section)
     target.parent.mkdir(parents=True, exist_ok=True)
     if mode == "append" and target.exists():
         target.write_text(target.read_text() + "\n" + content)
@@ -240,8 +260,8 @@ def workspace_record(section: str, content: str, mode: str = "replace") -> dict:
 
 @app.tool()
 def workspace_state() -> dict:
-    """ワークスペースの現状（ファイル一覧・深掘り済みブロック・充足の概観）を返す。
-    別の会話から再開するときは、まずこれを呼んで文脈を復元すること。"""
+    """ワークスペースの現状（ファイル一覧・記録済みブロック）を返す。
+    別の会話から再開するときは、これで一覧を確認しworkspace_readで本文を取得する。"""
     ws = _ws()
     files = {str(p.relative_to(ws)): p.stat().st_size for p in ws.rglob("*") if p.is_file()}
     done_blocks = [p.stem for p in (ws / "fukabori").glob("*.md")]
@@ -249,7 +269,7 @@ def workspace_state() -> dict:
     return {"workspace": str(ws), "files": files,
             "fukabori_done": done_blocks,
             "fukabori_untouched": [b for b in all_blocks if b not in done_blocks],
-            "note": "未着手ブロックは深掘りの候補だが、利用者が要望したときだけ進めること。"}
+            "note": "本文はworkspace_readで取得すること。fukabori_doneは記録の存在であり内容の充足・正確性は未検証。未着手ブロックは利用者が要望したときだけ進めること。"}
 
 
 # ---------- 質問バンク ----------

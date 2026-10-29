@@ -1,0 +1,224 @@
+{
+  "_meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"id\": \"q1_whyus\",\n  \"group\": \"新事業10問\",\n  \"title\": \"1. なぜ自社がやるのか\",\n  \"subtitle\": \"自社が取り組む理由\",\n  \"dod\": \"設問に対し最小3行の具体（数値または固有名詞を1つ以上）\",\n  \"research\": \"internal\",\n  \"sources_required\": false,\n  \"entry_themes\": [\n    \"実現したい未来\",\n    \"現業と自分\"\n  ],\n  \"review_axes\": [\n    \"承継の物語\"\n  ]\n}",
+      "annotations": null,
+      "_meta": null
+    },
+    {
+      "type": "text",
+      "text": "{\n  \"id\": \"q2_whose\",\n  \"group\": \"新事業10問\",\n  \"title\": \"2. 誰のどんなニーズか\",\n  \"subtitle\": \"ターゲット顧客のニーズ\",\n  \"dod\": \"設問に対し最小3行の具体（数値または固有名詞を1つ以上）\",\n  \"research\": \"mixed\",\n  \"sources_required\": false,\n  \"entry_themes\": [\n    \"やりたい新規事業\"\n  ],\n  \"review_axes\": [\n    \"事業価値\",\n    \"波及\"\n  ]\n}",
+      "annotations": null,
+      "_meta": null
+    },
+    {
+      "type": "text",
+      "text": "{\n  \"id\": \"q3_idea\",\n  \"group\": \"新事業10問\",\n  \"title\": \"3. 具体的アイデア\",\n  \"subtitle\": \"事業の具体的内容\",\n  \"dod\": \"設問に対し最小3行の具体（数値または固有名詞を1つ以上）\",\n  \"research\": \"internal\",\n  \"sources_required\": false,\n  \"entry_themes\": [\n    \"やりたい新規事業\"\n  ],\n  \"review_axes\": [\n    \"事業価値\"\n  ]\n}",
+      "annotations": null,
+      "_meta": null
+    },
+    {
+      "type": "text",
+      "text": "{\n  \"id\": \"q4_onlyus\",\n  \"group\": \"新事業10問\",\n  \"title\": \"4. なぜ自社だけ可能\",\n  \"subtitle\": \"独自性と参入障壁\",\n  \"dod\": \"設問に対し最小3行の具体（数値または固有名詞を1つ以上）\",\n  \"research\": \"internal\",\n  \"sources_required\": false,\n  \"entry_themes\": [\n    \"家業の経営資源の活用\"\n  ],\n  \"review_axes\": [\n    \"独自性\"\n  ]\n}",
+      "annotations": null,
+      "_meta": null
+    },
+    {
+      "type": "text",
+      "text": "{\n  \"id\": \"q5_success\",\n  \"group\": \"新事業10問\",\n  \"title\": \"5. 成功後と次課題\",\n  \"subtitle\": \"成功時の実現と課題\",\n  \"dod\": \"設問に対し最小3行の具体（数値または固有名詞を1つ以上）\",\n  \"research\": \"internal\",\n  \"sources_required\": false,\n  \"entry_themes\": [\n    \"実現したい未来\"\n  ],\n  \"review_axes\": [\n    \"波及\",\n    \"実現性\"\n  ]\n}",
+      "annotations": null,
+      "_meta": null
+    },
+    {
+      "type": "text",
+      "text": "{\n  \"id\": \"q6_market\",\n  \"group\": \"新事業10問\",\n  \"title\": \"6. 市場規模\",\n  \"subtitle\": \"TAM・SAM・SOMの算出\",\n  \"dod\": \"設問に対し最小3行の具体（数値または固有名詞を1つ以上）\",\n  \"research\": \"external\",\n  \"sources_required\": true,\n  \"entry_themes\": [\n    \"やりたい新規事業\"\n  ],\n  \"review_axes\": [\n    \"事業価値\"\n  ]\n}",
+      "annotations": null,
+      "_meta": null
+    },
+    {
+      "type": "text",
+      "text": "{\n  \"id\": \"q7_comp\",\n  \"group\": \"新事業10問\",\n  \"title\": \"7. 競合\",\n  \"subtitle\": \"競合他社と差別化\",\n  \"dod\": \"設問に対し最小3行の具体（数値または固有名詞を1つ以上）\",\n  \"research\": \"external\",\n  \"sources_required\": true,\n  \"entry_themes\": [\n    \"家業の経営資源の活用\"\n  ],\n  \"review_axes\": [\n    \"独自性\"\n  ]\n}",
+      "annotations": null,
+      "_meta": null
+    },
+    {
+      "type": "text",
+      "text": "{\n  \"id\": \"q8_bm\",\n  \"group\": \"新事業10問\",\n  \"title\": \"8. ビジネスモデル\",\n  \"subtitle\": \"収益構造とユニット経済\",\n  \"dod\": \"設問に対し最小3行の具体（数値または固有名詞を1つ以上）\",\n  \"research\": \"mixed\",\n  \"sources_required\": false,\n  \"entry_themes\": [\n    \"やりたい新規事業\"\n  ],\n  \"review_axes\": [\n    \"事業価値\"\n  ]\n}",
+      "annotations": null,
+      "_meta": null
+    },
+    {
+      "type": "text",
+      "text": "{\n  \"id\": \"q9_team\",\n  \"group\": \"新事業10問\",\n  \"title\": \"9. チーム\",\n  \"subtitle\": \"チーム編成と人材\",\n  \"dod\": \"設問に対し最小3行の具体（数値または固有名詞を1つ以上）\",\n  \"research\": \"internal\",\n  \"sources_required\": false,\n  \"entry_themes\": [\n    \"家業の経営資源の活用\"\n  ],\n  \"review_axes\": [\n    \"実現性\"\n  ]\n}",
+      "annotations": null,
+      "_meta": null
+    },
+    {
+      "type": "text",
+      "text": "{\n  \"id\": \"q10_budget\",\n  \"group\": \"新事業10問\",\n  \"title\": \"10. 必要資金\",\n  \"subtitle\": \"初期投資と運営費\",\n  \"dod\": \"設問に対し最小3行の具体（数値または固有名詞を1つ以上）\",\n  \"research\": \"mixed\",\n  \"sources_required\": false,\n  \"entry_themes\": [\n    \"家業の経営資源の活用\"\n  ],\n  \"review_axes\": [\n    \"実現性\"\n  ]\n}",
+      "annotations": null,
+      "_meta": null
+    }
+  ],
+  "structuredContent": {
+    "result": [
+      {
+        "id": "q1_whyus",
+        "group": "新事業10問",
+        "title": "1. なぜ自社がやるのか",
+        "subtitle": "自社が取り組む理由",
+        "dod": "設問に対し最小3行の具体（数値または固有名詞を1つ以上）",
+        "research": "internal",
+        "sources_required": false,
+        "entry_themes": [
+          "実現したい未来",
+          "現業と自分"
+        ],
+        "review_axes": [
+          "承継の物語"
+        ]
+      },
+      {
+        "id": "q2_whose",
+        "group": "新事業10問",
+        "title": "2. 誰のどんなニーズか",
+        "subtitle": "ターゲット顧客のニーズ",
+        "dod": "設問に対し最小3行の具体（数値または固有名詞を1つ以上）",
+        "research": "mixed",
+        "sources_required": false,
+        "entry_themes": [
+          "やりたい新規事業"
+        ],
+        "review_axes": [
+          "事業価値",
+          "波及"
+        ]
+      },
+      {
+        "id": "q3_idea",
+        "group": "新事業10問",
+        "title": "3. 具体的アイデア",
+        "subtitle": "事業の具体的内容",
+        "dod": "設問に対し最小3行の具体（数値または固有名詞を1つ以上）",
+        "research": "internal",
+        "sources_required": false,
+        "entry_themes": [
+          "やりたい新規事業"
+        ],
+        "review_axes": [
+          "事業価値"
+        ]
+      },
+      {
+        "id": "q4_onlyus",
+        "group": "新事業10問",
+        "title": "4. なぜ自社だけ可能",
+        "subtitle": "独自性と参入障壁",
+        "dod": "設問に対し最小3行の具体（数値または固有名詞を1つ以上）",
+        "research": "internal",
+        "sources_required": false,
+        "entry_themes": [
+          "家業の経営資源の活用"
+        ],
+        "review_axes": [
+          "独自性"
+        ]
+      },
+      {
+        "id": "q5_success",
+        "group": "新事業10問",
+        "title": "5. 成功後と次課題",
+        "subtitle": "成功時の実現と課題",
+        "dod": "設問に対し最小3行の具体（数値または固有名詞を1つ以上）",
+        "research": "internal",
+        "sources_required": false,
+        "entry_themes": [
+          "実現したい未来"
+        ],
+        "review_axes": [
+          "波及",
+          "実現性"
+        ]
+      },
+      {
+        "id": "q6_market",
+        "group": "新事業10問",
+        "title": "6. 市場規模",
+        "subtitle": "TAM・SAM・SOMの算出",
+        "dod": "設問に対し最小3行の具体（数値または固有名詞を1つ以上）",
+        "research": "external",
+        "sources_required": true,
+        "entry_themes": [
+          "やりたい新規事業"
+        ],
+        "review_axes": [
+          "事業価値"
+        ]
+      },
+      {
+        "id": "q7_comp",
+        "group": "新事業10問",
+        "title": "7. 競合",
+        "subtitle": "競合他社と差別化",
+        "dod": "設問に対し最小3行の具体（数値または固有名詞を1つ以上）",
+        "research": "external",
+        "sources_required": true,
+        "entry_themes": [
+          "家業の経営資源の活用"
+        ],
+        "review_axes": [
+          "独自性"
+        ]
+      },
+      {
+        "id": "q8_bm",
+        "group": "新事業10問",
+        "title": "8. ビジネスモデル",
+        "subtitle": "収益構造とユニット経済",
+        "dod": "設問に対し最小3行の具体（数値または固有名詞を1つ以上）",
+        "research": "mixed",
+        "sources_required": false,
+        "entry_themes": [
+          "やりたい新規事業"
+        ],
+        "review_axes": [
+          "事業価値"
+        ]
+      },
+      {
+        "id": "q9_team",
+        "group": "新事業10問",
+        "title": "9. チーム",
+        "subtitle": "チーム編成と人材",
+        "dod": "設問に対し最小3行の具体（数値または固有名詞を1つ以上）",
+        "research": "internal",
+        "sources_required": false,
+        "entry_themes": [
+          "家業の経営資源の活用"
+        ],
+        "review_axes": [
+          "実現性"
+        ]
+      },
+      {
+        "id": "q10_budget",
+        "group": "新事業10問",
+        "title": "10. 必要資金",
+        "subtitle": "初期投資と運営費",
+        "dod": "設問に対し最小3行の具体（数値または固有名詞を1つ以上）",
+        "research": "mixed",
+        "sources_required": false,
+        "entry_themes": [
+          "家業の経営資源の活用"
+        ],
+        "review_axes": [
+          "実現性"
+        ]
+      }
+    ]
+  },
+  "isError": false,
+  "resultType": "complete"
+}

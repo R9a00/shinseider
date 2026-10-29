@@ -37,3 +37,33 @@ class MCPAuditTest(unittest.TestCase):
                 for section in ['../../escape','materials/../../escape']:
                     with self.assertRaises(ValueError):server.workspace_record(section,'x')
                 self.assertIn('outline.md',server.workspace_state()['files'])
+
+    def test_read_pages_and_workspace_boundary(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            with patch.object(server, 'STATE_FILE', root / 'state.json'):
+                ws = root / 'workspace'
+                server.workspace_init(str(ws))
+                text = '架空の記録🙂\n' * 8
+                server.workspace_record('entry_draft', text)
+                pieces = []
+                offset = 0
+                while offset is not None:
+                    page = server.workspace_read('entry_draft', offset, 7)
+                    pieces.append(page['content'])
+                    offset = page['next_offset']
+                self.assertEqual(''.join(pieces), text)
+                self.assertEqual(server.workspace_read('entry_draft', 1000)['content'], '')
+                for offset, limit in [(-1, 10), (0, 0), (0, 50001)]:
+                    with self.assertRaises(ValueError):
+                        server.workspace_read('entry_draft', offset, limit)
+                for name in ['../outside', 'materials/../../outside', str(root / 'outside')]:
+                    with self.assertRaises(ValueError):
+                        server.workspace_read(name)
+                outside = root / 'outside.md'
+                outside.write_text('outside content')
+                (ws / 'materials/link.md').symlink_to(outside)
+                with self.assertRaises(ValueError):
+                    server.workspace_read('materials/link.md')
+                with self.assertRaises(FileNotFoundError):
+                    server.workspace_read('materials/missing')

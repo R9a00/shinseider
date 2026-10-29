@@ -77,7 +77,7 @@ CLIが入っていなければ、ChatGPTアプリの 設定 → MCPサーバー 
 - Claude Code: `claude mcp list` に `shinseider … ✔ Connected` が出る。
 - Codex / ChatGPT: `codex mcp list` で登録状態を確認する。アプリ側も再起動後に一覧を確認する。一覧表示やenabledだけでは通信成功を示さないため、下のツール呼出しも確認する。
 - Claudeデスクトップも完全終了→再起動が必要。
-- 最終確認: 新しい会話で「アトツギ甲子園の締切は？」と聞き、`get_deadlines` ツールが呼ばれて具体的な日付が返れば完了。
+- 最終確認: 新しい会話で「アトツギ甲子園の締切は？」と聞き、`get_deadlines` ツールが呼ばれて具体的な日付が返ることを確認する。保存・再開は試験用の作業フォルダで `workspace_record` → 再接続 → `workspace_read` を呼び、本文が一致することを確認する。
 
 ### 5. 報告と撤去方法
 

@@ -1,0 +1,14 @@
+{
+  "_meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"verdict\": \"年齢・立場・規模は適合の見込み\",\n  \"detail\": \"\",\n  \"sme_hint\": null,\n  \"subsidy_outlook\": \"この補助金は『5年以内の承継』を決めないと使えません。甲子園への挑戦は、その話を始めるきっかけと締切になります。\",\n  \"disclaimer\": \"※非公式ツール「シンセイダー」の簡易判定です。適用可否は各制度の公募要領原文が常に優先します。\"\n}",
+      "annotations": null,
+      "_meta": null
+    }
+  ],
+  "structuredContent": null,
+  "isError": false,
+  "resultType": "complete"
+}

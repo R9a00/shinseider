@@ -1,4 +1,5 @@
 """Exercise the shipped STDIO entry point without changing a user's MCP config."""
+import json
 import shutil
 import sys
 import tempfile
@@ -27,7 +28,7 @@ class MCPStdioTest(unittest.IsolatedAsyncioTestCase):
                         await client.initialize()
                         if not restart:
                             tools = await client.list_tools()
-                            self.assertEqual(len(tools.tools), 9)
+                            self.assertEqual(len(tools.tools), 10)
                             prompts = await client.list_prompts()
                             self.assertEqual(len(prompts.prompts), 4)
                             resources = await client.list_resources()
@@ -58,4 +59,8 @@ class MCPStdioTest(unittest.IsolatedAsyncioTestCase):
                             self.assertFalse(result.is_error)
                         result = await client.call_tool('workspace_state')
                         self.assertFalse(result.is_error)
-                        self.assertEqual((root / 'workspace/outline.md').read_text(), 'isolated test record')
+                        restored = await client.call_tool('workspace_read', {'section': 'outline'})
+                        self.assertFalse(restored.is_error)
+                        payload = json.loads(restored.content[0].text)
+                        self.assertEqual(payload['content'], 'isolated test record')
+                        self.assertIsNone(payload['next_offset'])

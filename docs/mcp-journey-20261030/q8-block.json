@@ -1,0 +1,14 @@
+{
+  "_meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"id\": \"q8_bm\",\n  \"group\": \"新事業10問\",\n  \"title\": \"8. ビジネスモデル\",\n  \"subtitle\": \"収益構造とユニット経済\",\n  \"dod\": \"設問に対し最小3行の具体（数値または固有名詞を1つ以上）\",\n  \"min_required_fields\": 2,\n  \"research\": \"mixed\",\n  \"sources_required\": false,\n  \"entry_themes\": [\n    \"やりたい新規事業\"\n  ],\n  \"review_axes\": [\n    \"事業価値\"\n  ],\n  \"fields\": [\n    {\n      \"key\": \"formula\",\n      \"label\": \"収益式と例\",\n      \"required\": true,\n      \"example\": \"収益モデルの例（仮定）\\n売上 = 月間案件数 × 平均単価\\n50件/月 × 8万円 = 400万円/月（4,800万円/年）\\n利益 = 売上 - 原価 - 固定費\\n原価率60%（材料費40%＋外注加工費等20%）、固定費200万円/月と仮定\\n利益 = 400万円 - 240万円 - 200万円 = △40万円/月（採算改善が必要）\"\n    },\n    {\n      \"key\": \"unit\",\n      \"label\": \"ユニット経済（ARPU・LTV・CAC）\",\n      \"required\": true,\n      \"example\": \"顧客単価の例（仮定）\\n月次ARPU = 8万円/件 × 6件/年/顧客 ÷ 12か月/年 = 4万円/月/顧客\\nLTV（売上累計）= 4万円/月/顧客 × 12か月/年 × 3年 = 144万円/顧客\\nCAC = 新規顧客獲得費用50万円/月 ÷ 新規獲得10社/月 = 5万円/顧客\\n売上累計ベースのLTV/CAC = 144万円 ÷ 5万円 = 28.8\\n原価率60%の仮定なら、粗利ベースのLTV = 144万円 × 40% = 57.6万円、LTV/CAC = 11.52。固定費・回収期間等は別途確認し、この比率だけで健全性を判断しない\"\n    }\n  ],\n  \"criteria_note\": \"DoD・required・review_axesは本ツール独自の材料整理基準。24ブロック全てが公式必須ではありません。\"\n}",
+      "annotations": null,
+      "_meta": null
+    }
+  ],
+  "structuredContent": null,
+  "isError": false,
+  "resultType": "complete"
+}

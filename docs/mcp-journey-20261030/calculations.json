@@ -1,0 +1,17 @@
+{
+  "unit": "万円（比率・月数・社数を除く）",
+  "monthly_arpu": "5",
+  "months": 36,
+  "sales_lifetime": "180",
+  "contribution_lifetime": "54.0",
+  "ltv_cac_ratio": "4.5",
+  "cac_payback_months_excluding_fixed_costs": "8",
+  "steady_monthly_sales": "100",
+  "steady_monthly_variable_costs": "70.0",
+  "monthly_fixed_costs": "20",
+  "steady_monthly_result_before_acquisition_and_initial_costs": "10.0",
+  "break_even_customers_excluding_acquisition": 14,
+  "twenty_customer_acquisition_costs": "240",
+  "steady_annualized_sales": "1200",
+  "first_year_sales": null
+}
