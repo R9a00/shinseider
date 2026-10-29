@@ -1,0 +1,14 @@
+{
+  "_meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "Unknown tool: workspace_read",
+      "annotations": null,
+      "_meta": null
+    }
+  ],
+  "structuredContent": null,
+  "isError": true,
+  "resultType": "complete"
+}

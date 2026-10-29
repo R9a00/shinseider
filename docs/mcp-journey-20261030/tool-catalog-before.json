@@ -1,0 +1,250 @@
+{
+  "_meta": null,
+  "ttlMs": 0,
+  "cacheScope": "private",
+  "nextCursor": null,
+  "tools": [
+    {
+      "name": "get_deadlines",
+      "title": null,
+      "description": "アトツギ甲子園の二段階締切（エントリー登録／書類提出）と現在の段階・残日数を返す。\n期日に関する質問には必ずこのツールの値で答えること。",
+      "inputSchema": {
+        "properties": {},
+        "type": "object",
+        "title": "get_deadlinesArguments"
+      },
+      "execution": null,
+      "outputSchema": null,
+      "icons": null,
+      "annotations": null,
+      "_meta": null
+    },
+    {
+      "name": "check_eligibility",
+      "title": null,
+      "description": "アトツギ甲子園のエントリー資格をサイトの30秒チェックと同一ロジックで判定する。\nposition: successor(家業を継ぐ予定があり家業の代表権を持っていない) / other_company_rep(別法人代表だが承継予定・経営資源活用あり) / neither\nsme_status: yes(中小企業にあてはまる) / unsure / no\nsuccession_within_5y: yes / undecided / no / None（補助金の見立て。任意）",
+      "inputSchema": {
+        "properties": {
+          "born_1987_04_or_later": {
+            "title": "Born 1987 04 Or Later",
+            "type": "boolean"
+          },
+          "position": {
+            "title": "Position",
+            "type": "string"
+          },
+          "sme_status": {
+            "title": "Sme Status",
+            "type": "string"
+          },
+          "succession_within_5y": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Succession Within 5Y"
+          }
+        },
+        "required": [
+          "born_1987_04_or_later",
+          "position",
+          "sme_status"
+        ],
+        "type": "object",
+        "title": "check_eligibilityArguments"
+      },
+      "execution": null,
+      "outputSchema": null,
+      "icons": null,
+      "annotations": null,
+      "_meta": null
+    },
+    {
+      "name": "get_pace_plan",
+      "title": null,
+      "description": "今日から始めた場合の逆算プラン（サイトの「間に合うか」と同一ロジック）を返す。",
+      "inputSchema": {
+        "properties": {},
+        "type": "object",
+        "title": "get_pace_planArguments"
+      },
+      "execution": null,
+      "outputSchema": null,
+      "icons": null,
+      "annotations": null,
+      "_meta": null
+    },
+    {
+      "name": "workspace_init",
+      "title": null,
+      "description": "作業フォルダを作成し、以後の記録先として登録する。pathは利用者に確認した絶対パス。\n既存フォルダを指定した場合は再開として扱い、現状の一覧を返す。",
+      "inputSchema": {
+        "properties": {
+          "path": {
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "type": "object",
+        "title": "workspace_initArguments"
+      },
+      "execution": null,
+      "outputSchema": null,
+      "icons": null,
+      "annotations": null,
+      "_meta": null
+    },
+    {
+      "name": "workspace_record",
+      "title": null,
+      "description": "ワークスペースへ記録する。section: profile / outline / entry_draft /\nfukabori/<ブロックid> / review/<名前> / materials/<名前>。mode: replace / append。\n利用者の入力・確定事項・成果物は必ずここに記録し、会話にだけ残さないこと。",
+      "inputSchema": {
+        "properties": {
+          "section": {
+            "title": "Section",
+            "type": "string"
+          },
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "mode": {
+            "default": "replace",
+            "title": "Mode",
+            "type": "string"
+          }
+        },
+        "required": [
+          "section",
+          "content"
+        ],
+        "type": "object",
+        "title": "workspace_recordArguments"
+      },
+      "execution": null,
+      "outputSchema": null,
+      "icons": null,
+      "annotations": null,
+      "_meta": null
+    },
+    {
+      "name": "workspace_state",
+      "title": null,
+      "description": "ワークスペースの現状（ファイル一覧・深掘り済みブロック・充足の概観）を返す。\n別の会話から再開するときは、まずこれを呼んで文脈を復元すること。",
+      "inputSchema": {
+        "properties": {},
+        "type": "object",
+        "title": "workspace_stateArguments"
+      },
+      "execution": null,
+      "outputSchema": null,
+      "icons": null,
+      "annotations": null,
+      "_meta": null
+    },
+    {
+      "name": "list_question_blocks",
+      "title": null,
+      "description": "質問バンクの一覧（id/グループ/タイトル/DoD/調査区分/写像）を返す。\nDoD・required・観点は独自の材料整理基準で、24ブロック全てが公式必須ではない。\ngroup: 足元 / 外部環境 / 競争構造 / 新事業10問（省略で全件）。",
+      "inputSchema": {
+        "properties": {
+          "group": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Group"
+          }
+        },
+        "type": "object",
+        "title": "list_question_blocksArguments"
+      },
+      "execution": null,
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object",
+        "title": "list_question_blocksOutput"
+      },
+      "icons": null,
+      "annotations": null,
+      "_meta": null
+    },
+    {
+      "name": "get_question_block",
+      "title": null,
+      "description": "指定ブロックの全フィールド（設問・必須・記入例）とDoDを返す。深掘り開始時に呼ぶ。\n必須・DoDは本ツール独自の材料整理基準であり、公式の必須項目ではない。",
+      "inputSchema": {
+        "properties": {
+          "block_id": {
+            "title": "Block Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "block_id"
+        ],
+        "type": "object",
+        "title": "get_question_blockArguments"
+      },
+      "execution": null,
+      "outputSchema": null,
+      "icons": null,
+      "annotations": null,
+      "_meta": null
+    },
+    {
+      "name": "fukabori_coverage",
+      "title": null,
+      "description": "深掘り回答の機械チェック（DoDの数えられる部分のみ）。意味的な充足はLLMが\nget_question_block のDoDと照らして判断し、このツールの結果と合わせて報告する。",
+      "inputSchema": {
+        "properties": {
+          "block_id": {
+            "title": "Block Id",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "block_id",
+          "text"
+        ],
+        "type": "object",
+        "title": "fukabori_coverageArguments"
+      },
+      "execution": null,
+      "outputSchema": null,
+      "icons": null,
+      "annotations": null,
+      "_meta": null
+    }
+  ],
+  "resultType": "complete"
+}

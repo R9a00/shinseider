@@ -1,0 +1,16 @@
+{
+  "base_url": "https://shinseider.onrender.com",
+  "entry_sections_matched": 5,
+  "fukabori_blocks_matched": 2,
+  "fukabori_fields_matched": 4,
+  "backup_and_fresh_browser_restore": "exact match",
+  "external_AI_requests": "blocked",
+  "javascript_errors": [],
+  "section_lengths": {
+    "genba": 262,
+    "kadai": 277,
+    "shinkijigyo": 299,
+    "keieishigen": 269,
+    "mirai": 261
+  }
+}

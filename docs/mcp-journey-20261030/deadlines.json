@@ -1,0 +1,14 @@
+{
+  "_meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"entry_deadline\": \"2026-11-25T18:00:00+09:00\",\n  \"document_deadline\": \"2026-11-27T12:00:00+09:00\",\n  \"stage\": \"open\",\n  \"days_to_entry\": 26,\n  \"message\": \"まだかなり猶予があります。\",\n  \"note\": \"煽る対象はエントリー登録。登録さえ済めば書類提出まで約2日ある。\",\n  \"provenance\": {\n    \"source_url\": \"https://www.meti.go.jp/press/2026/07/20260715003.html\",\n    \"accessed\": \"2026-08-06\",\n    \"confidence\": \"verified\"\n  },\n  \"disclaimer\": \"※非公式ツール「シンセイダー」の簡易判定です。適用可否は各制度の公募要領原文が常に優先します。\"\n}",
+      "annotations": null,
+      "_meta": null
+    }
+  ],
+  "structuredContent": null,
+  "isError": false,
+  "resultType": "complete"
+}

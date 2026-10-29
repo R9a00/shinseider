@@ -1,0 +1,14 @@
+{
+  "_meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"block\": \"8. ビジネスモデル\",\n  \"dod\": \"設問に対し最小3行の具体（数値または固有名詞を1つ以上）\",\n  \"checks\": {\n    \"行数3以上\": true,\n    \"数値を含む\": true,\n    \"出典の記載\": true\n  },\n  \"passed_mechanical\": true,\n  \"note\": \"機械チェックのみ。DoDは独自の整理基準で公式要件ではありません。DoDの意味的な充足（固有名詞・機会2脅威2など）はLLMが判断し、（仮）の数字が残っていれば指摘すること。\"\n}",
+      "annotations": null,
+      "_meta": null
+    }
+  ],
+  "structuredContent": null,
+  "isError": false,
+  "resultType": "complete"
+}
