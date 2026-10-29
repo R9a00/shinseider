@@ -1,0 +1,13 @@
+{
+  "checked_at": "2026-10-29T22:38:58.961728+00:00",
+  "base_commit": "f3f451b581db73e96ca0b56aeb2f8ef8fc8f4c0e",
+  "node_tests": 17,
+  "python_tests": 22,
+  "pages": 13,
+  "viewport_widths": [
+    375,
+    1280
+  ],
+  "mcp_transport": "STDIO",
+  "note": "Reproduction logs include intentional failures. Final result logs are successful. Windows and non-Chromium browsers not exercised."
+}

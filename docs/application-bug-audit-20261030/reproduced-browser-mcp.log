@@ -1,0 +1,154 @@
+FFFFFE
+======================================================================
+ERROR: test_original_filenames_with_spaces_and_parentheses (test_application_bugs.MCPBugs.test_original_filenames_with_spaces_and_parentheses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/shinseider-bugs-20261030/site/tests/test_application_bugs.py", line 99, in test_original_filenames_with_spaces_and_parentheses
+    result=server.application_document_read('materials/提出 フォーマット (1).txt')
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/shinseider-bugs-20261030/mcp/server.py", line 308, in application_document_read
+    return application.extract(_workspace_file(section))
+                               ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/private/tmp/shinseider-bugs-20261030/mcp/server.py", line 224, in _workspace_file
+    raise ValueError(f"不正なsection: {section}")
+ValueError: 不正なsection: materials/提出 フォーマット (1).txt
+
+======================================================================
+FAIL: test_backup_includes_other_tab_materials_and_unsaved_local_input (test_application_bugs.BrowserBugs.test_backup_includes_other_tab_materials_and_unsaved_local_input)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/shinseider-bugs-20261030/site/tests/test_application_bugs.py", line 78, in test_backup_includes_other_tab_materials_and_unsaved_local_input
+    self.assertEqual(c['materials'][0]['body'],'別タブで記入した本文')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '' != '別タブで記入した本文'
++ 別タブで記入した本文
+
+
+======================================================================
+FAIL: test_late_file_read_does_not_overwrite_a_new_context (test_application_bugs.BrowserBugs.test_late_file_read_does_not_overwrite_a_new_context)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/shinseider-bugs-20261030/site/tests/test_application_bugs.py", line 66, in test_late_file_read_does_not_overwrite_a_new_context
+    expect(self.page.locator('#application-message')).to_contain_text('変更')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/private/tmp/shinseider-audit-venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py", line 19214, in to_contain_text
+    self._sync(
+    ~~~~~~~~~~^
+        self._impl_obj.to_contain_text(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        )
+        ^
+    )
+    ^
+  File "/private/tmp/shinseider-audit-venv/lib/python3.14/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ~~~~~~~~~~~^^
+  File "/private/tmp/shinseider-audit-venv/lib/python3.14/site-packages/playwright/_impl/_assertions.py", line 227, in to_contain_text
+    await self._expect_impl(
+    ...<9 lines>...
+    )
+  File "/private/tmp/shinseider-audit-venv/lib/python3.14/site-packages/playwright/_impl/_assertions.py", line 83, in _expect_impl
+    raise AssertionError(
+        f"{out_message}\nActual value: {actual} {format_call_log(result.get('log'))}"
+    )
+AssertionError: Locator expected to contain text '変更'
+Actual value: 抽出しました。本文と未確認範囲を確認してください。 
+Call log:
+  - Expect "to_contain_text" with timeout 5000ms
+  - waiting for locator("#application-message")
+    2 × locator resolved to <p role="status" aria-live="polite" id="application-message">ファイルを読んでいます…</p>
+      - unexpected value "ファイルを読んでいます…"
+    7 × locator resolved to <p role="status" aria-live="polite" id="application-message">抽出しました。本文と未確認範囲を確認してください。</p>
+      - unexpected value "抽出しました。本文と未確認範囲を確認してください。"
+
+
+======================================================================
+FAIL: test_late_prompt_cannot_reappear_after_edit (test_application_bugs.BrowserBugs.test_late_prompt_cannot_reappear_after_edit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/shinseider-bugs-20261030/site/tests/test_application_bugs.py", line 58, in test_late_prompt_cannot_reappear_after_edit
+    expect(self.page.locator('#application-message')).to_contain_text('変更')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/private/tmp/shinseider-audit-venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py", line 19214, in to_contain_text
+    self._sync(
+    ~~~~~~~~~~^
+        self._impl_obj.to_contain_text(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        )
+        ^
+    )
+    ^
+  File "/private/tmp/shinseider-audit-venv/lib/python3.14/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ~~~~~~~~~~~^^
+  File "/private/tmp/shinseider-audit-venv/lib/python3.14/site-packages/playwright/_impl/_assertions.py", line 227, in to_contain_text
+    await self._expect_impl(
+    ...<9 lines>...
+    )
+  File "/private/tmp/shinseider-audit-venv/lib/python3.14/site-packages/playwright/_impl/_assertions.py", line 83, in _expect_impl
+    raise AssertionError(
+        f"{out_message}\nActual value: {actual} {format_call_log(result.get('log'))}"
+    )
+AssertionError: Locator expected to contain text '変更'
+Actual value: 指示文を作りました。原本入り一式を保存してAIへ渡してください。 
+Call log:
+  - Expect "to_contain_text" with timeout 5000ms
+  - waiting for locator("#application-message")
+    9 × locator resolved to <p role="status" aria-live="polite" id="application-message">指示文を作りました。原本入り一式を保存してAIへ渡してください。</p>
+      - unexpected value "指示文を作りました。原本入り一式を保存してAIへ渡してください。"
+
+
+======================================================================
+FAIL: test_quota_failure_never_claims_review_saved (test_application_bugs.BrowserBugs.test_quota_failure_never_claims_review_saved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/shinseider-bugs-20261030/site/tests/test_application_bugs.py", line 50, in test_quota_failure_never_claims_review_saved
+    expect(self.page.locator('#application-message')).not_to_contain_text('保存しました')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/private/tmp/shinseider-audit-venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py", line 19257, in not_to_contain_text
+    self._sync(
+    ~~~~~~~~~~^
+        self._impl_obj.not_to_contain_text(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        )
+        ^
+    )
+    ^
+  File "/private/tmp/shinseider-audit-venv/lib/python3.14/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ~~~~~~~~~~~^^
+  File "/private/tmp/shinseider-audit-venv/lib/python3.14/site-packages/playwright/_impl/_assertions.py", line 253, in not_to_contain_text
+    await self._not.to_contain_text(expected, useInnerText, timeout, ignoreCase)
+  File "/private/tmp/shinseider-audit-venv/lib/python3.14/site-packages/playwright/_impl/_assertions.py", line 227, in to_contain_text
+    await self._expect_impl(
+    ...<9 lines>...
+    )
+  File "/private/tmp/shinseider-audit-venv/lib/python3.14/site-packages/playwright/_impl/_assertions.py", line 83, in _expect_impl
+    raise AssertionError(
+        f"{out_message}\nActual value: {actual} {format_call_log(result.get('log'))}"
+    )
+AssertionError: Locator expected not to contain text '保存しました'
+Actual value: AIの点検記録を保存しました。指摘と未確認範囲を読み、修正後に再点検してください。 
+Call log:
+  - Expect "to_contain_text" with timeout 5000ms
+  - waiting for locator("#application-message")
+    9 × locator resolved to <p role="status" aria-live="polite" id="application-message">AIの点検記録を保存しました。指摘と未確認範囲を読み、修正後に再点検してください。</p>
+      - unexpected value "AIの点検記録を保存しました。指摘と未確認範囲を読み、修正後に再点検してください。"
+
+
+======================================================================
+FAIL: test_old_context_cannot_erase_a_new_review (test_application_bugs.MCPBugs.test_old_context_cannot_erase_a_new_review)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/shinseider-bugs-20261030/site/tests/test_application_bugs.py", line 91, in test_old_context_cannot_erase_a_new_review
+    with self.assertRaises(ValueError):server.application_context_save(c,expected_binding=first['binding'])
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 6 tests in 17.140s
+
+FAILED (failures=5, errors=1)

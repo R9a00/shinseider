@@ -27,6 +27,11 @@ def blank() -> dict:
 
 
 def _safe(value):
+    if isinstance(value, str):
+        try:
+            value.encode('utf-8')
+        except UnicodeEncodeError:
+            raise ValueError('不正な文字が含まれています') from None
     if isinstance(value, dict):
         for k, v in value.items():
             if k in ['__proto__', 'constructor', 'prototype']:
@@ -41,29 +46,45 @@ def _strings(value, keys):
     return isinstance(value, dict) and all(isinstance(value.get(k), str) for k in keys)
 
 
+def _shape(value, keys):
+    if not isinstance(value, dict) or set(value) - set(keys):
+        raise ValueError('文脈データに未対応の項目があります')
+
+
 def validate(c: dict) -> dict:
     _safe(c)
+    _shape(c, ['schema', 'reference', 'materials', 'sources', 'files', 'review'])
+    c = copy.deepcopy(c)
     if not isinstance(c, dict) or c.get('schema') != SCHEMA or not _strings(c, ['reference']) or not isinstance(c.get('materials'), list) or len(c['materials']) != 6 or not isinstance(c.get('sources'), list) or not isinstance(c.get('files'), dict):
         raise ValueError('文脈データの形式が違います')
     for i, m in enumerate(c['materials']):
+        _shape(m, ['id', 'body', 'basis', 'gaps', 'visuals'])
         if not _strings(m, ['id', 'body', 'basis', 'gaps', 'visuals']) or m['id'] != IDS[i]:
             raise ValueError('6項目の材料を確認してください')
     seen = set()
     for s in c['sources']:
+        _shape(s, ['id', 'title', 'url', 'published', 'checked', 'kind', 'status', 'note'])
         if not _strings(s, ['id', 'title', 'url', 'published', 'checked', 'kind', 'status', 'note']) or not s['id'] or s['id'] in seen or s['status'] not in ['確認済み', '本人申告', '未確認'] or (s['url'] and not re.match(r'https?://', s['url'], re.I)):
             raise ValueError('出典の形式・ID・URLを確認してください')
         seen.add(s['id'])
+    _shape(c['files'], ['template', 'draft'])
     for key in ['template', 'draft']:
         if key not in c['files']:
             raise ValueError('ファイル情報がありません')
         f = c['files'][key]
         if f is None:
             continue
-        if not _strings(f, ['name', 'sha256']) or not re.fullmatch('[a-f0-9]{64}', f['sha256']) or not isinstance(f.get('pages'), list) or not 1 <= len(f['pages']) <= 100 or not isinstance(f.get('warnings'), list) or not all(isinstance(w, str) for w in f['warnings']) or not all(isinstance(p, dict) and type(p.get('number')) is int and p['number'] == i+1 and isinstance(p.get('text'), str) for i, p in enumerate(f['pages'])):
+        _shape(f, ['name', 'sha256', 'pages', 'warnings'])
+        if not _strings(f, ['name', 'sha256']) or not re.fullmatch('[a-f0-9]{64}', f['sha256']) or not isinstance(f.get('pages'), list) or not 1 <= len(f['pages']) <= 100 or not isinstance(f.get('warnings'), list) or not all(isinstance(w, str) for w in f['warnings']) or not all(isinstance(p, dict) and type(p.get('number')) in (int, float) and p['number'] == i+1 and isinstance(p.get('text'), str) for i, p in enumerate(f['pages'])):
             raise ValueError('ファイル情報の形式が違います')
+        for page in f['pages']:
+            _shape(page, ['number', 'text'])
+            page['number'] = int(page['number'])
+    if c.get('review') is not None:
+        _shape(c['review'], ['binding', 'result'])
     if 'review' not in c or c['review'] is not None and (not _strings(c['review'], ['binding', 'result']) or not re.fullmatch('[a-f0-9]{64}', c['review']['binding'])):
         raise ValueError('点検結果の形式が違います')
-    if len(json.dumps(c, ensure_ascii=False)) > 2000000:
+    if len(json.dumps(c, ensure_ascii=False, separators=(',', ':'))) > 2000000:
         raise ValueError('データが大きすぎます')
     return copy.deepcopy(c)
 
@@ -79,7 +100,7 @@ def binding(context, guide):
 
 
 def prompt(stage, context, guide):
-    validate(context)
+    context = validate(context)
     if stage not in guide['stages']:
         raise ValueError('段階はresearch / prepare / compose / reviewです')
     if stage in ['compose', 'review'] and not context['files']['template']:
@@ -114,8 +135,17 @@ def extract(path: Path):
                 if re.search(br'<!DOCTYPE|<!ENTITY', xml, re.I):
                     raise ValueError('XMLを読み取れません')
                 return ET.fromstring(xml)
+            def paragraph(node):
+                tag = node.tag.rsplit('}', 1)[-1]
+                if tag == 't':
+                    return node.text or ''
+                if tag == 'tab':
+                    return '\t'
+                if tag in ['br', 'cr']:
+                    return '\n'
+                return ''.join(paragraph(child) for child in node if child.tag.rsplit('}', 1)[-1] != 'p')
             def text(node):
-                return '\n'.join(''.join(t.text or '' for t in p.iter() if t.tag.rsplit('}', 1)[-1] == 't') for p in node.iter() if p.tag.rsplit('}', 1)[-1] == 'p')
+                return '\n'.join(paragraph(p) for p in node.iter() if p.tag.rsplit('}', 1)[-1] == 'p')
             if ext == '.docx':
                 texts = [text(read('word/document.xml'))]
             else:

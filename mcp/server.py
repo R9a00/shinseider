@@ -9,6 +9,10 @@
 from __future__ import annotations
 
 import json
+import hashlib
+import os
+import tempfile
+from contextlib import contextmanager
 import pathlib
 import re
 import sys
@@ -213,12 +217,12 @@ def workspace_init(path: str) -> dict:
             "note": "profile/outline/entry_draft は workspace_record で記録。既存ファイルは workspace_read で読み込み、文脈を復元すること。"}
 
 
-def _workspace_file(section: str) -> pathlib.Path:
+def _workspace_file(section: str, workspace: pathlib.Path | None = None) -> pathlib.Path:
     """読書き共通の名前・作業フォルダ境界。"""
-    ws = _ws().resolve()
+    ws = (workspace or _ws()).resolve()
     if section in SECTIONS:
         target = ws / SECTIONS[section]
-    elif re.fullmatch(r"(fukabori|review|materials)/[\w\-\.ぁ-んァ-ヶ一-龠]+", section):
+    elif re.fullmatch(r"(fukabori|review|materials)/[^/\\\x00-\x1f\x7f]+", section) and section.split("/")[1] not in (".", ".."):
         target = ws / (section + ("" if "." in section.split("/")[1] else ".md"))
     else:
         raise ValueError(f"不正なsection: {section}")
@@ -249,7 +253,9 @@ def workspace_record(section: str, content: str, mode: str = "replace") -> dict:
     if mode not in ("replace", "append"):
         raise ValueError("mode は replace または append を指定してください")
     ws = _ws()
-    target = _workspace_file(section)
+    target = _workspace_file(section, ws)
+    if target == (ws / 'materials/application-context.json').resolve():
+        raise ValueError('文脈データはapplication_context_saveで保存してください')
     target.parent.mkdir(parents=True, exist_ok=True)
     if mode == "append" and target.exists():
         target.write_text(target.read_text() + "\n" + content)
@@ -275,27 +281,84 @@ def workspace_state() -> dict:
 
 # ---------- 調査から完成稿までの共通文脈 ----------
 
-@app.tool()
-def application_context_read() -> dict:
-    """6項目・出典・フォーマット・完成稿・点検記録を再開する。未保存なら空の文脈を返す。
-    既存の骨子や深掘りはworkspace_readで読み、referenceへ本人の記録として引き継ぐ。"""
-    target = _workspace_file('materials/application-context.json')
-    context = application.validate(json.loads(target.read_text())) if target.exists() else application.blank()
+def _application_state(target: pathlib.Path) -> dict:
+    context = application.validate(json.loads(target.read_text(encoding='utf-8'))) if target.exists() else application.blank()
     guide = application.rules(ROOT)
     digest = application.binding(context, guide)
-    return {'context': context, 'binding': digest, 'review_current': bool(context['files']['template'] and context['files']['draft'] and context['review'] and context['review']['binding'] == digest),
-            'note': 'review_currentは対象が一致するという意味です。内容の正しさ・合格を意味しません。'}
+    revision = hashlib.sha256(application.canonical(context).encode('utf-8')).hexdigest()
+    return {'context': context, 'binding': digest, 'revision': revision,
+            'review_current': bool(context['files']['template'] and context['files']['draft'] and context['review'] and context['review']['binding'] == digest),
+            'note': 'review_currentは対象の一致であり、内容の正しさ・合格ではありません。保存時はrevisionをexpected_revisionへ指定してください。'}
+
+
+@contextmanager
+def _application_lock(target: pathlib.Path):
+    # All cooperating MCP processes check and replace under the same workspace lock.
+    lock = target.with_suffix('.lock')
+    if lock.is_symlink():
+        raise ValueError('保存ロックのシンボリックリンクには対応していません')
+    with lock.open('a+b') as f:
+        if os.name == 'nt':
+            import msvcrt
+            if f.seek(0, 2) == 0:
+                f.write(b'0'); f.flush()
+            f.seek(0); msvcrt.locking(f.fileno(), msvcrt.LK_LOCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            if os.name == 'nt':
+                f.seek(0); msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+
+
+def _application_write(target: pathlib.Path, context: dict):
+    name = None
+    try:
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=target.parent, prefix='.application-', delete=False) as f:
+            name = f.name
+            json.dump(context, f, ensure_ascii=False, indent=2)
+            f.flush(); os.fsync(f.fileno())
+        os.replace(name, target)
+    finally:
+        if name and os.path.exists(name):
+            os.unlink(name)
 
 
 @app.tool()
-def application_context_save(context: dict, expected_binding: str = '') -> dict:
-    """ブラウザ共通のcontext.jsonを検査して保存する。既存の保存がある場合は、readで得たbindingをexpected_bindingへ指定。"""
+def application_context_read() -> dict:
+    """6項目・出典・原本・点検記録を再開。revisionは点検本文も含む保存版、bindingは点検対象。
+    既存の骨子はworkspace_readで読み、referenceへ本人の記録として引き継ぐ。"""
+    return _application_state(_workspace_file('materials/application-context.json'))
+
+
+@app.tool()
+def application_context_save(context: dict, expected_binding: str = '', expected_revision: str = '') -> dict:
+    """context.jsonを検査して保存。既存の記録はreadで得たrevisionをexpected_revisionへ指定。
+    旧expected_bindingのみの場合、点検本文の変更は拒否して新しい点検結果を保護する。"""
     context = application.validate(context)
-    target = _workspace_file('materials/application-context.json')
-    if target.exists() and application_context_read()['binding'] != expected_binding:
-        raise ValueError('保存内容が変わっています。application_context_readで読み直し、変更を統合してください')
-    workspace_record('materials/application-context.json', json.dumps(context, ensure_ascii=False, indent=2))
-    return application_context_read()
+    ws = _ws().resolve()
+    target = _workspace_file('materials/application-context.json', ws)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with _application_lock(target):
+        current = _application_state(target)
+        if target.exists():
+            if expected_revision:
+                matches = expected_revision == current['revision'] and (not expected_binding or expected_binding == current['binding'])
+            else:
+                matches = expected_binding == current['binding'] and context['review'] == current['context']['review']
+            if not matches:
+                raise ValueError('保存内容または点検記録が変わっています。application_context_readで読み直し、変更を統合してrevisionをexpected_revisionへ指定してください')
+        _application_write(target, context)
+        result = _application_state(target)
+        try:
+            _journal(ws, {'event': 'application_save', 'revision': result['revision']})
+        except OSError:
+            result['journal_warning'] = '文脈データは保存しましたが、操作履歴の追記に失敗しました。'
+        return result
 
 
 @app.tool()
@@ -318,7 +381,7 @@ def application_review_save(binding: str, result: str) -> dict:
     if not context['files']['template'] or not context['files']['draft']:
         raise ValueError('フォーマットと完成稿を記録してから点検してください')
     context['review'] = {'binding': binding, 'result': result}
-    return application_context_save(context, current['binding'])
+    return application_context_save(context, expected_revision=current['revision'])
 
 
 @app.prompt()

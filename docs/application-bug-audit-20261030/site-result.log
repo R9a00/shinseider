@@ -1,0 +1,23 @@
+built application.html
+built index.html
+built workspace.html
+built schedule.html
+built cool.html
+built entry.html
+built fukabori.html
+built subsidy.html
+built check.html
+built trust.html
+built about.html
+built ambassadors.html
+built news.html
+→ /private/tmp/shinseider-bugs-20261030/site/dist
+PASS: 13 pages load without internal vocabulary
+PASS: required Q3, optional Q4, diagnosis persistence
+PASS: import, clipboard, popup, reload, progress and backup export
+PASS: multiple tabs preserve independent edits and reject conflicts
+PASS: backup restore and malformed backup protection
+PASS: storage failure is visible in all three forms
+PASS: 11/24, entry cutoff and document cutoff boundary plans
+PASS: calendar description, fixed-date countdown, navigation, no JS errors
+OK: all site regression checks passed

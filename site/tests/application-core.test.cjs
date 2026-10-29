@@ -13,3 +13,16 @@ test('review binds exact materials, original hashes and guidance, never itself',
  await assert.rejects(C.prompt('compose',c,rules),/フォーマット/);await assert.rejects(C.prompt('bad',c,rules));
  assert.notEqual(await C.binding(c,{...rules,common:'改訂'}),await C.binding(c,rules));
 });
+test('prompt uses one immutable snapshot across asynchronous hashing',async()=>{
+ const c=C.blank(),rules={common:'ルール',stages:{research:'調べる'}};
+ c.reference='before';const old=await C.binding(c,rules);
+ const pending=C.prompt('research',c,rules);c.reference='after';
+ const text=await pending;assert.ok(text.includes(old));assert.ok(text.includes('"reference": "before"'));assert.ok(!text.includes('"reference": "after"'));
+});
+test('schema rejects extensions, invalid Unicode and inherited stage names',async()=>{
+ assert.throws(()=>C.validate({...C.blank(),unexpected:1.0}));
+ assert.throws(()=>C.validate({...C.blank(),reference:'\ud800'}));
+ await assert.rejects(C.prompt('toString',C.blank(),{stages:{research:'x'}}));
+ const c=C.blank();const size=Array.from(JSON.stringify(c)).length;c.reference='x'.repeat(2000000-size);
+ assert.equal(C.validate(c).reference.length,c.reference.length);c.reference+='x';assert.throws(()=>C.validate(c));
+});
