@@ -17,7 +17,7 @@ function validate(v){
   shape(v.files,['template','draft']);
   ['template','draft'].forEach(key=>{const f=v.files[key];if(f===null)return;shape(f,['name','sha256','pages','warnings']);if(!strings(f,['name','sha256'])||!/^[a-f0-9]{64}$/.test(f.sha256)||!Array.isArray(f.pages)||!f.pages.length||f.pages.length>100||!Array.isArray(f.warnings)||!f.warnings.every(x=>typeof x==='string')||!f.pages.every((p,i)=>obj(p)&&p.number===i+1&&typeof p.text==='string'))throw Error('ファイル情報の形式が違います');f.pages.forEach(p=>shape(p,['number','text']));});
   if(v.review!==null)shape(v.review,['binding','result']);
-  if(v.review!==null&&(!strings(v.review,['binding','result'])||!/^[a-f0-9]{64}$/.test(v.review.binding)))throw Error('点検結果の形式が違います');
+  if(v.review!==null&&(!strings(v.review,['binding','result'])||!/^[a-f0-9]{64}$/.test(v.review.binding)||!v.review.result.trim()))throw Error('点検結果の形式が違います');
   if(Array.from(JSON.stringify(v)).length>2000000)throw Error('データが大きすぎます（200万文字まで）');
   return clone(v);
 }

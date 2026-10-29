@@ -21,6 +21,7 @@ test('prompt uses one immutable snapshot across asynchronous hashing',async()=>{
 });
 test('schema rejects extensions, invalid Unicode and inherited stage names',async()=>{
  assert.throws(()=>C.validate({...C.blank(),unexpected:1.0}));
+ assert.throws(()=>C.validate({...C.blank(),review:{binding:'a'.repeat(64),result:'  '}}));
  assert.throws(()=>C.validate({...C.blank(),reference:'\ud800'}));
  await assert.rejects(C.prompt('toString',C.blank(),{stages:{research:'x'}}));
  const c=C.blank();const size=Array.from(JSON.stringify(c)).length;c.reference='x'.repeat(2000000-size);

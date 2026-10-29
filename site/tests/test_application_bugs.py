@@ -155,7 +155,7 @@ class SchemaAndParsingBugs(unittest.TestCase):
         self.assertEqual(len(json.dumps(c,ensure_ascii=False,separators=(',',':'))),2000000)
         ac.validate(c);c['reference']+='x'
         with self.assertRaises(ValueError):ac.validate(c)
-        for bad in [dict(ac.blank(),unexpected=1.0),dict(ac.blank(),reference='\ud800')]:
+        for bad in [dict(ac.blank(),unexpected=1.0),dict(ac.blank(),reference='\ud800'),dict(ac.blank(),review={'binding':'a'*64,'result':'  '})]:
             with self.assertRaises(ValueError):ac.validate(bad)
     def test_office_tabs_breaks_and_nested_paragraphs_are_not_concatenated_or_duplicated(self):
         from zipfile import ZipFile

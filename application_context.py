@@ -82,7 +82,7 @@ def validate(c: dict) -> dict:
             page['number'] = int(page['number'])
     if c.get('review') is not None:
         _shape(c['review'], ['binding', 'result'])
-    if 'review' not in c or c['review'] is not None and (not _strings(c['review'], ['binding', 'result']) or not re.fullmatch('[a-f0-9]{64}', c['review']['binding'])):
+    if 'review' not in c or c['review'] is not None and (not _strings(c['review'], ['binding', 'result']) or not re.fullmatch('[a-f0-9]{64}', c['review']['binding']) or not c['review']['result'].strip()):
         raise ValueError('点検結果の形式が違います')
     if len(json.dumps(c, ensure_ascii=False, separators=(',', ':'))) > 2000000:
         raise ValueError('データが大きすぎます')
