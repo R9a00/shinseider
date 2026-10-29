@@ -1,6 +1,7 @@
 meta:
   name: シンセイダー質問バンク
-  purpose: 良い申請書が満たすべき条件の展開形。①絞り出し（対話で素材を引き出す） ②執筆（申請書5テーマへ編成） ③DR（申請書から各問いへの逆写像照合）の3方向で同じ体系を使う。進行の台本ではなく裏の座標系であり、深掘りは利用者が要望したときだけ行う。
+  purpose: 良い申請書が満たすべき条件の展開形。①絞り出し（対話で素材を引き出す） ②執筆（本ツールの材料整理5テーマへ編成） ③DR（申請書から各問いへの逆写像照合）の3方向で同じ体系を使う。進行の台本ではなく裏の座標系であり、深掘りは利用者が要望したときだけ行う。
+  criteria_note: DoD・required・review_axesは独自の材料整理基準です。公式6記載項目・5評価とは別で、24ブロック全記載が公式必須ではありません。
   provenance: 旧attgアプリ DeepDive.js の24ブロック78項目（2026-08-19発掘）＋ fukabori.yaml companion_prompt のDoD ＋ business_analysis_system_spec.md
     の宿題システム設計を正規化
   research_policy: internal=本人しか知らない（対話で引き出す） / external=LLMが外部調査で補える / mixed=両方。sources_required=true

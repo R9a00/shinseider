@@ -75,13 +75,23 @@ def run(base):
         print('PASS: required Q3, optional Q4, diagnosis persistence')
 
         pg.goto(f'{base}/entry.html')
+        guide = pg.locator('#official-preparation')
+        expect(guide).to_contain_text('公式6記載項目への対応表')
+        expect(guide).to_contain_text('本文7ページ＋表紙1ページ')
+        expect(guide).to_contain_text('サンプルの使用は任意')
+        expect(guide).to_contain_text('熱量・ストーリー')
+        pg.locator('.sec-text').first.fill('架空の確認用1。' * 12)
+        expect(pg.locator('.sec-status').first).to_contain_text('文字数・数字の目安を充足（内容は要確認）')
         pg.fill('#paste-area', SAMPLE_ENTRY)
         pg.click('#import-btn')
         expect(pg.locator('#import-msg')).to_contain_text('5つそろいました')
         expect(pg.locator('#save-msg')).to_contain_text('自動保存済み')
         pg.click('#copy-review')
         expect(pg.locator('#review-msg')).to_contain_text('コピーしました')
-        assert '金属加工' in pg.evaluate('navigator.clipboard.readText()')
+        review = pg.evaluate('navigator.clipboard.readText()')
+        assert '金属加工' in review
+        assert '承継予定の会社の経営資源活用' in review
+        assert '{official_review_axes}' not in review
         with pg.expect_popup() as popup:
             pg.click('.ai-card[data-open*="gemini"]')
         popup.value.close()
@@ -173,6 +183,24 @@ def run(base):
         pg.goto(f'{base}/subsidy.html')
         expect(pg.locator('nav a[aria-current=page]')).to_have_text('補助金')
         assert not errors, errors
+        for stamp, stage in [('2026-11-24T09:00:00+09:00', 'open'),
+                             ('2026-11-25T17:59:00+09:00', 'open'),
+                             ('2026-11-25T18:01:00+09:00', 'docs'),
+                             ('2026-11-27T12:01:00+09:00', 'closed')]:
+            boundary = browser.new_context()
+            boundary.add_init_script(CLOCK.replace('2026-09-29T09:00:00+09:00', stamp))
+            boundary.route('**/*', lambda route: route.continue_() if route.request.url.startswith(base) else route.fulfill(status=200, body=''))
+            bp = boundary.new_page(); bp.goto(f'{base}/schedule.html')
+            if stage == 'open':
+                text = bp.locator('#pace-plan').inner_text()
+                assert '明日' not in text and '11/24まで' not in text
+                assert '11/27 12:00' in text
+                assert ('今日18:00まで' if '11-25' in stamp else '今日（推奨）') in text
+            else:
+                expect(bp.locator('#pace-plan-wrap')).to_be_hidden()
+                expect(bp.locator('#pace-message')).to_contain_text('書類' if stage == 'docs' else '受付は終了')
+            boundary.close()
+        print('PASS: 11/24, entry cutoff and document cutoff boundary plans')
         browser.close()
         print('PASS: calendar description, fixed-date countdown, navigation, no JS errors')
 

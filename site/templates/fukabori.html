@@ -7,7 +7,7 @@
 <p class="muted">記入例の企業・数値は説明用の仮定です。ご自身の実績・計画に置き換え、外部情報には出典と確認日を添えてください。</p>
 <p id="fk-save-msg" class="save-status muted"></p>
 <p class="lead">アトツギ甲子園のかつての優勝者が使っていたフレームを用いて作られた「時間はかかるが丁寧に仕上げるルート」です。会社の来歴から新しい事業の数字まで、順に深掘って聞いていきます。</p>
-<p class="lead">4つの章をAIと10〜20分ずつ。章が終わるごとにセーブされるので、途中でやめても続きから再開できます。<strong>入力はあなたのパソコンやスマホにだけ保存され、サイト側に送信されることはありません。</strong></p>
+<p class="lead">4つの章をAIと10〜20分ずつ。章が終わるごとにセーブされるので、途中でやめても続きから再開できます。<strong>このサイトの入力欄に保存した骨子・メモはブラウザ内に保存され、シンセイダーの運営者には送信されません。</strong> ただしAIへ渡す内容は、選んだAIサービスで処理されます。機密情報の入力前に利用条件を確認してください。</p>
 <p>ここで掘った材料は、エントリー文の下地になり、エントリー後に届く応募書類——さらにその先の補助金申請——を書くときの手持ちになります。</p>
 
 <div class="phase">
@@ -71,7 +71,7 @@
       <input type="file" id="fk-patch-file" accept=".json,.md,.txt" hidden>
     </div>
     <p id="fk-patch-msg" class="muted"></p>
-    <p>仕上げの検算まで終えると、エントリー文の5テーマに使える材料（KOSHIEN_BRIDGE）がAIから返ります。それを持って<a href="entry.html">エントリー文のページ</a>に戻り、骨子に反映してください。</p>
+    <p>仕上げの検算まで終えると、エントリー文の5テーマに使える材料（KOSHIEN_BRIDGE）がAIから返ります。それを持って<a href="entry.html">エントリー文のページ</a>に戻り、骨子に反映してください。その後、<a href="entry.html#official-preparation">公式6項目への使い方</a>に沿って応募書類へ再構成します。</p>
   </section>
 
   <section class="step">
@@ -172,7 +172,7 @@
       st.classList.remove('next');
       if (ch === 'critique') {
         var allDone = chapterFill.every(function(c){ return c.filled > 0; });
-        st.querySelector('.fk-step-status').textContent = allDone ? '— 準備OK' : '— 4章を進めてから';
+        st.querySelector('.fk-step-status').textContent = allDone ? '— 入力済み（内容は要確認）' : '— 4章を進めてから';
         if (!nextMarked && allDone) { st.classList.add('next'); nextMarked = true; }
         return;
       }

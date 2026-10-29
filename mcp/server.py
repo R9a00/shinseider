@@ -11,12 +11,15 @@ from __future__ import annotations
 import json
 import pathlib
 import re
+import sys
 from datetime import datetime, timedelta, timezone
 
 import yaml
 from mcp.server import MCPServer
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+from preparation import interview_prompt, review_prompt, preparation_guide, chapter_prompt
 DATA = ROOT / "data"
 STATE_FILE = pathlib.Path(__file__).resolve().parent / ".state.json"
 JST = timezone(timedelta(hours=9))
@@ -115,8 +118,8 @@ def check_eligibility(
         detail = ""
     elif ok:
         verdict = "エントリー資格に適合の見込み"
-        detail = ("年齢と立場は要件に合っています。残る確認は、家業が中小企業の定義に"
-                  "あてはまるかどうかです。現在の代表に会社のことを聞く良い機会になります。")
+        detail = ("年齢と立場は要件に合っています。家業の企業規模や事業内容など、"
+                  "応募条件の詳細を公式要領で確認してください。現在の代表に会社のことを聞く良い機会になります。")
     else:
         verdict = "資格要件に合わない可能性"
         detail = "年齢・立場・企業規模の要件は公式のエントリー要領で必ず確認してください（例外や詳細条件があります）。"
@@ -151,9 +154,9 @@ def get_pace_plan() -> dict:
     plus = lambda n: now + timedelta(days=n)
     jround = lambda x: int(x + 0.5)  # JSのMath.roundと同一（.5切り上げ）
     if days <= 1:
-        steps = [["今日", "骨子を作り、現経営者と読み合わせて内容を確認する"],
-                 ["今日", "公式フォームの必須項目を確認する"],
-                 ["本日18:00まで" if days == 0 else "本日中を目標に", "公式サイトからエントリーする"]]
+        steps = [["今日", "骨子を整理し、必要な読み合わせ・現経営者への相談を行う"],
+                 ["今日18:00まで" if days == 0 else "今日（推奨）", "公式サイトからエントリー登録（公式締切11/25 18:00）。書類の完成を待って登録を遅らせない"],
+                 ["11/27 12:00まで", "登録後の案内に沿い、指定ページ構成の書類をPDFで提出"]]
     elif d_t <= 3:
         steps = [["今日", "AIとインタビューして骨子を作る"],
                  ["明日", "声に出して読み合わせ、現経営者に話す"],
@@ -163,7 +166,7 @@ def get_pace_plan() -> dict:
             [f"{fmt(plus(max(1, jround(d_t * 0.15))))}まで", "現経営者と、承継の話を始める（いちばん重い一歩）"],
             [f"{fmt(plus(jround(d_t * 0.5)))}まで", "AIとインタビューして骨子を作る"],
             [f"{fmt(plus(jround(d_t * 0.8)))}まで", "読み合わせて磨く。会社名でエントリーすることに合意をとる"],
-            [f"{fmt(target)}まで", "公式サイトからエントリー（締切前日推奨）。書類は届くフォーマットで11/27 12:00までにPDF提出"],
+            [f"{fmt(target)}まで", "公式サイトからエントリー（締切前日推奨）。指定ページ構成の書類を11/27 12:00までにPDF提出"],
         ]
     return {"days_to_entry": days, "message": bucket, "plan": steps, "disclaimer": DISCLAIMER}
 
@@ -254,6 +257,7 @@ def workspace_state() -> dict:
 @app.tool()
 def list_question_blocks(group: str | None = None) -> list[dict]:
     """質問バンクの一覧（id/グループ/タイトル/DoD/調査区分/写像）を返す。
+    DoD・required・観点は独自の材料整理基準で、24ブロック全てが公式必須ではない。
     group: 足元 / 外部環境 / 競争構造 / 新事業10問（省略で全件）。"""
     return [
         {k: b[k] for k in ("id", "group", "title", "subtitle", "dod", "research",
@@ -264,10 +268,11 @@ def list_question_blocks(group: str | None = None) -> list[dict]:
 
 @app.tool()
 def get_question_block(block_id: str) -> dict:
-    """指定ブロックの全フィールド（設問・必須・記入例）とDoDを返す。深掘り開始時に呼ぶ。"""
+    """指定ブロックの全フィールド（設問・必須・記入例）とDoDを返す。深掘り開始時に呼ぶ。
+    必須・DoDは本ツール独自の材料整理基準であり、公式の必須項目ではない。"""
     for b in bank["blocks"]:
         if b["id"] == block_id:
-            return b
+            return {**b, "criteria_note": "DoD・required・review_axesは本ツール独自の材料整理基準。24ブロック全てが公式必須ではありません。"}
     raise ValueError(f"ブロックが見つかりません: {block_id}")
 
 
@@ -285,7 +290,7 @@ def fukabori_coverage(block_id: str, text: str) -> dict:
     }
     return {"block": block["title"], "dod": block["dod"], "checks": checks,
             "passed_mechanical": all(checks.values()),
-            "note": "機械チェックのみ。DoDの意味的な充足（固有名詞・機会2脅威2など）はLLMが判断し、（仮）の数字が残っていれば指摘すること。"}
+            "note": "機械チェックのみ。DoDは独自の整理基準で公式要件ではありません。DoDの意味的な充足（固有名詞・機会2脅威2など）はLLMが判断し、（仮）の数字が残っていれば指摘すること。"}
 
 
 # ---------- Prompts ----------
@@ -300,14 +305,14 @@ def _dialogue_policy() -> str:
 
 @app.prompt()
 def entry_interview() -> str:
-    """エントリー文（申請書5テーマ）の骨子づくりインタビューを開始する。"""
-    return _dialogue_policy() + entry_def["prompt_template"]
+    """応募書類の材料（本ツールの材料整理5テーマ）の骨子づくりインタビューを開始する。"""
+    return _dialogue_policy() + interview_prompt(entry_def) + "\n\n" + preparation_guide(entry_def)
 
 
 @app.prompt()
 def mock_review(draft: str) -> str:
     """予行審査。審査委員視点・忖度なしでエントリー文の骨子を評価する。"""
-    return entry_def["review_prompt_template"].replace("{draft}", draft)
+    return review_prompt(entry_def).replace("{draft}", draft)
 
 
 @app.prompt()
@@ -315,10 +320,11 @@ def dr_review(draft: str) -> str:
     """DR: 申請書から質問バンクの各設問への答えが読み取れるかを、引用必須で照合する。"""
     lines = []
     for b in bank["blocks"]:
-        lines.append(f"- {b['id']}: {b['title']}（期待される場所: {'・'.join(b['entry_themes'])} / 観点: {'・'.join(b['review_axes'])} / DoD: {b['dod']}）")
+        lines.append(f"- {b['id']}: {b['title']}（期待される場所: {'・'.join(b['entry_themes'])} / 独自補助観点: {'・'.join(b['review_axes'])} / DoD: {b['dod']}）")
     checks = "\n".join(f"- {c['rule']}" for c in bank["cross_checks"])
     return f"""あなたは申請書のデザインレビュー担当です。忖度は不要です。
 以下の申請書を、設問リストに対して照合してください。
+設問・DoD・requiredは本ツール独自の材料整理基準です。24ブロック全記載は公式必須ではなく、公式6記載項目・5評価と混同しないでください。
 
 # 判定ルール（厳守）
 - 各設問について「申請書から答えが読み取れるか」を判定する。
@@ -333,7 +339,7 @@ def dr_review(draft: str) -> str:
 {checks}
 
 # 出力形式
-1. 観点別サマリー（承継の物語/実現性/独自性/事業価値/波及ごとに、読み取れた設問数と最重要の欠落）
+1. 観点別サマリー（公式5評価: {'/'.join(a['title'] for a in entry_def['official_preparation']['review_axes'])}。読み取れた根拠と最重要の欠落。質問バンクの観点は独自の補助で公式評価とは別）
 2. 設問別の判定表（読み取れる=引用 / 読み取れない=どこに何を足すか）
 3. 横断整合の検算結果
 4. 直すなら最初の一手（1つ）
@@ -345,14 +351,7 @@ def dr_review(draft: str) -> str:
 @app.prompt()
 def fukabori_chapter(chapter_no: str) -> str:
     """フカボリの章別インタビュー（1=足元 2=外部環境 3=競争構造 4=新事業10問）。"""
-    groups = fukabori["groups"]
-    idx = int(chapter_no) - 1
-    g = groups[idx]
-    structure = "\n".join(f"- {b['title']}" for b in g["blocks"])
-    return _dialogue_policy() + (fukabori["chapter_prompt"]
-            .replace("{chapter_no}", str(chapter_no))
-            .replace("{chapter_title}", g["title"])
-            .replace("{structure}", structure))
+    return _dialogue_policy() + chapter_prompt(fukabori, chapter_no)
 
 
 # ---------- Resources ----------
@@ -366,6 +365,7 @@ def koshien_basics() -> str:
         "書類提出締切": str(SCHEDULE["document_deadline"]["value"]),
         "schedule": SCHEDULE,
         "checklist": entry_def.get("checklist"),
+        "応募書類への使い方": entry_def["official_preparation"],
         "免責": DISCLAIMER,
     }, allow_unicode=True, sort_keys=False)
 

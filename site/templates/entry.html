@@ -1,22 +1,23 @@
 {% extends "base.html" %}
 {% block title %}アトツギ甲子園エントリーの方向性を固める | {{ site_name }}{% endblock %}
-{% block desc %}アトツギ甲子園のエントリー文・応募書類の骨子を、AIに聞き役を任せて作れます。入力はあなたのパソコンやスマホにのみ保存され、送信されません。{% endblock %}
+{% block desc %}アトツギ甲子園のエントリー文・応募書類の骨子を、AIに聞き役を任せて作れます。ブラウザ保存と、AIサービスへ渡す内容を区別して利用できます。{% endblock %}
 {% block main %}
 <h1>アトツギ甲子園エントリーの方向性を固める</h1>
 <p id="save-msg" class="save-status muted"></p>
-<p class="lead">ここでは、申請書を作成するための骨子を明確にし、概要の段階でロジックに穴がない状態を整理してから実際の申請書作成へ進める準備ができます。以下、用意したプロンプトを使って普段使っているAI（LLM）のブラウザアプリで作成する方法と、<a href="#ai-mcp">MCPを経由して利用する方法</a>を用意しています。<strong>入力はあなたのパソコンやスマホにだけ保存され、サイト側に送信されることはありません。</strong></p>
+<p class="lead">ここでは、申請書を作成するための骨子を明確にし、概要の段階で論点や不足を整理してから実際の申請書作成へ進める準備ができます。以下、用意したプロンプトを使って普段使っているAI（LLM）のブラウザアプリで作成する方法と、<a href="#ai-mcp">MCPを経由して利用する方法</a>を用意しています。<strong>このサイトの入力欄に保存した骨子・メモはブラウザ内に保存され、シンセイダーの運営者には送信されません。</strong> AIへ渡す指示文・骨子・会話は、選んだAIサービスで処理されます。機密情報は渡す前に利用条件を確認してください。</p>
 <details class="prompt-view">
   <summary>エントリーから提出までの流れを確認する</summary>
-  <p>アトツギ甲子園は、公式フォームの質問に答えてエントリーし、その後に事務局から届くフォーマットで応募書類を作ってPDFで提出します。書類審査はこの応募書類で行われます。フォーマットが届いてから慌てて書かずに済むよう、先に中身を仕上げておきます。書くのはあなたです。このページが受け持つのは、問いの用意と、抜けの確認と、書いたものの保存です。</p>
+  <p>アトツギ甲子園は、公式フォームの質問に答えてエントリーし、その後に事務局から届く案内・サンプルを参考に、指定のページ構成に沿って応募書類を作りPDFで提出します。サンプル自体の使用は任意です。書類審査はこの応募書類で行われます。フォーマットが届いてから慌てて書かずに済むよう、先に中身を仕上げておきます。書くのはあなたです。このページが受け持つのは、問いの用意と、抜けの確認と、書いたものの保存です。</p>
   <ol class="flow">
     <li><b>中身をつくる</b><span>5つの問いに、AIと答える（このページ）</span></li>
     <li><b>試す</b><span>AIを審査員役にして、指摘をもらう（このページ）</span></li>
     <li><b>エントリーする</b><span>公式フォームから（〜11/25 18:00）。完了すると応募書類のフォーマットが届く</span></li>
-    <li><b>書類を出す</b><span>中身をフォーマットに移して、PDFで提出（〜11/27 12:00）</span></li>
+    <li><b>書類を出す</b><span>材料を指定のページ構成に再構成し、PDFで提出（〜11/27 12:00）</span></li>
   </ol>
   {% set pace_compact = true %}
   {% include "_pace.html" %}
 </details>
+<p><a href="#official-preparation">作った骨子を公式6項目の応募書類に使う手順を見る →</a></p>
 <div class="route-row">
   <div class="route-card here">
     <span class="route-time">30分〜</span>
@@ -80,16 +81,17 @@
 
   <section class="step" id="ai-mcp">
     <h2>MCPから利用する — AI経由でシンセイダーを利用する</h2>
-    <p>MCP（AIアプリ共通の接続規格）でシンセイダーをつなぐと、いつものAIとの会話の中で「締切はいつ？」「自分は出られる？」「今日から何をすればいい？」に正確な答えが返るようになり、質問に答えながら構想を掘り下げたり、書いたものに審査員役の指摘をもらったりも、そのまま続けられます。このページとのコピペの往復は要りません。記録ファイルは手元に保存されます。AIに渡した内容は、選んだAI事業者のサーバーで処理されます。シンセイダー運営者には送信されません。</p>
-    <p>設定はAIに任せられます。下のボタンで指示文をコピーして、お使いのAIに貼って送信してください。AIがそのまま設定を進めてくれます。AIが自分で作業を完了できない場合も、「次にやること」を1つずつ教えてくれるので、そのとおりに進めれば数分で終わります。</p>
+    <p>MCP（AIアプリ共通の接続規格）でシンセイダーをつなぐと、いつものAIとの会話の中で「締切はいつ？」「自分は出られる？」「今日から何をすればいい？」を掲載データに基づいて確認でき、質問に答えながら構想を掘り下げたり、書いたものに審査員役の指摘をもらったりも、そのまま続けられます。このページとのコピペの往復は要りません。記録ファイルはローカルに保存されますが、AIに渡す内容は利用するAIサービスで処理されます。</p>
+    <p>設定はAIに任せられます。下のボタンで指示文をコピーして、お使いのAIに貼って送信してください。AIがそのまま設定を進めてくれます。AIが自分で作業を完了できない場合も、「次にやること」を1つずつ教えてくれるので、環境に応じて進めてください。</p>
     <div class="cta-row cta-first">
       <button class="btn primary" id="mcp-setup-copy" type="button">AI用セットアップ指示文をコピー</button>
     </div>
-    <p class="muted">ChatGPTやClaudeのデスクトップアプリ、Cursor・VS Code・Gemini CLIなど、MCPに対応したAIアプリで使えます。手順の中身を先に見ておきたい方は、<a href="mcp-setup.md">セットアップ手順の全文</a>を確認できます。うまくいかないときは、<a href="about.html">運営者と方針</a>にある連絡先へ気軽にどうぞ。</p>
+    <p class="muted">ローカルSTDIO型MCPに対応するクライアントで利用します。個別アプリでの対応方式・設定は各公式案内を確認してください。手順の中身を先に見ておきたい方は、<a href="mcp-setup.md">セットアップ手順の全文</a>を確認できます。うまくいかないときは、<a href="about.html">運営者と方針</a>にある連絡先へ気軽にどうぞ。</p>
   </section>
 
   <section class="step">
-    <h2>骨子 — 5つの欄</h2>
+    <h2>骨子 — 材料を整理する5つの欄</h2>
+    <p class="muted">80字以上・数字の有無だけを確認する独自の機械チェックです。目安を充足しても、内容の正しさ・公式要件の充足・審査通過を意味しません。</p>
     <p>AIから取り込んだ内容がここに入ります。手直しも、直接書き込むのも自由です。まだ答えが固まっていなくて構いません。</p>
     <details class="prompt-view sample-view">
       <summary>書き方の見本を見る（架空の会社の例）</summary>
@@ -119,7 +121,7 @@
   <section class="step" id="rehearsal">
     <div class="review-panel">
       <h2>予行審査 — 忖度なしで見てもらう</h2>
-      <p>AIを、身内ではない審査員役に切り替える指示文です。骨子ごと渡すので、弱いところが提出前にわかります。</p>
+      <p>AIを、身内ではない審査員役に切り替える指示文です。公式5評価を参照して、骨子の改善点を探します。AIの指摘は公式審査ではなく、通過を保証しません。</p>
       <div class="ai-row">
         {% for t in ai_targets %}
         <button class="ai-chip" type="button" data-home="{{ t.home_url }}" data-name="{{ t.name }}"{% if t.q_base %} data-qbase="{{ t.q_base }}"{% endif %}>
@@ -139,6 +141,20 @@
 <div class="phase">
   <span class="phase-kicker">出す</span>
 
+  <section class="step" id="official-preparation">
+    <h2>準備した材料を、応募書類にどう使うか</h2>
+    <p>{{ official.distinction }}</p>
+    <ol>{% for step in official.workflow %}<li>{{ step }}</li>{% endfor %}</ol>
+    <h3>公式6記載項目への対応表</h3>
+    <p>以下の「材料の使い方」は本ツールの提案です。公式の項目名・評価項目と区別してご利用ください。</p>
+    {% for item in official['items'] %}
+    <div class="card"><h4>{{ item.title }}</h4><p>{{ item.material }}</p><p class="muted">公式要項で関連づけられている評価：{{ item.axes | join('／') }}</p></div>
+    {% endfor %}
+    <h3>提出形式と公式5評価</h3>
+    <p>{{ official.format }}</p>
+    <p>公式5評価：{% for axis in official.review_axes %}{{ axis.title }}{% if not loop.last %}／{% endif %}{% endfor %}</p>
+    <p class="muted"><a href="{{ official.source_url }}" rel="noopener">第7回 公式応募要項（PDF）</a>を優先してください（確認日：{{ official.checked }}）。各ページへの具体的な割付は、届いたフォーマット・案内で確認してください。</p>
+  </section>
   <section class="step">
     <h2>提出前チェック</h2>
     <ul class="checklist" id="entry-checklist">
@@ -157,7 +173,7 @@
       <span class="save-links"><label class="linklike" for="up-project">控えを読み込む</label></span>
       <input type="file" id="up-project" accept=".md,.json,.txt" hidden>
     </div>
-    <p class="muted">控えは、そのまま読める下書きです。届いた書類フォーマットに転記するときの元原稿になり、手元のAIに読ませる受け渡しにも使えます。読み込めば保存した時点から再開できます（フカボリの中身も一緒に入ります）。</p>
+    <p class="muted">控えは、そのまま読める下書きです。指定のページ構成で応募書類を作るときの元原稿になり、手元のAIに読ませる受け渡しにも使えます。読み込めば保存した時点から再開できます（フカボリの中身も一緒に入ります）。</p>
 
   </section>
 </div>
