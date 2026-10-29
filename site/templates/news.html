@@ -70,11 +70,11 @@
 <script>
 (function(){
   // 終わった日程は表示しない（ビルド時のhiddenに加え、閲覧時にも再判定）
-  var today = new Date(); today.setHours(0,0,0,0);
+  var today = new Date(new Date().toLocaleString('en-US', {timeZone: 'Asia/Tokyo'})); today.setHours(0,0,0,0);
   var visible = 0;
   document.querySelectorAll('.ev').forEach(function(li){
     var d = new Date(li.getAttribute('data-date') + 'T23:59:59');
-    if (d < today) { li.hidden = true; } else { visible++; }
+    li.hidden = d < today; if (!li.hidden) visible++;
   });
   if (!visible) {
     var done = document.createElement('p');

@@ -30,7 +30,7 @@ subsidy:
       amount:
         min_yen: 1000000
         max_yen: 8000000
-        max_yen_with_wage_raise: 10000000   # 賃上げ要件（給与支給総額3%以上上昇）達成時
+        max_yen_with_wage_raise: 10000000   # 賃上げ要件（従業員1人当たりの給与支給総額3%以上上昇）達成時
         haigyo_addon_max_yen: 3000000       # 廃業費併用時の上乗せ
       subsidy_rate:
         small_business: "2/3以内"           # 小規模事業者等
@@ -74,9 +74,16 @@ subsidy:
         accessed: "2026-08-06"
         confidence: verified
     - number: 16
-      status: expected
-      note: "未発表。13次(2026年頭)→14次(2026-02-27開始)→15次(2026-06-19開始)のペースから2026年秋頃と推定"
-      provenance: {confidence: unconfirmed}
+      status: announced
+      application_period:
+        start: "2026-10-02"
+        end: "2026-11-06T17:00+09:00"
+      guidelines_url: https://shoukei-mahojokin.go.jp/assets/documents/r7h/16-succession/requirements_succession_16.pdf
+      note: "16次公募要領26頁で受付期間を確認。下の詳細データは15次の参考情報。"
+      provenance:
+        source_url: https://shoukei-mahojokin.go.jp/r7h/16-succession_download/
+        accessed: "2026-10-29"
+        confidence: verified
 
   adoption_rate:
     recent_estimate: "約6割（11〜13次公募の実績ベース・支援業者集計）"
@@ -115,7 +122,7 @@ subsidy:
       - {id: cyber_otasuke, name: サイバーセキュリティお助け隊利用}
       - {id: bcp, name: 事業継続力強化計画認定}
       - {id: work_life_balance, name: えるぼし/くるみん認定}
-      - {id: wage_raise, name: 賃上げ加点（2%以上の給与上昇率表明）}
+      - {id: wage_raise, name: 賃上げ加点（従業員1人当たり給与支給総額2%以上増の表明）}
       - {id: growth_matching, name: 成長加速マッチングサービス登録}
       - {id: succession_plan_support, name: 事業承継・引継ぎ支援センター等による事業承継計画策定支援}
       - {id: tariff_impact, name: 米国関税措置による影響}
@@ -160,7 +167,7 @@ subsidy:
       label: 対象会社の3期分の決算・申告完了（法人）
       severity: block
       kind: state
-      note: 満たせない場合はこの枠では申請不可。事前判定で最初に確認すべき項目
+      note: 法人成りから3年未満の場合は、個人事業の開業から通算5年以上の例外あり。要領6.1参照
     - id: req_sole_proprietor_5y
       label: 個人事業主の場合：開業届・青色申告承認申請書の提出日から5年経過
       severity: block
@@ -178,6 +185,11 @@ subsidy:
       severity: block
       kind: state
       note: 該当パターンにより証憑（役員経歴・雇用契約書・親族関係図）が変わる
+    - id: req_productivity
+      label: 5年間の計画で付加価値額又は1人当たり付加価値額の年率3%以上の向上を目指すこと
+      severity: block
+      kind: plan
+      note: 15次要領6.2の計画要件。要領原文の全条件を確認すること
     - id: req_quotes
       label: 補助対象経費の見積書（設備等）
       severity: block
@@ -202,7 +214,7 @@ subsidy:
       blocks: [req_succession_5y, req_support_org]
       guidance: これが決まらない限りこの枠は使えない。アトツギ甲子園への挑戦自体が、この対話の口実・締切として機能する
     - id: D3_wage_raise
-      question: 賃上げ特例（給与総額3%以上増）にコミットするか
+      question: 賃上げ特例（従業員1人当たり給与支給総額3%以上増）にコミットするか
       tradeoff: 上限800万→1,000万円に拡大。未達成時の取扱い（減額・返還等）は要領原文で要確認
       tradeoff_confidence: unconfirmed
     - id: D4_haigyo_addon
