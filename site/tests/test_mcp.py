@@ -15,7 +15,8 @@ class MCPAuditTest(unittest.TestCase):
             with patch.object(server, '_now', return_value=datetime.datetime(2026,11,day,12,tzinfo=server.JST)):
                 plan=server.get_pace_plan()['plan']
                 self.assertFalse(any(step[0]=='明日' for step in plan))
-                if day==25:self.assertIn('本日18:00まで',str(plan))
+                if day==25:self.assertIn('今日18:00まで',str(plan))
+        self.assertNotIn('残る確認',server.check_eligibility(True,'successor','unsure')['detail'])
         self.assertNotIn('適合',server.check_eligibility(True,'successor','invalid')['verdict'])
         self.assertIn('他の要件は未判定',server.check_eligibility(True,'successor','yes','yes')['subsidy_outlook'])
 

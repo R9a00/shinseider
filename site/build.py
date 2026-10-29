@@ -10,12 +10,16 @@ PREVIEWは表示切替であり、検証・公開承認の代わりではない�
 import datetime as dt
 import json
 import subprocess
+import sys
 from pathlib import Path
 
 import yaml
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+from preparation import interview_prompt, review_prompt, chapter_prompt
+
 SITE = ROOT / "site"
 DIST = SITE / "dist"
 
@@ -434,11 +438,7 @@ def main():
     env.globals["docs_deadline"] = docs_end    # 書類提出締切（チップ・カウントダウンの第二段階表示用）
 
     # インタビュー指示文: テーマ×要素（旧システム53項目の蒸留）をデータから組み立てる
-    theme_lines = [
-        f"{i}. {s['title']} — " + "／".join(s["elements"])
-        for i, s in enumerate(entry_def["entry_sections"], 1)
-    ]
-    prompt_text = entry_def["prompt_template"].replace("{theme_elements}", "\n".join(theme_lines))
+    prompt_text = interview_prompt(entry_def)
     # プリフィルURLが長すぎるとAI側で受け取れない・途中で切れる。上限8000字を超えたらビルドを止める
     for t in entry_def["ai_targets"]:
         if t.get("mode") == "prefill":
@@ -450,14 +450,7 @@ def main():
     fk_chapters = [
         {
             "title": g["title"],
-            "prompt": fukabori["chapter_prompt"]
-            .replace("{chapter_no}", str(gi + 1))
-            .replace("{chapter_title}", g["title"])
-            .replace("{structure}", "\n".join(
-                f"- {b['key']}「{b['title']}」:" + "/".join(
-                    f"{f['key']}={f['label']}" + ("" if f.get("required") else "*")
-                    for f in b["fields"])
-                for b in g["blocks"])),
+            "prompt": chapter_prompt(fukabori, gi + 1),
         }
         for gi, g in enumerate(fukabori["groups"])
     ]
@@ -511,6 +504,7 @@ def main():
         "schedule.html": ("schedule.html", {}),
         "cool.html": ("cool.html", {}),
         "entry.html": ("entry.html", {
+            "official": entry_def["official_preparation"],
             "sections": entry_def["entry_sections"],
             "checklist": entry_def["checklist"],
             "prompt_text": prompt_text,
@@ -524,7 +518,7 @@ def main():
                 "sections": [{"id": s["id"], "title": s["title"]} for s in entry_def["entry_sections"]],
                 "validation": entry_def["validation"],
                 "prompt": prompt_text,
-                "review_prompt": entry_def["review_prompt_template"],
+                "review_prompt": review_prompt(entry_def),
             }, ensure_ascii=False).replace("<", "\\u003c"),
         }),
         "fukabori.html": ("fukabori.html", {
