@@ -2,7 +2,13 @@ import {unzipSync,zipSync,strFromU8,strToU8} from './fflate.mjs';
 const LIMIT=15*1024*1024;
 const parse=s=>{const x=new DOMParser().parseFromString(s,'application/xml');if(x.querySelector('parsererror')||/<!DOCTYPE|<!ENTITY/i.test(s))throw Error('XMLを読み取れません');return x;};
 const elements=(x,name)=>Array.from(x.getElementsByTagNameNS('*',name));
-const txt=x=>elements(x,'p').map(p=>elements(p,'t').map(t=>t.textContent).join('')).join('\n');
+function paragraph(node) {
+  if (node.localName === 't') return node.textContent;
+  if (node.localName === 'tab') return '\t';
+  if (['br','cr'].includes(node.localName)) return '\n';
+  return Array.from(node.children).filter(child => child.localName !== 'p').map(paragraph).join('');
+}
+const txt=x=>elements(x,'p').map(paragraph).join('\n');
 function office(data,ext){
   let size=0;
   const files=unzipSync(data,{filter:f=>{
@@ -34,6 +40,7 @@ export async function extract(file){
   return {name:file.name,sha256,pages:texts.map((text,i)=>({number:i+1,text})),warnings};
 }
 export async function bundle(context,rules,stage,originals){
+  context=ApplicationCore.validate(context);rules=JSON.parse(JSON.stringify(rules));originals={...originals};
   const prompt=await ApplicationCore.prompt(stage,context,rules);
   const files={'context.json':strToU8(JSON.stringify(context,null,2)),'instructions.md':strToU8(prompt),'sources-and-rules.json':strToU8(JSON.stringify(rules,null,2))};
   for(const key of ['template','draft'])if(context.files[key]){

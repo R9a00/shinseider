@@ -113,3 +113,30 @@ test('malformed backups are rejected before modifying input', () => {
   assert.throws(() => normalize({version: 99}));
   assert.deepEqual(normalize({entry: {sections: {}, checklist: {}}}).fukabori, {blocks: {}});
 });
+test('application material fields merge across first-use tabs and backup keeps both edits',async()=>{
+ const C=require('../static/application-core.js');const env=environment(),a=env.tab(),b=env.tab();
+ a.project.application=a.project.application||C.blank();b.project.application=b.project.application||C.blank();
+ a.project.application.materials[0].body='A';b.project.application.materials[1].body='B';
+ assert.deepEqual(await Promise.all([a.save(a.project),b.save(b.project)]),[true,true]);
+ assert.equal(env.read().application.materials[0].body,'A');
+ assert.equal(env.read().application.materials[1].body,'B');
+ assert.equal(b.snapshot(b.project).application.materials[0].body,'A');
+ b.project.application.materials[0].body='conflict';assert.equal(await b.save(b.project),false);
+});
+test('snapshot carries invalid local edits for recovery without dropping unrelated remote fields',async()=>{
+ const C=require('../static/application-core.js');const env=environment(),a=env.tab(),b=env.tab();
+ a.project.application=a.project.application||C.blank();b.project.application=b.project.application||C.blank();
+ a.project.application.reference='remote';await a.save(a.project);
+ b.project.application.sources.push({id:'s1',title:'local unfinished URL',url:'htt',published:'',checked:'',kind:'',status:'未確認',note:''});
+ assert.equal(await b.save(b.project),false);
+ const backup=b.snapshot(b.project);assert.equal(backup.application.reference,'remote');assert.equal(backup.application.sources[0].url,'htt');
+});
+test('an older successful write cannot clear a newer invalid unsaved edit',async()=>{
+ let release;const env=environment(),a=env.tab({lock:(_key,fn)=>new Promise(resolve=>{release=()=>resolve(fn());})});
+ a.project.application.reference='saved snapshot';const older=a.save(a.project);
+ a.project.application.sources.push({id:'s',title:'unfinished',url:'htt',published:'',checked:'',kind:'',status:'未確認',note:''});
+ assert.equal(await a.save(a.project),false);
+ release();assert.equal(await older,true);
+ assert.equal(a.dirty(),true);assert.equal(a.statuses.at(-1).status,'failed');
+ assert.equal(a.project.application.sources[0].url,'htt');
+});

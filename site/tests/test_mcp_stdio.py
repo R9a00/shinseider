@@ -97,8 +97,10 @@ class MCPStdioTest(unittest.IsolatedAsyncioTestCase):
                                 text='\n'.join(m.content.text for m in p.messages)
                                 self.assertIn(digest,text);self.assertIn('144万円',text)
                                 self.assertIn('note.com',text);self.assertIn('承継予定の会社の経営資源活用',text)
+                            before_review_revision=state['revision']
                             state=await call(client,'application_review_save',{'binding':digest,'result':'テスト記録：完成稿は2ページ。指定の8ページに不足。視覚確認は未実施。'})
                             self.assertTrue(state['review_current'])
+                            self.assertNotEqual(before_review_revision,state['revision'])
                             bad=await client.call_tool('application_document_read',{'section':'materials/../../outside.pdf'})
                             self.assertTrue(bad.is_error)
                             bad=await client.call_tool('application_context_save',{'context':c,'expected_binding':'stale'})
@@ -108,7 +110,7 @@ class MCPStdioTest(unittest.IsolatedAsyncioTestCase):
                             self.assertTrue(state['review_current'])
                             self.assertIn('指定の8ページ',state['context']['review']['result'])
                             c=state['context'];c['materials'][0]['body']='変更した本人の歩み'
-                            updated=await call(client,'application_context_save',{'context':c,'expected_binding':state['binding']})
+                            updated=await call(client,'application_context_save',{'context':c,'expected_revision':state['revision']})
                             self.assertFalse(updated['review_current'])
                             bad=await client.call_tool('application_review_save',{'binding':state['binding'],'result':'古い資料への評価'})
                             self.assertTrue(bad.is_error)

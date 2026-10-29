@@ -61,3 +61,5 @@ GitHub Actionsで同じ回帰検査を実行します。保存の成功・失敗
 [作成・点検ページ](https://shinseider.onrender.com/application.html)で、公式6項目の本文・根拠・宿題・図表案を保存します。出典付きの経験者の知見と、事業固有の追加調査指示を使い、提出フォーマット・完成稿をローカルで読み込み、普段のAIへ原本入りの一式を渡せます。検索・作成・内容評価は接続先AIが行います。材料やファイルを変更すると、以前の点検結果は再点検が必要な状態になります。
 
 設計とデータ契約は [APPLICATION_CONTEXT.md](docs/APPLICATION_CONTEXT.md)、検査範囲と成果物は [APPLICATION_CONTEXT_TEST_20261030.md](docs/APPLICATION_CONTEXT_TEST_20261030.md) を参照してください。MCPでも同じJSONを保存・再開できます。既存MCP利用者はコードと依存パッケージを更新して再接続してください。
+
+[作成・点検機能のバグ検査記録](docs/APPLICATION_BUG_AUDIT_20261030.md)に、保存・並行操作・文書抽出・MCPの修正と追加テストを記載しています。

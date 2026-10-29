@@ -1,0 +1,78 @@
+✔ context survives old project normalization; invalid data cannot erase it (1.317291ms)
+✔ review binds exact materials, original hashes and guidance, never itself (7.994333ms)
+✖ prompt uses one immutable snapshot across asynchronous hashing (6.905583ms)
+✔ successful save retains the legacy format and reloads (4.013667ms)
+✔ quota failure stays unsaved, preserves input and can retry (1.673916ms)
+✔ concurrent entry and fukabori edits survive regardless of stale tab state (0.598208ms)
+✔ distinct fields in the same section merge; same-field edits conflict (0.14025ms)
+✔ same-field simultaneous edits never silently overwrite each other (0.115583ms)
+✔ rapid input snapshots are queued and the final input wins within one tab (0.123083ms)
+✔ backup includes external saved fields and local unsaved conflict (0.14025ms)
+✔ corrupt stored data is reported and never overwritten (0.068959ms)
+✔ storage denial and missing lock support are explicit (0.409792ms)
+✔ malformed backups are rejected before modifying input (0.783708ms)
+✖ application material fields merge across first-use tabs and backup keeps both edits (3.301041ms)
+✖ snapshot carries invalid local edits for recovery without dropping unrelated remote fields (0.396667ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 12
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 73.647084
+
+✖ failing tests:
+
+test at site/tests/application-core.test.cjs:16:1
+✖ prompt uses one immutable snapshot across asynchronous hashing (6.905583ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+    assert.ok(text.includes('"reference": "before"'))
+
+      at TestContext.<anonymous> (/private/tmp/shinseider-bugs-20261030/site/tests/application-core.test.cjs:20:64)
+      at async Test.run (node:internal/test_runner/test:1088:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:763:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '=='
+  }
+
+test at site/tests/project-store.test.cjs:116:1
+✖ application material fields merge across first-use tabs and backup keeps both edits (3.301041ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+    [
+      true,
+  +   false
+  -   true
+    ]
+
+      at TestContext.<anonymous> (/private/tmp/shinseider-bugs-20261030/site/tests/project-store.test.cjs:120:9)
+      at async Test.run (node:internal/test_runner/test:1088:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:763:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ true, false ],
+    expected: [ true, true ],
+    operator: 'deepStrictEqual'
+  }
+
+test at site/tests/project-store.test.cjs:126:1
+✖ snapshot carries invalid local edits for recovery without dropping unrelated remote fields (0.396667ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  '' !== 'remote'
+
+      at TestContext.<anonymous> (/private/tmp/shinseider-bugs-20261030/site/tests/project-store.test.cjs:132:44)
+      at async Test.run (node:internal/test_runner/test:1088:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:763:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: 'remote',
+    operator: 'strictEqual'
+  }

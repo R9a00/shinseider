@@ -1,0 +1,25 @@
+✔ context survives old project normalization; invalid data cannot erase it (1.209042ms)
+✔ review binds exact materials, original hashes and guidance, never itself (3.765333ms)
+✔ prompt uses one immutable snapshot across asynchronous hashing (0.470458ms)
+✔ schema rejects extensions, invalid Unicode and inherited stage names (27.640333ms)
+✔ successful save retains the legacy format and reloads (2.925375ms)
+✔ quota failure stays unsaved, preserves input and can retry (0.268166ms)
+✔ concurrent entry and fukabori edits survive regardless of stale tab state (0.515875ms)
+✔ distinct fields in the same section merge; same-field edits conflict (0.657166ms)
+✔ same-field simultaneous edits never silently overwrite each other (0.247333ms)
+✔ rapid input snapshots are queued and the final input wins within one tab (0.237875ms)
+✔ backup includes external saved fields and local unsaved conflict (0.2195ms)
+✔ corrupt stored data is reported and never overwritten (0.078375ms)
+✔ storage denial and missing lock support are explicit (0.115ms)
+✔ malformed backups are rejected before modifying input (0.225834ms)
+✔ application material fields merge across first-use tabs and backup keeps both edits (0.332625ms)
+✔ snapshot carries invalid local edits for recovery without dropping unrelated remote fields (0.2755ms)
+✔ an older successful write cannot clear a newer invalid unsaved edit (0.135792ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 85.678083

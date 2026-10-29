@@ -5,7 +5,7 @@
   function object(value) { return value !== null && typeof value === 'object' && !Array.isArray(value); }
   function equal(a, b) { return JSON.stringify(a) === JSON.stringify(b); }
   function safe(value) {
-    if (!object(value)) return;
+    if (value === null || typeof value !== "object") return;
     Object.keys(value).forEach(function(key) {
       if (['__proto__', 'constructor', 'prototype'].includes(key)) throw new Error('invalid');
       safe(value[key]);
@@ -25,10 +25,8 @@
     if (p.fukabori != null && (!object(p.fukabori) || !object(p.fukabori.blocks) ||
         !Object.values(p.fukabori.blocks).every(stringMap) ||
         (p.fukabori.ai !== undefined && typeof p.fukabori.ai !== 'string'))) throw new Error('invalid');
-    if (p.application !== undefined) {
-      var core = typeof module !== "undefined" && module.exports ? require("./application-core.js") : root.ApplicationCore;
-      p.application = core.validate(p.application);
-    }
+    var core = typeof module !== "undefined" && module.exports ? require("./application-core.js") : root.ApplicationCore;
+    p.application = p.application === undefined ? core.blank() : core.validate(p.application);
     p.version = 1;
     p.entry = p.entry || {sections: {}, checklist: {}};
     p.fukabori = p.fukabori || {blocks: {}};
@@ -36,7 +34,11 @@
   }
   function changes(before, after, path, result) {
     if (equal(before, after)) return result;
-    if (object(before) && object(after)) {
+    // Six ordered material IDs are stable; compare each editable field independently.
+    if (path.join('.') === 'application.materials' && Array.isArray(before) && Array.isArray(after) &&
+        before.length === after.length && before.every(function(v, i) { return v.id === after[i].id; })) {
+      after.forEach(function(v, i) { changes(before[i], v, path.concat(i), result); });
+    } else if (object(before) && object(after)) {
       new Set(Object.keys(before).concat(Object.keys(after))).forEach(function(key) {
         if (!path.length && ['version', 'updated'].includes(key)) return;
         changes(before[key], after[key], path.concat(key), result);
@@ -71,7 +73,7 @@
       return normalize(raw === null ? {} : JSON.parse(raw));
     }
     try { baseline = read(); } catch (_) { baseline = normalize({}); readError = true; }
-    var state = copy(baseline), queue = Promise.resolve(), pending = 0, unsaved = false;
+    var state = copy(baseline), queue = Promise.resolve(), pending = 0, unsaved = false, saveRevision = 0, latestStatus = 'saved';
     function report(status) { if (options.status) options.status(status, messages[status]); }
     if (readError) report('unreadable');
     return {
@@ -79,9 +81,9 @@
       dirty: function() { return pending > 0 || unsaved; },
       // The snapshot comparison is local to this tab. Unedited remote fields never become deletions.
       save: function(project) {
-        var snapshot;
-        try { snapshot = normalize(project); } catch (_) { unsaved = true; report('failed'); return Promise.resolve(false); }
-        pending++; unsaved = true; report('pending');
+        var snapshot, request = ++saveRevision;
+        try { snapshot = normalize(project); } catch (_) { unsaved = true; latestStatus = 'failed'; report(latestStatus); return Promise.resolve(false); }
+        pending++; unsaved = true; latestStatus = 'pending'; report(latestStatus);
         var task = queue.then(async function() {
           var status = 'saved';
           try {
@@ -98,14 +100,15 @@
               current.updated = new Date().toISOString();
               options.storage().setItem(key, JSON.stringify(current));
               baseline = snapshot;
-              unsaved = false;
               return true;
             });
           } catch (_) { status = 'failed'; return false; }
           finally {
             pending--;
-            if (status !== 'saved') unsaved = true;
-            if (!pending) report(status);
+            if (request === saveRevision) {
+              unsaved = status !== 'saved'; latestStatus = status;
+            }
+            if (!pending) report(latestStatus);
           }
         });
         queue = task.then(function() {}, function() {});
@@ -115,7 +118,10 @@
       snapshot: function(project) {
         try {
           var latest = read();
-          changes(baseline, normalize(project), [], []).forEach(function(c) { put(latest, c); });
+          var local;
+          try { local = normalize(project); }
+          catch (_) { safe(project); local = copy(project); } // Keep unfinished input in recovery backups.
+          changes(baseline, local, [], []).forEach(function(c) { put(latest, c); });
           return latest;
         } catch (_) { return copy(project); }
       }

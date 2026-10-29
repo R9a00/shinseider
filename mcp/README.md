@@ -79,10 +79,12 @@ OpenAI側のローカルMCP設定は[公式資料](https://learn.chatgpt.com/doc
 
 `shinseider://application/support` に公式要項と経験者記事の出典、6項目の追加質問、4段階の指示があります。検索は接続したAIの検索機能で行います。公式と経験談、確認済みと未確認を分けます。
 
-1. `workspace_init` の後、`application_context_read` で文脈と `binding` を読みます。骨子・深掘りは `workspace_read` で取得して `reference` へ追加します。
-2. `application_workflow(stage="research")` / `prepare` の指示で調査と材料を整理し、`application_context_save(context, expected_binding)` で保存します。既存の記録がある場合、直前の読込みで得た binding が必要です。
+1. `workspace_init` の後、`application_context_read` で文脈と `binding`・`revision` を読みます。骨子・深掘りは `workspace_read` で取得して `reference` へ追加します。
+2. `application_workflow(stage="research")` / `prepare` の指示で調査と材料を整理し、`application_context_save(context, expected_revision=revision)` で保存します。既存の記録がある場合、直前の読込みで得た revision が必要です。
 3. 原本を作業フォルダの `materials/` に置き、`application_document_read("materials/format.pptx")` の結果を `context.files.template` に記録します。完成稿も同様に `draft` へ入れます。対応形式はPDF/PPTX/DOCX/TXT/MD、15MB・100ページまで。DOCX/TXT/MDの改ページ、図・画像・配置は未確認です。
 4. `application_workflow(stage="compose")` で原本に合わせて作成、`review` で完成稿を点検します。原本の描画確認はクライアント側で行い、できなければ未実施と明示します。
 5. 引用・理由・重大度・直し方・未確認範囲を `application_review_save(binding, result)` で保存します。材料・ファイル・支援資料が変わると `review_current` は false になります。true も審査合格や内容の妥当性を意味しません。
 
 `materials/application-context.json` はサイトの「応募書類を作る・点検する」で読み込めます。原本はJSONに含まれないので別途保管・添付します。旧版から更新した場合は新しい依存パッケージも上記の導入コマンドで入れてください。
+
+文脈保存は操作を直列化し、一時ファイルから置き換えます。`revision` は点検本文も含む保存版、`binding` は点検対象だけを表します。旧 `expected_binding` だけでの保存は点検本文を変更しない場合に限ります。`workspace_record` で `materials/application-context.json` を直接書き換えることはできません。空白・半角/全角括弧を含む原本名にも対応します。
