@@ -153,6 +153,14 @@ def get_pace_plan() -> dict:
     days = _days_left_jst(ENTRY_END)
     bucket = next((b["message"] for b in sorted(PACE["buckets"], key=lambda b: -b["min_days"])
                    if days >= b["min_days"]), "")
+    # 終盤はデータで定義した道筋を使う（サイトの「間に合うか」と同じ正本・同じ選び方）
+    today = now.date().isoformat()
+    late = None
+    if PACE.get("late_from") and today >= PACE["late_from"]:
+        late = next((p for p in PACE.get("late_plans", []) if today <= p["until"]), None)
+    if late:
+        return {"days_to_entry": days, "message": late["message"],
+                "plan": [[s["when"], s["text"]] for s in late["steps"]], "disclaimer": DISCLAIMER}
     target = datetime.fromisoformat(PACE["submit_target"] + "T23:59:00+09:00")
     d_t = max(1, (target.date() - now.date()).days)
     fmt = lambda d: f"{d.month}/{d.day}"

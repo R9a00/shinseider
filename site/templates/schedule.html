@@ -14,24 +14,38 @@
   {% include "_pace.html" %}
 </div>
 
+<section id="late-facts">
+  <h2>先に知っておくと、時間が浮くこと</h2>
+  <p class="muted">{{ late.note }}（{{ late.checked }}確認）</p>
+  <div class="fact-grid">
+    {% for f in late.facts %}
+    <div class="card">
+      <h3 class="tight">{{ f.title }}</h3>
+      <p>{{ f.text }}</p>
+      <a href="{{ f.source_url }}" rel="noopener">{{ f.source_label }}</a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
 <section>
   <h2>フェーズごとの中身</h2>
   <ol class="ladder">
     <li class="ladder-step">
       <div class="ladder-status">現経営者との対話</div>
-      <p>エントリーは会社名・事業者名で行うため、いずれ必ず通る話です。「アトツギ甲子園に出てみたい」という切り出し方なら、承継の話を自然に始められます。</p>
+      <p>エントリーは会社名・事業者名で行い、会社名は公式サイトに掲載されます。登録の前に必ず通る話です。「アトツギ甲子園に出てみたい」という切り出し方なら、承継の話を自然に始められます。<a href="{{ late.owner_flyer.url }}" rel="noopener">{{ late.owner_flyer.label }}</a>を見せる方法もあります。</p>
     </li>
     <li class="ladder-step">
-      <div class="ladder-status">エントリー文の骨子をつくる</div>
-      <p><a href="entry.html">「申請書の準備」ページ</a>から、骨格となる部分を作成可能です。ご自身のAIを使ってまとめていくプロセスを提供しています。1〜2日あれば形になります。</p>
+      <div class="ladder-status">エントリー（登録）</div>
+      <p><a href="https://atotsugi-koshien.go.jp/" rel="noopener">公式サイト</a>から。<a href="https://form.atotsugi-koshien.go.jp/register" rel="noopener">会員登録</a>のあと、エントリーフォームで基本情報と質問事項に答えます。応募書類の完成を待つ必要はありません。完了すると、事務局から応募書類のサンプルフォーマットと案内が届きます。エントリー（〜11/25 18:00）と応募書類のPDF提出（〜11/27 12:00）は別の手続きです。</p>
     </li>
     <li class="ladder-step">
-      <div class="ladder-status">申請書の磨き上げ</div>
-      <p>自分でなんども読み直す、現経営者や周りの人に見せる。<a href="entry.html#rehearsal">複数のAIで提出前チェックをする</a>。<a href="ambassadors.html">アンバサダー</a>にチェックを依頼するなど、様々な方法で申請書の磨き上げができます。</p>
+      <div class="ladder-status">応募書類をつくる</div>
+      <p><a href="entry.html">「申請書の準備」ページ</a>で、ご自身のAIを使って材料を整理します。骨子は1〜2日あれば形になります。それを表紙＋本文7ページの応募書類にまとめます（<a href="application.html">作成・点検</a>）。</p>
     </li>
     <li class="ladder-step">
-      <div class="ladder-status">申請書の送信</div>
-      <p><a href="https://atotsugi-koshien.go.jp/" rel="noopener">公式サイト</a>から。<a href="https://form.atotsugi-koshien.go.jp/register" rel="noopener">会員登録</a>が必要なので時間のある時に登録だけ済ませておきましょう。エントリー（〜11/25 18:00）と応募書類のPDF提出（〜11/27 12:00）は別の手続きです。</p>
+      <div class="ladder-status">磨いて、提出する</div>
+      <p>自分でなんども読み直す、現経営者や周りの人に見せる。<a href="entry.html#rehearsal">複数のAIで提出前チェックをする</a>。<a href="ambassadors.html">アンバサダー</a>にチェックを依頼するなど、様々な方法で磨き上げができます。仕上げたらPDFにしてメールで提出します。受付期間内は出し直せます。</p>
     </li>
   </ol>
 </section>
@@ -44,7 +58,7 @@
       <span class="rm-when">いま<br>〜 11/25</span>
       <div class="rm-body">
         <strong>準備とエントリー</strong>
-        <p>出られるかの確認、現経営者との対話、<a href="entry.html">エントリー文づくり</a>、と進めてエントリーへ。ふだん使っているAIと相談しながらで構いません。<span class="muted">エントリー締切 11/25 18:00・書類提出 11/27 12:00</span></p>
+        <p>出られるかの確認、現経営者との対話、エントリー、<a href="entry.html">応募書類づくり</a>、と進めます。ふだん使っているAIと相談しながらで構いません。<span class="muted">エントリー締切 11/25 18:00・書類提出 11/27 12:00</span></p>
       </div>
     </li>
     <li>

@@ -3,6 +3,7 @@
 <section class="hero">
 <div class="hero-main">
   <p class="kicker entry-status" data-deadline="{{ entry_end }}">第7回アトツギ甲子園 エントリー受付中</p>
+  <p class="late-banner" id="late-banner" data-deadline="{{ entry_end }}" data-docs-deadline="{{ docs_deadline }}" hidden></p>
   <h1><span class="hl-box">その構想、誰かに<br>本気で見てもらったことはありますか。</span></h1>
   <p class="lead lead-voices">
     <span class="voice">親は何も言ってくれないか、ダメ出しばかり。</span>
@@ -150,6 +151,28 @@
     return;
   }
   document.getElementById('countdown-days').textContent = Math.max(0, daysLeftJst(v));
+})();
+// 締切が近い時期だけ、ファーストビューに道筋への案内を出す（残り20日以内。締切後は書類提出の案内に切り替え）
+(function(){
+  var el = document.getElementById('late-banner');
+  if (!el) return;
+  var entry = el.getAttribute('data-deadline'), docs = el.getAttribute('data-docs-deadline');
+  var strong, text, href;
+  if (!entryClosed(entry)) {
+    var d = Math.max(0, daysLeftJst(entry));
+    if (d > 20) return;
+    strong = d > 0 ? 'エントリー締切まであと' + d + '日。' : '本日18:00がエントリー締切です。';
+    text = d > 0 ? '今からでも間に合う進め方を、今日やることから順に見る →' : '今日やることを順に見る →';
+    href = 'schedule.html';
+  } else if (docs && !entryClosed(docs)) {
+    strong = 'エントリー済みの方へ。';
+    text = '応募書類の提出は11/27 12:00まで。応募書類の準備へ →';
+    href = 'entry.html';
+  } else { return; }
+  var a = document.createElement('a'), b = document.createElement('strong');
+  a.href = href; b.textContent = strong;
+  a.appendChild(b); a.appendChild(document.createTextNode(text));
+  el.appendChild(a); el.hidden = false;
 })();
 </script>
 {% endblock %}

@@ -8,17 +8,43 @@
 <p class="lead">ここでは、申請書を作成するための骨子を明確にし、概要の段階で論点や不足を整理してから実際の申請書作成へ進める準備ができます。以下、用意したプロンプトを使って普段使っているAI（LLM）のブラウザアプリで作成する方法と、<a href="#ai-mcp">MCPを経由して利用する方法</a>を用意しています。<strong>このサイトの入力欄に保存した骨子・メモはブラウザ内に保存され、シンセイダーの運営者には送信されません。</strong> AIへ渡す指示文・骨子・会話は、選んだAIサービスで処理されます。機密情報は渡す前に利用条件を確認してください。</p>
 <details class="prompt-view">
   <summary>エントリーから提出までの流れを確認する</summary>
-  <p>アトツギ甲子園は、公式フォームの質問に答えてエントリーし、その後に事務局から届く案内・サンプルを参考に、指定のページ構成に沿って応募書類を作りPDFで提出します。サンプル自体の使用は任意です。書類審査はこの応募書類で行われます。フォーマットが届いてから慌てて書かずに済むよう、先に中身を仕上げておきます。書くのはあなたです。このページが受け持つのは、問いの用意と、抜けの確認と、書いたものの保存です。</p>
+  <p>アトツギ甲子園は、公式フォームの質問に答えてエントリーし、その後に事務局から届く案内・サンプルを参考に、指定のページ構成に沿って応募書類を作りPDFで提出します。サンプル自体の使用は任意です。書類審査はこの応募書類で行われます。エントリーは、中身が仕上がる前でも済ませられます。締切が近いときは登録を先にして、届いたフォーマットを見ながら中身を仕上げます。書くのはあなたです。このページが受け持つのは、問いの用意と、抜けの確認と、書いたものの保存です。</p>
   <ol class="flow">
+    <li><b>エントリーする</b><span>公式フォームから（〜11/25 18:00）。中身の完成を待たなくてよい。完了すると応募書類のサンプルフォーマットが届く</span></li>
     <li><b>中身をつくる</b><span>5つの問いに、AIと答える（このページ）</span></li>
     <li><b>試す</b><span>AIを審査員役にして、指摘をもらう（このページ）</span></li>
-    <li><b>エントリーする</b><span>公式フォームから（〜11/25 18:00）。完了すると応募書類のフォーマットが届く</span></li>
-    <li><b>書類を出す</b><span>材料を指定のページ構成に再構成し、PDFで提出（〜11/27 12:00）</span></li>
+    <li><b>書類を出す</b><span>材料を指定のページ構成に再構成し、PDFをメールで提出（〜11/27 12:00）。受付期間内は出し直せる</span></li>
   </ol>
   {% set pace_compact = true %}
   {% include "_pace.html" %}
 </details>
 <p><a href="#official-preparation">作った骨子を公式6項目の応募書類に使う手順を見る →</a></p>
+<section class="card sprint" id="sprint">
+  <h2 class="tight">締切が近いときは、応募書類の文面まで一気につくる</h2>
+  <p>提出するのは、表紙＋本文7ページの応募書類です。時間が限られるときは、公式6項目をAIに順に聞いてもらい、項目ごとの文面まで続けて作ります。エントリー（登録）は、この作業を待たずに先に済ませられます。</p>
+  <ol class="flow-steps" aria-label="進め方">
+    <li>AIモデルのボタンを押す</li>
+    <li>質問に答える（30〜60分）</li>
+    <li>出力された文面をスライドに移す</li>
+    <li>PDFにしてメールで提出</li>
+  </ol>
+  <div class="ai-grid">
+    {% for t in sprint_targets %}
+    <button class="ai-card" type="button" data-sprint-open="{{ t.url_filled }}" data-mode="{{ t.mode }}">
+      <span class="ai-head"><img src="https://www.google.com/s2/favicons?domain={{ t.favicon_domain }}&sz=64" alt="" onerror="this.hidden=true">{{ t.name }}</span>
+      {% if t.note %}<span class="ai-note">{{ t.note }}</span>{% endif %}
+    </button>
+    {% endfor %}
+  </div>
+  <p class="ai-other">スマホのAIアプリや、上にないAIで進める場合は
+    <button class="btn small" id="copy-sprint" type="button">指示文をコピー</button>
+    して貼り付けてください。</p>
+  <details id="sprint-view" class="prompt-view">
+    <summary>この指示文の全文を見る</summary>
+    <pre>{{ sprint_text }}</pre>
+  </details>
+  <p class="muted">所要時間は本ツールの目安です。ページの割付は、エントリー後に届くサンプルフォーマットに合わせます。フォーマットが届いたら、出力と一緒に<a href="application.html#documents">作成・点検の「フォーマットに沿って作る」</a>へ渡してください。出力を残したいときは、同じページの「本人の情報・既存の記録」に貼ると、このブラウザに保存されます。AIへ渡した内容は、選んだAIサービスで処理されます。</p>
+</section>
 <div class="route-row">
   <div class="route-card here">
     <span class="route-time">30分〜</span>
@@ -252,26 +278,41 @@
   // AIを開く: prefill = 指示文入りURL（?q=）で開く / copy_open = コピーして開き貼り付けてもらう
   // どちらもクリップボードには入れておく（prefillはAI側の仕様変更に備えた保険）
   // 注意: window.openはクリック処理の同期部分で呼ぶこと（非同期後はポップアップブロックされる）
-  document.querySelectorAll('.ai-card[data-open]').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var url = btn.getAttribute('data-open');
-      var prefill = btn.getAttribute('data-mode') === 'prefill';
-      var note = btn.querySelector('.ai-note');
-      var orig = note ? note.textContent : '';
-      // コピーはwindow.openより先に開始する（開いた後だとフォーカスが移って失敗する）
-      var copied = navigator.clipboard.writeText(DATA.prompt);
-      window.open(url, '_blank', 'noopener');
-      copied.then(function(){
-        if (note) {
-          note.textContent = prefill ? '開きました — そのまま送信できます' : 'コピーしました — 開いた画面に貼り付けて送信';
-          setTimeout(function(){ note.textContent = orig; }, 5000);
-        }
-      }).catch(function(){
-        if (prefill) return;
-        if (note) note.textContent = 'コピーできませんでした — 下の「指示文の全文」からコピーしてください';
-        var d = document.getElementById('prompt-view');
-        if (d) d.open = true;
+  function bindAiCards(attr, promptText, viewId){
+    document.querySelectorAll('.ai-card[' + attr + ']').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var url = btn.getAttribute(attr);
+        var prefill = btn.getAttribute('data-mode') === 'prefill';
+        var note = btn.querySelector('.ai-note');
+        var orig = note ? note.textContent : '';
+        // コピーはwindow.openより先に開始する（開いた後だとフォーカスが移って失敗する）
+        var copied = navigator.clipboard.writeText(promptText);
+        window.open(url, '_blank', 'noopener');
+        copied.then(function(){
+          if (note) {
+            note.textContent = prefill ? '開きました — そのまま送信できます' : 'コピーしました — 開いた画面に貼り付けて送信';
+            setTimeout(function(){ note.textContent = orig; }, 5000);
+          }
+        }).catch(function(){
+          if (prefill) return;
+          if (note) note.textContent = 'コピーできませんでした — 下の「指示文の全文」からコピーしてください';
+          var d = document.getElementById(viewId);
+          if (d) d.open = true;
+        });
       });
+    });
+  }
+  bindAiCards('data-open', DATA.prompt, 'prompt-view');
+  // 締切が近いとき用: 公式6項目を直接聞く指示文
+  bindAiCards('data-sprint-open', DATA.sprint_prompt, 'sprint-view');
+  var sprintCopy = document.getElementById('copy-sprint');
+  if (sprintCopy) sprintCopy.addEventListener('click', function(){
+    navigator.clipboard.writeText(DATA.sprint_prompt).then(function(){
+      sprintCopy.textContent = 'コピーしました';
+      setTimeout(function(){ sprintCopy.textContent = '指示文をコピー'; }, 1800);
+    }).catch(function(){
+      sprintCopy.textContent = 'コピーできませんでした — 全文からコピーしてください';
+      document.getElementById('sprint-view').open = true;
     });
   });
 
