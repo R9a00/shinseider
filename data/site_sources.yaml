@@ -17,8 +17,12 @@ datasets:
     url: https://atotsugi-koshien.go.jp/about
   - label: 第7回エントリー者一覧
     url: https://atotsugi-koshien.go.jp/entrant
-  - label: 経産省発表（第7回）
+  - label: 経産省発表（第7回・開催のねらい）
     url: https://www.meti.go.jp/press/2026/07/20260715003.html
+  - label: よろず支援拠点
+    url: https://yorozu.smrj.go.jp/
+  - label: 事業承継・引継ぎ支援センター
+    url: https://shoukei.smrj.go.jp/
 - name: 事業承継・M&A補助金〈促進枠〉の金額・要件・加点
   how: 15次公募要領の原文から取得。金額・要件・加点事由は原文の該当箇所を引用
   accessed: '2026-08-06'

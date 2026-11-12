@@ -11,12 +11,15 @@ def sprint_prompt(data):
     items = "\n".join(f"{i}. {x['title']}: {x['brief']}" for i, x in enumerate(g['items'], 1))
     axes = "・".join(a['title'] for a in g['review_axes'])
     return (data['sprint_prompt_template'].replace('{official_items}', items)
-            .replace('{official_axes}', axes))
+            .replace('{official_axes}', axes)
+            .replace('{official_abilities}', "・".join(g['purpose']['abilities'])))
 
 
 def review_prompt(data):
     lines = [f"- {a['title']} — {a['question']}" for a in data['official_preparation']['review_axes']]
-    return data['review_prompt_template'].replace('{official_review_axes}', "\n".join(lines))
+    purpose = data['official_preparation']['purpose']
+    return (data['review_prompt_template'].replace('{official_review_axes}', "\n".join(lines))
+            .replace('{official_purpose}', purpose['summary'] + "（" + purpose['source_label'] + "）"))
 
 def preparation_guide(data):
     g = data['official_preparation']

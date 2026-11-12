@@ -80,6 +80,8 @@ def run(base):
         expect(guide).to_contain_text('本文7ページ＋表紙1ページ')
         expect(guide).to_contain_text('サンプルの使用は任意')
         expect(guide).to_contain_text('熱量・ストーリー')
+        expect(guide).to_contain_text('主催者のねらい')
+        expect(guide).to_contain_text('経済産業省 報道発表')
         pg.locator('.sec-text').first.fill('架空の確認用1。' * 12)
         expect(pg.locator('.sec-status').first).to_contain_text('文字数・数字の目安を充足（内容は要確認）')
         pg.fill('#paste-area', SAMPLE_ENTRY)
@@ -92,6 +94,9 @@ def run(base):
         assert '金属加工' in review
         assert '承継予定の会社の経営資源活用' in review
         assert '{official_review_axes}' not in review
+        assert '{official_purpose}' not in review
+        assert '中小企業診断士の視点' in review and '資格者による診断ではなく' in review
+        assert '戦略立案能力' in review
         with pg.expect_popup() as popup:
             pg.click('.ai-card[data-open*="gemini"]')
         popup.value.close()
@@ -112,6 +117,9 @@ def run(base):
         sprint = pg.evaluate('navigator.clipboard.readText()')
         assert '自分らしさ（アトツギとしての歩み）' in sprint and '熱量・ストーリー' in sprint
         assert '{official_items}' not in sprint and '割付は創作しない' in sprint
+        assert '中小企業診断士の視点' in sprint and '資格者の診断ではなく' in sprint
+        assert '戦略立案能力・発信力・実行力' in sprint and '{official_abilities}' not in sprint
+        expect(pg.locator('#sprint')).to_contain_text('資格を持つ専門家による診断ではありません')
         with pg.expect_popup() as sprint_popup:
             pg.click('.ai-card[data-sprint-open*="gemini"]')
         sprint_popup.value.close()
@@ -189,7 +197,10 @@ def run(base):
         pg.goto(f'{base}/schedule.html')
         assert pg.locator('#pace-message').inner_text().strip()
         assert pg.locator('#pace-plan li').count() >= 3
-        expect(pg.locator('#late-facts .card')).to_have_count(9)
+        expect(pg.locator('#late-facts .card')).to_have_count(10)
+        expect(pg.locator('#late-facts')).to_contain_text('戦略立案能力')
+        expect(pg.locator('#support .card')).to_have_count(4)
+        expect(pg.locator('#support')).to_contain_text('よろず支援拠点')
         expect(pg.locator('#late-facts')).to_contain_text('出し直し')
         expect(pg.locator('#late-facts')).to_contain_text('2026-11-12確認')
         pg.goto(f'{base}/entry.html')

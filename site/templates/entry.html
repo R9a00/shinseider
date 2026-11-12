@@ -22,6 +22,7 @@
 <section class="card sprint" id="sprint">
   <h2 class="tight">締切が近いときは、応募書類の文面まで一気につくる</h2>
   <p>提出するのは、表紙＋本文7ページの応募書類です。時間が限られるときは、公式6項目をAIに順に聞いてもらい、項目ごとの文面まで続けて作ります。エントリー（登録）は、この作業を待たずに先に済ませられます。</p>
+  <p>AIには、中小企業診断士の視点で質問させます。家業の強みの根拠、誰が何にいくら払うか、最初の顧客と検証の状況、体制・資金・リスクです。最後に、公式5評価と主催者のねらい（{{ official.purpose.abilities | join('・') }}）から見た弱い点も出させます。<span class="muted">資格を持つ専門家による診断ではありません。</span></p>
   <ol class="flow-steps" aria-label="進め方">
     <li>AIモデルのボタンを押す</li>
     <li>質問に答える（30〜60分）</li>
@@ -148,7 +149,7 @@
   <section class="step" id="rehearsal">
     <div class="review-panel">
       <h2>予行審査 — 忖度なしで見てもらう</h2>
-      <p>AIを、身内ではない審査員役に切り替える指示文です。公式5評価を参照して、骨子の改善点を探します。AIの指摘は公式審査ではなく、通過を保証しません。</p>
+      <p>AIを、身内ではない審査員役に切り替える指示文です。公式5評価を参照して、骨子の改善点を探します。あわせて、中小企業診断士の視点（収益の検算・実現可能性・リスク）と、主催者のねらい（{{ official.purpose.abilities | join('・') }}）からも点検します。AIの指摘は公式審査でも、資格者による診断でもなく、通過を保証しません。</p>
       <div class="ai-row">
         {% for t in ai_targets %}
         <button class="ai-chip" type="button" data-home="{{ t.home_url }}" data-name="{{ t.name }}"{% if t.q_base %} data-qbase="{{ t.q_base }}"{% endif %}>
@@ -180,6 +181,9 @@
     <h3>提出形式と公式5評価</h3>
     <p>{{ official.format }}</p>
     <p>公式5評価：{% for axis in official.review_axes %}{{ axis.title }}{% if not loop.last %}／{% endif %}{% endfor %}</p>
+    <h3>主催者のねらい</h3>
+    <p>{{ official.purpose.summary }}</p>
+    <p class="muted">出典：<a href="{{ official.purpose.source_url }}" rel="noopener">{{ official.purpose.source_label }}</a>（確認日：{{ official.purpose.checked }}）。評価項目は上の公式5評価で、ねらいは評価項目そのものではありません。</p>
     <p class="muted"><a href="{{ official.source_url }}" rel="noopener">第7回 公式応募要項（PDF）</a>を優先してください（確認日：{{ official.checked }}）。各ページへの具体的な割付は、届いたフォーマット・案内で確認してください。</p>
   </section>
   <section class="step">
