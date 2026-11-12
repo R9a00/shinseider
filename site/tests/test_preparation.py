@@ -6,7 +6,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from preparation import interview_prompt, review_prompt, preparation_guide, chapter_prompt
+from preparation import interview_prompt, review_prompt, preparation_guide, chapter_prompt, sprint_prompt
 
 
 class PreparationTests(unittest.TestCase):
@@ -25,6 +25,22 @@ class PreparationTests(unittest.TestCase):
         self.assertIn('{draft}', review_prompt(data))
         self.assertIn('合計8ページ', preparation_guide(data))
         self.assertIn('公式要件ではありません', interview_prompt(data))
+
+    def test_sprint_prompt_asks_official_items_without_inventing_layout(self):
+        data = yaml.safe_load((ROOT / 'data/koshien_entry.yaml').read_text())
+        guide = data['official_preparation']
+        prompt = sprint_prompt(data)
+        for item in guide['items']:
+            self.assertIn(item['title'], prompt)
+            self.assertTrue(item['brief'])
+        for axis in guide['review_axes']:
+            self.assertIn(axis['title'], prompt)
+        self.assertNotIn('{official_items}', prompt)
+        self.assertNotIn('{official_axes}', prompt)
+        self.assertIn('表紙＋本文7ページ', prompt)
+        self.assertIn('サンプルフォーマット', prompt)
+        self.assertIn('割付は創作しない', prompt)
+        self.assertIn('審査通過は保証しません', prompt)
 
     def test_invalid_chapters_do_not_select_a_different_chapter(self):
         data = yaml.safe_load((ROOT / 'data/fukabori.yaml').read_text())

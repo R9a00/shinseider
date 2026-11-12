@@ -5,6 +5,15 @@ def interview_prompt(data):
     lines = [f"{i}. {s['title']} — " + "／".join(s['elements']) for i, s in enumerate(data['entry_sections'], 1)]
     return data['prompt_template'].replace('{theme_elements}', "\n".join(lines))
 
+def sprint_prompt(data):
+    """締切が近いとき用: 公式6項目を直接聞き、応募書類の文面まで出す指示文。"""
+    g = data['official_preparation']
+    items = "\n".join(f"{i}. {x['title']}: {x['brief']}" for i, x in enumerate(g['items'], 1))
+    axes = "・".join(a['title'] for a in g['review_axes'])
+    return (data['sprint_prompt_template'].replace('{official_items}', items)
+            .replace('{official_axes}', axes))
+
+
 def review_prompt(data):
     lines = [f"- {a['title']} — {a['question']}" for a in data['official_preparation']['review_axes']]
     return data['review_prompt_template'].replace('{official_review_axes}', "\n".join(lines))

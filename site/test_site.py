@@ -105,6 +105,22 @@ def run(base):
         expect(pg.locator('#ws-entry-text')).to_contain_text('5/5')
         print('PASS: import, clipboard, popup, reload, progress and backup export')
 
+        pg.goto(f'{base}/entry.html')
+        expect(pg.locator('#sprint')).to_contain_text('表紙＋本文7ページ')
+        pg.click('#copy-sprint')
+        expect(pg.locator('#copy-sprint')).to_contain_text('コピーしました')
+        sprint = pg.evaluate('navigator.clipboard.readText()')
+        assert '自分らしさ（アトツギとしての歩み）' in sprint and '熱量・ストーリー' in sprint
+        assert '{official_items}' not in sprint and '割付は創作しない' in sprint
+        with pg.expect_popup() as sprint_popup:
+            pg.click('.ai-card[data-sprint-open*="gemini"]')
+        sprint_popup.value.close()
+        assert '自分らしさ' in pg.evaluate('navigator.clipboard.readText()')
+        # 既存の5テーマの指示文は別のボタンのまま
+        pg.click('#copy-prompt')
+        assert '現業と自分' in pg.evaluate('navigator.clipboard.readText()')
+        print('PASS: short-deadline prompt copies and opens separately from the five-theme prompt')
+
         # Two stale pages: unrelated fields merge, identical fields do not overwrite.
         a = context.new_page(); b = context.new_page()
         a.goto(f'{base}/entry.html'); b.goto(f'{base}/fukabori.html')
@@ -169,9 +185,13 @@ def run(base):
 
         pg.goto(f'{base}/index.html')
         expect(pg.locator('#countdown-days')).to_have_text('57')
+        expect(pg.locator('#late-banner')).to_be_hidden()  # 残り20日を超える時期は出さない
         pg.goto(f'{base}/schedule.html')
         assert pg.locator('#pace-message').inner_text().strip()
         assert pg.locator('#pace-plan li').count() >= 3
+        expect(pg.locator('#late-facts .card')).to_have_count(9)
+        expect(pg.locator('#late-facts')).to_contain_text('出し直し')
+        expect(pg.locator('#late-facts')).to_contain_text('2026-11-12確認')
         pg.goto(f'{base}/entry.html')
         # The pace message belongs inside the expandable guide.
         pg.locator('details.prompt-view').first.locator('summary').click()
@@ -196,11 +216,46 @@ def run(base):
                 assert '明日' not in text and '11/24まで' not in text
                 assert '11/27 12:00' in text
                 assert ('今日18:00まで' if '11-25' in stamp else '今日（推奨）') in text
+                bp.goto(f'{base}/index.html')
+                expect(bp.locator('#late-banner')).to_contain_text(
+                    '本日18:00がエントリー締切です' if '11-25' in stamp else 'あと1日')
             else:
                 expect(bp.locator('#pace-plan-wrap')).to_be_hidden()
                 expect(bp.locator('#pace-message')).to_contain_text('書類' if stage == 'docs' else '受付は終了')
+                bp.goto(f'{base}/index.html')
+                if stage == 'docs':
+                    expect(bp.locator('#late-banner')).to_contain_text('エントリー済みの方へ')
+                    expect(bp.locator('#late-banner a')).to_have_attribute('href', 'entry.html')
+                else:
+                    expect(bp.locator('#late-banner')).to_be_hidden()
             boundary.close()
         print('PASS: 11/24, entry cutoff and document cutoff boundary plans')
+        # 終盤の道筋: 登録が先、応募書類は連休で。日付ごとの切り替わりとトップの案内を確かめる。
+        for stamp, count, label, message, banner in [
+                ('2026-11-12T21:00:00+09:00', 5, '11/19（木）まで', '今からでも間に合います', 'あと13日'),
+                ('2026-11-20T09:00:00+09:00', 4, '11/21〜23（連休）', 'まだ間に合います', 'あと5日'),
+                ('2026-11-22T09:00:00+09:00', 4, '連休のうちに（〜11/23）', 'まだ間に合います', 'あと3日')]:
+            late = browser.new_context()
+            late.add_init_script(CLOCK.replace('2026-09-29T09:00:00+09:00', stamp))
+            late.route('**/*', lambda route: route.continue_() if route.request.url.startswith(base) else route.fulfill(status=200, body=''))
+            late_errors = []
+            lp = late.new_page(); lp.on('pageerror', lambda e: late_errors.append(str(e)))
+            lp.goto(f'{base}/schedule.html')
+            expect(lp.locator('#pace-message')).to_contain_text(message)
+            expect(lp.locator('#pace-plan li')).to_have_count(count)
+            text = lp.locator('#pace-plan').inner_text()
+            assert label in text and '11/27 12:00まで' in text and '明日' not in text, text
+            assert text.index('会員登録') < text.index('つくる'), text
+            expect(lp.locator('#pace-plan a[href="entry.html"]')).to_have_count(1)
+            lp.goto(f'{base}/entry.html')
+            lp.locator('details.prompt-view').first.locator('summary').click()
+            expect(lp.locator('#pace-message')).to_contain_text(message)
+            lp.goto(f'{base}/index.html')
+            expect(lp.locator('#late-banner')).to_contain_text(banner)
+            expect(lp.locator('#late-banner a')).to_have_attribute('href', 'schedule.html')
+            assert not late_errors, late_errors
+            late.close()
+        print('PASS: late plans by date, registration before documents, top-page notice')
         browser.close()
         print('PASS: calendar description, fixed-date countdown, navigation, no JS errors')
 

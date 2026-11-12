@@ -28,11 +28,42 @@
       msgEl.textContent = docsOpen ? D.closed_message_docs : D.closed_message;
       return;
     }
+    // 終盤（late_from 以降）は、データで定義した道筋を使う。今日の日付は日本時間の暦日で比べる
+    function ymd(x){
+      var d = jd(x);
+      function p(n){ return (n < 10 ? '0' : '') + n; }
+      return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+    }
+    var today = ymd(now);
+    var late = (D.late_from && today >= D.late_from)
+      ? (D.late_plans || []).find(function(x){ return today <= x.until; }) : null;
     var b = D.buckets.find(function(x){ return days >= x.min_days; });
-    msgEl.textContent = b ? b.message : '';
+    msgEl.textContent = late ? late.message : (b ? b.message : '');
 
     var wrap = root.querySelector('.pace-plan-wrap');
     if (!wrap) return;
+    if (late) {
+      var lateList = root.querySelector('.pace-plan');
+      lateList.innerHTML = '';
+      late.steps.forEach(function(s){
+        var li = document.createElement('li');
+        var when = document.createElement('strong');
+        when.textContent = s.when;
+        li.appendChild(when);
+        li.appendChild(document.createTextNode(' ' + s.text));
+        if (s.href) {
+          var a = document.createElement('a');
+          a.href = s.href;
+          a.textContent = s.link || s.href;
+          li.appendChild(document.createTextNode('（'));
+          li.appendChild(a);
+          li.appendChild(document.createTextNode('）'));
+        }
+        lateList.appendChild(li);
+      });
+      wrap.hidden = false;
+      return;
+    }
     var target = new Date(D.submit_target + 'T23:59:00+09:00');
     var dT = Math.max(1, Math.round((jd(target) - jd(now)) / 86400000));
     function fmt(d){ return new Date(d).toLocaleDateString('en-US', {timeZone: 'Asia/Tokyo', month: 'numeric', day: 'numeric'}); }

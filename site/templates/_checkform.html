@@ -59,7 +59,7 @@ document.getElementById('check-form').addEventListener('submit', function(e){
     } else {
       var pb = (data.pace_buckets || []).find(function(x){ return days >= x.min_days; });
       html += '<p>エントリー締切（11/25 18:00）まで<strong>' + (days > 0 ? 'あと' + days + '日' : '本日18:00まで') + '</strong>。' + (pb ? pb.message : '') + '</p>' +
-        '<p>次の一歩は: <a href="entry.html">申請書の準備を始める</a>（30分〜）</p>';
+        '<p>次の一歩は: <a href="schedule.html">今日から締切までの道筋を見る</a>。そのあと<a href="entry.html">申請書の準備を始める</a>（30分〜）</p>';
     }
   } else {
     html += '<h2>アトツギ甲子園：資格要件に合わない可能性</h2><p>年齢・立場・企業規模の要件は公式のエントリー要領で必ず確認してください（例外や詳細条件があります）。</p>';

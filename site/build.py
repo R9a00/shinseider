@@ -18,7 +18,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-from preparation import interview_prompt, review_prompt, chapter_prompt
+from preparation import interview_prompt, review_prompt, chapter_prompt, sprint_prompt
 
 SITE = ROOT / "site"
 DIST = SITE / "dist"
@@ -445,6 +445,13 @@ def main():
             _u = t["url"].replace("{prompt}", urllib.parse.quote(prompt_text))
             assert len(_u) <= 8000, f"プリフィルURLが上限超過({len(_u)}字): {t['id']}。prompt_templateを圧縮すること"
 
+    # 締切が近いとき用の指示文（公式6項目を直接聞く）。同じくURL渡しの上限を検査する
+    sprint_text = sprint_prompt(entry_def)
+    for t in entry_def["ai_targets"]:
+        if t.get("mode") == "prefill":
+            _u = t["url"].replace("{prompt}", urllib.parse.quote(sprint_text))
+            assert len(_u) <= 8000, f"最短ルートのプリフィルURLが上限超過({len(_u)}字): {t['id']}。sprint_prompt_templateを圧縮すること"
+
     # フカボリ: 章単位のインタビュー指示文。器の定義はgroupsから生成（単一ソース）。
     # 1章=1会話に区切ることで指示文を短くし、URL渡し（押したら入っている）を成立させる
     fk_chapters = [
@@ -460,10 +467,21 @@ def main():
 
     # 「間に合うか」メッセージと逆算プラン（データ駆動）
     pace = entry_def["pace"]
+    # 終盤の道筋はデータが正本。締切当日まで途切れず、順に並んでいることをビルド時に確かめる
+    late_plans = pace.get("late_plans", [])
+    if late_plans:
+        untils = [p["until"] for p in late_plans]
+        assert untils == sorted(set(untils)), "late_plans の until は昇順・重複なしにすること"
+        assert untils[-1] == str(entry_end)[:10], "late_plans の最後はエントリー締切日にすること"
+        assert pace.get("late_from", "9999") <= untils[0], "late_from は最初の until 以前にすること"
+        assert all(p.get("message") and len(p.get("steps", [])) >= 3 for p in late_plans), \
+            "late_plans には message と3つ以上の steps が必要"
     env.globals["pace_json"] = json.dumps({
         "entry_deadline": entry_end,
         "docs_deadline": docs_end,
         "submit_target": pace["submit_target"],
+        "late_from": pace.get("late_from"),
+        "late_plans": late_plans,
         "buckets": sorted(pace["buckets"], key=lambda b: -b["min_days"]),
         "closed_message": pace["closed_message"],
         "closed_message_docs": pace["closed_message_docs"],
@@ -504,13 +522,18 @@ def main():
                 "fukabori": {b["key"]: [f["key"] for f in b["fields"]] for g in fukabori["groups"] for b in g["blocks"]}
             }, ensure_ascii=False).replace("<", "\\u003c"),
         }),
-        "schedule.html": ("schedule.html", {}),
+        "schedule.html": ("schedule.html", {"late": entry_def["late_start"]}),
         "cool.html": ("cool.html", {}),
         "entry.html": ("entry.html", {
             "official": entry_def["official_preparation"],
             "sections": entry_def["entry_sections"],
             "checklist": entry_def["checklist"],
             "prompt_text": prompt_text,
+            "sprint_text": sprint_text,
+            "sprint_targets": [
+                {**t, "url_filled": t["url"].replace("{prompt}", urllib.parse.quote(sprint_text))}
+                for t in entry_def["ai_targets"]
+            ],
             "sample": entry_def["sample_entry"],
             "ai_targets": [
                 {**t, "url_filled": t["url"].replace("{prompt}", urllib.parse.quote(prompt_text))}
@@ -521,6 +544,7 @@ def main():
                 "sections": [{"id": s["id"], "title": s["title"]} for s in entry_def["entry_sections"]],
                 "validation": entry_def["validation"],
                 "prompt": prompt_text,
+                "sprint_prompt": sprint_text,
                 "review_prompt": review_prompt(entry_def),
             }, ensure_ascii=False).replace("<", "\\u003c"),
         }),
