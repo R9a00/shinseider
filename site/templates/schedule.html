@@ -28,6 +28,20 @@
   </div>
 </section>
 
+<section id="support">
+  <h2>見てもらえる人・相談できる窓口</h2>
+  <p class="muted">AIの点検は下書きを早く整えるためのものです。人に見てもらうと、自分では気づけない穴が見つかります。説明は各公式サイトの記載の要約です（{{ late.checked }}確認）。</p>
+  <div class="fact-grid">
+    {% for s in late.support %}
+    <div class="card">
+      <h3 class="tight">{{ s.name }}</h3>
+      <p>{{ s.text }}</p>
+      <a href="{{ s.url }}" {% if s.url.startswith('http') %}rel="noopener"{% endif %}>{{ s.link }}</a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
 <section>
   <h2>フェーズごとの中身</h2>
   <ol class="ladder">

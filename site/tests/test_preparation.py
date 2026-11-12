@@ -41,6 +41,24 @@ class PreparationTests(unittest.TestCase):
         self.assertIn('サンプルフォーマット', prompt)
         self.assertIn('割付は創作しない', prompt)
         self.assertIn('審査通過は保証しません', prompt)
+        # 診断士の視点は「資格者の診断ではない」と対で出す。主催者のねらいは公式発表の3つの力。
+        self.assertIn('中小企業診断士の視点', prompt)
+        self.assertIn('資格者の診断ではなく', prompt)
+        self.assertNotIn('{official_abilities}', prompt)
+        self.assertIn('・'.join(guide['purpose']['abilities']), prompt)
+
+    def test_review_prompt_adds_advisor_view_and_organizer_purpose(self):
+        data = yaml.safe_load((ROOT / 'data/koshien_entry.yaml').read_text())
+        purpose = data['official_preparation']['purpose']
+        prompt = review_prompt(data)
+        self.assertNotIn('{official_purpose}', prompt)
+        self.assertIn(purpose['summary'], prompt)
+        self.assertIn(purpose['source_label'], prompt)
+        self.assertEqual(purpose['abilities'], ['戦略立案能力', '発信力', '実行力'])
+        self.assertTrue(purpose['source_url'].startswith('https://www.meti.go.jp/'))
+        self.assertIn('中小企業診断士の視点', prompt)
+        self.assertIn('資格者による診断ではなく', prompt)
+        self.assertIn('{draft}', prompt)
 
     def test_invalid_chapters_do_not_select_a_different_chapter(self):
         data = yaml.safe_load((ROOT / 'data/fukabori.yaml').read_text())
