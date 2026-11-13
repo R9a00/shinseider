@@ -46,6 +46,11 @@ class PreparationTests(unittest.TestCase):
         self.assertIn('資格者の診断ではなく', prompt)
         self.assertNotIn('{official_abilities}', prompt)
         self.assertIn('・'.join(guide['purpose']['abilities']), prompt)
+        # 2026-11-12の通し試験の結果: 問数の上限、6項目すべてに質問、必ず聞く4つ
+        self.assertIn('全部で15問まで', prompt)
+        self.assertIn('6項目すべてに最低1問', prompt)
+        for must in ['家業の何を使うか', '単価×月の件数', '対価をもらったか', '誰がやるか・資金・最大のリスク']:
+            self.assertIn(must, prompt)
 
     def test_review_prompt_adds_advisor_view_and_organizer_purpose(self):
         data = yaml.safe_load((ROOT / 'data/koshien_entry.yaml').read_text())

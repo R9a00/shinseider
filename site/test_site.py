@@ -120,6 +120,9 @@ def run(base):
         assert '中小企業診断士の視点' in sprint and '資格者の診断ではなく' in sprint
         assert '戦略立案能力・発信力・実行力' in sprint and '{official_abilities}' not in sprint
         expect(pg.locator('#sprint')).to_contain_text('資格を持つ専門家による診断ではありません')
+        expect(pg.locator('#sprint')).to_contain_text('15問まで')
+        expect(pg.locator('#sprint')).not_to_contain_text('30〜60分')
+        assert '全部で15問まで' in sprint and '家業の何を使うか' in sprint
         with pg.expect_popup() as sprint_popup:
             pg.click('.ai-card[data-sprint-open*="gemini"]')
         sprint_popup.value.close()
