@@ -18,7 +18,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-from preparation import interview_prompt, review_prompt, chapter_prompt, sprint_prompt
+from preparation import interview_prompt, review_prompt, chapter_prompt, sprint_prompt, sprint_followup
 
 SITE = ROOT / "site"
 DIST = SITE / "dist"
@@ -530,6 +530,8 @@ def main():
             "checklist": entry_def["checklist"],
             "prompt_text": prompt_text,
             "sprint_text": sprint_text,
+            "followup_text": sprint_followup(entry_def),
+            "finish_steps": entry_def["late_start"]["finish"],
             "sprint_targets": [
                 {**t, "url_filled": t["url"].replace("{prompt}", urllib.parse.quote(sprint_text))}
                 for t in entry_def["ai_targets"]
@@ -545,6 +547,7 @@ def main():
                 "validation": entry_def["validation"],
                 "prompt": prompt_text,
                 "sprint_prompt": sprint_text,
+                "sprint_followup": sprint_followup(entry_def),
                 "review_prompt": review_prompt(entry_def),
             }, ensure_ascii=False).replace("<", "\\u003c"),
         }),

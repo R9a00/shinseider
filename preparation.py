@@ -15,6 +15,11 @@ def sprint_prompt(data):
             .replace('{official_abilities}', "・".join(g['purpose']['abilities'])))
 
 
+def sprint_followup(data):
+    """見本が届いたとき、同じ会話に送る文面。"""
+    return data['sprint_followup_template'].strip()
+
+
 def review_prompt(data):
     lines = [f"- {a['title']} — {a['question']}" for a in data['official_preparation']['review_axes']]
     purpose = data['official_preparation']['purpose']

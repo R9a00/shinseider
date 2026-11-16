@@ -6,7 +6,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from preparation import interview_prompt, review_prompt, preparation_guide, chapter_prompt, sprint_prompt
+from preparation import interview_prompt, review_prompt, preparation_guide, chapter_prompt, sprint_prompt, sprint_followup
 
 
 class PreparationTests(unittest.TestCase):
@@ -51,6 +51,19 @@ class PreparationTests(unittest.TestCase):
         self.assertIn('6項目すべてに最低1問', prompt)
         for must in ['家業の何を使うか', '単価×月の件数', '対価をもらったか', '誰がやるか・資金・最大のリスク']:
             self.assertIn(must, prompt)
+
+    def test_followup_keeps_the_same_rules_when_the_format_arrives(self):
+        data = yaml.safe_load((ROOT / 'data/koshien_entry.yaml').read_text())
+        text = sprint_followup(data)
+        for phrase in ['サンプルフォーマットが届きました', 'ページごとの文面に組み直して', '様式に無い割付は作らない',
+                       '話していない実績や数字は足さない', '（仮）のまま', '宿題は本文に混ぜず']:
+            self.assertIn(phrase, text)
+        self.assertNotIn('{', text)
+        finish = data['late_start']['finish']
+        self.assertEqual(len(finish), 4)
+        self.assertIn('8ページ', ''.join(finish))
+        self.assertIn('出し直せ', ''.join(finish))
+        self.assertNotIn('@', ''.join(finish))  # 送付先のアドレスは写さず、公式の案内で確認してもらう
 
     def test_review_prompt_adds_advisor_view_and_organizer_purpose(self):
         data = yaml.safe_load((ROOT / 'data/koshien_entry.yaml').read_text())
