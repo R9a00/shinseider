@@ -26,8 +26,8 @@
   <ol class="flow-steps" aria-label="進め方">
     <li>AIモデルのボタンを押す</li>
     <li>質問に答える（15問まで）</li>
-    <li>出力された文面をスライドに移す</li>
-    <li>PDFにしてメールで提出</li>
+    <li>見本が届いたら、同じ会話でページごとの文面にする</li>
+    <li>スライドに貼り、PDFにしてメールで提出</li>
   </ol>
   <div class="ai-grid">
     {% for t in sprint_targets %}
@@ -44,7 +44,19 @@
     <summary>この指示文の全文を見る</summary>
     <pre>{{ sprint_text }}</pre>
   </details>
-  <p class="muted">質問は15問までにしてあります。かかる時間は人によります。出てくるのは応募書類の素材で、8ページへの仕上げは別の作業です。ページの割付は、エントリー後に届くサンプルフォーマットに合わせます。フォーマットが届いたら、出力と一緒に<a href="application.html#documents">作成・点検の「フォーマットに沿って作る」</a>へ渡してください。出力を残したいときは、同じページの「本人の情報・既存の記録」に貼ると、このブラウザに保存されます。AIへ渡した内容は、選んだAIサービスで処理されます。</p>
+  <p class="muted">質問は15問までにしてあります。かかる時間は人によります。ここで出てくるのは応募書類の素材です。AIへ渡した内容は、選んだAIサービスで処理されます。</p>
+  <h3 id="finish">見本が届いたら、8ページに仕上げて提出する</h3>
+  <p>応募書類のサンプルフォーマット（見本）は、エントリーの後に事務局から届きます。届いたら、次の順に進めます。</p>
+  <ol class="finish-steps">
+    {% for step in finish_steps %}<li>{{ step }}</li>
+    {% endfor %}
+  </ol>
+  <p><button class="btn small" id="copy-followup" type="button">見本が届いたときに送る文面をコピー</button></p>
+  <details id="followup-view" class="prompt-view">
+    <summary>この文面の全文を見る</summary>
+    <pre>{{ followup_text }}</pre>
+  </details>
+  <p class="muted">調べたことや出典も残しながら進めたいときは、<a href="application.html#documents">作成・点検の「フォーマットに沿って作る」</a>でも同じことができます。素材を残したいときは、同じページの「本人の情報・既存の記録」に貼ると、このブラウザに保存されます。</p>
 </section>
 <div class="route-row">
   <div class="route-card here">
@@ -309,6 +321,16 @@
   bindAiCards('data-open', DATA.prompt, 'prompt-view');
   // 締切が近いとき用: 公式6項目を直接聞く指示文
   bindAiCards('data-sprint-open', DATA.sprint_prompt, 'sprint-view');
+  var followupCopy = document.getElementById('copy-followup');
+  if (followupCopy) followupCopy.addEventListener('click', function(){
+    navigator.clipboard.writeText(DATA.sprint_followup).then(function(){
+      followupCopy.textContent = 'コピーしました — 同じ会話に貼り付けてください';
+      setTimeout(function(){ followupCopy.textContent = '見本が届いたときに送る文面をコピー'; }, 2400);
+    }).catch(function(){
+      followupCopy.textContent = 'コピーできませんでした — 全文からコピーしてください';
+      document.getElementById('followup-view').open = true;
+    });
+  });
   var sprintCopy = document.getElementById('copy-sprint');
   if (sprintCopy) sprintCopy.addEventListener('click', function(){
     navigator.clipboard.writeText(DATA.sprint_prompt).then(function(){

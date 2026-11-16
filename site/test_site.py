@@ -123,6 +123,12 @@ def run(base):
         expect(pg.locator('#sprint')).to_contain_text('15問まで')
         expect(pg.locator('#sprint')).not_to_contain_text('30〜60分')
         assert '全部で15問まで' in sprint and '家業の何を使うか' in sprint
+        expect(pg.locator('#finish')).to_contain_text('見本が届いたら')
+        expect(pg.locator('.finish-steps li')).to_have_count(4)
+        pg.click('#copy-followup')
+        expect(pg.locator('#copy-followup')).to_contain_text('コピーしました')
+        followup = pg.evaluate('navigator.clipboard.readText()')
+        assert 'ページごとの文面に組み直して' in followup and '様式に無い割付は作らない' in followup
         with pg.expect_popup() as sprint_popup:
             pg.click('.ai-card[data-sprint-open*="gemini"]')
         sprint_popup.value.close()

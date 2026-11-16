@@ -617,3 +617,6 @@ a.route-card:hover { border-top-color: #e5b1a8; }
 
 /* 締切が近いとき用の入口（申請書の準備ページ） */
 .card.sprint { border-top: 3px solid var(--accent); margin: 1.8rem 0 2.2rem; }
+.finish-steps { margin: .6em 0 1em; padding-left: 1.5em; }
+.finish-steps li { margin: .55em 0; font-size: .93rem; line-height: 1.9; }
+.finish-steps li::marker { font-family: var(--serif); color: var(--accent); }
